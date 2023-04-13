@@ -38,8 +38,9 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->gro
  Route::resource('/permissions', PermissionController::class)->except(['update']);
  Route::resource('/roles', RoleController::class);
  Route::resource('/users', UserController::class);
- Route::resource('/positions', PositionController::class)->except('update');
+ Route::resource('/positions', PositionController::class)->except('update', 'destroy');
  Route::post('/positions/update', [PositionController::class, 'update'])->name('positions.update');
+//  Route::delete('positions/destroy/{$id}/', [PositionController::class, 'destroy'])->name('positions.destroy');
  Route::resource('/departments', DepartmentController::class);
  Route::post('/users/{user}/roles', [UserController::class, 'assignRole'])->name('users.assignRole');
 //  Route::put('/permission/{permission}', [PermissionController::class, 'update']);

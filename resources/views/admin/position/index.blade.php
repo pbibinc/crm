@@ -167,9 +167,7 @@
    //script for sending delete
    $('#ok_button').click(function(){
     $.ajax({
-        type:'DELETE',
-        url:"/admin/positions/" + position_id,
-        headers: {'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')},
+        url:"/admin/positions/destroy/" + position_id,
         beforeSend:function(){
             $('#ok_button').text('Deleting.....');
         },
