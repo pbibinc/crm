@@ -15,6 +15,8 @@
         </div>
 
 <!-- end page title -->
+
+
 <div class="row">
     <div class="col-xl-12">
         <div class="card">
@@ -48,7 +50,7 @@
     </div>
 </div>
 
-    </div>
+   
 </div>
 </div>
 
@@ -158,7 +160,6 @@
    //script for deletion
    var position_id
    $(document).on('click', '.delete', function(){
-    console.log('test')
     position_id = $(this).attr('id');
     $('#confirmModal').modal('show');
    })
@@ -167,7 +168,8 @@
    //script for sending delete
    $('#ok_button').click(function(){
     $.ajax({
-        url:"/admin/positions/destroy/" + position_id,
+        url:"/admin/positions/" +position_id,
+        type:"DELETE",
         beforeSend:function(){
             $('#ok_button').text('Deleting.....');
         },

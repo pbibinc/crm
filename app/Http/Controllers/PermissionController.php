@@ -16,10 +16,10 @@ class PermissionController extends Controller
 
     public function store(Request $request)
     {
-        Log::info('store() called');
-    //    $permission = Permission::create($request->validate([
-    //     'name' => ['required', 'min:3'],
-    //    ]));
+        // Log::info('store() called');
+       $permission = Permission::create($request->validate([
+        'name' => ['required', 'min:3'],
+       ]));
     }
 
     public function destroy(Permission $permission)
@@ -30,17 +30,17 @@ class PermissionController extends Controller
 
     public function update(Request $request, Permission $permission)
     {
-        Log::info('store() called');
-        // $request->validate([
-        //     'name' => 'required|unique:permissions,name,' . $permission->id,
-        // ]);
+        // Log::info('store() called');
+        $request->validate([
+            'name' => 'required|unique:permissions,name,' . $permission->id,
+        ]);
     
-        // $permission->update($request->all());
+        $permission->update($request->all());
     
-        // return response()->json([
-        //     'status' => 'success',
-        //     'message' => 'Permission updated successfully',
-        // ]);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Permission updated successfully',
+        ]);
     }
 
     public function ajaxUpdate(Request $request, Permission $permission)

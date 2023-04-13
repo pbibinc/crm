@@ -8,6 +8,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserProfileController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -38,11 +39,13 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->gro
  Route::resource('/permissions', PermissionController::class)->except(['update']);
  Route::resource('/roles', RoleController::class);
  Route::resource('/users', UserController::class);
- Route::resource('/positions', PositionController::class)->except('update', 'destroy');
+ Route::resource('/positions', PositionController::class)->except('update');
  Route::post('/positions/update', [PositionController::class, 'update'])->name('positions.update');
 //  Route::delete('positions/destroy/{$id}/', [PositionController::class, 'destroy'])->name('positions.destroy');
- Route::resource('/departments', DepartmentController::class);
+ Route::resource('/departments', DepartmentController::class)->except('update');
+ Route::post('/departments/update', [DepartmentController::class, 'update'])->name('departments.update');
  Route::post('/users/{user}/roles', [UserController::class, 'assignRole'])->name('users.assignRole');
+ Route::resource('/user-profiles', UserProfileController::class);
 //  Route::put('/permission/{permission}', [PermissionController::class, 'update']);
 });
 
