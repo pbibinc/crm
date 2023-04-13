@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class PermissionSeeder extends Seeder
+class RoleSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,9 +15,9 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
-        Permission::create(
-            ['name' => 'edit_role'],
-            ['name' => 'create_permission'],
-        );
+        //
+        Role::create([
+            'id' => 5,
+            'name' => 'admin']);
     }
 }

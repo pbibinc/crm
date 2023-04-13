@@ -39,15 +39,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($dapartments as $department)
-                            <tr>
-                                <td><h6 class="mb-0">{{ $department->id }}</h6></td>
-                                <td>{{ $department->name }}</td>
-                                <td>{{ $department->created_at }}</td>
-                                <td>{{ $department->updated_at }}</td>
-                            </tr>
-
-                            @endforeach
+        
                         </tbody>
                     </table>
                 </div>
@@ -95,22 +87,22 @@
 
 <script>
     // DATA TABLE
-    // $(document).ready(function() {
-    //     $('#data-table').DataTable({
-    //         processing: true,
-    //         serverSide: true,
-    //         ajax: "{{ route('admin.departments.index') }}",
-    //         columns: [
-    //             {data: 'id', name: 'id'},
-    //             {data: 'name', name: 'name'},
-    //             {data: 'created_at_formatted', name: 'created_at', searchable:false},
-    //             {data: 'updated_at_formatted', name: 'updated_at', searchable:false},
-    //             {data: 'action', name: 'action', orderable: false, searchable: false}
-    //         ]
+    $(document).ready(function() {
+        $('#data-table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('admin.departments.index') }}",
+            columns: [
+                {data: 'id', name: 'id'},
+                {data: 'name', name: 'name'},
+                {data: 'created_at_formatted', name: 'created_at', searchable:false},
+                {data: 'updated_at_formatted', name: 'updated_at', searchable:false},
+                {data: 'action', name: 'action', orderable: false, searchable: false}
+            ]
           
            
-    //     });
-    // });
+        });
+    });
 
 
      // configuring of modal for creating
@@ -123,7 +115,7 @@
     })
 
 
-    $('#positionForm').on('submit', function(event){
+    $('#dataModalForm').on('submit', function(event){
         event.preventDefault();
         var action_url = ' ';
 
