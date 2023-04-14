@@ -131,6 +131,27 @@
 </div>
 {{-- end of modal --}}
 
+{{-- start of deletion of modal --}}
+<div class="modal fade" id="confirmModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header" >
+          <h5 class="modal-title"><b>Confirmation</b></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to remove this data?.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger" name="ok_button" id="ok_button">gege</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{{-- end of deletion of modal --}}
+
+
 <style>
 
     span.active {
@@ -234,6 +255,36 @@ $(function() {
              }
         });
     })
+
+    //script for deletion
+   var user_profile_id
+   $(document).on('click', '.delete', function(){
+    user_profile_id = $(this).attr('id');
+    $('#confirmModal').modal('show');
+   })
+
+
+    //script for sending delete
+   $('#ok_button').click(function(){
+    $.ajax({
+        url:"/admin/user-profiles/" +user_profile_id,
+        type:"DELETE",
+        beforeSend:function(){
+            $('#ok_button').text('Deleting.....');
+        },
+        success:function($data)
+        {
+            setTimeout(() => {
+                $('#confirmModal').modal('hide');
+                location.reload();
+            }, 1000);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR.status);
+            console.log('Error: ' + textStatus + ' - ' + errorThrown);
+        }
+    });
+   });
 
     // script for configuring edit modal
     $(document).on('click', '.edit', function(event){

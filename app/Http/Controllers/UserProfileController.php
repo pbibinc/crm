@@ -143,4 +143,10 @@ class UserProfileController extends Controller
      
 
     }
+
+    public function destroy(UserProfile $userProfile)
+    {
+        
+        $userProfile->delete();
+    }
 }
