@@ -30,17 +30,19 @@
                 </div>
                 <h4 class="card-title mb-4">Positions</h4>
                 <div class="table-responsive">
-                    <table id="position-table" class="table table-bordered">
+                    <table id="user-profiles-table" class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>name</th>
+                                <th>Full Name</th>
+                                <th>American Name</th>
                                 <th>ID Number</th>
                                 <th>Position</th>
                                 <th>Status</th>
                                 <th>Department</th>
+                                <th>Account</th>
                                 <th>Created At</th>
-                                <th>Updated At</th>
+                                <th>Updated At</th> 
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -80,6 +82,10 @@
                     {!! Form::text('last_name', null, ['class' => 'form-control']) !!}
                 </div>
                 <div class="form-group">
+                    {!! Form::label('american_surname', 'American Surname') !!}
+                    {!! Form::text('american_surname', null, ['class' => 'form-control']) !!}
+                </div>
+                <div class="form-group">
                     {!! Form::label('id_num', 'ID Number') !!}
                     {!! Form::text('id_num', null, ['class' => 'form-control']) !!}
                 </div>
@@ -87,7 +93,7 @@
                     {!! Form::label('position_id', 'Select Designation', ['class' => 'form-label']) !!}
                     <div class="input-group">
                     {!! Form::select('position_id', $positions->pluck('name', 'id'), null, ['class' => 'form-control']) !!}
-                    <button class="btn btn-outline-secondary" type="button" id="position_id_dropdown" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-chevron-down"></i></button>
+                    {{-- <button class="btn btn-outline-secondary" type="button" id="position_id_dropdown" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-chevron-down"></i></button> --}}
                     {{-- <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="position_id_dropdown">
                         @foreach($positions as $position)
                             <li><a class="dropdown-item" href="#" data-value="{{ $position->id }}">{{ $position->name }}</a></li>
@@ -95,17 +101,17 @@
                     </ul> --}}
                     </div>
                 </div>
-                {{-- <div class="form-group">
-                    {!! Form::label('status', 'Status') !!}
-                    {!! Form::select('status', [1 => 'Active', 0 => 'Inactive'], null, ['class' => 'form-control']) !!}
-                </div> --}}
+                <div class="form-group">
+                    {!! Form::label('is_active', 'Status') !!}
+                    {!! Form::select('is_active', [1 => 'Active', 0 => 'Inactive'], null, ['class' => 'form-control']) !!}
+                </div>
                 <div class="form-group">
                     {!! Form::label('department_id', 'Department') !!}
                     {!! Form::select('department_id', $departments->pluck('name', 'id'), null, ['class' => 'form-control']) !!}
                 </div>
                 <div class="form-group">
                     {!! Form::label('account_id', 'Account') !!}
-                    {!! Form::select('account_id', $accounts->pluck('name', 'id'), null, ['class' => 'form-control']) !!}
+                    {!! Form::select('account_id', $accounts->whereNotIn('id', $usedAccounts)->pluck('name', 'id'), null, ['class' => 'form-control']) !!}
                 </div>
 
                 {{-- <input type="text" class="form-control" id="name" name="name" required> --}}
@@ -124,6 +130,166 @@
     </div>
 </div>
 {{-- end of modal --}}
+
+<style>
+
+    span.active {
+    color: green;
+   }
+
+  span.inactive {
+    color: red;
+   }
+
+</style>
+
+<script>
+
+
+$(function() {
+    $('#user-profiles-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{  route('admin.user-profiles.index')  }}",
+        columns: [
+            { data: 'id', name: 'id' },
+            { data: 'full_name', name: 'full_name' },
+            { data: 'american_name', name: 'american_name' },
+            { data: 'id_num', name: 'id_num' },
+            { data: 'position_name', name: 'position_name' },
+            { data: 'is_active', name: 'is_active', render: function (data, type, full, meta) {
+                var statusClass = data == 1 ? 'active' : 'inactive';
+                return '<span class="' + statusClass + '">' + (data == 1 ? 'Active' : 'Inactive') + '</span>';
+            }},
+            { data: 'department_name', name: 'department_name' },
+            { data: 'user_name', name: 'user_name' },
+            { data: 'created_at_formatted', name: 'created_at' },
+            { data: 'updated_at_formatted', name: 'updated_at' },
+            {data: 'action', name: 'action', orderable: false, searchable: false}
+        ]
+    });
+}); 
+   
+
+    $('#create_record').on('click', function(event){
+        $('.modal-title').text('Add New Record');
+        // $('#name').val(data.result.name);
+        $('#action_button').val('Add');
+        $('#action').val('Add');
+        $('#datanModal').modal('show');
+    })
+
+// script of sending modal form
+    $('#dataModalForm').on('submit', function(event){
+        event.preventDefault();
+        var action_url = '';
+        console.log($(this).serialize());
+
+        if($('#action').val() == 'Add')
+        {
+            action_url = "{{ route('admin.user-profiles.store') }}"
+            console.log('test')
+        }
+
+        if($('#action').val() == 'Update')
+        {
+            action_url = "{{ route('admin.user-profiles.update') }}"
+            console.log('test')
+        }
+
+
+        // var name = $('#name').val();
+
+
+        $.ajax({
+            type: 'POST',
+            headers: {'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')},
+            url: action_url, 
+            data:$(this).serialize(),
+            success: function(response){
+                if(response.errors)
+                {
+                    var errors = response.errors;
+                    $.each(errors, function(key, value){
+                     $('#' + key).addClass('is-invalid');
+                     $('#' + key + '_error').html(value);
+                    });
+                }
+                else
+                {
+                  // handle success message
+                  alert(response.success);
+                  $('#dataModal').modal('hide');
+                  location.reload();
+                  // reload the form or redirect to a new page
+                }
+                // $('#dataModal').modal('hide');
+                // location.reload();
+            }, 
+            error:function(xhr, status, error)
+             {
+                 console.log(xhr);
+                 console.log(status);
+                 console.log(error);
+             }
+        });
+    })
+
+    // script for configuring edit modal
+    $(document).on('click', '.edit', function(event){
+        event.preventDefault();
+        var id = $(this).attr('id');
+       
+        $('#form_result').html
+        $.ajax({
+          url: "/admin/user-profiles/"+id+"/edit",
+          headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+          dataType:"json",
+          success:function(data){
+        //   console.log(data.accountsSelected);
+        var modal = $('#dataModal');
+          var accountDropdown = modal.find('#account_id');
+          accountDropdown.empty();
+          var accounts = data.accounts.filter(account => account.id !== data.accountsSelected.id);
+          $.each(accounts, function(key, value) {
+                accountDropdown.append('<option value="' + value.id + '">' + value.name + '</option>');
+            });
+            if (data.accountsSelected) {
+                accountDropdown.prepend('<option value="' + data.accountsSelected.id + '" selected>' + data.accountsSelected.name + '</option>');
+            }
+          $('#first_name').val(data.result.firstname);
+          $('#last_name').val(data.result.lastname);
+          $('#american_surname').val(data.result.american_surname);
+          $('#id_num').val(data.result.id_num);
+          $('#position_id').val(data.result.position_id);
+      
+          $('#is_active').val(data.result.is_active);
+          $('#department_id').val(data.result.department_id);
+          $('#account_id').val(data.result.user_id);
+          var options = $('#account_id').html();
+          $.each(data.usedAccounts, function(key, value){
+            options
+          });
+          $('#hidden_id').val(id);
+          $('.modal-title').text('Edit Record');
+          $('#action_button').val('Update');
+          $('#action').val('Update');
+          $('#dataModal').modal('show');
+      },
+      error: function(data){
+        var errors = data.responseJSON;
+        console.log(errors);
+      }
+
+    })
+  
+   })
+
+
+
+</script>
+
+
 
 
 @endsection

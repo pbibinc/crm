@@ -206,7 +206,7 @@
         var name = $('#name').val();
 
 
-    //form sending on creationg
+      //form sending on creationg
         $.ajax({
             type: 'POST',
             headers: {'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')},
