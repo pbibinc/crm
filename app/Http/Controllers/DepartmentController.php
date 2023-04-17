@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Department;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
 class DepartmentController extends Controller
@@ -39,4 +40,39 @@ class DepartmentController extends Controller
             'name' => ['required', 'min:3']
         ]));
     }
+
+    public function edit($id)
+    {
+        if(request()->ajax())
+        {
+            $data = Department::findOrFail($id);
+            return response()->json(['result' => $data]);
+        }
+    }
+
+    public function update(Request $request)
+    {
+        $validation = array(
+            'name' => 'required',
+        );
+
+        $error = Validator::make($request->all(), $validation);
+        if($error->fails())
+        {
+            return response()->json(['errors' => $error->errors()->all()]);
+        }
+        $form_data = array(
+            'name' => $request->name
+        );
+        
+        Department::whereId($request->hidden_id)->update($form_data);
+        return response()->json(['success' => 'Data is successfully updated']);
+    }
+
+    public function destroy(Department $department)
+    {
+        $department->delete();
+        // return to_route('admin.positions.index');
+    }
+    
 }

@@ -66,7 +66,7 @@
                                     <span>Security</span>
                                 </a>
                                 <ul class="sub-menu" aria-expanded="false">
-                                    <li><a href="{{ route('admin.users.index') }}">User</a></li>
+                                    <li><a href="{{ route('admin.users.index') }}">Accounts</a></li>
                                     <li><a href="{{ route('admin.roles.index') }}">Role</a></li>
                                     <li><a href="{{ route('admin.permissions.index') }}">Permission</a></li>
                                 </ul>
@@ -80,7 +80,7 @@
                                 <ul class="sub-menu" aria-expanded="false">
                                     <li><a href="{{ route('admin.positions.index') }}">Position</a></li>
                                     <li><a href="{{ route('admin.departments.index') }}">Departments</a></li>
-                                    <li><a href="">User Profile</a></li>
+                                    <li><a href="{{ route('admin.user-profiles.index') }}">User Profile</a></li>
                                 </ul>
                             </li>
 
