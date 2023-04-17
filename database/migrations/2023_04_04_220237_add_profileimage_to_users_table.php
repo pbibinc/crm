@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('profile_image', 255)->after('username');
+            $table->string('profile_image', 255)->after('username')->nullable();
         });
     }
 
