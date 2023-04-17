@@ -103,6 +103,7 @@
 
 <script>
 
+    // Initialize Yajra DT
     $(document).ready(function() {
         $('#data-table').DataTable({
             processing: true,
@@ -126,16 +127,20 @@
         $("#dataModal").modal("show");
     });
 
+    // When submitting form 
     $("#dataModalForm").on("submit", function (event) {
         event.preventDefault();
-        var action_url = "";
-        if ($("#action").val() !== "Add") {
+
+        // Get submit button value
+        var action_url = '';
+        if ($("#action").val() == "Add") {
             action_url = "{{ route('disposition.store') }}";
         } 
-        if ($("#action").val() !== "Update") {
+        if ($("#action").val() == "Update") {
             action_url = "{{ route('disposition.update') }}";
         }
 
+        // AJAX Request
         $.ajax({
             type: "POST",
             url: action_url,
@@ -156,11 +161,9 @@
     // end submitting new entry
 
     // script for configuring edit modal
-    $(document).on('click', '.edit', function(event){
+    $(document).on('click', '.edit', function(event){ 
         event.preventDefault();
         var id = $(this).attr('id');
-        // var url = "{{ route('disposition.update', ":id") }}";
-        // url = url.replace(':id', id);
         $('#form_result').html;
         $.ajax({
             url: "/leads/disposition/"+id+"/edit",
@@ -180,7 +183,10 @@
                 var errors = data.responseJSON;
                 console.log(errors);
             }
-    });
+        })
+     })
+       
+  
 
     //script for deletion
     var position_id
@@ -213,41 +219,8 @@
         });
     });
 
-   //script for submission of form
-   $('#dataModalForm').on('submit', function(event){
-        event.preventDefault();
-        var action_url = '';
-
-        if($('#action').val() == 'Add')
-        {
-            action_url = "{{ route('disposition.store') }}"
-        }
-        if($('#action').val() == 'Update')
-        {
-            action_url = "{{ route('disposition.update') }}"
-        }
-
-        var name = $('#name').val();
-
-
-    //form sending on creationg
-        $.ajax({
-            type: 'POST',
-            headers: {'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')},
-            url: action_url,
-            data:$(this).serialize(),
-            success: function(response) {
-                $('#addPositionModal').modal('hide');
-                location.reload();
-            },
-            error: function(response){
-                var errors = response.responseJSON;
-                console.log(errors);
-               
-            }
-        });
-    });
-});
+ 
+     
 </script>
 
 

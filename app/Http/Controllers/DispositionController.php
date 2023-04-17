@@ -21,6 +21,7 @@ class DispositionController extends Controller
                 return $item;
             });
 
+            // Return DT
             return DataTables::of($data)->addIndexColumn()
                 ->addColumn('action', function ($data) {
                     $button = '<button class="edit btn btn-primary btn-sm m-2" id="' . $data->id . '" name="edit"  type="button"><i class="ri-edit-box-line"></i></button>';
@@ -29,18 +30,16 @@ class DispositionController extends Controller
                 })
                 ->make(true);
         }
+
+        // Data Passed on Model
         return view('leads.disposition.index', ['results' => Disposition::all()]);
     }
 
     public function store(Disposition $disposition, Request $request)
     {
-        $incomingFields = $request->validate([
-            'name' => 'required'
-        ]);
-        $incomingFields['name'] = strip_tags($incomingFields['name']);
-        $disposition->create($incomingFields);
-
-        return response()->json(['success', 'Data Added Successfully.']);
+        $positions = Disposition::create($request->validate([
+            'name' => ['required', 'min:3'],
+        ]));
     }
 
     public function edit($id)
@@ -53,22 +52,12 @@ class DispositionController extends Controller
 
     public function update(Request $request)
     {
-        // Validate fields
-        $incomingFields = $request->validate([
-            'name' => 'required|min:3'
-        ]);
 
-        // Strip tags
-        $incomingFields['name'] = strip_tags($incomingFields['name']);
+        $validation = array(
+            'name' => 'required',
+        );
 
-        // 
-        Disposition::whereId($request->hidden_id)->update($incomingFields);
-
-        // $validation = array(
-        //     'name' => 'required',
-        // );
-
-        $error = Validator::make($request->all(), $incomingFields);
+        $error = Validator::make($request->all(), $validation);
         if ($error->fails()) {
             return response()->json(['errors' => $error->errors()->all()]);
         }
@@ -76,6 +65,7 @@ class DispositionController extends Controller
             'name' => $request->name
         );
 
+        Disposition::whereId($request->hidden_id)->update($form_data);
         return response()->json(['success' => 'Data is successfully updated']);
     }
 
