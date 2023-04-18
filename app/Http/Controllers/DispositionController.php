@@ -35,7 +35,7 @@ class DispositionController extends Controller
         return view('leads.disposition.index', ['results' => Disposition::all()]);
     }
 
-    public function store(Disposition $disposition, Request $request)
+    public function store(Request $request)
     {
         $positions = Disposition::create($request->validate([
             'name' => ['required', 'min:3'],

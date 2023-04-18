@@ -19,19 +19,20 @@
         <div class="card">
             <div class="card-body">
                 <div class="dropdown float-end">
-                    <a href="" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPositionModal" id="addDispositionType">
-                        ADD DISPOSITION TYPE</a>
+                    <a href="" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addClasscodeModal" id="addClasscodeType">
+                        ADD CLASSCODE</a>
                         {{-- <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="mdi mdi-dots-vertical"></i>
                         </a> --}}
                 </div>
-                <h4 class="card-title mb-4">Dispositions</h4>
+                <h4 class="card-title mb-4">Classcodes</h4>
                 <div class="table-responsive">
                     <table id="data-table" class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Name</th>
+                                <th>Classcode Name</th>
+                                <th>Classcode</th>
                                 <th>Created At</th>
                                 <th>Updated At</th>
                                 <th>Action</th>
@@ -55,15 +56,19 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="dataModalLabel">Add Disposition</h5>
+            <h5 class="modal-title" id="dataModalLabel">Add Classcode</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
             <form id="dataModalForm">
               @csrf
               <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="name" name="name" required>
+                <label for="name" class="form-label">Classcode Name</label>
+                <input type="text" class="form-control" id="classcode_name" name="classcode_name" required>
+              </div>
+              <div class="mb-3">
+                <label for="name" class="form-label">Classcode (Optional)</label>
+                <input type="text" class="form-control" id="classcode" name="classcode">
               </div>
               <input type="hidden" name="action" id="action" value="add">
               <input type="hidden" name="hidden_id" id="hidden_id" />
@@ -108,10 +113,11 @@
         $('#data-table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('disposition.index') }}",
+            ajax: "{{ route('classcodes.index') }}",
             columns: [
                 {data: "id"},
-                {data: "name"},
+                {data: "classcode_name"},
+                {data: "classcode"},
                 {data: "created_at_formatted"},
                 {data: "updated_at_formatted"},
                 {data: "action", orderable: false, searchable: false},
@@ -120,42 +126,44 @@
     });
 
     // configuring of modal for adding new entry
-    $("#addDispositionType").on("click", function () {
+    $("#addClasscodeType").on("click", function () {
         $(".modal-title").text("Add New Record");
         $("#action_button").val("Add");
         $("#action").val("Add");
         $("#dataModal").modal("show");
     });
 
-    // When submitting form 
+    // When submitting form
     $("#dataModalForm").on("submit", function (event) {
         event.preventDefault();
 
         // Get submit button value
         var action_url = '';
         if ($("#action").val() == "Add") {
-            action_url = "{{ route('disposition.store') }}";
-        } 
+            action_url = "{{ route('classcodes.store') }}";
+        }
         if ($("#action").val() == "Update") {
-            action_url = "{{ route('disposition.update') }}";
+            action_url = "{{ route('classcodes.update') }}";
         }
 
-        // AJAX Request
-        $.ajax({
-            type: "POST",
-            url: action_url,
-            data: $(this).serialize(),
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-            },
-            success: function () {
-                $("#dataModal").modal("hide");
-                location.reload();
-            },
-            error: function (response) {
-                var errors = $.parseJSON(response.responseText);
-                console.log(errors);
-            },
+        // Serialize form data as an array
+        var formDataArray = $("#dataModalForm").serializeArray();
+
+        // Convert formDataArray into an object
+        var formDataObject = {};
+        $.each(formDataArray, function (index, item) {
+            formDataObject[item.name] = item.value;
+        });
+
+        console.log(formDataArray);
+
+        // POST Request using $.post()
+        $.post(action_url, formDataObject, function () {
+            $("#dataModal").modal("hide");
+            location.reload();
+        }).fail(function (response) {
+            var errors = $.parseJSON(response.responseText);
+            console.log(errors);
         });
     });
     // end submitting new entry
@@ -164,15 +172,17 @@
     $(document).on('click', '.edit', function(event){ 
         event.preventDefault();
         var id = $(this).attr('id');
+        console.log(id);
         $('#form_result').html;
         $.ajax({
-            url: "/leads/disposition/"+id+"/edit",
+            url: "/leads/classcodes/"+id+"/edit",
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
             dataType:"json",
             success:function(data){
-                $('#name').val(data.result.name);
+                $('#classcode_name').val(data.result.classcode_name);
+                $('#classcode').val(data.result.classcode);
                 $('#hidden_id').val(id);
                 $('.modal-title').text('Edit Record');
                 $('#action_button').val('Update');
@@ -187,10 +197,10 @@
      })
 
     //script for deletion
-    var position_id
+    var classcode_id
     $(document).on('click', '.delete', function(){
         // console.log('test');
-        position_id = $(this).attr('id');
+        classcode_id = $(this).attr('id');
         $('#confirmModal').modal('show');
     });
 
@@ -198,7 +208,7 @@
     $('#ok_button').click(function(){
         $.ajax({
             type:'DELETE',
-            url:"/leads/disposition/" + position_id,
+            url:"/leads/classcodes/" + classcode_id,
             beforeSend:function(){
                 $('#ok_button').text('Deleting.....');
             },

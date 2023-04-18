@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Demo\DemoController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ClasscodesController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DispositionController;
 use App\Http\Controllers\PermissionController;
@@ -48,11 +49,11 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->gro
 
 // Leads Routes
 // Disposition
-// Route::get('/leads/disposition', [DispositionController::class, 'index'])->name('disposition.index');
-// Route::post('/leads/disposition', [DispositionController::class, 'store'])->name('disposition.store');
 Route::resource('/leads/disposition', DispositionController::class)->except(['update']);
 Route::post('/leads/disposition/update', [DispositionController::class, 'update'])->name('disposition.update');
-
+// Classcodes
+Route::resource('/leads/classcodes', ClasscodesController::class)->except(['update']);
+Route::post('/leads/classcodes/update', [ClasscodesController::class, 'update'])->name('classcodes.update');
 
 Route::get('/dashboard', function () {
     return view('admin.index');
