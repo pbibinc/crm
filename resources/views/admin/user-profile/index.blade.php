@@ -28,7 +28,7 @@
                             <i class="mdi mdi-dots-vertical"></i>
                         </a> --}}
                 </div>
-                <h4 class="card-title mb-4">Positions</h4>
+                <h4 class="card-title mb-4">USER PROFILES</h4>
                 <div class="table-responsive">
                     <table id="user-profiles-table" class="table table-bordered">
                         <thead>
@@ -47,7 +47,7 @@
                             </tr>
                         </thead>
                         <tbody>
-
+    
                         </tbody>
                     </table>
                 </div>
@@ -166,7 +166,7 @@
 
 <script>
 
-
+ //DATA TABLE
 $(function() {
     $('#user-profiles-table').DataTable({
         processing: true,
@@ -192,6 +192,9 @@ $(function() {
 }); 
    
 
+
+
+       // configuring of modal for creating
     $('#create_record').on('click', function(event){
         $('.modal-title').text('Add New Record');
         // $('#name').val(data.result.name);
@@ -199,6 +202,8 @@ $(function() {
         $('#action').val('Add');
         $('#datanModal').modal('show');
     })
+
+
 
 // script of sending modal form
     $('#dataModalForm').on('submit', function(event){
@@ -256,12 +261,14 @@ $(function() {
         });
     })
 
+
     //script for deletion
    var user_profile_id
    $(document).on('click', '.delete', function(){
     user_profile_id = $(this).attr('id');
     $('#confirmModal').modal('show');
    })
+
 
 
     //script for sending delete
@@ -286,6 +293,7 @@ $(function() {
     });
    });
 
+
     // script for configuring edit modal
     $(document).on('click', '.edit', function(event){
         event.preventDefault();
@@ -298,29 +306,14 @@ $(function() {
           dataType:"json",
           success:function(data){
         //   console.log(data.accountsSelected);
-        var modal = $('#dataModal');
-          var accountDropdown = modal.find('#account_id');
-          accountDropdown.empty();
-          var accounts = data.accounts.filter(account => account.id !== data.accountsSelected.id);
-          $.each(accounts, function(key, value) {
-                accountDropdown.append('<option value="' + value.id + '">' + value.name + '</option>');
-            });
-            if (data.accountsSelected) {
-                accountDropdown.prepend('<option value="' + data.accountsSelected.id + '" selected>' + data.accountsSelected.name + '</option>');
-            }
           $('#first_name').val(data.result.firstname);
           $('#last_name').val(data.result.lastname);
           $('#american_surname').val(data.result.american_surname);
           $('#id_num').val(data.result.id_num);
           $('#position_id').val(data.result.position_id);
-      
           $('#is_active').val(data.result.is_active);
           $('#department_id').val(data.result.department_id);
           $('#account_id').val(data.result.user_id);
-          var options = $('#account_id').html();
-          $.each(data.usedAccounts, function(key, value){
-            options
-          });
           $('#hidden_id').val(id);
           $('.modal-title').text('Edit Record');
           $('#action_button').val('Update');

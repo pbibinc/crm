@@ -47,6 +47,7 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->gro
  Route::post('/users/{user}/roles', [UserController::class, 'assignRole'])->name('users.assignRole');
  Route::resource('/user-profiles', UserProfileController::class)->except('update');
  Route::post('/user-profiles/update', [UserProfileController::class, 'update'])->name('user-profiles.update');
+ Route::post('/user-profiles/change-status', [UserProfileController::class, 'changeStatus'])->name('user-profiles.change_status');
 //  Route::put('/permission/{permission}', [PermissionController::class, 'update']);
 });
 

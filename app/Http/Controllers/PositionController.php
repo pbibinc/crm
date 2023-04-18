@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataTables\PositionDataTable;
 use App\Models\Position;
+use App\Policies\PositionPolicy;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -27,9 +28,18 @@ class PositionController extends Controller
 
             return DataTables::of($data)->addIndexColumn()
             ->addColumn('action', function($data){
-                $button = '<button class="edit btn btn-primary btn-sm" id="'.$data->id.'" name="edit"  type="button"><i class="ri-edit-box-line"></i></button>';
-                $button .= '<button class="delete btn btn-danger btn-sm" id="'.$data->id.'" name="delete"  type="button"><i class="ri-delete-bin-line"></i></button>';
-                return $button;
+                $position = Position::find($data->id);
+                $policy = resolve(PositionPolicy::class);
+                $editButton = '';
+                $deleteButton = '';
+                if($policy->update(auth()->user(), $position)){
+                 $editButton = '<button class="edit btn btn-primary btn-sm" id="'.$data->id.'" name="edit"  type="button"><i class="ri-edit-box-line"></i></button>';
+                }
+                if($policy->delete(auth()->user(), $position)){
+                    $deleteButton = '<button class="delete btn btn-danger btn-sm" id="'.$data->id.'" name="delete"  type="button"><i class="ri-delete-bin-line"></i></button>';
+                }
+               
+                return $editButton . ' ' . $deleteButton;
             })
             ->make(true);
 

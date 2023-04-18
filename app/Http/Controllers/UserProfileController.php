@@ -6,6 +6,7 @@ use App\Models\Department;
 use App\Models\Position;
 use App\Models\User;
 use App\Models\UserProfile;
+use App\Policies\UserProfilePolicy;
 use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use Illuminate\Http\Request;
@@ -56,9 +57,18 @@ class UserProfileController extends Controller
             })
             
             ->addColumn('action', function($userProfile){
-                $button = '<button class="edit btn btn-primary btn-sm" id="'.$userProfile->id.'" name="edit"  type="button"><i class="ri-edit-box-line"></i></button>';
-                $button .= '<button class="delete btn btn-danger btn-sm" id="'.$userProfile->id.'" name="delete"  type="button"><i class="ri-delete-bin-line"></i></button>';
-                return $button;
+                $accounts = UserProfile::find($userProfile->id);
+                $policy = resolve(UserProfilePolicy::class);
+                $editButton = '';
+                $deleteButton = '';
+                if($policy->update(auth()->user(), $accounts)){
+                    $editButton = '<button class="edit btn btn-primary btn-sm" id="'.$userProfile->id.'" name="edit"  type="button"><i class="ri-edit-box-line"></i></button>';
+                }
+                if($policy->delete(auth()->user(), $accounts)){
+                    $deleteButton .= '<button class="delete btn btn-danger btn-sm" id="'.$userProfile->id.'" name="delete"  type="button"><i class="ri-delete-bin-line"></i></button>';
+                }
+                
+                return $editButton . ' ' . $deleteButton;
             })
             ->make(true);
             // ->searchable(['full_name', 'american_name', 'id_num', 'position_name', 'is_active', 'department_name', 'user_name']);
@@ -142,6 +152,11 @@ class UserProfileController extends Controller
         return response()->json(['success' => 'Data is successfully updated']);
      
 
+    }
+
+    public function changeStatus()
+    {
+        
     }
 
     public function destroy(UserProfile $userProfile)

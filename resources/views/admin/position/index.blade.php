@@ -22,8 +22,10 @@
         <div class="card">
             <div class="card-body">
                 <div class="dropdown float-end">
-                    <a href="{{ route('admin.positions.create') }}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPositionModal" id="create_record">
-                        ADD POSITION</a>
+                  @can('create', App\Model\Position::class)
+                  <a href="{{ route('admin.positions.create') }}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPositionModal" id="create_record">
+                    ADD POSITION</a>
+                  @endcan
                         {{-- <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="mdi mdi-dots-vertical"></i>
                         </a> --}}
@@ -122,6 +124,8 @@
         });
     });
 
+
+
     // configuring of modal for creating
     $('#create_record').on('click', function(event){
         $('.modal-title').text('Add New Record');
@@ -131,6 +135,8 @@
         $('#addPositionModal').modal('show');
     })
 
+
+    
   // script for configuring edit modal
     $(document).on('click', '.edit', function(event){
         event.preventDefault();

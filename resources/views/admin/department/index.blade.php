@@ -20,11 +20,13 @@
         <div class="card">
             <div class="card-body">
                 <div class="dropdown float-end">
+                    @can('create', App\Model\Department::class)
                     <a href="{{ route('admin.departments.create') }}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPositionModal" id="create_record">
                         ADD POSITION</a>
                         {{-- <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="mdi mdi-dots-vertical"></i>
                         </a> --}}
+                        @endcan
                 </div>
                 <h4 class="card-title mb-4">Departments</h4>
                 <div class="table-responsive">
