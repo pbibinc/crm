@@ -8,20 +8,20 @@
     .hidden-permission {
         display: none;
     }
-    
+
     .permissions-container {
         display: flex;
         flex-wrap: wrap;
         gap: 5px;
     }
-       
+
     .permission-badge {
         flex: 0 0 20%;
         margin-bottom: 5px;
         box-sizing: border-box;
         padding: 0 5px;
     }
-    
+
     .see-less-button {
         display: none;
     }
@@ -45,7 +45,7 @@
 </div>
 <!-- end page title -->
 <div class="row">
- 
+
 
 <div class="row">
 <div class="col-xl-12">
@@ -73,7 +73,7 @@
                     </tr>
                 </thead><!-- end thead -->
                 <tbody>
-                   
+
                 </tbody><!-- end tbody -->
             </table> <!-- end table -->
         </div>
@@ -81,7 +81,7 @@
 </div><!-- end card -->
 </div>
 <!-- end col -->
- 
+
 
 
 </div>
@@ -126,24 +126,21 @@
                 {
                     data: 'permmission_names',
                     name: 'permmission_names',
-                    render: function (data) {
-                    var output = '';
-
-                    for (var i = 0; i < data.length; i++) {
-                        output += '<div class="permission-group">';
-
-                        for (var j = 0; j < data[i].length; j++) {
-                            output += '<div class="permission">' + data[i][j] + '</div>';
+                    render: function(data) {
+                        var html = '';
+                        for (var i = 0; i < data.length; i += 3) {
+                            var row = data.slice(i, i + 3);
+                            html += '<div class="row">';
+                            for (var j = 0; j < row.length; j++) {
+                                html += '<div class="col">' + row[j] + '</div>';
+                            }
+                            html += '</div>';
                         }
-
-                        output += '</div>';
+                        return html;
                     }
-
-                    return output;
-                }
                 },
-                {data: 'created_at', name: 'created_at', searchable:false},
-                {data: 'updated_at', name: 'updated_at', searchable:false},
+                {data: 'created_at_formatted', name: 'created_at_formatted', searchable:false},
+                {data: 'updated_at_formatted', name: 'updated_at_formatted', searchable:false},
                 // {data: 'action', name: 'action', orderable: false, searchable: false}
             ]
         });

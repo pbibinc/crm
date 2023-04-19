@@ -52,7 +52,7 @@
     </div>
 </div>
 
-   
+
 </div>
 </div>
 
@@ -73,7 +73,7 @@
               </div>
               <input type="hidden" name="action" id="action" value="add">
               <input type="hidden" name="hidden_id" id="hidden_id" />
-           
+
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -136,7 +136,7 @@
     })
 
 
-    
+
   // script for configuring edit modal
     $(document).on('click', '.edit', function(event){
         event.preventDefault();
@@ -160,7 +160,7 @@
       }
 
     })
-  
+
    })
 
    //script for deletion
@@ -192,7 +192,7 @@
         }
     });
    });
-  
+
 
 
     //script for submission of form
@@ -225,10 +225,10 @@
             error: function(response){
                 var errors = response.responseJSON;
                 console.log(errors);
-               
+
             }
         });
-        
+
     })
 
 
