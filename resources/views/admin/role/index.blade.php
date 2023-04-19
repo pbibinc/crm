@@ -61,7 +61,7 @@
         <h4 class="card-title mb-4">Roles</h4>
 
         <div class="table-responsive">
-            <table class="table table-centered mb-0 align-middle table-hover table-nowrap">
+            <table id="dataTable" class="table table-centered mb-0 align-middle table-hover table-nowrap">
                 <thead class="table-light">
                     <tr>
                         <th>Id</th>
@@ -69,56 +69,11 @@
                         <th>Permission</th>
                         <th>Created at</th>
                         <th>Updated at</th>
-                        <th style="width: 120px;">Action</th> 
+                        {{-- <th style="width: 120px;">Action</th>  --}}
                     </tr>
                 </thead><!-- end thead -->
                 <tbody>
-                    @foreach ($roles as $role)
-                    <tr>
-                        <td><h6 class="mb-0">{{ $role->id }}</h6></td>
-                        <td>{{ $role->name }}</td>
-                        <td>
-                            <div class="permissions-container">
-                                @foreach($role->permissions as $index => $rp)
-                                    <span class="badge bg-info permission-badge {{ $index >= 3 ? 'hidden-permission' : '' }}">
-                                        <h6>{{ $rp->name }}</h6>
-                                    </span>
-                                @endforeach
-                            </div>
-                            @if(count($role->permissions) > 3)
-                                <button class="btn btn-sm btn-link see-more-button">...</button>
-                                <button class="btn btn-sm btn-link see-less-button">...</button>
-                            @endif
-                        </td>
-                        <td>{{ $role->created_at }}</td>
-                        <td>{{ $role->updated_at }}</td>
-                        <td> 
-                            <div class="row">
-                          
-                                <div class="col-5">
-                                    @can('update', $role)
-                                      <a href="{{ route('admin.roles.edit', $role->id) }}" class="btn btn-info"><i class="ri-edit-box-line"></i></a>
-                                    @endcan
-                                </div>
-                              
-                                <div class="col-4 ml-0">
-                                    @can ('delete', $role)
-                                    <form 
-                                    action="{{ route('admin.roles.destroy', $role->id) }}"
-                                    method="POST"
-                                    >
-                                    @csrf
-                                    @method('DELETE')
-                                        <button class="btn btn-danger" onclick="return confirmDelete()" type="submit"><i class="ri-delete-bin-line"></i></button>
-                                    </form>
-                                   @endcan
-                               </div>
-                            </div>
-                            
-                           
-                        </td>
-                    </tr>
-                    @endforeach
+                   
                 </tbody><!-- end tbody -->
             </table> <!-- end table -->
         </div>
@@ -158,6 +113,42 @@
     </div>
   </div>
   <script>
+
+ // DATA TABLE
+ $(document).ready(function() {
+        $('#dataTable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('admin.roles.index') }}",
+            columns: [
+                {data: 'id', name: 'id'},
+                {data: 'name', name: 'name'},
+                {
+                    data: 'permmission_names',
+                    name: 'permmission_names',
+                    render: function (data) {
+                    var output = '';
+
+                    for (var i = 0; i < data.length; i++) {
+                        output += '<div class="permission-group">';
+
+                        for (var j = 0; j < data[i].length; j++) {
+                            output += '<div class="permission">' + data[i][j] + '</div>';
+                        }
+
+                        output += '</div>';
+                    }
+
+                    return output;
+                }
+                },
+                {data: 'created_at', name: 'created_at', searchable:false},
+                {data: 'updated_at', name: 'updated_at', searchable:false},
+                // {data: 'action', name: 'action', orderable: false, searchable: false}
+            ]
+        });
+    });
+
      $(document).ready(function() {
   $('#submitBtn').click(function(e) {
     e.preventDefault(); // prevent form from submitting

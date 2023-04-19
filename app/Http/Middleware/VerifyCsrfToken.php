@@ -15,7 +15,8 @@ class VerifyCsrfToken extends Middleware
         // 'admin/*'
         'admin/positions/*',
         'admin/departments/*',
-        'admin/user-profiles/*'
+        'admin/user-profiles/*',
+        'admin/permissions/*'
     ];
     
     protected function shouldPassThrough($request)
@@ -32,6 +33,11 @@ class VerifyCsrfToken extends Middleware
        if ($request->is('admin/user-profiles/*') && $request->isMethod('delete')) {
         return true;
        }
+
+       if ($request->is('admin/permissions/*') && $request->isMethod('delete')) {
+        return true;
+       }
+
 
        return false;
     }

@@ -35,8 +35,8 @@ Route::post('/store/profile', 'StoreProfile')->name('store.profile');
 
 Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->group(function() {
  Route::post('/roles/{role}/permissions', [RoleController::class, 'assignPermissions'])->name('roles.permissions');
- Route::put('/permissions/{permission}', [PermissionController::class, 'update'])->name('permissions.update');
  Route::resource('/permissions', PermissionController::class)->except(['update']);
+ Route::post('/permissions/update', [PermissionController::class, 'update'])->name('permissions.update');
  Route::resource('/roles', RoleController::class);
  Route::resource('/users', UserController::class);
  Route::resource('/positions', PositionController::class)->except('update');
@@ -50,7 +50,9 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->gro
  Route::post('/user-profiles/change-status', [UserProfileController::class, 'changeStatus'])->name('user-profiles.change_status');
 //  Route::put('/permission/{permission}', [PermissionController::class, 'update']);
 });
-
+Route::get('/register', [App\Http\Controllers\Auth\RegisteredUserController::class, 'create'])
+    ->middleware('guest')
+    ->name('register');
 
 Route::get('/dashboard', function () {
     return view('admin.index');

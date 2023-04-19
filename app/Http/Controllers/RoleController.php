@@ -5,13 +5,33 @@ namespace App\Http\Controllers;
 use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class RoleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $roles = Role::all();
-        return view('admin.role.index', compact('roles'));
+
+        if($request->ajax()){
+            $data = Role::with('permissions')
+            ->select('id', 'name', 'created_at', 'updated_at');
+            return DataTables::of($data)
+            ->addColumn('permmission_names', function (Role $role){
+                $permissionNames = [];
+                $permissions = $role->permissions;
+
+                foreach (array_chunk($permissions, 3) as $permission) {
+                    $permissionNames[] = ['name' => $permission->name];
+                }
+                return $permissionNames;
+            })
+            ->make(true);
+        }
+
+    
+   
+        return view('admin.role.index');
     }
 
     public function store(Request $request)

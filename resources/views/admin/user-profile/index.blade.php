@@ -209,7 +209,7 @@ $(function() {
     $('#dataModalForm').on('submit', function(event){
         event.preventDefault();
         var action_url = '';
-        console.log($(this).serialize());
+ 
 
         if($('#action').val() == 'Add')
         {
@@ -298,8 +298,6 @@ $(function() {
     $(document).on('click', '.edit', function(event){
         event.preventDefault();
         var id = $(this).attr('id');
-       
-        $('#form_result').html
         $.ajax({
           url: "/admin/user-profiles/"+id+"/edit",
           headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
