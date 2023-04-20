@@ -41,7 +41,7 @@ class UserProfilePolicy
      */
     public function create(User $user)
     {
-        return $user->role->hasPermission('create_user_profile');
+        return $user->role->hasPermission('create_user-profile');
     }
 
     /**
@@ -53,7 +53,7 @@ class UserProfilePolicy
      */
     public function update(User $user, UserProfile $userProfile)
     {
-        return $user->role->hasPermission('edit_user_profile');
+        return $user->role->hasPermission('edit_user-profile');
     }
 
     /**
@@ -65,7 +65,7 @@ class UserProfilePolicy
      */
     public function delete(User $user, UserProfile $userProfile)
     {
-        return $user->role->hasPermission('delete_user_profile');
+        return $user->role->hasPermission('delete_user-profile');
     }
 
     /**
