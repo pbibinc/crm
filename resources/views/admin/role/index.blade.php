@@ -8,20 +8,20 @@
     .hidden-permission {
         display: none;
     }
-
+    
     .permissions-container {
         display: flex;
         flex-wrap: wrap;
         gap: 5px;
     }
-
+       
     .permission-badge {
         flex: 0 0 20%;
         margin-bottom: 5px;
         box-sizing: border-box;
         padding: 0 5px;
     }
-
+    
     .see-less-button {
         display: none;
     }
@@ -45,7 +45,7 @@
 </div>
 <!-- end page title -->
 <div class="row">
-
+ 
 
 <div class="row">
 <div class="col-xl-12">
@@ -61,7 +61,7 @@
         <h4 class="card-title mb-4">Roles</h4>
 
         <div class="table-responsive">
-            <table id="dataTable" class="table table-centered mb-0 align-middle table-hover table-nowrap">
+            <table class="table table-centered mb-0 align-middle table-hover table-nowrap">
                 <thead class="table-light">
                     <tr>
                         <th>Id</th>
@@ -69,11 +69,56 @@
                         <th>Permission</th>
                         <th>Created at</th>
                         <th>Updated at</th>
-                        {{-- <th style="width: 120px;">Action</th>  --}}
+                        <th style="width: 120px;">Action</th> 
                     </tr>
                 </thead><!-- end thead -->
                 <tbody>
-
+                    @foreach ($roles as $role)
+                    <tr>
+                        <td><h6 class="mb-0">{{ $role->id }}</h6></td>
+                        <td>{{ $role->name }}</td>
+                        <td>
+                            <div class="permissions-container">
+                                @foreach($role->permissions as $index => $rp)
+                                    <span class="badge bg-info permission-badge {{ $index >= 3 ? 'hidden-permission' : '' }}">
+                                        <h6>{{ $rp->name }}</h6>
+                                    </span>
+                                @endforeach
+                            </div>
+                            @if(count($role->permissions) > 3)
+                                <button class="btn btn-sm btn-link see-more-button">...</button>
+                                <button class="btn btn-sm btn-link see-less-button">...</button>
+                            @endif
+                        </td>
+                        <td>{{ $role->created_at }}</td>
+                        <td>{{ $role->updated_at }}</td>
+                        <td> 
+                            <div class="row">
+                          
+                                <div class="col-5">
+                                    @can('update', $role)
+                                      <a href="{{ route('admin.roles.edit', $role->id) }}" class="btn btn-info"><i class="ri-edit-box-line"></i></a>
+                                    @endcan
+                                </div>
+                              
+                                <div class="col-4 ml-0">
+                                    @can ('delete', $role)
+                                    <form 
+                                    action="{{ route('admin.roles.destroy', $role->id) }}"
+                                    method="POST"
+                                    >
+                                    @csrf
+                                    @method('DELETE')
+                                        <button class="btn btn-danger" onclick="return confirmDelete()" type="submit"><i class="ri-delete-bin-line"></i></button>
+                                    </form>
+                                   @endcan
+                               </div>
+                            </div>
+                            
+                           
+                        </td>
+                    </tr>
+                    @endforeach
                 </tbody><!-- end tbody -->
             </table> <!-- end table -->
         </div>
@@ -81,7 +126,7 @@
 </div><!-- end card -->
 </div>
 <!-- end col -->
-
+ 
 
 
 </div>
@@ -113,39 +158,6 @@
     </div>
   </div>
   <script>
-
- // DATA TABLE
- $(document).ready(function() {
-        $('#dataTable').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route('admin.roles.index') }}",
-            columns: [
-                {data: 'id', name: 'id'},
-                {data: 'name', name: 'name'},
-                {
-                    data: 'permmission_names',
-                    name: 'permmission_names',
-                    render: function(data) {
-                        var html = '';
-                        for (var i = 0; i < data.length; i += 3) {
-                            var row = data.slice(i, i + 3);
-                            html += '<div class="row">';
-                            for (var j = 0; j < row.length; j++) {
-                                html += '<div class="col">' + row[j] + '</div>';
-                            }
-                            html += '</div>';
-                        }
-                        return html;
-                    }
-                },
-                {data: 'created_at_formatted', name: 'created_at_formatted', searchable:false},
-                {data: 'updated_at_formatted', name: 'updated_at_formatted', searchable:false},
-                // {data: 'action', name: 'action', orderable: false, searchable: false}
-            ]
-        });
-    });
-
      $(document).ready(function() {
   $('#submitBtn').click(function(e) {
     e.preventDefault(); // prevent form from submitting
