@@ -30,7 +30,7 @@
                 </div>
                 <h4 class="card-title mb-4">Departments</h4>
                 <div class="table-responsive">
-                    <table id="data-table" class="table table-bordered">
+                    <table id="data-table" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -41,7 +41,7 @@
                             </tr>
                         </thead>
                         <tbody>
-        
+
                         </tbody>
                     </table>
                 </div>
@@ -71,7 +71,7 @@
               </div>
               <input type="hidden" name="action" id="action" value="add">
               <input type="hidden" name="hidden_id" id="hidden_id" />
-           
+
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -119,8 +119,8 @@
                 {data: 'updated_at_formatted', name: 'updated_at', searchable:false},
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ]
-          
-           
+
+
         });
     });
 
@@ -147,7 +147,7 @@
       }
 
     })
-  
+
    })
 
    //script for deletion
@@ -226,7 +226,7 @@
             error: function(response){
                 var errors = response.responseJSON;
                 console.log(errors);
-               
+
             }
         });
 

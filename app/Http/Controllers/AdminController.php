@@ -18,12 +18,12 @@ class AdminController extends Controller
         $request->session()->regenerateToken();
 
         $notification = array(
-            'message' => 'User Logout Successfully', 
+            'message' => 'User Logout Successfully',
             'alert-type' => 'success'
         );
 
         return redirect('/login')->with($notification);
-    } // End Method 
+    } // End Method
 
 
     public function Profile(){
@@ -31,7 +31,7 @@ class AdminController extends Controller
         $adminData = User::find($id);
         return view('admin.admin_profile_view',compact('adminData'));
 
-    }// End Method 
+    }// End Method
 
 
     public function EditProfile(){
@@ -39,7 +39,7 @@ class AdminController extends Controller
         $id = Auth::user()->id;
         $editData = User::find($id);
         return view('admin.admin_profile_edit',compact('editData'));
-    }// End Method 
+    }// End Method
 
     public function StoreProfile(Request $request){
         $id = Auth::user()->id;
@@ -58,7 +58,7 @@ class AdminController extends Controller
         $data->save();
 
         $notification = array(
-            'message' => 'Admin Profile Updated Successfully', 
+            'message' => 'Admin Profile Updated Successfully',
             'alert-type' => 'info'
         );
 
@@ -101,4 +101,3 @@ class AdminController extends Controller
 
 
 }
- 

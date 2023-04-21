@@ -3,7 +3,7 @@
                 <div data-simplebar class="h-100">
 
                     <!-- User details -->
-                
+
 
                     <!--- Sidemenu -->
                     <div id="sidebar-menu">
@@ -24,8 +24,8 @@
                                     <span>Calendar</span>
                                 </a>
                             </li> --}}
-                
-                          
+
+
 
                             {{-- <li>
                                 <a href="javascript: void(0);" class="has-arrow waves-effect">
@@ -36,12 +36,12 @@
                                     <li>
                                         <a href="javascript: void(0);" class="has-arrow">Vertical</a>
                                         <ul class="sub-menu" aria-expanded="true">
-                                            <li><a href="layouts-dark-sidebar.html">Dark Sidebar</a></li>
-                                            <li><a href="layouts-compact-sidebar.html">Compact Sidebar</a></li>
-                                            <li><a href="layouts-icon-sidebar.html">Icon Sidebar</a></li>
+                                            <li><a href="layouts-dark-sidebar.blade.php">Dark Sidebar</a></li>
+                                            <li><a href="layouts-compact-sidebar.blade.php">Compact Sidebar</a></li>
+                                            <li><a href="layouts-icon-sidebar.blade.php">Icon Sidebar</a></li>
                                             <li><a href="layouts-boxed.html">Boxed Layout</a></li>
                                             <li><a href="layouts-preloader.html">Preloader</a></li>
-                                            <li><a href="layouts-colored-sidebar.html">Colored Sidebar</a></li>
+                                            <li><a href="layouts-colored-sidebar.blade.php">Colored Sidebar</a></li>
                                         </ul>
                                     </li>
 
@@ -113,8 +113,8 @@
                                 </ul>
                             </li> --}}
                             @endadmin
-                            
-                         
+
+
 
                         </ul>
                     </div>

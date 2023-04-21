@@ -21,7 +21,7 @@ Route::controller(DemoController::class)->group(function () {
 });
 
 
- // Admin All Route 
+ // Admin All Route
 Route::controller(AdminController::class)->group(function () {
     Route::get('/admin/logout', 'destroy')->name('admin.logout');
     Route::get('/admin/profile', 'Profile')->name('admin.profile');
@@ -30,7 +30,7 @@ Route::post('/store/profile', 'StoreProfile')->name('store.profile');
 
     Route::get('/change/password', 'ChangePassword')->name('change.password');
     Route::post('/update/password', 'UpdatePassword')->name('update.password');
-     
+
 });
 
 Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->group(function() {

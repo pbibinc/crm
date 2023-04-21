@@ -13,8 +13,15 @@
                 </div>
             </div>
         </div>
+{{--        <div class="col-xl-3 col-lg-4 col-sm-6 mb-2">--}}
+{{--            <div class="p-3">--}}
+{{--                <p>A warning message, with a function attached to the "Confirm"-button...</p>--}}
+{{--                <button type="button" class="btn btn-primary waves-effect waves-light" id="sa-warning">Click me</button>--}}
+{{--            </div>--}}
+{{--        </div>--}}
 
-<!-- end page title -->
+
+        <!-- end page title -->
 
 
 <div class="row">
@@ -32,7 +39,7 @@
                 </div>
                 <h4 class="card-title mb-4">Positions</h4>
                 <div class="table-responsive">
-                    <table id="position-table" class="table table-bordered">
+                    <table id="position-table" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -234,5 +241,10 @@
 
 
   </script>
+
+<!-- Sweet Alerts js -->
+{{--<script src="{{asset('backennd/assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>--}}
+{{--<script src="{{asset('backend/assets/js/pages/sweet-alerts.init.js')}}"></script>--}}
+{{--<script src="assets/js/app.js"></script>--}}
 
   @endsection

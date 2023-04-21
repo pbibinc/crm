@@ -52,7 +52,13 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->role()->where('name', $name)->exists();
     }
-    
+    public  function userProfile()
+    {
+        return $this->hasOne(UserProfile::class);
 
-   
+    }
+
+
+
+
 }

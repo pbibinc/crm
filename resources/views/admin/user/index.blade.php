@@ -37,7 +37,7 @@
                     <h4 class="card-title mb-4">Users</h4>
 
                     <div class="table-responsive">
-                        <table id="usersTable" class="table table-centered mb-0 align-middle table-hover table-nowrap">
+                        <table id="usersTable"class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead class="table-light">
                                 <tr>
                                     <th>Id</th>
