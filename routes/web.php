@@ -1,15 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Demo\DemoController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\ClasscodesController;
-use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\DispositionController;
-use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\PositionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PositionController;
+// use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Demo\DemoController;
+use App\Http\Controllers\ClasscodesController;
+use App\Http\Controllers\DashboardControllerNew;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\DispositionController;
 use App\Http\Controllers\UserProfileController;
 
 Route::get('/', function () {
@@ -47,6 +49,19 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->gro
     //  Route::put('/permission/{permission}', [PermissionController::class, 'update']);
 });
 
+// // Dashboard 
+// // Time In / Out
+// Route::resource('/dashboard', DashboardControllerNew::class)->except(['update']);
+// Route::get('/dashboard', [DashboardControllerNew::class, 'index'])->name('dashboard');
+// Route::post('/dashboard/store', [DashboardControllerNew::class, 'store'])->name('dashboard.store');
+
+
+// Dashboard 
+// Time In / Out
+Route::resource('/dashboard', DashboardControllerNew::class)->except(['edit', 'update', 'delete', 'create', 'show', 'edit']);
+Route::get('/dashboard', [DashboardControllerNew::class, 'index'])->name('dashboard');
+Route::post('/dashboard/store', [DashboardControllerNew::class, 'store'])->name('dashboard.store');
+
 // Leads Routes
 // Disposition
 Route::resource('/leads/disposition', DispositionController::class)->except(['update']);
@@ -55,9 +70,9 @@ Route::post('/leads/disposition/update', [DispositionController::class, 'update'
 Route::resource('/leads/classcodes', ClasscodesController::class)->except(['update']);
 Route::post('/leads/classcodes/update', [ClasscodesController::class, 'update'])->name('classcodes.update');
 
-Route::get('/dashboard', function () {
-    return view('admin.index');
-})->middleware(['auth'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('admin.index');
+// })->middleware(['auth'])->name('dashboard');
 
 require __DIR__ . '/auth.php';
 

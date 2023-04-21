@@ -31,6 +31,7 @@
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" >
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
        
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
     </head>
 

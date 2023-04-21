@@ -33,6 +33,7 @@
                                 <th>ID</th>
                                 <th>Classcode Name</th>
                                 <th>Classcode</th>
+                                <th>Classcode Description</th>
                                 <th>Created At</th>
                                 <th>Updated At</th>
                                 <th>Action</th>
@@ -69,6 +70,10 @@
               <div class="mb-3">
                 <label for="name" class="form-label">Classcode (Optional)</label>
                 <input type="text" class="form-control" id="classcode" name="classcode">
+              </div>
+              <div class="mb-3">
+                <label for="name" class="form-label">Classcode Description (Optional)</label>
+                <textarea class="form-control" style="resize:none;" rows="4" cols="50" id="classcode_descriptions" name="classcode_descriptions"></textarea>
               </div>
               <input type="hidden" name="action" id="action" value="add">
               <input type="hidden" name="hidden_id" id="hidden_id" />
@@ -118,6 +123,7 @@
                 {data: "id"},
                 {data: "classcode_name"},
                 {data: "classcode"},
+                {data: "classcode_descriptions"},
                 {data: "created_at_formatted"},
                 {data: "updated_at_formatted"},
                 {data: "action", orderable: false, searchable: false},
@@ -183,6 +189,7 @@
             success:function(data){
                 $('#classcode_name').val(data.result.classcode_name);
                 $('#classcode').val(data.result.classcode);
+                $('#classcode_descriptions').val(data.result.classcode_descriptions);
                 $('#hidden_id').val(id);
                 $('.modal-title').text('Edit Record');
                 $('#action_button').val('Update');

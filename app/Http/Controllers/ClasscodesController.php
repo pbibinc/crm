@@ -14,7 +14,7 @@ class ClasscodesController extends Controller
     {
         // If Request incoming is from AJAX
         if ($request->ajax()) {
-            $data = Classcode::select('id', 'classcode_name', 'classcode', 'created_at', 'updated_at')->get();
+            $data = Classcode::select('id', 'classcode_name', 'classcode', 'classcode_descriptions', 'created_at', 'updated_at')->get();
             $data->map(function ($item) {
                 $item->created_at_formatted = Carbon::parse($item->created_at)->format('Y-m-d H:i:s');
                 $item->updated_at_formatted = Carbon::parse($item->updated_at)->format('Y-m-d H:i:s');
@@ -44,7 +44,8 @@ class ClasscodesController extends Controller
 
         // Sanitize the data
         $incomingFields['classcode_name'] = strip_tags($incomingFields['classcode_name']);
-        // $incomingFields['classcode'] = strip_tags($incomingFields['classcode']);
+        $incomingFields['classcode'] = strip_tags($incomingFields['classcode']);
+        $incomingFields['classcode_descriptions'] = strip_tags($incomingFields['classcode_descriptions']);
 
         // Update the model instance
         $classcode->create($incomingFields);
@@ -65,11 +66,13 @@ class ClasscodesController extends Controller
     {
         $incomingFields = $request->validate([
             'classcode_name' => 'required',
-            'classcode' => 'nullable'
+            'classcode' => 'nullable',
+            'classcode_descriptions' => 'nullable'
         ]);
 
         $incomingFields['classcode_name'] = strip_tags($incomingFields['classcode_name']);
         $incomingFields['classcode'] = strip_tags($incomingFields['classcode']);
+        $incomingFields['classcode_descriptions'] = strip_tags($incomingFields['classcode_descriptions']);
 
         $classcode->whereId($request->hidden_id)->update($incomingFields);
 
