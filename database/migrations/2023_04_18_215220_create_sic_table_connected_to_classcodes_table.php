@@ -13,9 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('departments', function (Blueprint $table) {
+        Schema::create('sic_table', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 255);
+            $table->foreignId('classcode_id')->constrained('class_codes')->onDelete('cascade');
+            $table->text('sic_code');
+            $table->longText('workers_comp_code');
+            $table->longText('description');
             $table->timestamps();
         });
     }
@@ -27,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('departments');
+        Schema::dropIfExists('sic_table');
     }
 };

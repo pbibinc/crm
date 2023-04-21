@@ -13,9 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('departments', function (Blueprint $table) {
+        Schema::create('attendance_records', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 255);
+            $table->foreignId('user_id')->constrained('users');
+            $table->string('login_type');
+            $table->dateTime('log_in');
+            $table->dateTime('log_out')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('departments');
+        Schema::dropIfExists('attendance_records');
     }
 };

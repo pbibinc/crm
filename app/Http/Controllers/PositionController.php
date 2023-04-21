@@ -18,32 +18,31 @@ class PositionController extends Controller
     public function index(PositionDataTable $dataTable, Request $request)
     {
         // $positions = Position::all();
-        if($request->ajax()){
+        if ($request->ajax()) {
             $data = Position::select('id', 'name', 'created_at', 'updated_at')->get();
-            $data->map(function($item){
+            $data->map(function ($item) {
                 $item->created_at_formatted = Carbon::parse($item->created_at)->format('Y-m-d H:i:s');
                 $item->updated_at_formatted = Carbon::parse($item->updated_at)->format('Y-m-d H:i:s');
                 return $item;
             });
 
             return DataTables::of($data)->addIndexColumn()
-            ->addColumn('action', function($data){
-                $position = Position::find($data->id);
-                $policy = resolve(PositionPolicy::class);
-                $editButton = '';
-                $deleteButton = '';
-                if($policy->update(auth()->user(), $position)){
-                 $editButton = '<button class="edit btn btn-primary btn-sm" id="'.$data->id.'" name="edit"  type="button"><i class="ri-edit-box-line"></i></button>';
-                }
-                if($policy->delete(auth()->user(), $position)){
-                    $deleteButton = '<button class="delete btn btn-danger btn-sm" id="'.$data->id.'" name="delete"  type="button"><i class="ri-delete-bin-line"></i></button>';
-                }
-               
-                return $editButton . ' ' . $deleteButton;
-            })
-            ->make(true);
+                ->addColumn('action', function ($data) {
+                    $position = Position::find($data->id);
+                    $policy = resolve(PositionPolicy::class);
+                    $editButton = '';
+                    $deleteButton = '';
+                    if ($policy->update(auth()->user(), $position)) {
+                        $editButton = '<button class="edit btn btn-primary btn-sm" id="' . $data->id . '" name="edit"  type="button"><i class="ri-edit-box-line"></i></button>';
+                    }
+                    if ($policy->delete(auth()->user(), $position)) {
+                        $deleteButton = '<button class="delete btn btn-danger btn-sm" id="' . $data->id . '" name="delete"  type="button"><i class="ri-delete-bin-line"></i></button>';
+                    }
 
-         }
+                    return $editButton . ' ' . $deleteButton;
+                })
+                ->make(true);
+        }
         return view('admin.position.index');
     }
 
@@ -51,7 +50,7 @@ class PositionController extends Controller
     {
         $positions = Position::create($request->validate([
             'name' => ['required', 'min:3'],
-           ]));
+        ]));
     }
 
     public function destroy(Position $position)
@@ -62,8 +61,7 @@ class PositionController extends Controller
 
     public function edit($id)
     {
-        if(request()->ajax())
-        {
+        if (request()->ajax()) {
             $data = Position::findOrFail($id);
             return response()->json(['result' => $data]);
         }
@@ -76,17 +74,14 @@ class PositionController extends Controller
         );
 
         $error = Validator::make($request->all(), $validation);
-        if($error->fails())
-        {
+        if ($error->fails()) {
             return response()->json(['errors' => $error->errors()->all()]);
         }
         $form_data = array(
             'name' => $request->name
         );
-        
+
         Position::whereId($request->hidden_id)->update($form_data);
         return response()->json(['success' => 'Data is successfully updated']);
     }
-    
 }
-

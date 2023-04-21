@@ -14,46 +14,45 @@ class PermissionController extends Controller
 {
     public function index(Request $request)
     {
-        if($request->ajax()){
+        if ($request->ajax()) {
             $data = Permission::select('id', 'name', 'created_at', 'updated_at')->get();
-            $data->map(function($item){
+            $data->map(function ($item) {
                 $item->created_at_formatted = Carbon::parse($item->created_at)->format('Y-m-d H:i:s');
                 $item->updated_at_formatted = Carbon::parse($item->updated_at)->format('Y-m-d H:i:s');
                 return $item;
             });
 
             return DataTables::of($data)->addIndexColumn()
-            ->addColumn('action', function($data){
-                $permission = Permission::find($data->id);
-                $policy = resolve(PermissionPolicy::class);
-                $editButton = '';
-                $deleteButton = '';
-                if($policy->update(auth()->user(), $permission)){
-                    $editButton = '<button class="edit btn btn-primary btn-sm" id="'.$data->id.'" name="edit"  type="button"><i class="ri-edit-box-line"></i></button>';
-                }
-                if($policy->delete(auth()->user(), $permission)){
-                       $deleteButton = '<button class="delete btn btn-danger btn-sm" id="'.$data->id.'" name="delete"  type="button"><i class="ri-delete-bin-line"></i></button>';
-                }
-                   return $editButton . ' ' . $deleteButton;
-            })
-            ->make(true);
+                ->addColumn('action', function ($data) {
+                    $permission = Permission::find($data->id);
+                    $policy = resolve(PermissionPolicy::class);
+                    $editButton = '';
+                    $deleteButton = '';
+                    if ($policy->update(auth()->user(), $permission)) {
+                        $editButton = '<button class="edit btn btn-primary btn-sm" id="' . $data->id . '" name="edit"  type="button"><i class="ri-edit-box-line"></i></button>';
+                    }
+                    if ($policy->delete(auth()->user(), $permission)) {
+                        $deleteButton = '<button class="delete btn btn-danger btn-sm" id="' . $data->id . '" name="delete"  type="button"><i class="ri-delete-bin-line"></i></button>';
+                    }
+                    return $editButton . ' ' . $deleteButton;
+                })
+                ->make(true);
         }
-       
+
         return view('admin.permission.index');
     }
 
     public function store(Request $request)
     {
-       $permission = Permission::create($request->validate([
-        'name' => ['required', 'min:3'],
-       ]));
+        $permission = Permission::create($request->validate([
+            'name' => ['required', 'min:3'],
+        ]));
     }
 
-    
+
     public function edit($id)
     {
-        if(Request()->ajax())
-        {
+        if (Request()->ajax()) {
             $data = Permission::findorFail($id);
             return response()->json(['result' => $data]);
         }
@@ -64,8 +63,8 @@ class PermissionController extends Controller
     {
         $permission->delete();
     }
-    
-    
+
+
     public function update(Request $request)
     {
         // Log::info('store() called');
@@ -73,11 +72,10 @@ class PermissionController extends Controller
             'name' => 'required',
         );
         $error = Validator::make($request->all(), $validation);
-        if($error->fails())
-        {
+        if ($error->fails()) {
             return response()->json(['errors' => $error->errors()->all()]);
         }
-    
+
         $form_data = array(
             'name' => $request->name
         );

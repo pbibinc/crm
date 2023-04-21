@@ -13,9 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('departments', function (Blueprint $table) {
+        Schema::create('classcodes_type', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 255);
+            $table->string('classcode_name', 255)->unique();
+            $table->string('classcode', 255)->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('departments');
+        Schema::dropIfExists('classcodes_type');
     }
 };

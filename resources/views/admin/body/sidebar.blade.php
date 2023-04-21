@@ -12,8 +12,8 @@
                             <li class="menu-title">Menu</li>
 
                             <li>
-                                <a href="index.html" class="waves-effect">
-                                    <i class="ri-dashboard-line"></i><span class="badge rounded-pill bg-success float-end">3</span>
+                                <a href="{{ route('dashboard') }}" class="waves-effect">
+                                    <i class="ri-dashboard-line"></i><span class="badge rounded-pill bg-success float-end"></span>
                                     <span>Dashboard</span>
                                 </a>
                             </li>
@@ -80,7 +80,7 @@
                                 <ul class="sub-menu" aria-expanded="false">
                                     <li><a href="{{ route('admin.positions.index') }}">Position</a></li>
                                     <li><a href="{{ route('admin.departments.index') }}">Departments</a></li>
-                                    <li><a href="{{ route('admin.user-profiles.index') }}">User Profile</a></li>
+                                    {{-- <li><a href="{{ route('admin.user-profiles.index') }}">User Profile</a></li> --}}
                                 </ul>
                             </li>
 
@@ -95,6 +95,19 @@
                                     <li><a href="auth-register.html">Register</a></li>
                                     <li><a href="auth-recoverpw.html">Recover Password</a></li>
                                     <li><a href="auth-lock-screen.html">Lock Screen</a></li>
+                                </ul>
+                            </li>
+
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="ri-user-shared-2-line"></i>
+                                    <span>Leads</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    <li><a href="{{ route('disposition.index') }}">Disposition</a></li>
+                                    <li><a href="{{ route('classcodes.index') }}">Classcodes</a></li>
+                                    {{-- <li><a href="auth-recoverpw.html">Recover Password</a></li> --}}
+                                    {{-- <li><a href="auth-lock-screen.html">Lock Screen</a></li> --}}
                                 </ul>
                             </li>
 

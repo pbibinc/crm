@@ -17,33 +17,38 @@ class VerifyCsrfToken extends Middleware
         'admin/departments/*',
         'admin/user-profiles/*',
         'admin/permissions/*',
-        'admin/users/*'
+        'admin/users/*',
+        // 'admin/*',
+        'leads/disposition/*',
+        'leads/classcodes/*',
     ];
 
     protected function shouldPassThrough($request)
     {
-       if ($request->is('admin/positions/*') && $request->isMethod('delete')) {
-        return true;
-       }
+        // if ($request->is('admin/*') && $request->isMethod('delete')) {
+        //     return true;
+        // }
 
-
-       if ($request->is('admin/departments/*') && $request->isMethod('delete')) {
-        return true;
-       }
-
-       if ($request->is('admin/user-profiles/*') && $request->isMethod('delete')) {
-        return true;
-       }
-
-       if ($request->is('admin/permissions/*') && $request->isMethod('delete')) {
-        return true;
-       }
-        if ($request->is('admin/users/*') && $request->isMethod('delete')) {
+        if ($request->is('admin/positions/*') && $request->isMethod('delete')) {
             return true;
         }
 
+        if ($request->is('admin/departments/*') && $request->isMethod('delete')) {
+            return true;
+        }
 
-       return false;
+        if ($request->is('admin/user-profiles/*') && $request->isMethod('delete')) {
+            return true;
+        }
+
+        if ($request->is('leads/disposition/*') && $request->isMethod('delete')) {
+            return true;
+        }
+
+        if ($request->is('leads/classcodes/*') && $request->isMethod('delete')) {
+            return true;
+        }
+
+        return false;
     }
-
 }
