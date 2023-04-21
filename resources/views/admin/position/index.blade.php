@@ -22,8 +22,10 @@
         <div class="card">
             <div class="card-body">
                 <div class="dropdown float-end">
-                    <a href="{{ route('admin.positions.create') }}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPositionModal" id="create_record">
-                        ADD POSITION</a>
+                  @can('create', App\Model\Position::class)
+                  <a href="{{ route('admin.positions.create') }}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPositionModal" id="create_record">
+                    ADD POSITION</a>
+                  @endcan
                         {{-- <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="mdi mdi-dots-vertical"></i>
                         </a> --}}
@@ -50,7 +52,7 @@
     </div>
 </div>
 
-   
+
 </div>
 </div>
 
@@ -71,7 +73,7 @@
               </div>
               <input type="hidden" name="action" id="action" value="add">
               <input type="hidden" name="hidden_id" id="hidden_id" />
-           
+
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -122,6 +124,8 @@
         });
     });
 
+
+
     // configuring of modal for creating
     $('#create_record').on('click', function(event){
         $('.modal-title').text('Add New Record');
@@ -130,6 +134,8 @@
         $('#action').val('Add');
         $('#addPositionModal').modal('show');
     })
+
+
 
   // script for configuring edit modal
     $(document).on('click', '.edit', function(event){
@@ -154,7 +160,7 @@
       }
 
     })  
-  
+
    })
 
    //script for deletion
@@ -186,7 +192,7 @@
         }
     });
    });
-  
+
 
 
     //script for submission of form
@@ -219,10 +225,10 @@
             error: function(response){
                 var errors = response.responseJSON;
                 console.log(errors);
-               
+
             }
         });
-        
+
     })
 
 

@@ -16,6 +16,8 @@ class VerifyCsrfToken extends Middleware
         'admin/positions/*',
         'admin/departments/*',
         'admin/user-profiles/*',
+        'admin/permissions/*',
+        'admin/users/*',
         // 'admin/*',
         'leads/disposition/*',
         'leads/classcodes/*',

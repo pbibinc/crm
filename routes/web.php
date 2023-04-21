@@ -49,6 +49,24 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->gro
     //  Route::put('/permission/{permission}', [PermissionController::class, 'update']);
 });
 
+Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->group(function () {
+    Route::post('/roles/{role}/permissions', [RoleController::class, 'assignPermissions'])->name('roles.permissions');
+    Route::resource('/permissions', PermissionController::class)->except(['update']);
+    Route::post('/permissions/update', [PermissionController::class, 'update'])->name('permissions.update');
+    Route::resource('/roles', RoleController::class);
+    Route::resource('/users', UserController::class);
+    Route::resource('/positions', PositionController::class)->except('update');
+    Route::post('/positions/update', [PositionController::class, 'update'])->name('positions.update');
+    //  Route::delete('positions/destroy/{$id}/', [PositionController::class, 'destroy'])->name('positions.destroy');
+    Route::resource('/departments', DepartmentController::class)->except('update');
+    Route::post('/departments/update', [DepartmentController::class, 'update'])->name('departments.update');
+    Route::post('/users/{user}/roles', [UserController::class, 'assignRole'])->name('users.assignRole');
+    Route::resource('/user-profiles', UserProfileController::class)->except('update');
+    Route::post('/user-profiles/update', [UserProfileController::class, 'update'])->name('user-profiles.update');
+    Route::post('/user-profiles/change-status', [UserProfileController::class, 'changeStatus'])->name('user-profiles.change_status');
+    //  Route::put('/permission/{permission}', [PermissionController::class, 'update']);
+});
+
 // // Dashboard 
 // // Time In / Out
 // Route::resource('/dashboard', DashboardControllerNew::class)->except(['update']);

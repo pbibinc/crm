@@ -6,6 +6,7 @@ use App\Models\Department;
 use App\Models\Position;
 use App\Models\User;
 use App\Models\UserProfile;
+use App\Policies\UserProfilePolicy;
 use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use Illuminate\Http\Request;
@@ -23,15 +24,15 @@ class UserProfileController extends Controller
         // $userProfile = User
         if($request->ajax()){
             $userProfiles = UserProfile::with('position', 'department', 'user')
-            ->select('id', 'firstname', 'lastname', 'american_surname', 'is_active', 'id_num', 
+            ->select('id', 'firstname', 'lastname', 'american_surname', 'is_active', 'id_num',
             'position_id', 'department_id', 'user_id', 'created_at', 'updated_at');
 
             // $userProfiles->map(function($item){
-            //     $item->created_at_formatted = 
+            //     $item->created_at_formatted =
             //     $item->updated_at_formatted = Carbon::parse($item->updated_at)->format('Y-m-d H:i:s');
             //     return $item;
             // });
-            
+
             return DataTables::of($userProfiles)
             ->addColumn('full_name', function ($userProfile){
                 return $userProfile->firstname . ' ' . $userProfile->lastname;
@@ -54,15 +55,24 @@ class UserProfileController extends Controller
             ->addColumn('updated_at_formatted', function ($userProfile) {
                 return Carbon::parse($userProfile->updated_at)->format('Y-m-d H:i:s');
             })
-            
-            ->addColumn('action', function($userProfile){
-                $button = '<button class="edit btn btn-primary btn-sm" id="'.$userProfile->id.'" name="edit"  type="button"><i class="ri-edit-box-line"></i></button>';
-                $button .= '<button class="delete btn btn-danger btn-sm" id="'.$userProfile->id.'" name="delete"  type="button"><i class="ri-delete-bin-line"></i></button>';
-                return $button;
+
+            ->addColumn('action', content: function($userProfile){
+                $accounts = UserProfile::find($userProfile->id);
+                $policy = resolve(UserProfilePolicy::class);
+                $editButton = '';
+                $deleteButton = '';
+                if($policy->update(auth()->user(), $accounts)){
+                    $editButton = '<button class="edit btn btn-primary btn-sm" id="'.$userProfile->id.'" name="edit"  type="button"><i class="ri-edit-box-line"></i></button>';
+                }
+                if($policy->delete(auth()->user(), $accounts)){
+                    $deleteButton = '<button class="delete btn btn-danger btn-sm" id="'.$userProfile->id.'" name="delete"  type="button"><i class="ri-delete-bin-line"></i></button>';
+                }
+
+                return $editButton . ' ' . $deleteButton;
             })
             ->make(true);
             // ->searchable(['full_name', 'american_name', 'id_num', 'position_name', 'is_active', 'department_name', 'user_name']);
-          
+
         }
         return view('admin.user-profile.index', compact('positions', 'departments', 'accounts', 'usedAccounts'));
     }
@@ -76,7 +86,7 @@ class UserProfileController extends Controller
             'american_surname' => 'required|regex:/^[A-Z][a-z]*/',
             'id_num' => 'required',
         ]);
-     
+
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()]);
@@ -97,7 +107,7 @@ class UserProfileController extends Controller
     }
     public function edit($id)
     {
-        
+
         // $usedAccounts = UserProfile::pluck('user_id')->toArray();
         // $userProfile = UserProfile::find($id);
         if(request()->ajax())
@@ -140,13 +150,18 @@ class UserProfileController extends Controller
         );
         UserProfile::whereId($request->hidden_id)->update($form_data);
         return response()->json(['success' => 'Data is successfully updated']);
-     
+
+
+    }
+
+    public function changeStatus()
+    {
 
     }
 
     public function destroy(UserProfile $userProfile)
     {
-        
+
         $userProfile->delete();
     }
 }
