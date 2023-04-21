@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ClasscodeFormRequest extends FormRequest
+class DashboardRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,9 @@ class ClasscodeFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'classcode_name' => 'required|string',
-            'classcode' => 'nullable|string',
-            'classcode_descriptions' => 'nullable|string',
-            // 'hidden_id' => 'required|integer|exists:classcodes,id', // Ensures the provided ID exists in the database
+            // 'login_type' => 'required',
+            // 'log_in' => 'required',
+            // 'log_out' => 'nullable'
         ];
     }
 }

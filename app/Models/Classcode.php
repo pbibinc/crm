@@ -13,6 +13,7 @@ class Classcode extends Model
 
     protected $fillable = [
         'classcode_name',
-        'classcode'
+        'classcode',
+        'classcode_description'
     ];
 }
