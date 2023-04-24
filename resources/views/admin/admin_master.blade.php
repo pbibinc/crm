@@ -23,7 +23,7 @@
 
     <!-- JAVASCRIPT -->
     <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('backend/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+{{--    <script src="{{ asset('backend/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>--}}
     <script src="{{ asset('backend/assets/libs/metismenu/metisMenu.min.js') }}"></script>
     <script src="{{ asset('backend/assets/libs/simplebar/simplebar.min.js') }}"></script>
     <script src="{{ asset('backend/assets/libs/node-waves/waves.min.js') }}"></script>
@@ -54,7 +54,7 @@
 <div id="layout-wrapper">
 @include("partials.menu")
 
-    @include('partials.header')
+{{--    @include('partials.header')--}}
 
 {{--    <div class="main-content">--}}
 {{--        <div class="page-content">--}}
@@ -66,7 +66,7 @@
 
 
     <!-- ========== Left Sidebar Start ========== -->
-    @include('partials.sidebar')
+{{--    @include('partials.sidebar')--}}
     <!-- Left Sidebar End -->
 
 

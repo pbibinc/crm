@@ -1,6 +1,6 @@
 
-@@include("topbar.html")
+@include("partials.header")
 
-@@include("sidebar.html")
+@include("partials.sidebar")
 
-<!-- @@include("horizontal.html") -->
+{{--@include("horizontal.html")--}}
