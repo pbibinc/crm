@@ -10,7 +10,7 @@
 
 
     <!-- jquery.vectormap css -->
-    <link href="{{asset('backend/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css')}}" rel="stylesheet" type="text/css" />
+{{--    <link href="{{asset('backend/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css')}}" rel="stylesheet" type="text/css" />--}}
 
     <!-- DataTables -->
     <link href="{{asset('backend/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css')}}" rel="stylesheet" type="text/css" />
@@ -22,6 +22,8 @@
             @include("partials.head")
 
     <!-- JAVASCRIPT -->
+    <script src="{{ mix('js/app.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.js') }}"></script>
     <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script>
 {{--    <script src="{{ asset('backend/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>--}}
     <script src="{{ asset('backend/assets/libs/metismenu/metisMenu.min.js') }}"></script>
@@ -52,6 +54,7 @@
 
 <!-- Begin page -->
 <div id="layout-wrapper">
+
 @include("partials.menu")
 
 {{--    @include('partials.header')--}}
@@ -74,7 +77,7 @@
     <!-- Start right Content here -->
     <!-- ============================================================== -->
     <div class="main-content">
-
+        <div id="notification" class="alert alert-success mx-3">test</div>
         @yield('admin')
         <!-- End Page-content -->
 
@@ -82,10 +85,9 @@
 
 
     </div>
-    <!-- end main content-->
-
+    <!-- end main content--
 </div>
-<!-- END layout-wrapper -->
+<! END layout-wrapper -->
 @include('partials.vendor-scripts')
 
 <!-- Right Sidebar -->
