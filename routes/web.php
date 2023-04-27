@@ -60,22 +60,26 @@ Route::controller(LeadController::class)->group(function () {
 });
 
 // Dashboard 
-// Time In / Out
-Route::resource('/dashboard', DashboardControllerNew::class)->except(['edit', 'update', 'delete', 'create', 'show', 'edit']);
-Route::get('/dashboard', [DashboardControllerNew::class, 'index'])->name('dashboard');
-Route::post('/dashboard/store', [DashboardControllerNew::class, 'store'])->name('dashboard.store');
-
+Route::prefix('dashboard')->group(function () {
+    Route::resource('/', DashboardControllerNew::class)->except(['edit', 'update', 'delete', 'create', 'show', 'edit']);
+    Route::get('/', [DashboardControllerNew::class, 'index'])->name('dashboard');
+    Route::post('/store', [DashboardControllerNew::class, 'store'])->name('dashboard.store');
+});
 
 // Leads Routes
-// Disposition
-Route::resource('/leads/disposition', DispositionController::class)->except(['update']);
-Route::post('/leads/disposition/update', [DispositionController::class, 'update'])->name('disposition.update');
-// Classcodes
-Route::resource('/leads/classcodes', ClasscodesController::class)->except(['update']);
-Route::post('/leads/classcodes/update', [ClasscodesController::class, 'update'])->name('classcodes.update');
-// SIC
-Route::resource('/leads/sic', SICController::class)->except(['update']);
-Route::post('/leads/sic/update', [SICController::class, 'update'])->name('sic.update');
+Route::prefix('leads')->group(function () {
+    // Disposition
+    Route::resource('/disposition', DispositionController::class)->except(['update']);
+    Route::post('/disposition/update', [DispositionController::class, 'update'])->name('disposition.update');
+
+    // Classcodes
+    Route::resource('/classcodes', ClasscodesController::class)->except(['update']);
+    Route::post('/classcodes/update', [ClasscodesController::class, 'update'])->name('classcodes.update');
+
+    // SIC
+    Route::resource('/sic', SICController::class)->except(['update']);
+    Route::post('/sic/update', [SICController::class, 'update'])->name('sic.update');
+});
 
 
 Route::get('/register', [App\Http\Controllers\Auth\RegisteredUserController::class, 'create'])
