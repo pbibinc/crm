@@ -13,10 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('class_codes', function (Blueprint $table) {
+        Schema::create('standard_industrial_classification', function (Blueprint $table) {
             $table->id();
-            $table->string('classcode_name', 255)->unique();
-            $table->string('classcode', 255)->nullable();
+            $table->foreignId('sic_classcode')->constrained('class_codes');
+            $table->string('sic_code', 255)->nullable();
+            $table->string('workers_comp_code', 255)->nullable();
+            $table->longText('description')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('class_codes');
+        Schema::dropIfExists('standard_industrial_classification');
     }
 };

@@ -21,6 +21,7 @@ class VerifyCsrfToken extends Middleware
         // 'admin/*',
         'leads/disposition/*',
         'leads/classcodes/*',
+        'leads/sic/*',
     ];
 
     protected function shouldPassThrough($request)
@@ -46,6 +47,10 @@ class VerifyCsrfToken extends Middleware
         }
 
         if ($request->is('leads/classcodes/*') && $request->isMethod('delete')) {
+            return true;
+        }
+
+        if ($request->is('leads/sic/*') && $request->isMethod('delete')) {
             return true;
         }
 
