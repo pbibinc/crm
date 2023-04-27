@@ -1,17 +1,26 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+<<<<<<< HEAD
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PositionController;
+=======
+>>>>>>> d8652507aaf2b0f189bb898b67d90f4d84f1ce98
 use App\Http\Controllers\Demo\DemoController;
-use App\Http\Controllers\ClasscodesController;
-use App\Http\Controllers\DashboardControllerNew;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\PermissionController;
+<<<<<<< HEAD
 use App\Http\Controllers\DispositionController;
 use App\Http\Controllers\SICController;
+=======
+use App\Http\Controllers\PositionController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\LeadController;
+>>>>>>> d8652507aaf2b0f189bb898b67d90f4d84f1ce98
 use App\Http\Controllers\UserProfileController;
 
 Route::get('/', function () {
@@ -25,55 +34,49 @@ Route::controller(DemoController::class)->group(function () {
 });
 
 
-// Admin All Route 
+ // Admin All Route
 Route::controller(AdminController::class)->group(function () {
     Route::get('/admin/logout', 'destroy')->name('admin.logout');
     Route::get('/admin/profile', 'Profile')->name('admin.profile');
     Route::get('/edit/profile', 'EditProfile')->name('edit.profile');
-    Route::post('/store/profile', 'StoreProfile')->name('store.profile');
+Route::post('/store/profile', 'StoreProfile')->name('store.profile');
 
     Route::get('/change/password', 'ChangePassword')->name('change.password');
     Route::post('/update/password', 'UpdatePassword')->name('update.password');
+
 });
 
-Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->group(function () {
-    Route::post('/roles/{role}/permissions', [RoleController::class, 'assignPermissions'])->name('roles.permissions');
-    Route::put('/permissions/{permission}', [PermissionController::class, 'update'])->name('permissions.update');
-    Route::resource('/permissions', PermissionController::class)->except(['update']);
-    Route::resource('/roles', RoleController::class);
-    Route::resource('/users', UserController::class);
-    Route::resource('/positions', PositionController::class)->except('update');
-    Route::post('/positions/update', [PositionController::class, 'update'])->name('positions.update');
-    Route::resource('/departments', DepartmentController::class);
-    Route::post('/users/{user}/roles', [UserController::class, 'assignRole'])->name('users.assignRole');
-    //  Route::put('/permission/{permission}', [PermissionController::class, 'update']);
+Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->group(function() {
+ Route::post('/roles/{role}/permissions', [RoleController::class, 'assignPermissions'])->name('roles.permissions');
+ Route::resource('/permissions', PermissionController::class)->except(['update']);
+ Route::post('/permissions/update', [PermissionController::class, 'update'])->name('permissions.update');
+ Route::resource('/roles', RoleController::class);
+ Route::resource('/users', UserController::class);
+ Route::resource('/positions', PositionController::class)->except('update');
+ Route::post('/positions/update', [PositionController::class, 'update'])->name('positions.update');
+//  Route::delete('positions/destroy/{$id}/', [PositionController::class, 'destroy'])->name('positions.destroy');
+ Route::resource('/departments', DepartmentController::class)->except('update');
+ Route::post('/departments/update', [DepartmentController::class, 'update'])->name('departments.update');
+ Route::post('/users/{user}/roles', [UserController::class, 'assignRole'])->name('users.assignRole');
+ Route::resource('/user-profiles', UserProfileController::class)->except('update');
+ Route::post('/user-profiles/update', [UserProfileController::class, 'update'])->name('user-profiles.update');
+ Route::post('/user-profiles/change-status', [UserProfileController::class, 'changeStatus'])->name('user-profiles.change_status');
+//  Route::put('/permission/{permission}', [PermissionController::class, 'update']);
 });
 
-Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->group(function () {
-    Route::post('/roles/{role}/permissions', [RoleController::class, 'assignPermissions'])->name('roles.permissions');
-    Route::resource('/permissions', PermissionController::class)->except(['update']);
-    Route::post('/permissions/update', [PermissionController::class, 'update'])->name('permissions.update');
-    Route::resource('/roles', RoleController::class);
-    Route::resource('/users', UserController::class);
-    Route::resource('/positions', PositionController::class)->except('update');
-    Route::post('/positions/update', [PositionController::class, 'update'])->name('positions.update');
-    //  Route::delete('positions/destroy/{$id}/', [PositionController::class, 'destroy'])->name('positions.destroy');
-    Route::resource('/departments', DepartmentController::class)->except('update');
-    Route::post('/departments/update', [DepartmentController::class, 'update'])->name('departments.update');
-    Route::post('/users/{user}/roles', [UserController::class, 'assignRole'])->name('users.assignRole');
-    Route::resource('/user-profiles', UserProfileController::class)->except('update');
-    Route::post('/user-profiles/update', [UserProfileController::class, 'update'])->name('user-profiles.update');
-    Route::post('/user-profiles/change-status', [UserProfileController::class, 'changeStatus'])->name('user-profiles.change_status');
-    //  Route::put('/permission/{permission}', [PermissionController::class, 'update']);
+Route::controller(LeadController::class)->group(function(){
+    Route::get('leads', 'index')->name('leads');
+    Route::get('leads-export', 'export')->name('leads.export');
+    Route::post('leads-import', 'import')->name('leads.import');
 });
 
+<<<<<<< HEAD
+=======
 
-// Dashboard 
-// Time In / Out
-Route::resource('/dashboard', DashboardControllerNew::class)->except(['edit', 'update', 'delete', 'create', 'show', 'edit']);
-Route::get('/dashboard', [DashboardControllerNew::class, 'index'])->name('dashboard');
-Route::post('/dashboard/store', [DashboardControllerNew::class, 'store'])->name('dashboard.store');
+>>>>>>> d8652507aaf2b0f189bb898b67d90f4d84f1ce98
 
+
+<<<<<<< HEAD
 // Leads Routes
 // Disposition
 Route::resource('/leads/disposition', DispositionController::class)->except(['update']);
@@ -85,12 +88,18 @@ Route::post('/leads/classcodes/update', [ClasscodesController::class, 'update'])
 Route::resource('/leads/sic', SICController::class)->except(['update']);
 Route::post('/leads/sic/update', [SICController::class, 'update'])->name('sic.update');
 
+=======
+>>>>>>> d8652507aaf2b0f189bb898b67d90f4d84f1ce98
 
-// Route::get('/dashboard', function () {
-//     return view('admin.index');
-// })->middleware(['auth'])->name('dashboard');
+Route::get('/register', [App\Http\Controllers\Auth\RegisteredUserController::class, 'create'])
+    ->middleware('guest')
+    ->name('register');
 
-require __DIR__ . '/auth.php';
+Route::get('/dashboard', function () {
+    return view('admin.index');
+})->middleware(['auth'])->name('dashboard');
+
+require __DIR__.'/auth.php';
 
 
 // Route::get('/contact', function () {

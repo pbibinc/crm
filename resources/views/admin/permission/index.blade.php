@@ -20,12 +20,12 @@
              </ol>
                 </div> --}}
        </div>
-      </div>            
+      </div>
 </div>
 <!-- end page title -->
 <div class="row">
   <div class="row">
-     <div class="col-xl-12"> 
+     <div class="col-xl-12">
       <div class="card">
         <div class="card-body">
             <div class="dropdown float-end">
@@ -33,27 +33,27 @@
               <a href="" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#dataModal" id="create_record">
                 ADD PERMISSION</a>
               @endcan
-              
+
                 {{-- <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="mdi mdi-dots-vertical"></i>
                 </a> --}}
             </div>
-    
+
             <h4 class="card-title mb-4">Permissions</h4>
-    
+
             <div class="table-responsive">
-                <table class="table table-centered mb-0 align-middle table-hover table-nowrap" id="permission-table">
+                <table class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;" id="permission-table">
                     <thead class="table-light">
                         <tr>
                             <th>Id</th>
                             <th>Name</th>
                             <th>Created at</th>
                             <th>Updated at</th>
-                            <th style="width: 120px;">Action</th> 
+                            <th style="width: 120px;">Action</th>
                         </tr>
                     </thead><!-- end thead -->
                     <tbody>
-                      
+
                     </tbody><!-- end tbody -->
                 </table> <!-- end table -->
             </div>
@@ -76,7 +76,7 @@
             </div>
             <input type="hidden" name="action" id="action" value="add">
             <input type="hidden" name="hidden_id" id="hidden_id" />
-         
+
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -110,7 +110,7 @@
 {{-- end of deletion of modal --}}
      </div><!-- end card -->
   </div><!-- end card -->
- 
+
 
 
 
@@ -118,7 +118,7 @@
 
 
 </div>
-   
+
 <script>
 
 $(document).ready(function() {
@@ -169,7 +169,7 @@ $(document).ready(function() {
       }
 
     })
-  
+
    })
 
 
@@ -203,10 +203,10 @@ $(document).ready(function() {
             error: function(response){
                 var errors = response.responseJSON;
                 console.log(errors);
-               
+
             }
         });
-        
+
     })
 
   //script for deletion
@@ -241,7 +241,7 @@ $(document).ready(function() {
 
 
 
-    
+
 
 </script>
 @endsection

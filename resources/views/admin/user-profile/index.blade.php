@@ -30,7 +30,7 @@
                 </div>
                 <h4 class="card-title mb-4">USER PROFILES</h4>
                 <div class="table-responsive">
-                    <table id="user-profiles-table" class="table table-bordered">
+                    <table id="user-profiles-table" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -42,12 +42,12 @@
                                 <th>Department</th>
                                 <th>Account</th>
                                 <th>Created At</th>
-                                <th>Updated At</th> 
+                                <th>Updated At</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-    
+
                         </tbody>
                     </table>
                 </div>
@@ -118,7 +118,7 @@
               </div>
               <input type="hidden" name="action" id="action" value="add">
               <input type="hidden" name="hidden_id" id="hidden_id" />
-           
+
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -189,8 +189,8 @@ $(function() {
             {data: 'action', name: 'action', orderable: false, searchable: false}
         ]
     });
-}); 
-   
+});
+
 
 
 
@@ -209,7 +209,7 @@ $(function() {
     $('#dataModalForm').on('submit', function(event){
         event.preventDefault();
         var action_url = '';
- 
+
 
         if($('#action').val() == 'Add')
         {
@@ -230,7 +230,7 @@ $(function() {
         $.ajax({
             type: 'POST',
             headers: {'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')},
-            url: action_url, 
+            url: action_url,
             data:$(this).serialize(),
             success: function(response){
                 if(response.errors)
@@ -251,7 +251,7 @@ $(function() {
                 }
                 // $('#dataModal').modal('hide');
                 // location.reload();
-            }, 
+            },
             error:function(xhr, status, error)
              {
                  console.log(xhr);
@@ -324,7 +324,7 @@ $(function() {
       }
 
     })
-  
+
    })
 
 
