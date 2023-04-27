@@ -135,7 +135,7 @@
             ajax: "{{ route('sic.index') }}",
             columns: [
                 {data: "id"},
-                {data: "sic_classcode"},
+                {data: "classcode_name"},
                 {data: "sic_code"},
                 {data: "workers_comp_code"},
                 {data: "description"},

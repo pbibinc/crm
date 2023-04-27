@@ -145,6 +145,9 @@
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
                         <li><a href="{{route('leads')}}">Import Leads</a></li>
+                        <li><a href="{{ route('disposition.index') }}">Disposition</a></li>
+                        <li><a href="{{ route('classcodes.index') }}">Classcodes</a></li>
+                        <li><a href="{{ route('sic.index') }}">Standard Industrial Classifications</a></li>
                         {{--                        <li><a href="pages-timeline.html">Timeline</a></li>--}}
                         {{--                        <li><a href="pages-directory.html">Directory</a></li>--}}
                         {{--                        <li><a href="pages-invoice.html">Invoice</a></li>--}}
