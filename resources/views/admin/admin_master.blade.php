@@ -86,8 +86,9 @@
 
     </div>
     <!-- end main content--
-</div>
+
 <! END layout-wrapper -->
+</div>
 @include('partials.vendor-scripts')
 
 <!-- Right Sidebar -->
