@@ -24,19 +24,7 @@ class SICController extends Controller
 
         // If Request incoming is from AJAX
         if ($request->ajax()) {
-            $data = StandardIndustrialClassification::select(
-                'standard_industrial_classification.id',
-                'sic_classcode',
-                'sic_code',
-                'workers_comp_code',
-                'description',
-                'standard_industrial_classification.created_at',
-                'standard_industrial_classification.updated_at',
-                'class_codes.classcode_name'
-            )
-                ->leftJoin('class_codes', 'standard_industrial_classification.sic_classcode', '=', 'class_codes.id')
-                ->get();
-
+            $data = StandardIndustrialClassification::withData()->get();
 
             $data->map(function ($item) {
                 $item->sic_classcode =

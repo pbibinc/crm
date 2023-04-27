@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SICController;
+use App\Http\Controllers\LeadController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PositionController;
@@ -8,9 +10,8 @@ use App\Http\Controllers\Demo\DemoController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\DispositionController;
-use App\Http\Controllers\SICController;
-use App\Http\Controllers\LeadController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\DashboardControllerNew;
 
 Route::get('/', function () {
     return view('welcome');
@@ -58,6 +59,12 @@ Route::controller(LeadController::class)->group(function () {
     Route::post('leads-import', 'import')->name('leads.import');
 });
 
+// Dashboard 
+// Time In / Out
+Route::resource('/dashboard', DashboardControllerNew::class)->except(['edit', 'update', 'delete', 'create', 'show', 'edit']);
+Route::get('/dashboard', [DashboardControllerNew::class, 'index'])->name('dashboard');
+Route::post('/dashboard/store', [DashboardControllerNew::class, 'store'])->name('dashboard.store');
+
 
 // Leads Routes
 // Disposition
@@ -75,9 +82,9 @@ Route::get('/register', [App\Http\Controllers\Auth\RegisteredUserController::cla
     ->middleware('guest')
     ->name('register');
 
-Route::get('/dashboard', function () {
-    return view('admin.index');
-})->middleware(['auth'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('admin.index');
+// })->middleware(['auth'])->name('dashboard');
 
 require __DIR__ . '/auth.php';
 

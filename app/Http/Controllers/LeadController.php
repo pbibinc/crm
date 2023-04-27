@@ -15,10 +15,21 @@ class LeadController extends Controller
     public function index(Request $request)
     {
         $leads = Lead::get();
-        if($request->ajax()){
-            $data = Lead::select('id', 'company_name', 'tel_num', 'state_abbr',
-                'website_originated', 'disposition_name', 'created_at', 'updated_at')->get();
-            $data->map(function ($item){
+
+        // dd($leads);
+
+        if ($request->ajax()) {
+            $data = Lead::select(
+                'id',
+                'company_name',
+                'tel_num',
+                'state_abbr',
+                'website_originated',
+                'disposition_name',
+                'created_at',
+                'updated_at'
+            )->get();
+            $data->map(function ($item) {
                 $item->created_at_formatted = Carbon::parse($item->created_at)->format('Y-m-d');
                 $item->updated_at_formatted = Carbon::parse($item->updated_at)->format('Y-m-d');
                 return $item;
@@ -26,13 +37,15 @@ class LeadController extends Controller
             return DataTables::of($data)->make(true);
         }
         return view('leads.generate_leads.index', compact('leads'));
+        // return response()->json(['success' => true, 'responseData' => 'Success on inserting the OT in entry.']);
     }
     /**
      * @return \Illuminate\Support\Collection
      */
     public function import()
     {
-        Excel::import(new LeadsImport,request()->file('file'));
-        return back();
+        // Excel::import(new LeadsImport, request()->file('file'));
+        // return back();
+        dd(request()->file('file'));
     }
 }
