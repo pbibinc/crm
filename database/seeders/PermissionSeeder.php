@@ -20,7 +20,10 @@ class PermissionSeeder extends Seeder
                     'id' => 1,
                     'name' => 'edit_role'
                 ],
-                ['name' => 'create_permission'],
+                [
+                    'id' => 2,
+                    'name' => 'create_permission'
+                ],
         ]);
     }
 }
