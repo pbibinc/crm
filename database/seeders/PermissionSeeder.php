@@ -17,7 +17,6 @@ class PermissionSeeder extends Seeder
     {
         Permission::create([
                 ['name' => 'edit_role'],
-                ['name' => 'create_permission'],
         ]);
     }
 }

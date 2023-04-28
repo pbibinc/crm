@@ -12,4 +12,8 @@ class Permission extends Model
     protected $table = 'permissions';
 
     protected $fillable = ['name'];
+
+    public static function create(array $array)
+    {
+    }
 }
