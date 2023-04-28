@@ -15,9 +15,12 @@ class LeadController extends Controller
     public function index(Request $request)
     {
         $leads = Lead::get();
+//        $timezoneIdentifiers = [];
+
+
         if($request->ajax()){
             $data = Lead::select('id', 'company_name', 'tel_num', 'state_abbr',
-                'website_originated', 'disposition_name', 'created_at', 'updated_at')->get();
+                'website_originated', 'created_at', 'updated_at')->get();
             $data->map(function ($item){
                 $item->created_at_formatted = Carbon::parse($item->created_at)->format('Y-m-d');
                 $item->updated_at_formatted = Carbon::parse($item->updated_at)->format('Y-m-d');

@@ -41,7 +41,7 @@ class DepartmentPolicy
      */
     public function create(User $user)
     {
-        return $user->role->hasPermission('create_dapartment');
+        return $user->role->hasPermission('create_department');
     }
 
     /**

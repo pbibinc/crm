@@ -16,7 +16,8 @@
                 <img src="{{asset('backend/assets/images/users/blippi.jpg')}}" alt="" class="avatar-md rounded-circle">
             </div>
             <div class="mt-3">
-                <h4 class="font-size-16 mb-1">{{$userProfile->firstname . ' ' . $userProfile->lastname}}</h4>
+                <h4 class="font-size-16 mb-1">{{$userProfile->firstname . ' ' . $userProfile->american_surname}}</h4>
+                <p class="mb-0"><em>{{$userProfile->position->name}}</em></p>
                 <span class="text-muted"><i class="ri-record-circle-line align-middle font-size-14 text-success"></i> Online</span>
             </div>
         </div>
@@ -140,7 +141,7 @@
 
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="ri-profile-line"></i>
+                        <i class="ri-spy-fill"></i>
                         <span>LEADS</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">

@@ -19,10 +19,19 @@
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="card">
-
+                            <div class="card-header">
+                                <div class="col-sm-10">
+                                    <div class="col-sm-10">
+                                        <select class="form-select" aria-label="Default select example">
+                                            <option selected="">Open this select menu</option>
+                                            <option value="1">One</option>
+                                            <option value="2">Two</option>
+                                            <option value="3">Three</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="card-body">
-
-
                                     <div class="table-responsive">
                                         <table class="table table-bordered dt-responsive nowrap" id="dataTable" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                             <thead>
@@ -32,7 +41,6 @@
                                                 <th>Tel Number</th>
                                                 <th>State abbr</th>
                                                 <th>Website Originated</th>
-                                                <th>Disposition Name</th>
                                                 <th>Created at</th>
                                                 <th>Updated at</th>
                                             </tr>
@@ -61,7 +69,6 @@
                 {data: 'tel_num', name: 'tel_num'},
                 {data: 'state_abbr', name: 'state_abbr'},
                 {data: 'website_originated', name: 'website_originated'},
-                {data: 'disposition_name', name: 'disposition_name'},
                 {data: 'created_at_formatted', name: 'created_at', searchable:false},
                 {data: 'updated_at_formatted', name: 'updated_at', searchable:false},
                 // {data: 'action', name: 'action', orderable: false, searchable: false}

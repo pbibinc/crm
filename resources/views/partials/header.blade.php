@@ -5,19 +5,18 @@
             <div class="navbar-brand-box">
                 <a href="index.html" class="logo logo-dark">
                     <span class="logo-sm">
-                        <img src="{{asset('backend/assets/images/pbiblgo.png')}}" alt="logo-sm" height="22">
+                        <img src="{{asset('backend/assets/images/logopbibinc.png')}}" alt="logo-sm" height="22">
                     </span>
                     <span class="logo-lg">
-                        <img src="{{asset('backend/assets/images/pbiblgo.png')}}" alt="logo-dark" height="20">
+                        <img src="{{asset('backend/assets/images/logopbibinc.png')}}" alt="logo-dark" height="20">
                     </span>
                 </a>
-
                 <a href="index.html" class="logo logo-light">
                     <span class="logo-sm">
-                        <img src="{{asset('backend/assets/images/pbiblgo.png')}}" alt="logo-sm-light" height="22">
+                        <img src="{{asset('backend/assets/images/logopbibinc.png')}}" alt="logo-sm-light" height="20">
                     </span>
                     <span class="logo-lg">
-                        <img src="{{asset('backend/assets/images/pbiblgo.png')}}" alt="logo-light" height="30">
+                        <img src="{{asset('backend/assets/images/logopbibinc.png')}}" alt="logo-light" height="70" >
                     </span>
                 </a>
             </div>
