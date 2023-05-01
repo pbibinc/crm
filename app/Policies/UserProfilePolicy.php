@@ -19,6 +19,7 @@ class UserProfilePolicy
     public function viewAny(User $user)
     {
         //
+        return $user->role->hasPermission('view_admin_nav');
     }
 
     /**
@@ -31,6 +32,7 @@ class UserProfilePolicy
     public function view(User $user, UserProfile $userProfile)
     {
         //
+        return $user->role->hasPermission('view_user-profile');
     }
 
     /**

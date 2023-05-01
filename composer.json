@@ -12,10 +12,11 @@
         "laravel/sanctum": "^2.14.1",
         "laravel/tinker": "^2.7",
         "maatwebsite/excel": "*",
+        "phpoffice/phpspreadsheet": "^1.18",
         "psr/simple-cache": "2.0",
         "pusher/pusher-php-server": "^7.2",
-        "yajra/laravel-datatables": "^9.0",
-        "phpoffice/phpspreadsheet": "^1.18"
+        "select2/select2": "^4.0",
+        "yajra/laravel-datatables": "^9.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.8",

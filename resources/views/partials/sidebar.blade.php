@@ -113,14 +113,24 @@
                     </ul>
                 </li>
                 <li>
+                    @can('viewAny', App\Models\UserProfile::find(1))
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-user-2-line"></i>
                         <span>Administrator</span>
                     </a>
+                    @endcan
                     <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ route('admin.positions.index') }}">Position</a></li>
+                        @can('view', App\Models\Position::find(1))
+                            <li><a href="{{ route('admin.positions.index') }}">Position</a></li>
+                        @endcan
+
+                        @can('view', App\Models\Department::find(1))
                         <li><a href="{{ route('admin.departments.index') }}">Departments</a></li>
-                        <li><a href="{{ route('admin.user-profiles.index') }}">User Profile</a></li>
+                            @endcan
+                            @can('view', App\Models\UserProfile::find(1))
+                                <li><a href="{{ route('admin.user-profiles.index') }}">User Profile</a></li>
+                            @endcan
+
                     </ul>
                 </li>
 
@@ -146,6 +156,7 @@
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
                         <li><a href="{{route('leads')}}">Import Leads</a></li>
+                        <li><a href="{{route('assign')}}">Leads Funnel</a></li>
                         {{--                        <li><a href="pages-timeline.html">Timeline</a></li>--}}
                         {{--                        <li><a href="pages-directory.html">Directory</a></li>--}}
                         {{--                        <li><a href="pages-invoice.html">Invoice</a></li>--}}

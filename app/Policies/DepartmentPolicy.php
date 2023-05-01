@@ -31,6 +31,8 @@ class DepartmentPolicy
     public function view(User $user, Department $department)
     {
         //
+        return $user->role->hasPermission('view_department');
+
     }
 
     /**

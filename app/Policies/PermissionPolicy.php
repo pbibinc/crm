@@ -33,6 +33,7 @@ class PermissionPolicy
     public function view(User $user, Permission $permission)
     {
         //
+        return $user->role->hasPermission('view_permission');
     }
 
     /**
@@ -55,7 +56,7 @@ class PermissionPolicy
      */
     public function update(User $user, Permission $permission)
     {
-        return $user->role->hasPermission('edit_permission'); 
+        return $user->role->hasPermission('edit_permission');
     }
 
     /**

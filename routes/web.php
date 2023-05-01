@@ -10,6 +10,9 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\GeneralInformationController;
+use App\Http\Controllers\AssignLeadController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -52,15 +55,19 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->gro
 //  Route::put('/permission/{permission}', [PermissionController::class, 'update']);
 });
 
+
+
 Route::controller(LeadController::class)->group(function(){
     Route::get('leads', 'index')->name('leads');
     Route::get('leads-export', 'export')->name('leads.export');
     Route::post('leads-import', 'import')->name('leads.import');
+
 });
 
-
-
-
+Route::prefix('assign')->group(function () {
+    Route::get('/', [AssignLeadController::class, 'index'])->name('assign');
+    Route::post('/assign-leads', [AssignLeadController::class, 'assign'])->name('assign-leads');
+});
 
 Route::get('/register', [App\Http\Controllers\Auth\RegisteredUserController::class, 'create'])
     ->middleware('guest')

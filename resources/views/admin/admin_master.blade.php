@@ -17,11 +17,15 @@
 
     <!-- Responsive datatable examples -->
     <link href="{{asset('backend/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('backend/assets/libs/select2/css/select2.min.css') }}" rel="stylesheet" />
 
 
-            @include("partials.head")
+
+    @include("partials.head")
 
     <!-- JAVASCRIPT -->
+
+
     <script src="{{ mix('js/app.js') }}"></script>
     <script src="{{ asset('js/bootstrap.js') }}"></script>
     <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script>
@@ -77,7 +81,7 @@
     <!-- Start right Content here -->
     <!-- ============================================================== -->
     <div class="main-content">
-        <div id="notification" class="alert alert-success mx-3">test</div>
+{{--        <div id="notification" class="alert alert-success mx-3">test</div>--}}
         @yield('admin')
         <!-- End Page-content -->
 
@@ -123,7 +127,8 @@
 <script src="{{ asset('backend/assets/js/app.js') }}"></script>
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
+<script src="{{ asset('backend/assets/js/pages/form-advanced.init.js')}}"></script>
+<script src="{{ asset('backend/assets/libs/select2/js/select2.min.js')}}"></script>
 <script>
     @if(Session::has('message'))
     var type = "{{ Session::get('alert-type','info') }}"
