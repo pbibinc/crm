@@ -4,10 +4,8 @@
 
     @include("partials.title-meta")
 
-
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ asset('backend/assets/images/favicon.ico') }}">
-
 
     <!-- jquery.vectormap css -->
 {{--    <link href="{{asset('backend/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css')}}" rel="stylesheet" type="text/css" />--}}
@@ -18,6 +16,8 @@
     <!-- Responsive datatable examples -->
     <link href="{{asset('backend/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css')}}" rel="stylesheet" type="text/css" />
 
+    <!-- Responsive Table css -->
+    <link href="{{ asset('backend/assets/libs/admin-resources/rwd-table/rwd-table.min.css') }}" rel="stylesheet" type="text/css" />
 
             @include("partials.head")
 
@@ -103,11 +103,11 @@
 <!-- apexcharts -->
 {{-- <script src="{{ asset('backend/assets/libs/apexcharts/apexcharts.js') }}"></script>--}}
 
+
+
 <!-- jquery.vectormap map -->
-<script
-    src="{{ asset('backend/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js') }}"></script>
-<script
-    src="{{ asset('backend/assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-us-merc-en.js') }}"></script>
+<script src="{{ asset('backend/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js') }}"></script>
+<script src="{{ asset('backend/assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-us-merc-en.js') }}"></script>
 
 <!-- Required datatable js -->
 <script src="{{ asset('backend/assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
@@ -118,6 +118,20 @@
 <script src="{{ asset('backend/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
 
 <script src="{{ asset('backend/assets/js/pages/dashboard.init.js') }}"></script>
+
+<script src="{{ asset('backend/assets/libs/tinymce/tinymce.min.js') }}"></script>
+<script src="{{ asset('backend/assets/js/pages/form-editor.init.js') }}"></script>
+
+<!-- JAVASCRIPT -->
+<script src="{{ asset('backend/assets/libs/metismenu/metisMenu.min.js') }}"></script>
+<script src="{{ asset('backend/assets/libs/simplebar/simplebar.min.js') }}"></script>
+<script src="{{ asset('backend/assets/libs/node-waves/waves.min.js') }}"></script>
+
+<!-- Responsive Table js -->
+<script src="{{ asset('backend/assets/libs/admin-resources/rwd-table/rwd-table.min.js') }}"></script>
+
+<!-- Init js -->
+<script src="{{ asset('backend/assets/js/pages/table-responsive.init.js') }}"></script>
 
 <!-- App js -->
 <script src="{{ asset('backend/assets/js/app.js') }}"></script>

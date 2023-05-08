@@ -115,42 +115,32 @@
                 <div class="date">
                     <span>Philippines</span>
                 </div>
+                <div class="aux_container" style="display: flex; align-items: left;">
+                    <p id="aux_duration" style="font-size:24px;font-weight:bold;margin-right: 8px;">Aux Duration: 0 second</p>
+                    <i class="ri ri-information-fill" style="font-size: 1.5em;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Aux Duration is the time of your short breaks accumulated within a day. Example: Taking restroom breaks."></i>
+                </div>                
                 <div class="timeInFormContainer">
-                    <form method="POST" class="form-control" id="timeInForm" action="{{ route('dashboard.store') }}">
+                    <form class="form-control" id="timeInForm" action="{{ route('dashboard.store') }}">
                         @csrf
                         <div class="row g-3">
-                            <div class="col-md-6">
-                                <input type="button" class="btn btn-primary custom-btn w-100 mb-3" name="time_in" id="time_in" data-attribute="" value="Time In" />
-                                <input type="button" class="btn btn-secondary custom-btn w-100" name="time_out" id="time_out" data-attribute="" value="Time Out" />
+                            <div class="col-md-4">
+                                <input type="button" class="btn btn-primary custom-btn w-100 mb-3" name="time_in" id="time_in" data-attribute="1" value="Time In" />
+                                <input type="button" class="btn btn-secondary custom-btn w-100" name="time_out" id="time_out" data-attribute="2" value="Time Out" />
                             </div>
-                            <div class="col-md-6">
-                                <input type="button" class="btn btn-success custom-btn w-100 mb-3" name="break_out" id="break_out" value="Break Out" />
-                                <input type="button" class="btn btn-secondary custom-btn w-100" name="break_in" id="break_in" value="Break In" />
+                            <div class="col-md-4">
+                                <input type="button" class="btn btn-success custom-btn w-100 mb-3" name="break_out" id="break_out" data-attribute="3" value="Break Out" {{ $result ? '' : 'disabled' }} />
+                                <input type="button" class="btn btn-secondary custom-btn w-100" name="break_in" id="break_in" data-attribute="4" value="Break In" {{ $result ? '' : 'disabled' }} />
+                            </div>
+                            <div class="col-md-4">
+                                <input type="button" class="btn btn-warning custom-btn w-100 mb-3" name="aux_in" id="aux_in" data-attribute="5" value="Aux In" {{ $result ? '' : 'disabled' }} />
+                                <input type="button" class="btn btn-secondary custom-btn w-100" name="aux_out" id="aux_out" data-attribute="6" value="Aux Out" {{ $result ? '' : 'disabled' }} />
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-        <!-- Time In/Out Form -->
-        {{-- <div class="datetime formTimeIn">
-            <div class="col-12">
-                <form method="POST" class="form-control">
-                    @csrf
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <input type="button" class="btn btn-primary custom-btn w-100 mb-3" name="time_in" id="time_in" value="Time in" />
-                            <input type="button" class="btn btn-secondary custom-btn w-100" name="time_out" id="time_out" value="Time out" />
-                        </div>
-                        <div class="col-md-6">
-                            <input type="button" class="btn btn-success custom-btn w-100 mb-3" name="break_out" id="break_out" value="Break Out" />
-                            <input type="button" class="btn btn-secondary custom-btn w-100" name="break_in" id="break_in" value="Break In" />
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div> --}}
-        <!--Time In/Out end-->
+        {{-- Move here if not approved --}}
     </div>
     <!--digital clock end-->
 
@@ -170,6 +160,24 @@
 </div>
 
 <script type="text/javascript">
+
+    Number.prototype.pad = function(digits){
+        for(var n = this.toString(); n.length < digits; n = '0' + n);
+        return n;
+    }
+
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+    // Init Vars
+    var time_in = $("#time_in");
+    var time_out = $("#time_out");
+    var break_out = $("#break_out");
+    var break_in = $("#break_in");
+    var aux_in = $("#aux_in");
+    var aux_out = $("#aux_out");
+
+
     function updateClock(){
         var now = new Date();
         var localTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Manila' }));
@@ -190,12 +198,6 @@
         if(hou > 12){
             hou = hou - 12;
         }
-        Number.prototype.pad = function(digits){
-            for(var n = this.toString(); n.length < digits; n = 0 + n);
-            return n;
-        }
-        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        var week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         var ids = ["dayname", "month", "daynum", "year", "hour", "minutes", "seconds", "period"];
         var values = [week[dname], months[mo], dnum.pad(2), yr, hou.pad(2), min.pad(2), sec.pad(2), pe];
         for(var i = 0; i < ids.length; i++)
@@ -229,13 +231,178 @@
     initClock();
     // Also call the initClock function when the window is loaded
     window.onload = initClock;
-    // Init Vars
-    var time_in = $("#time_in");
-    var time_out = $("#time_out");
-    var break_out = $("#break_out");
-    var break_in = $("#break_in");
-    function handleButtonClick(loginType, buttonId) {
+
+    function enableBreakOutButton() {
+        document.getElementById("break_out").disabled = false;
+    }
+    function enableBreakInButton() {
+        document.getElementById("break_in").disabled = false;
+    }
+
+    // Aux In / Out
+    let auxTimerRunning = false;
+    let seconds = 0;
+    let auxInterval;
+
+
+    function startAuxTimer() {
+        if (!auxTimerRunning) {
+            const startTime = new Date().getTime(); // Get the current time in milliseconds
+            localStorage.setItem("auxStartTime", startTime); // Save the start time in localStorage
+            auxTimerRunning = true;
+
+            // Get the saved aux_duration from localStorage
+            const auxDurationData = JSON.parse(localStorage.getItem("auxDuration"));
+            if (auxDurationData) {
+                seconds = auxDurationData.duration;
+            }
+        }
+    }
+    function stopAuxTimer() {
+        if (auxTimerRunning) {
+            // Save the current duration before stopping the timer
+            const startTime = parseInt(localStorage.getItem("auxStartTime"));
+            const now = new Date().getTime();
+            auxDuration += Math.floor((now - startTime) / 1000);
+            auxTimerRunning = false;
+        }
+    }
+
+    // Save aux_duration to localStorage
+    function saveAuxDuration() {
+        let expirationDate = new Date();
+        expirationDate.setDate(expirationDate.getDate() + (expirationDate.getHours() >= 22 ? 1 : 0)); // Set the expiration date to the same day if before 10 PM, otherwise the next day
+        expirationDate.setHours(22, 0, 0, 0); // Set the expiration time to 10 PM
+        const auxDurationData = {
+            duration: seconds,
+            expiration: expirationDate.getTime()
+        };
+        localStorage.setItem("auxDuration", JSON.stringify(auxDurationData));
+    }
+    // Load aux_duration from localStorage
+    function loadAuxDuration() {
+        const auxDurationData = JSON.parse(localStorage.getItem("auxDuration"));
+
+        if (auxDurationData) {
+            const now = new Date();
+            const day = now.getDay();
+            const isWeekday = day >= 1 && day <= 5; // Check if the current day is a weekday (Monday to Friday)
+
+            if (isWeekday && now.getTime() < auxDurationData.expiration) {
+                auxDuration = auxDurationData.duration;
+                updateTimer();
+            } else {
+                // If the value has expired or it's not a weekday, remove it from localStorage
+                localStorage.removeItem("auxDuration");
+            }
+        }
+    }
+    // Call this function when the page loads
+    loadAuxDuration();    
+
+    function updateTimer() {
+        let hours = Math.floor(seconds / 3600);
+        let minutes = Math.floor(seconds / 60);
+        let remainingSeconds = seconds % 60;
+
+        if (hours > 0) {
+            document.getElementById("aux_duration").innerHTML = "Aux Duration: " + hours + " hours" + minutes + " minutes " + remainingSeconds + " seconds";
+        } else if (minutes > 0) {
+            document.getElementById("aux_duration").innerHTML = "Aux Duration: " + minutes + " minutes " + remainingSeconds + "  seconds";
+        } else {
+            document.getElementById("aux_duration").innerHTML = "Aux Duration: " + remainingSeconds + " seconds";
+        }
+
+        if (auxTimerRunning) {
+            auxDuration++;
+            saveAuxDuration();
+        }
+        saveAuxDuration();
+    }
+    function enableAuxInButton() {
+        document.getElementById("aux_in").disabled = false;
+    }
+    function enableAuxOutButton() {
+        document.getElementById("aux_out").disabled = false;
+        stopAuxTimer(); // Stop the timer when the Aux Out button is enabled
+    }
+
+    // let accumulatedDuration = 0;
+    let shouldRunTimer = false;
+    // Load accumulatedDuration from localStorage
+    let accumulatedDuration = parseInt(localStorage.getItem("accumulatedDuration")) || 0;
+
+    function calculateDuration() {
+        if (shouldRunTimer) { // Check if the timer should be running
+            const startTime = localStorage.getItem("auxStartTime");
+            if (startTime) {
+                const now = new Date().getTime();
+                seconds = Math.floor((now - startTime) / 1000) + accumulatedDuration;
+                updateTimer();
+            }
+        }
+    }
+
+    setInterval(calculateDuration, 1000); // Update the duration every second
+
+    function resetTimer() {
+        seconds = 0;
+        updateTimer();
+    }
+    function checkResetTime() {
+        var now = new Date();
+        var localTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Manila' }));
+        const resetHour = 22; // 10 PM
+        const currentHour = localTime.getHours();
+
+        if (currentHour === resetHour && localTime.getMinutes() === 0 && localTime.getSeconds() === 0) {
+            resetTimer();
+        }
+    }
+
+    // Call checkResetTime every second
+    setInterval(checkResetTime, 1000);
+
+    function disableAuxInButton() {
+        aux_in.attr("disabled", true);
+    }
+
+    function stopAuxTimer() {
+        clearInterval(auxInterval);
+    }
+
+    function handleButtonClick(loginType, buttonId, auxDuration) {
         event.preventDefault();
+
+        var loginTypeNames = {
+            1: "Time In",
+            2: "Time Out",
+            3: "Break Out",
+            4: "Break In",
+            5: "Aux In",
+            6: "Aux Out"
+        };
+
+        var dateData = updateClock();
+        var data = {
+            "_token": "{{ csrf_token() }}",
+            loginType: loginType,
+            auxDuration: auxDuration,
+            dayName: dateData.dayName,
+            month: dateData.month,
+            dayNum: dateData.dayNum,
+            year: dateData.year,
+            hour: dateData.hour,
+            minutes: dateData.minutes,
+            seconds: dateData.seconds,
+            period: dateData.period,
+        };
+
+        // Add the auxDuration to the data object if it's an Aux In or Aux Out event
+        if (loginType === 5 || loginType === 6) {
+            data.auxDuration = auxDuration;
+        }
+ 
         var dateData = updateClock();
         $.ajax({
             headers: {
@@ -243,17 +410,7 @@
             },
             url: "{{ route('dashboard.store') }}",
             type: "POST",
-            data: {
-                loginType: loginType,
-                dayName: dateData.dayName,
-                month: dateData.month,
-                dayNum: dateData.dayNum,
-                year: dateData.year,
-                hour: dateData.hour,
-                minutes: dateData.minutes,
-                seconds: dateData.seconds,
-                period: dateData.period,
-            },
+            data: data,
             beforeSend: function () {
                 $('#' + buttonId).val('Please wait..');
                 $('#' + buttonId).attr('disabled', true);
@@ -262,6 +419,20 @@
                 // alert('Success');
                 if(response.responseData !== "") {
                     alert(response.responseData);
+                    // Enable the Other buttons button if a "Time In" event is successful
+                    if (loginType === 1) {
+                        document.getElementById("break_out").disabled = false;
+                        document.getElementById("break_in").disabled = false;
+                        document.getElementById("aux_in").disabled = false;
+                        document.getElementById("aux_out").disabled = false;
+                    }
+                    // Enable the Other buttons if a "Time Out" event is successful
+                    if (loginType === 2) {
+                        document.getElementById("break_out").disabled = true;
+                        document.getElementById("break_in").disabled = true;
+                        document.getElementById("aux_in").disabled = true;
+                        document.getElementById("aux_out").disabled = true;
+                    }
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -270,28 +441,99 @@
             },
             complete: function () {
                 $('#' + buttonId).removeAttr('disabled');
-                $('#' + buttonId).val(loginType.charAt(0).toUpperCase() + loginType.slice(1).replace('_', ' '));
+                $('#' + buttonId).val(loginTypeNames[loginType]);
             }
         });
     }
+
+    // document.getElementById("aux_in").addEventListener("click", function() {
+    //     const canStartTimer = true;
+    //     if (canStartTimer) {
+    //         enableAuxOutButton();
+    //         enableAuxInButton(); // Save the Aux In record to the database
+    //         // Add your server call to save the Aux In event here
+    //         if (!auxTimerRunning) {
+    //             enableAuxInButton(); // Start the timer when the Aux In button is clicked
+    //             handleButtonClick(5, 'aux_in', auxDuration); // Add this line to handle the button click
+    //         }
+    //     }
+    // });
+
+    // document.getElementById("aux_out").addEventListener("click", function() {
+    //     // if (auxTimerRunning) {
+    //     //     enableAuxOutButton(); // Stop the timer when the Aux Out button is clicked
+    //     //     handleButtonClick(6, 'aux_out', auxDuration); // Add this line to handle the button click
+    //     // }
+    //     enableAuxInButton();
+    //     enableAuxOutButton(); // Save the Aux Out record to the database along with the timer duration
+    //     // Add your server call to save the Aux Out event and duration here
+    //     if (timerRunning) {
+    //         clearInterval(timer);
+    //         timerRunning = false;
+
+    //         // Save the current duration before stopping the timer
+    //         const startTime = localStorage.getItem("auxStartTime");
+    //         const now = new Date().getTime();
+    //         accumulatedDuration += Math.floor((now - startTime) / 1000);
+
+    //         // Save accumulatedDuration to localStorage
+    //         localStorage.setItem("accumulatedDuration", accumulatedDuration);
+
+    //         // Save the Aux Out record to the database along with the timer duration
+    //         // Add your server call to save the Aux Out event and duration here
+    //         this.disabled = true;
+    //         enableAuxInButton();
+    //         shouldRunTimer = false;
+    //     }
+    // });
+
+
+
     // Time in
     time_in.click(function (event) {
-        handleButtonClick('time_in', 'time_in');
+        var loginType = $(this).data("attribute");
+        handleButtonClick(loginType, 'time_in');
     });
     // Time Out
     time_out.click(function (event) {
-        handleButtonClick('time_out', 'time_out');
+        var loginType = $(this).data("attribute");
+        handleButtonClick(loginType, 'time_out');
     });
     // Break Out
     break_out.click(function (event) {
-        handleButtonClick('break_out', 'break_out');
+        var loginType = $(this).data("attribute");
+        handleButtonClick(loginType, 'break_out');
     });
     // Break In
     break_in.click(function (event) {
-        handleButtonClick('break_in', 'break_in');
+        var loginType = $(this).data("attribute");
+        handleButtonClick(loginType, 'break_in');
     });
+    // Aux In
+    aux_in.click(function (event) {
+        var loginType = $(this).data("attribute");
+        handleButtonClick(loginType, 'aux_in', seconds);
+        startAuxTimer(); // Add this line to start the timer when the Aux In button is clicked
+        if (shouldRunTimer) {
+            clearInterval(auxInterval); // Clear any existing interval
+            auxInterval = setInterval(function () {
+                seconds++; // <- Replace auxDuration with seconds 
+                displayAuxTimer(seconds); // <- Replace auxDuration with seconds
+            }, 1000);
+        }
+    });
+
+    // Aux Out
+    aux_out.click(function (event) {
+        var logoutType = $(this).data("attribute");
+        handleButtonClick(logoutType, 'aux_out', auxDuration);
+        shouldRunTimer = false; // Add this line to set shouldRunTimer to false when the Aux Out button is clicked
+        stopAuxTimer(); // Add this line to stop the timer when the Aux Out button is clicked
+        disableAuxOutButton();
+        enableAuxInButton();
+    });
+
+
 </script>
-
-
 
 @endsection

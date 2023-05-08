@@ -44,8 +44,8 @@ class LeadController extends Controller
      */
     public function import()
     {
-        // Excel::import(new LeadsImport, request()->file('file'));
-        // return back();
-        dd(request()->file('file'));
+        Excel::import(new LeadsImport, request()->file('file'));
+        return back();
+        // dd(request()->file('file'));
     }
 }

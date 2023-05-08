@@ -1,17 +1,27 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HrController;
+use App\Http\Controllers\PdfController;
 use App\Http\Controllers\SICController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\Demo\DemoController;
+use App\Http\Controllers\HelloSignController;
+use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\ClasscodesController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\DispositionController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\DashboardControllerNew;
+use App\Http\Controllers\TecnickcomPdfController;
+use App\Http\Controllers\CompanyHandbookController;
+use App\Http\Controllers\EmbeddedSignatureController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -64,6 +74,7 @@ Route::prefix('dashboard')->group(function () {
     Route::resource('/', DashboardControllerNew::class)->except(['edit', 'update', 'delete', 'create', 'show', 'edit']);
     Route::get('/', [DashboardControllerNew::class, 'index'])->name('dashboard');
     Route::post('/store', [DashboardControllerNew::class, 'store'])->name('dashboard.store');
+    Route::get('/aux-duration', [DashboardControllerNew::class, 'getAuxDuration'])->name('dashboard.getAuxDuration');
 });
 
 // Leads Routes
@@ -80,6 +91,28 @@ Route::prefix('leads')->group(function () {
     Route::resource('/sic', SICController::class)->except(['update']);
     Route::post('/sic/update', [SICController::class, 'update'])->name('sic.update');
 });
+
+Route::prefix('hrforms')->name('hrforms.')->group(function () {
+    // Accountability Forms
+    Route::get('/accountability-form', [HrController::class, 'showAccountabilityForm'])->name('accountability-form');
+    Route::post('/accountability-form-generate', [PdfController::class, 'generatePdf'])->name('accountability-form-generate-pdf');
+
+    // Company Handbook
+    Route::get('/company-handbook', [CompanyHandbookController::class, 'showCompanyHandbook'])->name('company-handbook');
+    Route::post('/company-handbook-save', [CompanyHandbookController::class, 'saveOrUpdateCompanyHandbookRecord'])->name('company-handbook-save-or-update');
+
+    // Attendance Calendar
+    Route::get('/attendance-records', [AttendanceController::class, 'showAttendanceRecords'])->name('attendance-records');
+});
+
+// PDF Example (tecnickcom/tcpdf)
+// Route::get('/tecnickcom-pdf', function (Request $request) {
+//     return app()->call('App\Http\Controllers\TecnickcomPdfController@generatePdf');
+// });
+
+
+Route::get('/hellosign', [HelloSignController::class, 'initiateSigning']);
+Route::post('/hellosign/callback', [HelloSignController::class, 'handleCallback']);
 
 
 Route::get('/register', [App\Http\Controllers\Auth\RegisteredUserController::class, 'create'])
