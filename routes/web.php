@@ -42,7 +42,8 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->gro
  Route::resource('/permissions', PermissionController::class)->except(['update']);
  Route::post('/permissions/update', [PermissionController::class, 'update'])->name('permissions.update');
  Route::resource('/roles', RoleController::class);
- Route::resource('/users', UserController::class);
+ Route::resource('/users', UserController::class)->except(['update']);
+ Route::post('/users/update', [UserController::class, 'update'])->name('users.update');
  Route::resource('/positions', PositionController::class)->except('update');
  Route::post('/positions/update', [PositionController::class, 'update'])->name('positions.update');
 //  Route::delete('positions/destroy/{$id}/', [PositionController::class, 'destroy'])->name('positions.destroy');
@@ -57,16 +58,20 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->gro
 
 
 
-Route::controller(LeadController::class)->group(function(){
-    Route::get('leads', 'index')->name('leads');
-    Route::get('leads-export', 'export')->name('leads.export');
-    Route::post('leads-import', 'import')->name('leads.import');
+Route::get('leads', [LeadController::class, 'index'])->name('leads');
+Route::get('leads-export', [LeadController::class, 'export'])->name('leads.export');
+Route::post('leads-import', [LeadController::class, 'import'])->name('leads.import');
 
-});
 
 Route::prefix('assign')->group(function () {
     Route::get('/', [AssignLeadController::class, 'index'])->name('assign');
+    Route::get('/getDataTableLeads', [AssignLeadController::class, 'getDataTableLeads'])->name('getDataTableLeads');
     Route::post('/assign-leads', [AssignLeadController::class, 'assign'])->name('assign-leads');
+    Route::post('/assign-random-leads', [AssignLeadController::class, 'assignRandomLeads'])->name('assign-random-leads');
+    Route::post('/assign-leads-user', [AssignLeadController::class, 'assignLeadsUser'])->name('assign-random-leads-user');
+    Route::post('/void-leads-user', [AssignLeadController::class, 'void'])->name('void-leads-user');
+    Route::post('/redeploy-leads-user', [AssignLeadController::class, 'redeploy'])->name('redeploy-leads-user');
+    Route::get('/{leads}/edit',[AssignLeadController::class, 'edit'])->name('edit-leads-user');
 });
 
 Route::get('/register', [App\Http\Controllers\Auth\RegisteredUserController::class, 'create'])

@@ -1,10 +1,16 @@
 @include('partials.main')
 
 <head>
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @include("partials.title-meta")
 
-
+    <div id="preloader">
+        <div id="status">
+            <div class="spinner">
+                <i class="ri-loader-line spin-icon"></i>
+            </div>
+        </div>
+    </div>
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ asset('backend/assets/images/favicon.ico') }}">
 
@@ -125,6 +131,13 @@
 
 <!-- App js -->
 <script src="{{ asset('backend/assets/js/app.js') }}"></script>
+
+
+{{--form validation--}}
+<script src="{{asset('backend/assets/libs/parsleyjs/parsley.min.js')}}"></script>
+<script src="{{asset('backend/assets/js/pages/form-validation.init.js')}}"></script>
+
+
 
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src="{{ asset('backend/assets/js/pages/form-advanced.init.js')}}"></script>

@@ -18,4 +18,8 @@ class Lead extends Model
         'website_originated',
         'disposition_name',
     ];
+    public function userProfile()
+    {
+        return $this->belongsTo(UserProfile::class);
+    }
 }

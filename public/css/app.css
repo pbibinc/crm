@@ -848,6 +848,11 @@ select {
 .cursor-default {
   cursor: default;
 }
+.select-all {
+  -webkit-user-select: all;
+     -moz-user-select: all;
+          user-select: all;
+}
 .list-inside {
   list-style-position: inside;
 }
@@ -1030,8 +1035,8 @@ select {
 .pt-8 {
   padding-top: 2rem;
 }
-.pt-4 {
-  padding-top: 1rem;
+.pt-6 {
+  padding-top: 1.5rem;
 }
 .pb-2 {
   padding-bottom: 0.5rem;
@@ -1042,11 +1047,11 @@ select {
 .pb-3 {
   padding-bottom: 0.75rem;
 }
+.pt-4 {
+  padding-top: 1rem;
+}
 .pb-1 {
   padding-bottom: 0.25rem;
-}
-.pt-6 {
-  padding-top: 1.5rem;
 }
 .pl-3 {
   padding-left: 0.75rem;

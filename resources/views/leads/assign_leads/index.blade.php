@@ -1,24 +1,42 @@
 @extends('admin.admin_master')
 @section('admin')
-
     <div class="page-content pt-6">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <div class="card">
+                    <div class="card ">
+
                         <div class="card-body">
-{{--                            <form action="{{ route('leads.import') }}" method="POST" enctype="multipart/form-data">--}}
-{{--                                @csrf--}}
-{{--                                <input type="file" name="file" class="form-control">--}}
-{{--                                <br>--}}
-{{--                                <button class="btn btn-primary">Import User Data</button>--}}
-{{--                            </form>--}}
-                            <label class="form-label">Single Select</label>
-                            <select class="form-control select2">
-                                @foreach($userProfiles as $userProfile)
-                                    <option>{{$userProfile->firstname . " " . $userProfile->american_surname}}</option>
-                                @endforeach
-                            </select>
+                            <div class="row mb-3">
+                                <label class="form-label">Single Select</label>
+                                <div class="col-lg-12">
+                                    <select class="form-control select2" id="userProfileDropdown">
+                                        <option value="">select agents</option>
+                                        @foreach($userProfiles as $userProfile)
+                                            <option value="{{$userProfile->id}}">{{$userProfile->firstname . " " . $userProfile->american_surname}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <table id="datatableLeads" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <thead>
+                                <tr>
+                                    <th>Company Name</th>
+                                    <th>Tel Num</th>
+                                    <th>State Abbr</th>
+                                    <th>Website Originated</th>
+                                    <th>action</th>
+{{--                                    <th>Created At</th>--}}
+{{--                                    <th>Updated At</th>--}}
+{{--                                    <th>Disposition Name</th>--}}
+{{--                                    <th></th>--}}
+                                </tr>
+                                </thead>
+                                <tbody>
+
+
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -29,16 +47,95 @@
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered dt-responsive nowrap" id="dataTable" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                    <div class="row">
+
+                                        <div class="col-6">
+                                            <div class="mb-3">
+                                                <div class="form-group">
+                                                    <label class="form-label">Time Zone</label>
+                                                    <select name="timezone" id="timezoneDropdown" class="form-control select2" >
+                                                        <option value="">Select a timezone</option>
+                                                        <option value="">ALL</option>
+                                                        @foreach ($timezones as $timezone => $identifier)
+                                                            <option value="{{ $timezone }}">{{ $timezone }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-6">
+                                            <div class="mb-3">
+                                                <div class="form-group">
+                                                    <label for="websiteOriginatedDropdown" class="form-label">Website Originated</label>
+                                                    <select name="website_originated" id="websiteOriginatedDropdown" class="form-control select2">
+                                                        <option value="">Select a Website</option>
+                                                        <option value="">ALL</option>
+                                                        @foreach($sites as $site)
+                                                            <option value="{{substr($site->name, 0, strlen($site->name) - 4)}}">{{substr($site->name, 0, strlen($site->name) - 4)}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Assign Lead Quantity</label>
+                                                <input class="form-control" type="number" value="10" id="leadsQuantityUser">
+{{--                                                {!! Form::label('assign_leads_quantity', 'Assign Lead Quantity') !!}--}}
+{{--                                                {!! Form::text('assign_leads_quantity', null, ['class' => 'form-control']) !!}--}}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label class="form-label">Assign Random Leads Quantity</label>
+                                                <input class="form-control" type="number" value="10" id="leadsQuantityRandom">
+{{--                                                {!! Form::label('random_leads_quantity', 'Assign Random Leads Quantity') !!}--}}
+{{--                                                {!! Form::text('random_leads_quantity', null, ['class' => 'form-control']) !!}--}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="d-grid mb-3">
+                                                    <button type="button" id="assignRandomLeadsUser" class="btn btn-info waves-effect waves-light ">Assign Random Leads to user</button>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6">
+                                                <div class="d-grid mb-3">
+                                                <button type="button" id="assignRandomLeads" class="btn btn-info waves-effect waves-light ">Assign Random Leads</button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    <div class="row">
+                                        <div class="d-grid mb-3">
+                                            <button type="button" id="assignLead" class="btn btn-info waves-effect waves-light ">Assign Lead</button>
+                                        </div>
+                                    </div>
+
+                                    <br>
                                     <thead>
                                     <tr>
-                                        <th><button type="button" class="btn btn-info waves-effect waves-light">Assign Lead</button></th>
+                                        <th></th>
                                         <th>ID</th>
                                         <th>Company Name</th>
                                         <th>Tel Number</th>
                                         <th>State abbr</th>
                                         <th>Website Originated</th>
-                                        <th>Created at</th>
-                                        <th>Updated at</th>
+                                        <th>Imported Date</th>
+{{--                                        <th>Updated at</th>--}}
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -52,6 +149,51 @@
             </div>
         </div>
     </div>
+    {{-- start of modal for creation and edition--}}
+    <div class="modal fade" id="dataModal" tabindex="-1" aria-labelledby="dataModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" >
+                    <h5 class="modal-title"><b>Confirmation</b></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <select class="form-control" id="userProfileRedeployDropdown">
+                        <option value="">select agents</option>
+                        @foreach($userProfiles as $userProfile)
+                            <option value="{{$userProfile->id}}">{{$userProfile->firstname . " " . $userProfile->american_surname}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" name="submit_button" id="submit_button">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- end of modal --}}
+
+
+    {{-- start of deletion of modal --}}
+    <div class="modal fade" id="confirmModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" >
+                    <h5 class="modal-title"><b>Confirmation</b></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to void this leads?.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" name="ok_button" id="ok_button">Void</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- end of deletion of modal --}}
 
     <script>
         // DATA TABLE
@@ -60,22 +202,245 @@
             $('#dataTable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('assign') }}",
+                ajax: {
+                    url: "{{ route('assign') }}",
+                    data: function (d) {
+                                d.website_originated = $('#websiteOriginatedDropdown').val(),
+                                d.timezone = $('#timezoneDropdown').val(),
+                                    // d.userProfile = $('#userProfileDropdown').val(),
+                                d.search = $('input[type="search"]').val()
+                    }
+                },
                 columns: [
                     {data: 'checkbox', name: 'checkbox',  searchable: false},
                     {data: 'id', name: 'id'},
                     {data: 'company_name', name: 'company_name'},
                     {data: 'tel_num', name: 'tel_num'},
                     {data: 'state_abbr', name: 'state_abbr'},
-                    {data: 'website', name: 'website'},
+                    {data: 'website_originated', name: 'website_originated'},
                     {data: 'created_at_formatted', name: 'created_at', searchable:false},
-                    {data: 'updated_at_formatted', name: 'updated_at', searchable:false},
+                    // {data: 'updated_at_formatted', name: 'updated_at', searchable:false},
                     // {data: 'action', name: 'action', orderable: false, searchable: false}
+                    // {
+                    //     data: 'checkbox',
+                    //     name: 'checkbox',
+                    //     title: '<input type="checkbox" id="select-all">',
+                    //     orderable: false,
+                    //     searchable: false,
+                    //     className: 'select-all'
+                    // }
+                ]
+
+            });
+
+            // script for display leads that user have
+            $('#datatableLeads').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('getDataTableLeads') }}",
+                    data: function (f) {
+                            f.userProfile = $('#userProfileDropdown').val()
+                    }
+                },
+                columns: [
+                    // {data: 'checkbox', name: 'checkbox',  searchable: false},
+                    // {data: 'id', name: 'id'},
+                    {data: 'company_name', name: 'company_name'},
+                    {data: 'tel_num', name: 'tel_num'},
+                    {data: 'state_abbr', name: 'state_abbr'},
+                    {data: 'website_originated', name: 'website_originated'},
+                    // {data: 'created_at_formatted', name: 'created_at', searchable:false},
+                    // {data: 'updated_at_formatted', name: 'updated_at', searchable:false},
+                    {data: 'action', name: 'action', orderable: false, searchable: false}
                 ]
             });
-            // $('.select2').select2();
+
+            // scripts for reloading and configuring the dropdowns filters
+            $('#websiteOriginatedDropdown').on('change', function () {
+                $('#dataTable').DataTable().ajax.reload();
+            });
+
+            $('#timezoneDropdown').on('change', function() {
+                var timezone = $(this).val();
+                $('#dataTable').DataTable().ajax.reload(null, false).draw();
+                $('#dataTable').DataTable().ajax.url("{{ route('assign') }}?timezone=" + timezone);
+            });
+
+            $('#userProfileDropdown').on('change', function() {
+                $('#datatableLeads').DataTable().ajax.reload();
+            });
+
+
+
+            // ajax script for randomly assign leads to user
+            $('#assignRandomLeadsUser').on('click', function (){
+                $.ajax({
+                    url:"{{route('assign-random-leads-user')}}",
+                    headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    dataType:"json",
+                    method: "POST",
+                    data:{
+                        leadsQuantityUser:$('#leadsQuantityUser').val(),
+                        userProfileId: $('#userProfileDropdown').val()
+                    },
+                    success: function(response){
+                        if(response.errors){
+                            var errors = response.errors;
+                            $.each(errors, function(key, value){
+                                $('#' + key).addClass('is-invalid');
+                                $('#' + key + '_error').html(value);
+                            });
+                        }else{
+                            alert(response.success);
+                            location.reload();
+                        }
+                    },
+                    error:function(xhr, status, error)
+                    {
+                        console.log(xhr);
+                        console.log(status);
+                        console.log(error);
+                    }
+                });
+            });
+
+
+            // ajax script for assigning leads
+            $('#assignLead').on('click', function (){
+                var id = [];
+                var userProfileId = $('#userProfileDropdown').val()
+                $('.users_checkbox:checked').each(function (){
+                    id.push($(this).val());
+                });
+                if(id.length > 0)
+                {
+                    if(userProfileId)
+                    {
+                        $.ajax({
+                            url:"{{route('assign-leads')}}",
+                            headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                            dataType:"json",
+                            method: "POST",
+                            data:{
+                                id:id,
+                                userProfileId:userProfileId
+                            },
+                            success:function (data)
+                            {
+                                $('#datatableLeads').DataTable().ajax.reload();
+                                $('#dataTable').DataTable().ajax.reload();
+                            },
+                            error: function (data) {
+                                var errors =data.responseJSON;
+                                console.log(errors);
+                            }
+
+                        });
+                    }else{
+                        alert('Please select agent');
+                    }
+
+                }
+                else
+                {
+                    alert('Please select atleast one checkbox');
+                }
+            });
+
+            // ajax script for randomly assign leads
+            $('#assignRandomLeads').on('click', function (){
+                var id = [];
+                // console.log('this test the button shit');
+                $.ajax({
+                    url:"{{route('assign-random-leads')}}",
+                    headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    dataType:"json",
+                    method: "POST",
+                    data:{
+                       leadsQuantityRandom:$('#leadsQuantityRandom').val(),
+                    },
+                    success: function(response){
+                        if(response.errors){
+                            var errors = response.errors;
+                            $.each(errors, function(key, value){
+                                $('#' + key).addClass('is-invalid');
+                                $('#' + key + '_error').html(value);
+                            });
+                        }else{
+                            alert(response.success);
+                            location.reload();
+                        }
+                    },
+                    error:function(xhr, status, error)
+                    {
+                        console.log(xhr);
+                        console.log(status);
+                        console.log(error);
+                    }
+                });
+            });
+
+
+
         });
 
+        var leadsId
+        $(document).on('click', '.btn-outline-danger', function(event){
+            leadsId = $(this).attr('id');
+            $('#confirmModal').modal('show');
+
+
+        });
+
+        $('#ok_button').click(function(){
+            event.preventDefault();
+            $.ajax({
+                url: "{{route('void-leads-user')}}",
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                method:'POST',
+                dataType:"json",
+                data:{
+                    id:leadsId,
+                },
+                success:function (data){
+                    alert(data.success);
+                    location.reload();
+                },
+                error: function(data){
+                    var errors = data.responseJSON;
+                    console.log(errors);
+                }
+            })
+        });
+
+        var leadsIdRedeploy
+        $(document).on('click', '.btn-outline-info', function (event){
+            leadsIdRedeploy = $(this).attr('id');
+            $('#dataModal').modal('show');
+        });
+
+        $('#submit_button').click(function(){
+            event.preventDefault();
+            $.ajax({
+                url:"{{route('redeploy-leads-user')}}",
+                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                method:'POST',
+                dataType:"json",
+                data:{
+                    id:leadsIdRedeploy,
+                    userProfileId:$('#userProfileRedeployDropdown').val()
+                },
+                success:function (data){
+                    alert(data.success);
+                    location.reload();
+                },
+                error: function(data){
+                    var errors = data.responseJSON;
+                    console.log(errors);
+                }
+            })
+        });
 
     </script>
 

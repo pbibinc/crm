@@ -14,7 +14,7 @@ window.Alpine = Alpine;
 
 Alpine.start();
 
-console.log('Page loaded');
+
 
 // Find the notification element
 // const notificationElement = document.getElementById('notification');
@@ -33,4 +33,4 @@ Echo.channel('notifications')
         notificationElement.classList.add('alert-' + e.type);
     });
 
-console.log('Subscribing to notifications channel');
+

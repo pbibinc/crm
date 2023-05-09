@@ -219,24 +219,38 @@ $(document).ready(function() {
 
     //script for sending delete
     $('#ok_button').click(function(){
-    $.ajax({
-        url:"/admin/permissions/" +permission_id,
-        type:"DELETE",
-        beforeSend:function(){
-            $('#ok_button').text('Deleting.....');
-        },
-        success:function($data)
-        {
-            setTimeout(() => {
-                $('#confirmModal').modal('hide');
-                location.reload();
-            }, 1000);
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR.status);
-            console.log('Error: ' + textStatus + ' - ' + errorThrown);
-        }
-    });
+        axios.delete('/admin/permissions/' + permission_id)
+            .then(function(response) {
+                setTimeout(() => {
+                    $('#confirmModal').modal('hide');
+                    location.reload();
+                }, 1000);
+            })
+            .catch(function(error) {
+                console.log(error.response.status);
+                console.log('Error: ' + error.message);
+            })
+            .finally(function() {
+                $('#ok_button').text('Delete');
+            });
+    // $.ajax({
+    //     url:"/admin/permissions/" +permission_id,
+    //     type:"DELETE",
+    //     beforeSend:function(){
+    //         $('#ok_button').text('Deleting.....');
+    //     },
+    //     success:function($data)
+    //     {
+    //         setTimeout(() => {
+    //             $('#confirmModal').modal('hide');
+    //             location.reload();
+    //         }, 1000);
+    //     },
+    //     error: function(jqXHR, textStatus, errorThrown) {
+    //         console.log(jqXHR.status);
+    //         console.log('Error: ' + textStatus + ' - ' + errorThrown);
+    //     }
+    // });
    });
 
 

@@ -140,7 +140,9 @@
                         <span>QOUTATION FORMS</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="pages-starter.html">Application Forms</a></li>
                         <li><a href="pages-starter.html">General Information</a></li>
+
 {{--                        <li><a href="pages-timeline.html">Timeline</a></li>--}}
 {{--                        <li><a href="pages-directory.html">Directory</a></li>--}}
 {{--                        <li><a href="pages-invoice.html">Invoice</a></li>--}}

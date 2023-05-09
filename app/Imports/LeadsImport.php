@@ -19,7 +19,7 @@ class LeadsImport implements ToModel
             'company_name' => $row[0],
             'tel_num' => $row[1],
             'state_abbr' => strtoupper($row[2]),
-            'disposition_name' => $row[3],
+//            'disposition_name' => $row[3],
             'website_originated' => $row[4]
 
         ]);
