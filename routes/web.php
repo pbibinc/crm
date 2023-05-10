@@ -75,6 +75,9 @@ Route::prefix('dashboard')->group(function () {
     Route::get('/', [DashboardControllerNew::class, 'index'])->name('dashboard');
     Route::post('/store', [DashboardControllerNew::class, 'store'])->name('dashboard.store');
     Route::get('/aux-duration', [DashboardControllerNew::class, 'getAuxDuration'])->name('dashboard.getAuxDuration');
+    Route::get('/table-data', [DashboardControllerNew::class, 'getTableData'])->name('dashboard.table-data');
+    Route::get('/aux-history-data', [DashboardControllerNew::class, 'getAuxHistoryData'])->name('dashboard.aux-history-data');
+    Route::get('/check-aux-status', [DashboardControllerNew::class, 'checkAuxLogoutStatus'])->name('dashboard.check-aux-status');
 });
 
 // Leads Routes

@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('attendance_records', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->string('login_type');
+            $table->integer('login_type');
             $table->dateTime('log_in');
             $table->dateTime('log_out')->nullable();
             $table->timestamps();

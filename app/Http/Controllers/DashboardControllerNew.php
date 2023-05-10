@@ -2,13 +2,194 @@
 
 namespace App\Http\Controllers;
 
+
 use Carbon\Carbon;
 use App\Models\Dashboard;
+use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class DashboardControllerNew extends Controller
 {
+
+    // public function checkAuxLogoutStatus()
+    // {
+    //     // Assuming you have a unique identifier for the user or the time entry, e.g., user_id
+    //     $user_id = auth()->user()->id;
+
+    //     // Get Aux Records in database
+    //     $auxLogOutStatus = Dashboard::where('user_id', $user_id)
+    //         ->whereIn('login_type', [5, 6])
+    //         ->whereNotNull('log_out')
+    //         ->latest('log_in')
+    //         ->first();
+
+    //     return response()->json(['status' => $auxLogOutStatus]);
+    // }
+
+    public function getAuxHistoryData()
+    {
+        // Assuming you have a unique identifier for the user or the time entry, e.g., user_id
+        $user_id = auth()->user()->id;
+
+        // Get current weekday name
+        $dayOfTheWeek = Carbon::now()->englishDayOfWeek;
+
+        // Get Aux Records in database
+        $auxRecords = Dashboard::where('user_id', $user_id)
+            ->whereIn('login_type', [5, 6])
+            ->whereNotNull('log_in')
+            ->get();
+
+        // Initialize the array to store updated records
+        $auxUpdatedRecords = [];
+
+        // Loop through the records and calculate total hours for each record
+        foreach ($auxRecords as $auxRecord) {
+            if ($auxRecord->log_in !== NULL) {
+                $auxLogIn = Carbon::parse($auxRecord->log_in)->format('g:i:s A');
+                $auxLogOut = empty($auxRecord->log_out) ? null : Carbon::parse($auxRecord->log_out)->format('g:i:s A');
+                $createdAt = Carbon::parse($auxRecord->created_at)->format('F j, Y');
+
+                // Calculate the duration
+                if ($auxLogOut !== null) {
+                    // Parse the times into Carbon instances
+                    $login_time = Carbon::parse($auxRecord->log_in);
+                    $logout_time = Carbon::parse($auxRecord->log_out);
+
+                    // Get the difference as a CarbonInterval
+                    $diff = $login_time->diffAsCarbonInterval($logout_time);
+
+                    // Format the interval as a duration
+                    $duration = $diff->format('%h hours, %i minutes and %s seconds');
+
+                    $auxRecord->formatted_duration = $duration;
+                }
+
+                // Get the day of the week for each record
+                $dayOfTheWeek = Carbon::parse($auxRecord->created_at)->englishDayOfWeek;
+
+                // Pass the data to AJAX
+                $auxRecord->formatted_login = $auxLogIn;
+                $auxRecord->formatted_logout = $auxLogOut;
+                $auxRecord->formatted_weekday = $dayOfTheWeek;
+                $auxRecord->formatted_created_at = $createdAt;
+            }
+            // Store on Array Container
+            $auxUpdatedRecords[] = $auxRecord;
+        }
+        // Return the data as JSON
+        return response()->json([
+            'data' => $auxUpdatedRecords,
+        ]);
+    }
+
+    public function getTableData()
+    {
+        // Assuming you have a unique identifier for the user or the time entry, e.g., user_id
+        $user_id = auth()->user()->id;
+
+        // Check if the database has a current record of time in for user, if yes remove the disabled on aux in and aux out
+        $timeInRecord = Dashboard::where('user_id', $user_id)
+            ->where('login_type', 1)
+            ->latest('log_in')
+            ->first();
+
+        // Get the current month and year
+        $currentMonth = date('m');
+        $currentYear = date('Y');
+
+        // Get current weekday name
+        $dayOfTheWeek = Carbon::now()->englishDayOfWeek;
+        $currentMonthName = Carbon::now()->format('F');
+
+        // Check the records of the user for the current month
+        $userAttendanceRecordCurrentMonth = Dashboard::where('user_id', $user_id)
+            ->whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->whereNotIn('login_type', [5, 6])
+            ->orderBy('log_in', 'DESC')
+            ->paginate(5); // You can change the number 10 to the desired number of records per page
+
+        // Initialize the array to store updated records
+        $updatedRecords = [];
+
+        // Loop through the records and calculate total hours for each record
+        foreach ($userAttendanceRecordCurrentMonth as $record) {
+            if ($record->log_in !== NULL) {
+                $logIn = Carbon::parse($record->log_in)->format('g:i:s A');
+                $logOut = Carbon::parse($record->log_out)->format('g:i:s A');
+                $createdAt = Carbon::parse($record->created_at)->format('F j, Y');
+
+                $record->formatted_login = $logIn;
+                $record->formatted_logout = $logOut;
+                $record->formatted_created_at = $createdAt;
+                $record->formatted_weekdays = $dayOfTheWeek;
+
+                if ($record->log_out !== NULL) {
+                    $record->formatted_logout = $logOut;
+                    // $totalShiftHours = $login_unformatted->diffInMinutes($logout_unformatted) / 60;
+                    // $roundedTotalShiftHours = round($totalShiftHours, 2);
+                    // $record->formatted_totalhrs = $roundedTotalShiftHours;
+                } else {
+                    $record->formatted_logout = "";
+                    // $record->total_hours = "No log_out time";
+                }
+
+                switch ($record->login_type) {
+                    case 1: // Time In
+                        $record->formatted_logintype = "Time In";
+                        break;
+
+                    case 2: // Time Out
+                        $record->formatted_logintype = "Time Out";
+                        break;
+
+                    case 3: // Break Out
+                        $record->formatted_logintype = "Break Out";
+                        break;
+
+                    case 4: // Break In
+                        $record->formatted_logintype = "Break In";
+                        break;
+
+                        // case 5: // Aux In
+                        //     $record->formatted_logintype = "Aux In";
+                        //     break;
+
+                        // case 6: // Aux Out
+                        //     $record->formatted_logintype = "Aux Out";
+                        //     break;
+
+                    case 7: // OT In
+                        $record->formatted_logintype = "OT In";
+                        break;
+
+                    case 8: // OT Out
+                        $record->formatted_logintype = "OT Out";
+                        break;
+
+                    default:
+                        $record->formatted_logintype = "";
+                        break;
+                }
+            } else {
+                $record->total_hours = "No log_out time";
+            }
+
+            // Add the record to the updated records array
+            $updatedRecords[] = $record;
+        }
+
+        $auxRecords = $this->getAuxHistoryData();
+
+        // Return the data as JSON
+        return response()->json([
+            'data' => $updatedRecords,
+            'links' => $userAttendanceRecordCurrentMonth->links(), // Pass the pagination links
+            'auxRecords' => $auxRecords,
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -25,7 +206,144 @@ class DashboardControllerNew extends Controller
             ->latest('log_in')
             ->first();
 
-        return view('admin.dashboard.index', ['result' => $timeInRecord]);
+        // Get the current month and year
+        $currentMonth = date('m');
+        $currentYear = date('Y');
+
+        // Get current weekday name
+        $dayOfTheWeek = Carbon::now()->englishDayOfWeek;
+        $currentMonthName = Carbon::now()->format('F');
+
+        // Check the records of the user for the current month
+        $userAttendanceRecordCurrentMonth = Dashboard::where('user_id', $user_id)
+            ->whereMonth('created_at', $currentMonth)
+            ->whereYear('created_at', $currentYear)
+            ->whereNotIn('login_type', [5, 6])
+            ->orderBy('log_in', 'DESC')
+            ->paginate(5); // You can change the number 10 to the desired number of records per page
+
+        // Initialize the array to store updated records
+        $updatedRecords = [];
+
+        // Loop through the records and calculate total hours for each record
+        foreach ($userAttendanceRecordCurrentMonth as $record) {
+            if ($record->log_in !== NULL) {
+                $logIn = Carbon::parse($record->log_in)->format('g:i:s A');
+                $logOut = Carbon::parse($record->log_out)->format('g:i:s A');
+                $createdAt = Carbon::parse($record->created_at)->format('F j, Y');
+
+                $record->formatted_login = $logIn;
+                $record->formatted_logout = $logOut;
+                $record->formatted_created_at = $createdAt;
+                $record->formatted_weekdays = $dayOfTheWeek;
+
+                if ($record->log_out !== NULL) {
+                    $record->formatted_logout = $logOut;
+                    // $totalShiftHours = $login_unformatted->diffInMinutes($logout_unformatted) / 60;
+                    // $roundedTotalShiftHours = round($totalShiftHours, 2);
+                    // $record->formatted_totalhrs = $roundedTotalShiftHours;
+                } else {
+                    $record->formatted_logout = "";
+                    // $record->total_hours = "No log_out time";
+                }
+
+                switch ($record->login_type) {
+                    case 1: // Time In
+                        $record->formatted_logintype = "Time In";
+                        break;
+
+                    case 2: // Time Out
+                        $record->formatted_logintype = "Time Out";
+                        break;
+
+                    case 3: // Break Out
+                        $record->formatted_logintype = "Break Out";
+                        break;
+
+                    case 4: // Break In
+                        $record->formatted_logintype = "Break In";
+                        break;
+
+                        // case 5: // Aux In
+                        //     $record->formatted_logintype = "Aux In";
+                        //     break;
+
+                        // case 6: // Aux Out
+                        //     $record->formatted_logintype = "Aux Out";
+                        //     break;
+
+                    case 7: // OT In
+                        $record->formatted_logintype = "OT In";
+                        break;
+
+                    case 8: // OT Out
+                        $record->formatted_logintype = "OT Out";
+                        break;
+
+                    default:
+                        $record->formatted_logintype = "";
+                        break;
+                }
+            } else {
+                $record->total_hours = "No log_out time";
+            }
+
+            // Add the record to the updated records array
+            $updatedRecords[] = $record;
+        }
+
+        // Get Aux Records in database
+        $auxRecords = Dashboard::where('user_id', $user_id)
+            ->whereIn('login_type', [5, 6])
+            ->whereNotNull('log_in')
+            ->get();
+
+        // dd($auxRecords);
+
+        // Initialize the array to store updated aux records
+        $auxUpdatedRecords = [];
+
+        // Loop through the records and calculate total hours for each record
+        foreach ($auxRecords as $auxRecord) {
+            if ($auxRecord->log_in !== NULL) {
+                $auxLogIn = Carbon::parse($auxRecord->log_in)->format('g:i:s A');
+                $auxLogOut = empty($auxRecord->log_out) ? null : Carbon::parse($auxRecord->log_out)->format('g:i:s A');
+                $createdAt = Carbon::parse($auxRecord->created_at)->format('F j, Y');
+
+                // Calculate the duration
+                if ($auxLogOut !== null) {
+                    // Parse the times into Carbon instances
+                    $login_time = Carbon::parse($auxRecord->log_in);
+                    $logout_time = Carbon::parse($auxRecord->log_out);
+
+                    // Get the difference as a CarbonInterval
+                    $diff = $login_time->diffAsCarbonInterval($logout_time);
+
+                    // Format the interval as a duration
+                    $duration = $diff->format('%h hours, %i minutes and %s seconds');
+
+                    $auxRecord->formatted_duration = $duration;
+                }
+
+                // Get the day of the week for each record
+                $dayOfTheWeek = Carbon::parse($auxRecord->created_at)->englishDayOfWeek;
+
+                $auxRecord->formatted_login = $auxLogIn;
+                $auxRecord->formatted_logout = $auxLogOut;
+                $auxRecord->formatted_weekday = $dayOfTheWeek;
+                $auxRecord->formatted_created_at = $createdAt;
+            }
+
+            $auxUpdatedRecords[] = $auxRecord;
+        }
+
+        return view('admin.dashboard.index', [
+            'result' => $timeInRecord,
+            'currentMonth' => $currentMonthName,
+            'attendanceRecords' => $updatedRecords,
+            'auxRecords' => $auxUpdatedRecords,
+            'links' => $userAttendanceRecordCurrentMonth->links(), // Pass the pagination links
+        ]);
     }
 
     /**
@@ -59,7 +377,7 @@ class DashboardControllerNew extends Controller
 
         // Collect input data
         $inputData = $request->only([
-            'loginType', 'dayName', 'month', 'dayNum', 'year', 'hour', 'minutes', 'seconds', 'period'
+            'loginType', 'auxDuration', 'dayName', 'month', 'dayNum', 'year', 'hour', 'minutes', 'seconds', 'period'
         ]);
 
         // Convert month name to month number
@@ -83,15 +401,11 @@ class DashboardControllerNew extends Controller
         switch ($inputData['loginType']) {
                 // Time In
             case 1:
-                // Find the latest entry for the user with a time_out
-                $latestTimeOut = Dashboard::where('user_id', $user_id)
-                    ->whereNotNull('log_out')
-                    ->latest('log_out')
-                    ->first();
+                // Check if the given time is within the OT range
+                $isOvertime = !($dateTime->between($startOfDay, $endOfDay) || $dateTime->between($startOfDay->subDay(), $endOfDay->subDay()));
 
-                // If there's a latest time_out entry and it is on the same day
-                if ($latestTimeOut && Carbon::parse($latestTimeOut->log_out)->isSameDay($dateTime)) {
-                    // OT In (7)
+                // If it is overtime, insert an OT In (7) entry
+                if ($isOvertime) {
                     Dashboard::create([
                         'user_id' => $user_id,
                         'login_type' => 7,
@@ -127,6 +441,7 @@ class DashboardControllerNew extends Controller
 
                 return response()->json(['success' => true, 'responseData' => 'Success on inserting the time in entry.']);
                 break;
+
                 // Time Out
             case 2:
 
@@ -178,7 +493,7 @@ class DashboardControllerNew extends Controller
                         $timeEntry->save();
                         return response()->json(['success' => true, 'responseData' => 'Success on updating the time out entry.']);
                     } else {
-                        return response()->json(['success' => false, 'responseData' => 'Error on updating']);
+                        return response()->json(['success' => false, 'responseData' => 'Already timed out.']);
                     }
                 }
                 break;
@@ -207,13 +522,15 @@ class DashboardControllerNew extends Controller
 
                 return response()->json(['success' => true, 'responseData' => 'Success on inserting the break out entry.']);
                 break;
+
                 // Break In
             case 4:
 
-                // If you are already timed out, you cannot timed out again.
+                // If you are already break out, you cannot break out again.
                 $ifAlreadyBreakIn = Dashboard::where('user_id', $user_id)
+                    ->where('login_type', 4)
                     ->whereNotNull('log_in')
-                    ->whereNotNull('log_out')
+                    ->whereNull('log_out')
                     ->latest()
                     ->first();
 
@@ -224,6 +541,8 @@ class DashboardControllerNew extends Controller
 
                 // Find the latest entry for the user that doesn't have a break_in yet
                 $timeEntry = Dashboard::where('user_id', $user_id)
+                    ->where('login_type', 3)
+                    ->whereNotNull('log_in')
                     ->whereNull('log_out')
                     ->orderBy('log_in', 'desc')
                     ->first();
@@ -236,19 +555,18 @@ class DashboardControllerNew extends Controller
                     $timeEntry->save();
                     return response()->json(['success' => true, 'responseData' => 'Success on updating the break in entry.']);
                 } else {
-                    return response()->json(['success' => false, 'responseData' => 'error on updating the break in entry.']);
+                    return response()->json(['success' => false, 'responseData' => 'Already break in.']);
                 }
                 break;
 
                 // Aux In
             case 5:
-
                 // Create a new record (Aux In)
                 Dashboard::create([
                     'user_id' => $user_id,
                     'login_type' => 5,
                     'log_in' => $formattedDateTime,
-                    'aux_duration' => $request->input('auxDuration'), // Save the aux duration
+                    'aux_duration' => $inputData['auxDuration'], // Save the aux duration
                 ]);
 
                 return response()->json(['success' => true, 'responseData' => 'Success on inserting the aux in entry.']);
@@ -267,11 +585,9 @@ class DashboardControllerNew extends Controller
                 if ($timeEntry) {
                     // Update the entry
                     $timeEntry->login_type = 6;
-                    $auxDuration = intval($request->input('auxDuration')); // Parse auxDuration as an integer
-                    $logOutTime = Carbon::createFromFormat('Y-m-d H:i:s', $formattedDateTime);
-                    $updatedLogOutTime = $logOutTime->addMinutes($auxDuration); // Add aux_duration to log_out time
-                    $timeEntry->log_out = $updatedLogOutTime->format('Y-m-d H:i:s');
-                    $timeEntry->save();
+                    $timeEntry->log_out = $formattedDateTime;
+                    // $timeEntry->aux_duration = $inputData['auxDuration'];
+                    $timeEntry->update();
                     return response()->json(['success' => true, 'responseData' => 'Success on updating the aux out entry.']);
                 } else {
                     return response()->json(['success' => false, 'responseData' => 'error on updating the aux out entry.']);
@@ -324,27 +640,27 @@ class DashboardControllerNew extends Controller
         //
     }
 
-    public function getAuxDuration(Request $request)
-    {
-        $user_id = auth()->user()->id;
+    // public function getAuxDuration(Request $request)
+    // {
+    //     $user_id = auth()->user()->id;
 
-        $auxIn = Dashboard::where('user_id', $user_id)
-            ->where('login_type', 5)
-            ->latest('log_in')
-            ->first();
+    //     $auxIn = Dashboard::where('user_id', $user_id)
+    //         ->where('login_type', 5)
+    //         ->latest('log_in')
+    //         ->first();
 
-        $auxOut = Dashboard::where('user_id', $user_id)
-            ->where('login_type', 6)
-            ->latest('log_out')
-            ->first();
+    //     $auxOut = Dashboard::where('user_id', $user_id)
+    //         ->where('login_type', 6)
+    //         ->latest('log_out')
+    //         ->first();
 
-        if ($auxIn && $auxOut) {
-            $auxInTime = new Carbon($auxIn->log_in);
-            $auxOutTime = new Carbon($auxOut->log_out);
-            $duration = $auxOutTime->diffInMinutes($auxInTime);
-            return response()->json(['auxDuration' => $duration]);
-        } else {
-            return response()->json(['auxDuration' => 0]);
-        }
-    }
+    //     if ($auxIn && $auxOut) {
+    //         $auxInTime = new Carbon($auxIn->log_in);
+    //         $auxOutTime = new Carbon($auxOut->log_out);
+    //         $duration = $auxOutTime->diffInMinutes($auxInTime);
+    //         return response()->json(['auxDuration' => $duration]);
+    //     } else {
+    //         return response()->json(['auxDuration' => 0]);
+    //     }
+    // }
 }
