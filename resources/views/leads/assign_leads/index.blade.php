@@ -18,6 +18,15 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="d-grid mb-3">
+                                <button type="button" id="voidAll" class="btn btn-outline-danger waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="top" title="Button to void all leads to account">Void ALL Leads</button>
+                            </div>
+{{--                            <div class="p-3">--}}
+{{--                                <p>A message with auto close timer</p>--}}
+{{--                                <button type="button" class="btn btn-primary waves-effect waves-light" id="sa-close">Click me</button>--}}
+{{--                            </div>--}}
+
+                            <br>
                             <table id="datatableLeads" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead>
                                 <tr>
@@ -87,7 +96,7 @@
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label class="form-label">Assign Lead Quantity</label>
-                                                <input class="form-control" type="number" value="10" id="leadsQuantityUser">
+                                                <input class="form-control" type="number" value="10" id="leadsQuantityUser" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
 {{--                                                {!! Form::label('assign_leads_quantity', 'Assign Lead Quantity') !!}--}}
 {{--                                                {!! Form::text('assign_leads_quantity', null, ['class' => 'form-control']) !!}--}}
                                             </div>
@@ -96,7 +105,7 @@
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label class="form-label">Assign Random Leads Quantity</label>
-                                                <input class="form-control" type="number" value="10" id="leadsQuantityRandom">
+                                                <input class="form-control" type="number" value="10" id="leadsQuantityRandom" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
 {{--                                                {!! Form::label('random_leads_quantity', 'Assign Random Leads Quantity') !!}--}}
 {{--                                                {!! Form::text('random_leads_quantity', null, ['class' => 'form-control']) !!}--}}
                                             </div>
@@ -107,13 +116,13 @@
                                         <div class="row">
                                             <div class="col-6">
                                                 <div class="d-grid mb-3">
-                                                    <button type="button" id="assignRandomLeadsUser" class="btn btn-info waves-effect waves-light ">Assign Random Leads to user</button>
+                                                    <button type="button" id="assignRandomLeadsUser" class="btn btn-info waves-effect waves-light " data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign Random Leads to a user base to the quantity input on top">Assign Random Leads to user</button>
                                                 </div>
                                             </div>
 
                                             <div class="col-6">
                                                 <div class="d-grid mb-3">
-                                                <button type="button" id="assignRandomLeads" class="btn btn-info waves-effect waves-light ">Assign Random Leads</button>
+                                                <button type="button" id="assignRandomLeads" class="btn btn-info waves-effect waves-light " data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign Random Leads to a random user">Assign Random Leads</button>
                                                 </div>
                                             </div>
 
@@ -121,7 +130,7 @@
 
                                     <div class="row">
                                         <div class="d-grid mb-3">
-                                            <button type="button" id="assignLead" class="btn btn-info waves-effect waves-light ">Assign Lead</button>
+                                            <button type="button" id="assignLead" class="btn btn-info waves-effect waves-light " data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign checked Leads to a selected user">Assign Lead</button>
                                         </div>
                                     </div>
 
@@ -149,12 +158,12 @@
             </div>
         </div>
     </div>
-    {{-- start of modal for creation and edition--}}
+    {{-- start of modal for redeploying of leads--}}
     <div class="modal fade" id="dataModal" tabindex="-1" aria-labelledby="dataModal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header" >
-                    <h5 class="modal-title"><b>Confirmation</b></h5>
+                    <h5 class="modal-title"><b>Redeploy Leads To other Agent</b></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -175,7 +184,7 @@
     {{-- end of modal --}}
 
 
-    {{-- start of deletion of modal --}}
+    {{-- start of modal for voiding the leads --}}
     <div class="modal fade" id="confirmModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -195,7 +204,76 @@
     </div>
     {{-- end of deletion of modal --}}
 
+
+
+    {{-- start of voiding all leads to a user --}}
+    <div class="modal fade" id="confirmVoidAllModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" >
+                    <h5 class="modal-title"><b>Confirmation</b></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to void all leads on this account?.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" name="void_ok_button" id="void_ok_button">Void</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- end of deletion of modal --}}
+
+    {{-- start of voiding all leads to a user --}}
+    <div class="modal fade" id="assignRandomLeadsToUser" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" >
+                    <h5 class="modal-title"><b>Confirmation</b></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure?.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" name="assign_ok_button" id="assign_ok_button">Assign</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- end of deletion of modal --}}
+
+    {{-- start of voiding all leads to a user --}}
+    <div class="modal fade" id="assignRandomLeadsToRandomUser" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" >
+                    <h5 class="modal-title"><b>Confirmation</b></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure?.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" name="assign_random_ok_button" id="assign_random_ok_button">Assign</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- end of deletion of modal --}}
+
     <script>
+
+    {{--    <!-- Sweet Alerts js -->--}}
+    {{--    <script src="{{asset('backend/assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>--}}
+
+    {{--<!-- Sweet alert init js-->--}}
+    {{--<script src="{{asset('backend/assets/js/pages/sweet-alerts.init.js')}}"></script>--}}
+
         // DATA TABLE
         $(document).ready(function() {
             $('.select2').select2();
@@ -219,18 +297,8 @@
                     {data: 'state_abbr', name: 'state_abbr'},
                     {data: 'website_originated', name: 'website_originated'},
                     {data: 'created_at_formatted', name: 'created_at', searchable:false},
-                    // {data: 'updated_at_formatted', name: 'updated_at', searchable:false},
-                    // {data: 'action', name: 'action', orderable: false, searchable: false}
-                    // {
-                    //     data: 'checkbox',
-                    //     name: 'checkbox',
-                    //     title: '<input type="checkbox" id="select-all">',
-                    //     orderable: false,
-                    //     searchable: false,
-                    //     className: 'select-all'
-                    // }
-                ]
 
+                    ]
             });
 
             // script for display leads that user have
@@ -263,18 +331,38 @@
 
             $('#timezoneDropdown').on('change', function() {
                 var timezone = $(this).val();
-                $('#dataTable').DataTable().ajax.reload(null, false).draw();
-                $('#dataTable').DataTable().ajax.url("{{ route('assign') }}?timezone=" + timezone);
+                $('#dataTable').DataTable().ajax.url("{{ route('assign') }}?timezone=" + timezone).load();
             });
+
+            $("#voidAll").hide()
 
             $('#userProfileDropdown').on('change', function() {
                 $('#datatableLeads').DataTable().ajax.reload();
-            });
+                let userProfileValue= $(this).val();
+               if(userProfileValue != "")
+               {
+                   $('#voidAll').show();
+               }else{
+                   // console.log($('#voidAll'));
+                   $("#voidAll").hide()
+               }
 
+            });
 
 
             // ajax script for randomly assign leads to user
             $('#assignRandomLeadsUser').on('click', function (){
+                let userProfileId= $('#userProfileDropdown').val();
+                if(userProfileId != ''){
+                    $('#assignRandomLeadsToUser').modal('show');
+                }else{
+                    alert('Please Select Agent')
+                }
+
+            });
+
+            //ajax for submitting the button for assigning random leads to user
+            $('#assign_ok_button').on('click', function(){
                 $.ajax({
                     url:"{{route('assign-random-leads-user')}}",
                     headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
@@ -306,7 +394,14 @@
             });
 
 
-            // ajax script for assigning leads
+
+            // ajax script for randomly assign leads to users
+            $('#assignRandomLeads').on('click', function (){
+                $('#assignRandomLeadsToRandomUser').modal('show');
+            });
+
+
+            // ajax script for assigning checked leads
             $('#assignLead').on('click', function (){
                 var id = [];
                 var userProfileId = $('#userProfileDropdown').val()
@@ -328,8 +423,10 @@
                             },
                             success:function (data)
                             {
-                                $('#datatableLeads').DataTable().ajax.reload();
-                                $('#dataTable').DataTable().ajax.reload();
+                                // $('#datatableLeads').DataTable().ajax.reload();
+                                // $('#dataTable').DataTable().ajax.reload();
+                                alert(data.success);
+                                location.reload();
                             },
                             error: function (data) {
                                 var errors =data.responseJSON;
@@ -348,8 +445,10 @@
                 }
             });
 
-            // ajax script for randomly assign leads
-            $('#assignRandomLeads').on('click', function (){
+
+
+            // ajax script for randomly assign leads to a random users
+            $('#assign_random_ok_button').on('click', function (){
                 var id = [];
                 // console.log('this test the button shit');
                 $.ajax({
@@ -382,17 +481,62 @@
             });
 
 
+            $('#confirmVoidAllModal').on('hidden.bs.modal', function(){
+                voidAllClicked = false;
+            });
 
         });
 
-        var leadsId
-        $(document).on('click', '.btn-outline-danger', function(event){
-            leadsId = $(this).attr('id');
-            $('#confirmModal').modal('show');
 
 
-        });
 
+    let voidAllClicked = false;
+
+     //this script is for showing the modal for voiding all leads from leads
+    $('#voidAll').on('click', function (){
+        $('#confirmVoidAllModal').modal('show');
+        voidAllClicked = true;
+    });
+
+
+
+    //script for sending the ajax request
+    $('#void_ok_button').click(function(){
+        event.preventDefault();
+        $.ajax({
+            url: "{{route('void-all')}}",
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            method:'POST',
+            dataType:"json",
+            data:{
+                userProfileId:$('#userProfileDropdown').val(),
+            },
+            success:function (data){
+                alert(data.success);
+                location.reload();
+            },
+            error: function(data){
+                var errors = data.responseJSON;
+                console.log(errors);
+            }
+        })
+    });
+
+        //script for showing modal of void confirmation
+            var leadsId
+            $(document).on('click', '.btn-outline-danger', function(event){
+                leadsId = $(this).attr('id');
+                if(voidAllClicked){
+                    $('#confirmModal').modal('hide');
+
+                }else{
+                    $('#confirmModal').modal('show');
+                }
+            });
+
+
+
+            //script for voiding leads from user
         $('#ok_button').click(function(){
             event.preventDefault();
             $.ajax({
@@ -414,12 +558,16 @@
             })
         });
 
+
+        //script for triggiring modal on redeploying
         var leadsIdRedeploy
         $(document).on('click', '.btn-outline-info', function (event){
             leadsIdRedeploy = $(this).attr('id');
             $('#dataModal').modal('show');
         });
 
+
+        //script for submiting of redeployement
         $('#submit_button').click(function(){
             event.preventDefault();
             $.ajax({

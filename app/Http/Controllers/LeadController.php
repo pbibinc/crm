@@ -30,8 +30,8 @@ class LeadController extends Controller
                     $item->created_at_formatted = Carbon::parse($item->created_at)->format('Y-m-d');
                     return $item;
                 });
-
                 Cache::put('leads_data', $data, 60 * 60);
+
             }
             return DataTables::of($data)->make(true);
         }
@@ -45,6 +45,7 @@ class LeadController extends Controller
     {
         Excel::import(new LeadsImport,request()->file('file'));
         Cache::forget('leads_data');
+        Cache::forget('leads_funnel');
         return back();
     }
 

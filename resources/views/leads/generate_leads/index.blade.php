@@ -135,8 +135,12 @@
                         switch (data){
                             case 1: return 'New Leads';
                             case 2:
-                                var firstNameInitial = row.user_profile.firstname.charAt(0).toUpperCase();
-                                return 'Assign to' + ' ' + row.user_profile.position.name + ' ' + firstNameInitial + '.' + ' '  + row.user_profile.american_surname;
+                                if (row.user_profile && row.user_profile.firstname) {
+                                    let firstNameInitial = row.user_profile.firstname.charAt(0).toUpperCase();
+                                    return 'Assign to ' + row.user_profile.position.name + ' ' + firstNameInitial + '. ' + row.user_profile.american_surname;
+                                } else {
+                                    return ''; // Handle the case when user_profile or firstname is null
+                                }
                             case 3: return ''
                         }
                     }

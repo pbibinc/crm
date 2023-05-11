@@ -72,6 +72,7 @@ Route::prefix('assign')->group(function () {
     Route::post('/void-leads-user', [AssignLeadController::class, 'void'])->name('void-leads-user');
     Route::post('/redeploy-leads-user', [AssignLeadController::class, 'redeploy'])->name('redeploy-leads-user');
     Route::get('/{leads}/edit',[AssignLeadController::class, 'edit'])->name('edit-leads-user');
+    Route::post('/void-all',[AssignLeadController::class, 'voidAll'])->name('void-all');
 });
 
 Route::get('/register', [App\Http\Controllers\Auth\RegisteredUserController::class, 'create'])
