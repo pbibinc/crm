@@ -17,10 +17,22 @@ class UserProfileController extends Controller
 {
     public function  index(Request $request)
     {
+        $this->authorize('view', UserProfile::find(1));
         $positions = Position::all();
         $departments = Department::all();
         $accounts = User::all();
+        $selectedAccountId = session('selectedAccountId');
         $usedAccounts = UserProfile::pluck('user_id')->toArray();
+
+        $arrSearchArrAccounts = array_search($selectedAccountId, $usedAccounts);
+        if ($arrSearchArrAccounts !== false){
+            unset($usedAccounts[$arrSearchArrAccounts]);
+        }
+
+//        dd($arrSearchArrAccounts);
+        session()->forget('selectedAccountId');
+
+
         // $userProfile = User
         if($request->ajax()){
             $userProfiles = UserProfile::with('position', 'department', 'user')
@@ -122,6 +134,7 @@ class UserProfileController extends Controller
                 'accountsSelected' => $accountsSelected,
                 'accounts' =>  $accounts
             ]);
+            return redirect()->route('index')->with('selectedAccountId', $accountsSelected);
         }
     }
 

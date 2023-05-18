@@ -7,17 +7,31 @@
                     <div class="card ">
 
                         <div class="card-body">
-                            <div class="row mb-3">
-                                <label class="form-label">Single Select</label>
-                                <div class="col-lg-12">
-                                    <select class="form-control select2" id="userProfileDropdown">
-                                        <option value="">select agents</option>
-                                        @foreach($userProfiles as $userProfile)
-                                            <option value="{{$userProfile->id}}">{{$userProfile->firstname . " " . $userProfile->american_surname}}</option>
-                                        @endforeach
-                                    </select>
+                            <div class="row">
+                                <div class="col-6">
+                                    <label class="form-label">App Taker</label>
+                                    <div class="col-lg-12">
+                                        <select class="form-control select2" id="userProfileDropdown">
+                                            <option value="">select agents</option>
+                                            @foreach($userProfiles as $userProfile)
+                                                <option value="{{$userProfile->id}}">{{$userProfile->firstname . " " . $userProfile->american_surname}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Accounts</label>
+                                    <div class="col-lg-12">
+                                        <select class="form-control select2" id="accountsDropdown">
+                                            <option value="">select agents</option>
+                                            @foreach($accounts as $account)
+                                                <option value="{{$account->id}}">{{$account->firstname . " " . $account->american_surname}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
+                            <br>
                             <div class="d-grid mb-3">
                                 <button type="button" id="voidAll" class="btn btn-outline-danger waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="top" title="Button to void all leads to account">Void ALL Leads</button>
                             </div>
@@ -114,25 +128,28 @@
                                     <br>
 
                                         <div class="row">
-                                            <div class="col-6">
+                                            <div class="col-4">
                                                 <div class="d-grid mb-3">
                                                     <button type="button" id="assignRandomLeadsUser" class="btn btn-info waves-effect waves-light " data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign Random Leads to a user base to the quantity input on top">Assign Random Leads to user</button>
                                                 </div>
                                             </div>
 
-                                            <div class="col-6">
+                                            <div class="col-4">
+                                                <div class="d-grid mb-3">
+                                                    <button type="button" id="assignLead" class="btn btn-primary waves-effect waves-light " data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign checked Leads to a selected user">Assign Lead</button>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-4">
                                                 <div class="d-grid mb-3">
                                                 <button type="button" id="assignRandomLeads" class="btn btn-info waves-effect waves-light " data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign Random Leads to a random user">Assign Random Leads</button>
                                                 </div>
                                             </div>
 
+
                                         </div>
 
-                                    <div class="row">
-                                        <div class="d-grid mb-3">
-                                            <button type="button" id="assignLead" class="btn btn-info waves-effect waves-light " data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign checked Leads to a selected user">Assign Lead</button>
-                                        </div>
-                                    </div>
+
 
                                     <br>
                                     <thead>
@@ -158,6 +175,7 @@
             </div>
         </div>
     </div>
+
     {{-- start of modal for redeploying of leads--}}
     <div class="modal fade" id="dataModal" tabindex="-1" aria-labelledby="dataModal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -169,8 +187,8 @@
                 <div class="modal-body">
                     <select class="form-control" id="userProfileRedeployDropdown">
                         <option value="">select agents</option>
-                        @foreach($userProfiles as $userProfile)
-                            <option value="{{$userProfile->id}}">{{$userProfile->firstname . " " . $userProfile->american_surname}}</option>
+                        @foreach($accounts as $account)
+                            <option value="{{$account->id}}">{{$account->firstname . " " . $account->american_surname}}</option>
                         @endforeach
                     </select>
                 </div>
@@ -184,7 +202,7 @@
     {{-- end of modal --}}
 
 
-    {{-- start of modal for voiding the leads --}}
+    {{-- start for voiding leads to user modal --}}
     <div class="modal fade" id="confirmModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -202,7 +220,7 @@
             </div>
         </div>
     </div>
-    {{-- end of deletion of modal --}}
+    {{-- end of modal --}}
 
 
 
@@ -226,7 +244,7 @@
     </div>
     {{-- end of deletion of modal --}}
 
-    {{-- start of voiding all leads to a user --}}
+    {{-- start of assigning random leads to user modal --}}
     <div class="modal fade" id="assignRandomLeadsToUser" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -246,7 +264,7 @@
     </div>
     {{-- end of deletion of modal --}}
 
-    {{-- start of voiding all leads to a user --}}
+    {{-- start of assigning random leads to random user modal--}}
     <div class="modal fade" id="assignRandomLeadsToRandomUser" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -309,6 +327,7 @@
                     url: "{{ route('getDataTableLeads') }}",
                     data: function (f) {
                             f.userProfile = $('#userProfileDropdown').val()
+                            f.accountProfileValue = $('#accountsDropdown').val()
                     }
                 },
                 columns: [
@@ -342,21 +361,43 @@
                if(userProfileValue != "")
                {
                    $('#voidAll').show();
+                   $('#accountsDropdown').prop('disabled', true);
                }else{
                    // console.log($('#voidAll'));
-                   $("#voidAll").hide()
+                   $("#voidAll").hide();
+                   $('#accountsDropdown').prop('disabled', false);
                }
 
+            });
+
+            $('#accountsDropdown').on('change', function () {
+                $('#datatableLeads').DataTable().ajax.reload();
+                let accountsProfileValue= $(this).val();
+                if(accountsProfileValue != "")
+                {
+                    $('#voidAll').show();
+                    $('#userProfileDropdown').prop('disabled', true);
+
+                }else{
+                    // console.log($('#voidAll'));
+                    $("#voidAll").hide()
+                    $('#userProfileDropdown').prop('disabled', false);
+                }
             });
 
 
             // ajax script for randomly assign leads to user
             $('#assignRandomLeadsUser').on('click', function (){
                 let userProfileId= $('#userProfileDropdown').val();
-                if(userProfileId != ''){
+                let accountProfileId= $('#accountsDropdown').val()
+                if(userProfileId != '' || accountProfileId != ''){
                     $('#assignRandomLeadsToUser').modal('show');
                 }else{
-                    alert('Please Select Agent')
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Please Select Agent',
+                        icon: 'error'
+                    });
                 }
 
             });
@@ -370,7 +411,8 @@
                     method: "POST",
                     data:{
                         leadsQuantityUser:$('#leadsQuantityUser').val(),
-                        userProfileId: $('#userProfileDropdown').val()
+                        userProfileId: $('#userProfileDropdown').val(),
+                        accountProfileValue: $('#accountsDropdown').val()
                     },
                     success: function(response){
                         if(response.errors){
@@ -380,15 +422,26 @@
                                 $('#' + key + '_error').html(value);
                             });
                         }else{
-                            alert(response.success);
-                            location.reload();
+                            Swal.fire({
+                                title: 'Success',
+                                text: response.success,
+                                icon: 'success'
+                            }).then(function() {
+                                location.reload();
+                            });
                         }
                     },
                     error:function(xhr, status, error)
                     {
-                        console.log(xhr);
-                        console.log(status);
-                        console.log(error);
+                        var errorMessage = 'An Error Occured';
+                        if(xhr.responseJSON && xhr.responseJSON.error){
+                            errorMessage = xhr.responseJSON.error;
+                        }
+                        Swal.fire({
+                            title: 'Error',
+                            text: errorMessage,
+                            icon: 'error'
+                        });
                     }
                 });
             });
@@ -405,12 +458,13 @@
             $('#assignLead').on('click', function (){
                 var id = [];
                 var userProfileId = $('#userProfileDropdown').val()
+                var accountProfileId = $('#accountsDropdown').val()
                 $('.users_checkbox:checked').each(function (){
                     id.push($(this).val());
                 });
                 if(id.length > 0)
                 {
-                    if(userProfileId)
+                    if(userProfileId || accountProfileId)
                     {
                         $.ajax({
                             url:"{{route('assign-leads')}}",
@@ -419,14 +473,18 @@
                             method: "POST",
                             data:{
                                 id:id,
-                                userProfileId:userProfileId
+                                userProfileId:userProfileId,
+                                accountProfileId:accountProfileId
                             },
                             success:function (data)
                             {
-                                // $('#datatableLeads').DataTable().ajax.reload();
-                                // $('#dataTable').DataTable().ajax.reload();
-                                alert(data.success);
-                                location.reload();
+                                Swal.fire({
+                                    title: 'Success',
+                                    text: data.success,
+                                    icon: 'success'
+                                }).then(function() {
+                                    location.reload();
+                                });
                             },
                             error: function (data) {
                                 var errors =data.responseJSON;
@@ -435,13 +493,21 @@
 
                         });
                     }else{
-                        alert('Please select agent');
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Please Select Agent',
+                            icon: 'error'
+                        });
                     }
 
                 }
                 else
                 {
-                    alert('Please select atleast one checkbox');
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Please select atleast one checkbox',
+                        icon: 'error'
+                    });
                 }
             });
 
@@ -467,15 +533,27 @@
                                 $('#' + key + '_error').html(value);
                             });
                         }else{
-                            alert(response.success);
+                            Swal.fire({
+                                title: 'Success',
+                                text: response.success,
+                                icon: 'success'
+                            }).then(function() {
+                                location.reload();
+                            });
                             location.reload();
                         }
                     },
                     error:function(xhr, status, error)
                     {
-                        console.log(xhr);
-                        console.log(status);
-                        console.log(error);
+                        var errorMessage = 'An Error Occured';
+                        if(xhr.responseJSON && xhr.responseJSON.error){
+                            errorMessage = xhr.responseJSON.error;
+                        }
+                        Swal.fire({
+                            title: 'Error',
+                            text: errorMessage,
+                            icon: 'error'
+                        });
                     }
                 });
             });
@@ -512,12 +590,21 @@
                 userProfileId:$('#userProfileDropdown').val(),
             },
             success:function (data){
-                alert(data.success);
-                location.reload();
+                Swal.fire({
+                    title: 'Success',
+                    text: data.success,
+                    icon: 'success'
+                }).then(function() {
+                    location.reload();
+                });
             },
             error: function(data){
                 var errors = data.responseJSON;
-                console.log(errors);
+                Swal.fire({
+                    title: 'Error',
+                    text: errors,
+                    icon: 'error'
+                });
             }
         })
     });
@@ -548,12 +635,21 @@
                     id:leadsId,
                 },
                 success:function (data){
-                    alert(data.success);
-                    location.reload();
+                    Swal.fire({
+                        title: 'Success',
+                        text: data.success,
+                        icon: 'success'
+                    }).then(function() {
+                        location.reload();
+                    });
                 },
                 error: function(data){
                     var errors = data.responseJSON;
-                    console.log(errors);
+                    Swal.fire({
+                        title: 'Error',
+                        text: errors,
+                        icon: 'error'
+                    });
                 }
             })
         });
@@ -580,12 +676,21 @@
                     userProfileId:$('#userProfileRedeployDropdown').val()
                 },
                 success:function (data){
-                    alert(data.success);
-                    location.reload();
+                    Swal.fire({
+                        title: 'Success',
+                        text: data.success,
+                        icon: 'success'
+                    }).then(function() {
+                        location.reload();
+                    });
                 },
                 error: function(data){
                     var errors = data.responseJSON;
-                    console.log(errors);
+                    Swal.fire({
+                        title: 'Error',
+                        text: errors,
+                        icon: 'error'
+                    });
                 }
             })
         });

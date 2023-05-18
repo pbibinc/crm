@@ -109,7 +109,9 @@
                     <ul class="sub-menu" aria-expanded="false">
                         <li><a href="{{ route('admin.users.index') }}">Accounts</a></li>
                         <li><a href="{{ route('admin.roles.index') }}">Role</a></li>
-                        <li><a href="{{ route('admin.permissions.index') }}">Permission</a></li>
+                        @can('view', App\Models\Permission::find(1))
+                            <li><a href="{{ route('admin.permissions.index') }}">Permission</a></li>
+                        @endcan
                     </ul>
                 </li>
                 <li>
@@ -152,14 +154,21 @@
                 </li>
 
                 <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="ri-spy-fill"></i>
-                        <span>LEADS</span>
-                    </a>
+                    @can('view', App\Models\Lead::find(1))
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="ri-spy-fill"></i>
+                            <span>LEADS</span>
+                        </a>
+                    @endcan
+
                     <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{route('leads')}}">Import Leads</a></li>
+                        @can('viewImport', App\Models\Lead::find(1))
+                            <li><a href="{{route('leads')}}">Import Leads</a></li>
+                        @endcan
+                        @can('viewLeadsFunnel', App\Models\Lead::find(1))
                         <li><a href="{{route('assign')}}">Leads Funnel</a></li>
-                        {{--                        <li><a href="pages-timeline.html">Timeline</a></li>--}}
+                            @endcan
+                            <li><a href="{{route('apptaker-leads')}}">List</a></li>
                         {{--                        <li><a href="pages-directory.html">Directory</a></li>--}}
                         {{--                        <li><a href="pages-invoice.html">Invoice</a></li>--}}
                         {{--                        <li><a href="pages-404.html">Error 404</a></li>--}}

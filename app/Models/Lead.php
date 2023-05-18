@@ -22,4 +22,9 @@ class Lead extends Model
     {
         return $this->belongsTo(UserProfile::class);
     }
+
+    public function dispositions()
+    {
+        return $this->belongsTo(Disposition::class);
+    }
 }

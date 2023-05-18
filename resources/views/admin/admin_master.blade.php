@@ -11,12 +11,14 @@
             </div>
         </div>
     </div>
+
+    <link href="{{asset('backend/assets/libs/sweetalert2/sweetalert2.min.css')}}" rel="stylesheet" type="text/css" />
+    <script src="{{asset('backend/assets/libs/jquery/jquery.min.js')}}"></script>
+
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ asset('backend/assets/images/favicon.ico') }}">
+    <script src="{{asset('backend/assets/libs/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 
-
-    <!-- jquery.vectormap css -->
-{{--    <link href="{{asset('backend/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css')}}" rel="stylesheet" type="text/css" />--}}
 
     <!-- DataTables -->
     <link href="{{asset('backend/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css')}}" rel="stylesheet" type="text/css" />
@@ -26,16 +28,13 @@
     <link href="{{ asset('backend/assets/libs/select2/css/select2.min.css') }}" rel="stylesheet" />
 
 
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script src="{{ asset('backend/assets/libs/select2/js/select2.min.js')}}"></script>
 
     @include("partials.head")
 
     <!-- JAVASCRIPT -->
-
-
-    <script src="{{ mix('js/app.js') }}"></script>
-    <script src="{{ asset('js/bootstrap.js') }}"></script>
-    <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script>
-{{--    <script src="{{ asset('backend/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>--}}
     <script src="{{ asset('backend/assets/libs/metismenu/metisMenu.min.js') }}"></script>
     <script src="{{ asset('backend/assets/libs/simplebar/simplebar.min.js') }}"></script>
     <script src="{{ asset('backend/assets/libs/node-waves/waves.min.js') }}"></script>
@@ -101,6 +100,7 @@
 </div>
 @include('partials.vendor-scripts')
 
+
 <!-- Right Sidebar -->
 
 <!-- /Right-bar -->
@@ -126,22 +126,25 @@
 <!-- Responsive examples -->
 <script src="{{ asset('backend/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
 <script src="{{ asset('backend/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
-
 <script src="{{ asset('backend/assets/js/pages/dashboard.init.js') }}"></script>
 
 <!-- App js -->
 <script src="{{ asset('backend/assets/js/app.js') }}"></script>
 
-
 {{--form validation--}}
+<link href="{{asset('backend/assets/libs/spectrum-colorpicker2/spectrum.min.css')}}" rel="stylesheet" type="text/css">
+<link href="{{asset('backend/assets/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css')}}" rel="stylesheet">
 <script src="{{asset('backend/assets/libs/parsleyjs/parsley.min.js')}}"></script>
 <script src="{{asset('backend/assets/js/pages/form-validation.init.js')}}"></script>
-
-
-
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src="{{ asset('backend/assets/js/pages/form-advanced.init.js')}}"></script>
-<script src="{{ asset('backend/assets/libs/select2/js/select2.min.js')}}"></script>
+<script src="{{asset('backend/assets/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js')}}"></script>
+<!-- Sweet Alerts js -->
+<script src="{{asset('backend/assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>
+
+<!-- Sweet alert init js-->
+<script src="{{asset('backend/assets/js/pages/sweet-alerts.init.js')}}"></script>
+
+
 <script>
     @if(Session::has('message'))
     var type = "{{ Session::get('alert-type','info') }}"

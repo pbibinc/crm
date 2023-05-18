@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('tel_num', 15);
             $table->string('state_abbr', 2);
             $table->string('website_originated');
-            $table->string('disposition_name', 255);
             $table->timestamps();
 
         });

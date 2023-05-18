@@ -14,7 +14,7 @@ class DepartmentController extends Controller
 {
     public function index(Request $request)
     {
-      
+      $this->authorize('view', Department::find(1));
         if($request->ajax())
         {
             $data = Department::select('id', 'name', 'created_at', 'updated_at')->get();
@@ -72,7 +72,7 @@ class DepartmentController extends Controller
         $form_data = array(
             'name' => $request->name
         );
-        
+
         Department::whereId($request->hidden_id)->update($form_data);
         return response()->json(['success' => 'Data is successfully updated']);
     }
@@ -82,5 +82,5 @@ class DepartmentController extends Controller
         $department->delete();
         // return to_route('admin.positions.index');
     }
-    
+
 }

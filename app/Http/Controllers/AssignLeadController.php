@@ -23,10 +23,12 @@ class AssignLeadController extends Controller
     //
     public function index(Request $request)
     {
-
+        $this->authorize('viewLeadsFunnel', Lead::find(1));
         $userProfiles = UserProfile::whereHas('position', function ($query){
             $query->where('name', 'Application Taker');
             })->get();
+
+        $accounts = UserProfile::all();
 //        dd($userProfiles);
         $sites = Site::all();
         $leads = Lead::all();
@@ -94,18 +96,26 @@ class AssignLeadController extends Controller
 //
 //        dd($shuffledLeads);
 
-        return view('leads.assign_leads.index', compact('userProfiles', 'sites','timezones'));
+        return view('leads.assign_leads.index', compact('userProfiles', 'sites','timezones', 'accounts'));
     }
 
     public function getDataTableLeads(Request $request)
     {
         $userProfiles = UserProfile::all();
         $userProfileId = $request->input('userProfile');
-        $userProfile = UserProfile::with(['leads' => function($query){
-            $query->where('status', 2);
-        }])->find($userProfileId);
-        $leads = $userProfile ? $userProfile->leads : collect();
+        $accountProfileValue = $request->input('accountProfileValue');
 
+        if($userProfileId){
+            $userProfile = UserProfile::with(['leads' => function($query){
+                $query->where('status', 2);
+            }])->find($userProfileId);
+            $leads = $userProfile ? $userProfile->leads : collect();
+        }elseif ($accountProfileValue){
+            $accounts = UserProfile::find($accountProfileValue);
+            $leads = $accounts ? $accounts->leads()->where('status', 2)->get() : collect();
+        }else{
+            $leads = collect();
+        }
           if($request->ajax()){
               if(!empty($leads)){
                  $data = $leads->toArray();
@@ -128,7 +138,12 @@ class AssignLeadController extends Controller
     {
         $leadsId = $request->input('id');
         $userProfileId = $request->input('userProfileId');
-        $userProfile = UserProfile::find($userProfileId);
+        $accountProfileId = $request->input('accountProfileId');
+        if($userProfileId){
+            $userProfile = UserProfile::find($userProfileId);
+        }elseif ($accountProfileId){
+            $userProfile = UserProfile::find($accountProfileId);
+        }
             Lead::whereIn('id', $leadsId)
                 ->update([
                     'user_profile_id' => $userProfileId,
@@ -136,6 +151,7 @@ class AssignLeadController extends Controller
                 ]);
             Cache::forget('leads_funnel');
             Cache::forget('leads_data');
+            Cache::forget('apptaker_leads');
         return response()->json(['success' => 'the leads are succesfully assign into'. ' '  . $userProfile->firstname . ' ' . $userProfile->american_surname]);
     }
 
@@ -158,6 +174,7 @@ class AssignLeadController extends Controller
         }
         Cache::forget('leads_funnel');
         Cache::forget('leads_data');
+        Cache::forget('apptaker_leads');
         return response()->json(['success' => 'Random Leads are Assign to Different Users']);
 
     }
@@ -165,8 +182,15 @@ class AssignLeadController extends Controller
     {
         $quantityUserLeads = $request->input('leadsQuantityUser');
         $newLeads = Lead::where('status', 1)->get();
-        $userProfileId = $request->input('userProfileId');
+        $userProfileIdValue = $request->input('userProfileId');
+        $accountProfile = $request->input('accountProfileValue');
         $shuffledLeads =  $newLeads->shuffle()->take($quantityUserLeads);
+
+        if($userProfileIdValue){
+            $userProfileId = $userProfileIdValue;
+        }elseif($accountProfile){
+            $userProfileId = $accountProfile;
+        }
         Lead::whereIn('id', $shuffledLeads->pluck('id'))
             ->update([
                 'user_profile_id' => $userProfileId,
@@ -175,6 +199,7 @@ class AssignLeadController extends Controller
 
         Cache::forget('leads_funnel');
         Cache::forget('leads_data');
+        Cache::forget('apptaker_leads');
         return response()->json(['success' => 'Random Leads are Assign to Users']);
     }
 
@@ -191,6 +216,7 @@ class AssignLeadController extends Controller
             ]);
         Cache::forget('leads_funnel');
         Cache::forget('leads_data');
+        Cache::forget('apptaker_leads');
         return response()->json(['success' => 'Leads has been voided successfully']);
     }
 
@@ -232,6 +258,7 @@ class AssignLeadController extends Controller
            ]);
         Cache::forget('leads_funnel');
         Cache::forget('leads_data');
+        Cache::forget('apptaker_leads');
 
         return response()->json(['success' => 'success all leads has been voided into ' . $userProfile->firstname .  ' ' . $userProfile->american_surname]);
     }

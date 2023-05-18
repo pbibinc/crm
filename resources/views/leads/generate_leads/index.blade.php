@@ -51,13 +51,15 @@
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="card">
-                            <div class="card-header float-end">
-                                <div class="float-end">
-{{--                                    <a href="" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPositionModal" id="create_record">--}}
-{{--                                        ADD LEADS</a>--}}
-                                </div>
-                            </div>
                             <div class="card-body">
+                                <div class="row">
+                                    <div class="col-auto m-lg-1">
+                                        <a href="" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addLeadsModal" id="create_record">
+                                            ADD LEADS
+                                        </a>
+                                    </div>
+                                </div>
+                                <br>
                                     <div class="table-responsive">
                                         <table class="table table-bordered dt-responsive nowrap" id="dataTable" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                             <thead>
@@ -83,37 +85,50 @@
                 </div>
         </div>
 
-            {{-- start of modal for creation and edition--}}
-{{--            <div class="modal fade" id="addPositionModal" tabindex="-1" aria-labelledby="addPositionModalLabel" aria-hidden="true">--}}
-{{--                <div class="modal-dialog modal-dialog-centered" role="document">--}}
-{{--                    <div class="modal-content">--}}
-{{--                        <div class="modal-header">--}}
-{{--                            <h5 class="modal-title" id="addPositionModalLabel">Add Position</h5>--}}
-{{--                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>--}}
-{{--                        </div>--}}
-{{--                        <div class="modal-body">--}}
-{{--                            <form id="positionForm">--}}
-{{--                                @csrf--}}
-{{--                                <div class="mb-3">--}}
-{{--                                    <label for="name" class="form-label">Name</label>--}}
-{{--                                    <input type="text" class="form-control" id="name" name="name" required>--}}
-{{--                                </div>--}}
-{{--                                <input type="hidden" name="action" id="action" value="add">--}}
-{{--                                <input type="hidden" name="hidden_id" id="hidden_id" />--}}
 
-{{--                        </div>--}}
-{{--                        <div class="modal-footer">--}}
-{{--                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>--}}
-{{--                            <input type="submit" name="action_button" id="action_button" value="Add" class="btn btn-primary">--}}
-{{--                        </div>--}}
-{{--                        </form>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-        {{-- end of modal --}}
+            <div class="modal fade" id="addLeadsModal" tabindex="-1" aria-labelledby="addLeadsModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addLeadsModalLabel">Add Lead</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="leadsForm">
+                                @csrf
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Company Name</label>
+                                    <input type="text" class="form-control" id="companyName" name="companyName" autocomplete="off" required>
+                                </div>
 
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Tel Num</label>
+                                    <input type="text" class="form-control" id="telNum" name="telNum" data-parsley-length="[10,10]" data-parsley-pattern="^[0-9]*$" placeholder="Min 10 chars." autocomplete="off" required>
+                                </div>
 
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">State Abbreviation</label>
+                                    <input type="text" class="form-control" id="stateAbbreviation" name="stateAbbreviation" data-parsley-length="[2, 2]" autocomplete="off" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Website Originated</label>
+                                    <input type="text" class="form-control" id="websiteOriginated" name="websiteOriginated" autocomplete="off" required>
+                                </div>
+
+                                <input type="hidden" name="action" id="action" value="add">
+                                <input type="hidden" name="hidden_id" id="hidden_id" />
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <input type="submit" name="action_button" id="action_button" value="Add" class="btn btn-primary">
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 <script>
     // DATA TABLE
@@ -149,6 +164,41 @@
                 // {data: 'updated_at_formatted', name: 'updated_at', searchable:false},
                 // {data: 'action', name: 'action', orderable: false, searchable: false}
             ]
+        });
+        $('#leadsForm').parsley();
+        $('#leadsForm').on('submit', function(e){
+            e.preventDefault();
+            if($('#leadsForm').parsley().isValid()){
+               $.ajax({
+                   type: 'POST',
+                   headers: {'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')},
+                   url: "{{ route('leads.store') }}",
+                   data:$(this).serialize(),
+                   success: function(response){
+                       Swal.fire({
+                           title: 'Success',
+                           text: response.success,
+                           icon: 'success'
+                       }).then(function() {
+                           location.reload();
+                       });
+                   },
+                   error: function(xhr){
+                       var errorMessage = 'An Error Occured';
+                       if(xhr.responseJSON && xhr.responseJSON.error){
+                           errorMessage = xhr.responseJSON.error;
+                       }
+                       Swal.fire({
+                           title: 'Error',
+                           text: errorMessage,
+                           icon: 'error'
+                       });
+                   }
+               });
+            }else{
+                console.log('Form is not valid');
+            }
+
         });
     });
 </script>

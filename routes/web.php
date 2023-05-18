@@ -12,7 +12,7 @@ use App\Http\Controllers\LeadController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\GeneralInformationController;
 use App\Http\Controllers\AssignLeadController;
-
+use App\Http\Controllers\AppTakerLeadsController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,7 +25,7 @@ Route::controller(DemoController::class)->group(function () {
 });
 
 
- // Admin All Route
+ // Admin Configuration All Route
 Route::controller(AdminController::class)->group(function () {
     Route::get('/admin/logout', 'destroy')->name('admin.logout');
     Route::get('/admin/profile', 'Profile')->name('admin.profile');
@@ -36,7 +36,10 @@ Route::post('/store/profile', 'StoreProfile')->name('store.profile');
     Route::post('/update/password', 'UpdatePassword')->name('update.password');
 
 });
+//end for Admin Configuration
 
+
+//Routes For Admin Module
 Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->group(function() {
  Route::post('/roles/{role}/permissions', [RoleController::class, 'assignPermissions'])->name('roles.permissions');
  Route::resource('/permissions', PermissionController::class)->except(['update']);
@@ -55,13 +58,16 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->gro
  Route::post('/user-profiles/change-status', [UserProfileController::class, 'changeStatus'])->name('user-profiles.change_status');
 //  Route::put('/permission/{permission}', [PermissionController::class, 'update']);
 });
+//end Routes For admin module
 
+
+//Routes for Leads Modules
 
 
 Route::get('leads', [LeadController::class, 'index'])->name('leads');
 Route::get('leads-export', [LeadController::class, 'export'])->name('leads.export');
 Route::post('leads-import', [LeadController::class, 'import'])->name('leads.import');
-
+Route::post('add-leads', [LeadController::class, 'store'])->name('leads.store');
 
 Route::prefix('assign')->group(function () {
     Route::get('/', [AssignLeadController::class, 'index'])->name('assign');
@@ -74,6 +80,17 @@ Route::prefix('assign')->group(function () {
     Route::get('/{leads}/edit',[AssignLeadController::class, 'edit'])->name('edit-leads-user');
     Route::post('/void-all',[AssignLeadController::class, 'voidAll'])->name('void-all');
 });
+
+Route::prefix('list-leads')->group(function (){
+    Route::get('/', [AppTakerLeadsController::class, 'index'])->name('apptaker-leads');
+});
+
+
+//Ending Routes for leads modules
+
+
+
+
 
 Route::get('/register', [App\Http\Controllers\Auth\RegisteredUserController::class, 'create'])
     ->middleware('guest')

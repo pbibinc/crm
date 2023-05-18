@@ -16,6 +16,7 @@ class LeadController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorize('viewImport', Lead::find(1));
         $leads = Lead::get();
         $newLeadsCount = $leads->where('status', 1)->count();
         $assignLeadsCount = $leads->where('status', 2)->count();
@@ -46,7 +47,31 @@ class LeadController extends Controller
         Excel::import(new LeadsImport,request()->file('file'));
         Cache::forget('leads_data');
         Cache::forget('leads_funnel');
+        Cache::forget('apptaker_leads');
         return back();
+    }
+
+    public function store(Request $request)
+    {
+        $lead = new Lead;
+       if($request->ajax()){
+           $lead->company_name = $request->companyName;
+           $lead->tel_num = $request->telNum;
+           $lead->state_abbr = $request->stateAbbreviation;
+           $lead->website_originated = $request->websiteOriginated;
+
+           $existingLead = Lead::where('tel_num', $lead->tel_num)->first();
+           if($existingLead){
+               return response()->json(['error' => 'Telephone number must be unique'], 422);
+           }
+           $lead->save();
+       }else{
+
+       }
+        Cache::forget('leads_data');
+        Cache::forget('leads_funnel');
+        Cache::forget('apptaker_leads');
+        return response()->json(['success' => 'Leads Succesfully Created']);
     }
 
 }

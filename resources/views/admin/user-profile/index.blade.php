@@ -101,17 +101,19 @@
                     </ul> --}}
                     </div>
                 </div>
+
                 <div class="form-group">
                     {!! Form::label('is_active', 'Status') !!}
                     {!! Form::select('is_active', [1 => 'Active', 0 => 'Inactive'], null, ['class' => 'form-control']) !!}
                 </div>
+
                 <div class="form-group">
                     {!! Form::label('department_id', 'Department') !!}
                     {!! Form::select('department_id', $departments->pluck('name', 'id'), null, ['class' => 'form-control']) !!}
                 </div>
                 <div class="form-group">
                     {!! Form::label('account_id', 'Account') !!}
-                    {!! Form::select('account_id', $accounts->whereNotIn('id', $usedAccounts)->pluck('name', 'id'), null, ['class' => 'form-control']) !!}
+                    {!! Form::select('account_id', $accounts->pluck('name', 'id'), null, ['class' => 'form-control']) !!}
                 </div>
 
                 {{-- <input type="text" class="form-control" id="name" name="name" required> --}}
@@ -214,13 +216,11 @@ $(function() {
         if($('#action').val() == 'Add')
         {
             action_url = "{{ route('admin.user-profiles.store') }}"
-            console.log('test')
         }
 
         if($('#action').val() == 'Update')
         {
             action_url = "{{ route('admin.user-profiles.update') }}"
-            console.log('test')
         }
 
 

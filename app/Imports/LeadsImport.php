@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\Lead;
 use App\Models\leads;
+use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\ToModel;
 
 class LeadsImport implements ToModel
@@ -15,13 +16,14 @@ class LeadsImport implements ToModel
     */
     public function model(array $row)
     {
-        return new Lead([
-            'company_name' => $row[0],
-            'tel_num' => $row[1],
-            'state_abbr' => strtoupper($row[2]),
-//            'disposition_name' => $row[3],
-            'website_originated' => $row[4]
-
-        ]);
+        $lead = Lead::firstOrCreate(
+            ['tel_num' => $row[1]],
+            [
+                'company_name' => $row[0],
+                'state_abbr' => strtoupper($row[2]),
+                'website_originated' => $row[4]
+            ]
+        );
+        return $lead;
     }
 }

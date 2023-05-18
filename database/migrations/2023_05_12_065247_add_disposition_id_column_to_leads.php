@@ -13,8 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('leads', function (Blueprint $table){
-            $table->dropColumn('disposition_name');
+        Schema::table('leads', function (Blueprint $table) {
+            //
+            $table->foreignId('disposition_id')->nullable()->after('user_profile_id')->constrained('dispositions');
         });
     }
 
@@ -25,8 +26,10 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('leads', function (Blueprint $table){
-            $table->string('column_name');
+        Schema::table('leads', function (Blueprint $table) {
+            //
+            $table->dropForeign(['disposition_id']);
+            $table->dropColumn('disposition_id');
         });
     }
 };
