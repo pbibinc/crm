@@ -74,37 +74,42 @@
                                     <div id="progrss-wizard" class="twitter-bs-wizard">
 
                                         <ul class="twitter-bs-wizard-nav nav-justified">
+
                                             <li class="nav-item">
-                                                <a href="#progress-seller-details" class="nav-link" data-toggle="tab">
+                                                <a href="#progress-seller-details" class="nav-link" data-toggle="tab" id="progressSellerDetails">
                                                     <span class="step-number">01</span>
                                                     <span class="step-title">General Information</span>
                                                 </a>
                                             </li>
+
                                             <li class="nav-item">
-                                                <a href="#progress-company-document" class="nav-link" data-toggle="tab">
+                                                <a href="#progress-company-document" class="nav-link" data-toggle="tab" id="progressCompanyDocument">
                                                     <span class="step-number">02</span>
                                                     <span class="step-title">Products</span>
                                                 </a>
                                             </li>
 
                                             <li class="nav-item">
-                                                <a href="#progress-bank-detail" class="nav-link" data-toggle="tab">
+                                                <a href="#progress-bank-detail" class="nav-link" data-toggle="tab" id="progressBankDetail">
                                                     <span class="step-number">03</span>
                                                     <span class="step-title">Confirm Details</span>
                                                 </a>
                                             </li>
+
                                             <li class="nav-item">
-                                                <a href="#progress-confirm-detail" class="nav-link" data-toggle="tab">
+                                                <a href="#progress-confirm-detail" class="nav-link" data-toggle="tab" id="progressConfirmDetail">
                                                     <span class="step-number">04</span>
                                                     <span class="step-title">Submission</span>
                                                 </a>
                                             </li>
+
                                         </ul>
 
                                         <div id="bar" class="progress mt-4">
                                             <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"></div>
                                         </div>
 
+                                        {{--General Information Tab--}}
                                         <div class="tab-content twitter-bs-wizard-tab-content">
                                             <div class="tab-pane" id="progress-seller-details">
                                                 <form>
@@ -200,7 +205,8 @@
                                             </div>
                                             <div class="tab-pane" id="progress-company-document">
                                                 <div class="row">
-                                                    <!-- Nav tabs -->
+
+                                                    <!-- Product Nav tabs -->
                                                     <ul class="nav nav-pills nav-justified" role="tablist">
                                                                 <li class="nav-item waves-effect waves-light">
                                                                     <a class="nav-link active" data-bs-toggle="tab" href="#general-liability-1" role="tab">
@@ -388,6 +394,9 @@
                                             <div class="tab-pane" id="progress-bank-detail">
                                                <p>INFORMATION CONFIRMATION</p>
                                             </div>
+
+
+                                            {{--submission part--}}
                                             <div class="tab-pane" id="progress-confirm-detail">
                                                 <div class="row justify-content-center">
                                                     <div class="col-lg-6">
@@ -403,10 +412,13 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            {{--End of Submission--}}
+
                                         </div>
                                         <ul class="pager wizard twitter-bs-wizard-pager-link">
                                             <li class="previous"><a href="javascript: void(0);">Previous</a></li>
-                                            <li class="next"><a href="javascript: void(0);">Next</a></li>
+                                            <li class="next" id="nextButtonContainer"><a href="javascript: void(0);" id="nextButton">Next</a></li>
+                                            <li class="submit" style="display: none;" id="submitButtonContainer"><button type="submit" id="submitButton" class="btn btn-primary">Submit</button></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -522,6 +534,8 @@
                 $('#datatable').DataTable().ajax.url("{{ route('apptaker-leads') }}?timezone=" + timezone).load();
             });
 
+
+
             var leadsId = null;
             $(document).on('click', '#companyLink', function(event){
                 event.preventDefault();
@@ -584,7 +598,8 @@
                         commercial: $('#commercial').val(),
                         newConstruction: $('#newConstruction').val(),
                         repair: $('#repair').val(),
-                        businessDescription: $('#businessDescription').val()
+                        businessDescription: $('#businessDescription').val(),
+                        multipleStateWork: $('#multipleStateWork').val()
                     };
             if(localStorage.getItem('firstName') == '' || localStorage.getItem('lastName') == '' || localStorage.getItem('jobPosition') == ''){
                 $.each(formValues, function(key, value) {
@@ -669,6 +684,15 @@
                 $('#totalPercentage').text(totalPercentage);
             }
 
+            // if ($('#nextButton').is(':disabled')) {
+            //     // Replace the Next button with the Submit button
+            //     console.log('this test the disable');
+            //     $('#nextButtonContainer').hide();
+            //     $('#submitButton').parent().show();
+            // }
+
+
+
             // Add Row button click event
             $('#addRowButton').on('click', function() {
                 var totalPercentage = parseInt($('#totalPercentage').text()) || 0;
@@ -708,8 +732,6 @@
 
                 recalculatePercentages();
 
-
-
             });
 
 
@@ -718,6 +740,58 @@
                 $(this).closest('tr').remove();
                 recalculatePercentages();
             });
+
+            $('#progress-bank-detail').on('click', function(){
+                console.log('this test the progress-bank-detail');
+                var activeStep = $('.nav-link.active').attr('href');
+                if(activeStep == '#progress-bank-detail'){
+                    $('#nextButtonContainer').hide();
+                    $('#submitButtonContainer').show();
+                }
+                if(activeStep == '#progress-company-document'){
+                    $('#nextButtonContainer').show();
+                    $('#submitButtonContainer').hide();
+                }
+                if(activeStep == '#progress-company-document'){
+                    $('#nextButtonContainer').show();
+                    $('#submitButtonContainer').hide();
+                }
+            });
+            $('#progress-bank-detail').on('click', function(){
+                console.log('this test the progress-bank-detail');
+                var activeStep = $('.nav-link.active').attr('href');
+                if(activeStep == '#progress-bank-detail'){
+                    $('#nextButtonContainer').hide();
+                    $('#submitButtonContainer').show();
+                }
+                if(activeStep == '#progress-company-document'){
+                    $('#nextButtonContainer').show();
+                    $('#submitButtonContainer').hide();
+                }
+                if(activeStep == '#progress-company-document'){
+                    $('#nextButtonContainer').show();
+                    $('#submitButtonContainer').hide();
+                }
+            });
+
+            $('#progress-bank-detail').on('click', function(){
+                console.log('this test the progress-bank-detail');
+                var activeStep = $('.nav-link.active').attr('href');
+                if(activeStep == '#progress-bank-detail'){
+                    $('#nextButtonContainer').hide();
+                    $('#submitButtonContainer').show();
+                }
+                if(activeStep == '#progress-company-document'){
+                    $('#nextButtonContainer').show();
+                    $('#submitButtonContainer').hide();
+                }
+                if(activeStep == '#progress-company-document'){
+                    $('#nextButtonContainer').show();
+                    $('#submitButtonContainer').hide();
+                }
+            });
+
+
 
 
             //event for showing the multiple state work
@@ -730,9 +804,7 @@
                     return propertyName.startsWith('statesDropdown[') && propertyName.endsWith('][state]');
                 });
 
-                var rowCount = rowProperties.length;
-                // Loop over the formData object properties
-                for(var i = 1; i <= rowCount - 1; i++){
+                var rowCount = rowCounter;
                     var newRow = `
                 <tr id="row${rowCounter}" class="dynamic-row">
                     <td>
@@ -757,10 +829,14 @@
                     </td>
                 </tr>
             `;
-                    $('#dynamicAddRemove tbody').append(newRow);
-                    rowCounter++;
-
+                    console.log(rowCount);
+                if(rowCount >= 1) {
+                    for (var i = 1; i <= rowCount; i++) {
+                        $('#dynamicAddRemove tbody').append(newRow);
+                    }
                 }
+
+
                 for (var i = 0; i <= rowCount; i++) {
                     var state = formData[`statesDropdown[${i}][state]`];
                     var percentage = formData[`statePercentage[${i}][percentage]`];
@@ -806,9 +882,14 @@
                 });
                 localStorage.setItem('formData', JSON.stringify(dataObject));
 
-                var dynamicRowQuantity = rowCounter;
-                console.log(dynamicRowQuantity);
-                $('#dynamicAddRemove tbody tr').slice(dynamicRowQuantity).remove();
+                var dynamicRowQuantity = rowCounter - 1;
+
+                if(dynamicRowQuantity >= 1){
+                    $('#dynamicAddRemove tbody tr').slice(dynamicRowQuantity).remove();
+                }else{
+                    console.log(dynamicRowQuantity);
+                }
+
                 // $('#dynamicAddRemove tbody').empty();
             });
 

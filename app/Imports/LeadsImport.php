@@ -21,6 +21,7 @@ class LeadsImport implements ToModel
             [
                 'company_name' => $row[0],
                 'state_abbr' => strtoupper($row[2]),
+                'class_code' => $row[3],
                 'website_originated' => $row[4]
             ]
         );

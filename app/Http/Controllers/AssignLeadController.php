@@ -48,10 +48,10 @@ class AssignLeadController extends Controller
             if(Cache::has('leads_funnel'))
             {
                 $data = Cache::get('leads_funnel');
-
                 if (!empty($request->get('timezone'))){
-                    $timezoneStates = $timezones[$request->get('timezone')];
-                    $data = $data->whereIn('state_abbr', $timezoneStates);
+                    $data = $data->filter(function ($row) use ($request){
+                        return $row['state_abbr'] == $request->get('timezone');
+                    });
                 }
 //                 Apply filters to the cached data
                 if (!empty($request->get('website_originated'))) {
@@ -68,6 +68,10 @@ class AssignLeadController extends Controller
                     $query->where('website_originated', $request->get('website_originated'));
                 }
 
+                if (!empty($request->get('timezone'))){
+                    $query->where('state_abbr', $request->get('timezone'));
+                }
+
                 $data = $query->select('id', 'company_name', 'tel_num', 'state_abbr',
                     'website_originated', 'created_at', 'updated_at')->get();
 
@@ -77,6 +81,14 @@ class AssignLeadController extends Controller
                 $data = $data->filter(function ($row) use ($request) {
                     return $row['website_originated'] == $request->get('website');
                 });
+            }
+
+            if (!empty($request->get('website_originated'))) {
+                $data = $data->filter(function ($row) use ($request) {
+                    return $row['website_originated'] == $request->get('website_originated');
+
+                });
+
             }
 
             return DataTables::of($data)->addIndexColumn()

@@ -15,6 +15,7 @@ class Lead extends Model
         'company_name',
         'tel_num',
         'state_abbr',
+        'class_code',
         'website_originated',
         'disposition_name',
     ];
