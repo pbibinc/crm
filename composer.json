@@ -18,7 +18,8 @@
         "psr/simple-cache": "2.0",
         "pusher/pusher-php-server": "^7.2",
         "tecnickcom/tcpdf": "^6.6",
-        "yajra/laravel-datatables": "^9.0"
+        "yajra/laravel-datatables": "^9.0",
+        "ext-zip": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.8",

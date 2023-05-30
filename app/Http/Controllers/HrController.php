@@ -11,7 +11,11 @@ class HrController extends Controller
         return view('hr.other-forms.accountability-form.index');
     }
 
-    public function generateAccountabilityFormPDF()
-    {
+    public function showIncidentReportForm() {
+        return view('hr.other-forms.incident-report-form.index');
     }
+
+    // public function generateAccountabilityFormPDF()
+    // {
+    // }
 }

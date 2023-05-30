@@ -153,14 +153,14 @@
                             </ul>
                         </li>
                         {{-- <li><a href="{{ route('hrforms.') }}">Memos</a></li> --}}
-                        <li><a href="{{ route('hrforms.attendance-records') }}">Attendance Records</a></li>
+                        <li><a href="{{ route('hrforms.attendance-records-index') }}">Attendance Records</a></li>
                         <li><a href="javascript: void(0);">Online Monitoring</a></li>
-                        <li><a href="javascript: void(0);">Birthdays</a></li>
+                        <li><a href="{{ route('hrforms.birthday-calendar-index') }}">Birthday Calendar</a></li>
                         <li><a href="{{ route('hrforms.company-handbook') }}">Company Handbook</a></li>
                         <li class=""><a href="javascript: void(0);" class="has-arrow" aria-expanded="true">Other Forms</a>
                             <ul class="sub-menu mm-collapse mm-show" aria-expanded="true" style="">
                                 <li><a href="{{ route('hrforms.accountability-form') }}">Accountability Form</a></li>
-                                <li><a href="javascript: void(0);">Incident Report</a></li>
+                                <li><a href="{{ route('hrforms.incident-report-form') }}">Incident Report</a></li>
                                 <li><a href="javascript: void(0);">Proposal Form</a></li>
                                 <li><a href="javascript: void(0);">Disposal Form</a></li>
                                 <li><a href="javascript: void(0);">MoM (Minutes of Meeting) Form</a></li>

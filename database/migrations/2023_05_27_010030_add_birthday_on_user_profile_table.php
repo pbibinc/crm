@@ -13,11 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('attendance_records_footprint', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            $table->string('log_in', 255);
-            $table->timestamps();
+        Schema::table('user_profiles', function (Blueprint $table) {
+            $table->date('birthday')->after('american_surname')->nullable();
         });
     }
 
@@ -28,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('attendance_records_footprint');
+        Schema::table('user_profiles', function (Blueprint $table) {
+            $table->dropColumn('birthday');
+        });
     }
 };

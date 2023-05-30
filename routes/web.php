@@ -9,6 +9,7 @@ use App\Http\Controllers\LeadController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BirthdayController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\Demo\DemoController;
 use App\Http\Controllers\HelloSignController;
@@ -96,16 +97,29 @@ Route::prefix('leads')->group(function () {
 });
 
 Route::prefix('hrforms')->name('hrforms.')->group(function () {
-    // Accountability Forms
+    // Accountability Form
     Route::get('/accountability-form', [HrController::class, 'showAccountabilityForm'])->name('accountability-form');
-    Route::post('/accountability-form-generate', [PdfController::class, 'generatePdf'])->name('accountability-form-generate-pdf');
+    Route::post('/accountability-form-generate', [PdfController::class, 'generateAccountabilityFormPdf'])->name('accountability-form-generate-pdf');
+
+    // Incident Report Form
+    Route::get('/incident-report-form', [HrController::class, 'showIncidentReportForm'])->name('incident-report-form');
+    Route::post('/incident-report-form-generate', [PdfController::class, 'generateIncidentReportFormPdf'])->name('incident-report-form-generate-pdf');
 
     // Company Handbook
     Route::get('/company-handbook', [CompanyHandbookController::class, 'showCompanyHandbook'])->name('company-handbook');
     Route::post('/company-handbook-save', [CompanyHandbookController::class, 'saveOrUpdateCompanyHandbookRecord'])->name('company-handbook-save-or-update');
 
-    // Attendance Calendar
-    Route::get('/attendance-records', [AttendanceController::class, 'showAttendanceRecords'])->name('attendance-records');
+    // Attendance Records
+    Route::get('/attendance-records', [AttendanceController::class, 'index'])->name('attendance-records-index');
+    Route::get('/attendance-records-filter', [AttendanceController::class, 'selectByFilter'])->name('attendance-records-filter');
+
+    // Birthday Calendar
+    Route::get('/birthday-calendar', [BirthdayController::class, 'index'])->name('birthday-calendar-index');
+    Route::get('/birthday-calendar-get-birthdays', [BirthdayController::class, 'getAllBirthdayEvents'])->name('birthday-calendar-get-birthdays');
+
+    // Route::get('/attendance-records-filter-by-user', [AttendanceController::class, 'selectUserFilter'])->name('attendance-records-filter-by-user');
+    // Route::get('/attendance-records-filter-by-login-type', [AttendanceController::class, 'selectLoginTypeFilter'])->name('attendance-records-filter-by-login-type');
+    // Route::get('/attendance-records', [AttendanceController::class, 'filters'])->name('attendance-filters');
 });
 
 // PDF Example (tecnickcom/tcpdf)

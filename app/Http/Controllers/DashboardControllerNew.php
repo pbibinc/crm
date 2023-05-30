@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Dashboard;
+use App\Models\Attendance;
 use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
 
@@ -412,6 +413,13 @@ class DashboardControllerNew extends Controller
                         'log_in' => $formattedDateTime,
                     ]);
 
+                    // Create also record on attendance_records_footprint
+                    Attendance::create([
+                        'user_id' => $user_id,
+                        'login_type' => 7,
+                        'log_in' => $formattedDateTime,
+                    ]);
+
                     return response()->json(['success' => true, 'responseData' => 'Success on inserting the OT in entry.']);
                 }
 
@@ -434,6 +442,13 @@ class DashboardControllerNew extends Controller
 
                 // Create a new record
                 Dashboard::create([
+                    'user_id' => $user_id,
+                    'login_type' => 1,
+                    'log_in' => $formattedDateTime,
+                ]);
+
+                // Create also record on attendance_records_footprint
+                Attendance::create([
                     'user_id' => $user_id,
                     'login_type' => 1,
                     'log_in' => $formattedDateTime,
@@ -463,6 +478,21 @@ class DashboardControllerNew extends Controller
                     $latestOtIn->log_out = $formattedDateTime;
                     $latestOtIn->save();
 
+                    // Attendance Records Footprint
+                    $afCheckIfTheresTimeIn = Attendance::where('user_id', $user_id)
+                        ->where('login_type', 7)
+                        ->whereNotNull('log_in')
+                        ->whereNull('log_out')
+                        ->latest('log_in')
+                        ->first();
+
+                    // Update to time out entry
+                    if ($afCheckIfTheresTimeIn) {
+                        $afCheckIfTheresTimeIn->login_type = 8;
+                        $afCheckIfTheresTimeIn->log_out = $formattedDateTime;
+                        $afCheckIfTheresTimeIn->save();
+                    }
+
                     return response()->json(['success' => true, 'responseData' => 'Success on updating the OT out entry.']);
                 } else {
                     // Normal time_out
@@ -491,6 +521,20 @@ class DashboardControllerNew extends Controller
                         $timeEntry->login_type = 2;
                         $timeEntry->log_out = $formattedDateTime;
                         $timeEntry->save();
+
+                        // Check if there are existing data within a day
+                        $afCheckIfTheresTimeIn = Attendance::where('user_id', $user_id)
+                            ->whereNull('log_out')
+                            ->orderBy('log_in', 'desc')
+                            ->first();
+
+                        // Update to time out entry
+                        if ($afCheckIfTheresTimeIn) {
+                            $afCheckIfTheresTimeIn->login_type = 2;
+                            $afCheckIfTheresTimeIn->log_out = $formattedDateTime;
+                            $afCheckIfTheresTimeIn->save();
+                        }
+
                         return response()->json(['success' => true, 'responseData' => 'Success on updating the time out entry.']);
                     } else {
                         return response()->json(['success' => false, 'responseData' => 'Already timed out.']);
@@ -519,6 +563,20 @@ class DashboardControllerNew extends Controller
                     'login_type' => 3,
                     'log_in' => $formattedDateTime,
                 ]);
+
+                // Create also record on attendance_records_footprint
+                Attendance::create([
+                    'user_id' => $user_id,
+                    'login_type' => 3,
+                    'log_in' => $formattedDateTime,
+                ]);
+
+                // Create also record on attendance_records_footprint
+                // Attendance::create([
+                //     'user_id' => $user_id,
+                //     'login_type' => 3,
+                //     'log_in' => $formattedDateTime,
+                // ]);
 
                 return response()->json(['success' => true, 'responseData' => 'Success on inserting the break out entry.']);
                 break;
@@ -553,6 +611,21 @@ class DashboardControllerNew extends Controller
                     $timeEntry->login_type = 4;
                     $timeEntry->log_out = $formattedDateTime;
                     $timeEntry->save();
+
+                    // Check if there are existing data within a day
+                    $afCheckIfTheresBreakIn = Attendance::where('user_id', $user_id)
+                        ->where('login_type', 3)
+                        ->whereNotNull('log_in')
+                        ->whereNull('log_out')
+                        ->orderBy('log_in', 'desc')
+                        ->first();
+
+                    // Update to time out entry
+                    if ($afCheckIfTheresBreakIn) {
+                        $afCheckIfTheresBreakIn->login_type = 4;
+                        $afCheckIfTheresBreakIn->log_out = $formattedDateTime;
+                        $afCheckIfTheresBreakIn->save();
+                    }
                     return response()->json(['success' => true, 'responseData' => 'Success on updating the break in entry.']);
                 } else {
                     return response()->json(['success' => false, 'responseData' => 'Already break in.']);
@@ -567,6 +640,13 @@ class DashboardControllerNew extends Controller
                     'login_type' => 5,
                     'log_in' => $formattedDateTime,
                     'aux_duration' => $inputData['auxDuration'], // Save the aux duration
+                ]);
+
+                // Create also record on attendance_records_footprint
+                Attendance::create([
+                    'user_id' => $user_id,
+                    'login_type' => 5,
+                    'log_in' => $formattedDateTime,
                 ]);
 
                 return response()->json(['success' => true, 'responseData' => 'Success on inserting the aux in entry.']);
@@ -588,6 +668,21 @@ class DashboardControllerNew extends Controller
                     $timeEntry->log_out = $formattedDateTime;
                     // $timeEntry->aux_duration = $inputData['auxDuration'];
                     $timeEntry->update();
+
+                    // Check if there are existing data within a day
+                    $afCheckIfTheresAuxIn = Attendance::where('user_id', $user_id)
+                        ->where('login_type', 5)
+                        ->whereNotNull('log_in')
+                        ->whereNull('log_out')
+                        ->orderBy('log_in', 'desc')
+                        ->first();
+                        
+                    // Update to time out entry
+                    if ($afCheckIfTheresAuxIn) {
+                        $afCheckIfTheresAuxIn->login_type = 6;
+                        $afCheckIfTheresAuxIn->log_out = $formattedDateTime;
+                        $afCheckIfTheresAuxIn->save();
+                    }
                     return response()->json(['success' => true, 'responseData' => 'Success on updating the aux out entry.']);
                 } else {
                     return response()->json(['success' => false, 'responseData' => 'error on updating the aux out entry.']);

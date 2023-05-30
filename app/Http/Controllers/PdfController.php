@@ -46,7 +46,7 @@ class PdfController extends Controller
         return $y - $row_height; // Return the height of the table
     }
 
-    public function generatePdf(Request $request)
+    public function generateAccountabilityFormPdf(Request $request)
     {
         // Decode the JSON data from the AJAX request into an associative array
         $data = json_decode($request->getContent(), true);
@@ -201,6 +201,10 @@ class PdfController extends Controller
 
         // return response()->download(public_path($filename));
 
+    }
+
+    public function generateIncidentReportFormPdf(Request $request) {
+        
     }
 
     public function index()
