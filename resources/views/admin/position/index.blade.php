@@ -30,7 +30,7 @@
             <div class="card-body">
                 <div class="dropdown float-end">
                   @can('create', App\Model\Position::class)
-                  <a href="{{ route('admin.positions.create') }}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPositionModal" id="create_record">
+                  <a href="" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPositionModal" id="create_record">
                     ADD POSITION</a>
                   @endcan
                          <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">

@@ -18,6 +18,7 @@ class PositionController extends Controller
     public function index(PositionDataTable $dataTable, Request $request)
     {
         // $positions = Position::all();
+        $this->authorize('view', Position::find(1));
         if ($request->ajax()) {
             $data = Position::select('id', 'name', 'created_at', 'updated_at')->get();
             $data->map(function ($item) {

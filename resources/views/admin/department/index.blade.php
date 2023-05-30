@@ -150,10 +150,10 @@
 
    })
 
+
    //script for deletion
    var departmentId
    $(document).on('click', '.delete', function(){
-    console.log('test')
     departmentId = $(this).attr('id');
     $('#confirmModal').modal('show');
    })

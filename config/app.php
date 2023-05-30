@@ -167,7 +167,7 @@ return [
         Yajra\DataTables\HtmlServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
         Yajra\DataTables\ButtonsServiceProvider::class,
-        Yajra\DataTables\ButtonsServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -199,7 +199,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        'PDF' => Elibyy\TCPDF\Facades\TCPDF::class,
+        // ...
     ])->toArray(),
 
 ];

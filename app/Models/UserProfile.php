@@ -33,4 +33,19 @@ class UserProfile extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function leads()
+    {
+        return $this->hasMany(Lead::class);
+    }
+
+    public function ratings()
+    {
+        return $this->hasMany(EmployeeRating::class);
+    }
+
+    public function media()
+    {
+        return $this->belongsTo(Metadata::class);
+    }
+
 }

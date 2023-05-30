@@ -139,6 +139,9 @@
       <path value="$PROJECT_DIR$/vendor/myclabs/php-enum" />
       <path value="$PROJECT_DIR$/vendor/tecnickcom/tcpdf" />
       <path value="$PROJECT_DIR$/vendor/elibyy/tcpdf-laravel" />
+      <path value="$PROJECT_DIR$/vendor/select2/select2" />
+      <path value="$PROJECT_DIR$/vendor/inspector-apm/inspector-laravel" />
+      <path value="$PROJECT_DIR$/vendor/inspector-apm/inspector-php" />
     </include_path>
   </component>
   <component name="PhpUnit">

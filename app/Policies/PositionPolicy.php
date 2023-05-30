@@ -19,6 +19,7 @@ class PositionPolicy
     public function viewAny(User $user)
     {
         //
+
     }
 
     /**
@@ -31,6 +32,8 @@ class PositionPolicy
     public function view(User $user, Position $position)
     {
         //
+        return $user->role->hasPermission('view_position');
+
     }
 
     /**

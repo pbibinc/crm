@@ -13,10 +13,11 @@
         <!-- User details -->
         <div class="user-profile text-center mt-3">
             <div class="">
-                <img src="{{asset('backend/assets/images/users/blippi.jpg')}}" alt="" class="avatar-md rounded-circle">
+                <img src="{{asset($userProfile->media->filepath)}}" alt="" class="avatar-md rounded-circle">
             </div>
             <div class="mt-3">
-                <h4 class="font-size-16 mb-1">{{$userProfile->firstname . ' ' . $userProfile->lastname}}</h4>
+                <h4 class="font-size-16 mb-1">{{$userProfile->firstname . ' ' . $userProfile->american_surname}}</h4>
+                <p class="mb-0"><em>{{$userProfile->position->name}}</em></p>
                 <span class="text-muted"><i class="ri-record-circle-line align-middle font-size-14 text-success"></i> Online</span>
             </div>
         </div>
@@ -108,18 +109,41 @@
                     <ul class="sub-menu" aria-expanded="false">
                         <li><a href="{{ route('admin.users.index') }}">Accounts</a></li>
                         <li><a href="{{ route('admin.roles.index') }}">Role</a></li>
-                        <li><a href="{{ route('admin.permissions.index') }}">Permission</a></li>
+                        @can('view', App\Models\Permission::find(1))
+                            <li><a href="{{ route('admin.permissions.index') }}">Permission</a></li>
+                        @endcan
                     </ul>
                 </li>
                 <li>
+                    @can('viewAny', App\Models\UserProfile::find(1))
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-user-2-line"></i>
                         <span>Administrator</span>
                     </a>
+                    @endcan
                     <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ route('admin.positions.index') }}">Position</a></li>
+                        @can('view', App\Models\Position::find(1))
+                            <li><a href="{{ route('admin.positions.index') }}">Position</a></li>
+                        @endcan
+
+                        @can('view', App\Models\Department::find(1))
                         <li><a href="{{ route('admin.departments.index') }}">Departments</a></li>
-                        <li><a href="{{ route('admin.user-profiles.index') }}">User Profile</a></li>
+                            @endcan
+                            @can('view', App\Models\UserProfile::find(1))
+                                <li><a href="{{ route('admin.user-profiles.index') }}">User Profile</a></li>
+                            @endcan
+
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="ri-user-2-line"></i>
+                        <span>Departments</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                     <li><a href="{{ route('it-department') }}">IT DEPARTMENT</a></li>
+                     <li><a href="{{ route('csr-department') }}">CSR DEPARTMENT</a></li>
                     </ul>
                 </li>
 
@@ -129,7 +153,9 @@
                         <span>QOUTATION FORMS</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="pages-starter.html">Application Forms</a></li>
                         <li><a href="pages-starter.html">General Information</a></li>
+
 {{--                        <li><a href="pages-timeline.html">Timeline</a></li>--}}
 {{--                        <li><a href="pages-directory.html">Directory</a></li>--}}
 {{--                        <li><a href="pages-invoice.html">Invoice</a></li>--}}
@@ -172,14 +198,50 @@
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-profile-line"></i>
-                        <span>LEADS</span>
+                        <span>HR</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{route('leads')}}">Import Leads</a></li>
-                        <li><a href="{{ route('disposition.index') }}">Disposition</a></li>
-                        <li><a href="{{ route('classcodes.index') }}">Classcodes</a></li>
-                        <li><a href="{{ route('sic.index') }}">Standard Industrial Classifications</a></li>
-                        {{--                        <li><a href="pages-timeline.html">Timeline</a></li>--}}
+                        <li class=""><a href="javascript: void(0);" class="has-arrow" aria-expanded="true">Leave Forms</a>
+                            <ul class="sub-menu mm-collapse mm-show" aria-expanded="true" style="">
+                                <li><a href="javascript: void(0);">Vacation Leave</a></li>
+                                <li><a href="javascript: void(0);">Sick Leave</a></li>
+                                <li><a href="javascript: void(0);">Emergency Leave</a></li>
+                                <li><a href="javascript: void(0);">Birthday Leave</a></li>
+                            </ul>
+                        </li>
+                        {{-- <li><a href="{{ route('hrforms.') }}">Memos</a></li> --}}
+                        <li><a href="{{ route('hrforms.attendance-records-index') }}">Attendance Records</a></li>
+                        <li><a href="javascript: void(0);">Online Monitoring</a></li>
+                        <li><a href="{{ route('hrforms.birthday-calendar-index') }}">Birthday Calendar</a></li>
+                        <li><a href="{{ route('hrforms.company-handbook') }}">Company Handbook</a></li>
+                        <li class=""><a href="javascript: void(0);" class="has-arrow" aria-expanded="true">Other Forms</a>
+                            <ul class="sub-menu mm-collapse mm-show" aria-expanded="true" style="">
+                                <li><a href="{{ route('hrforms.accountability-form') }}">Accountability Form</a></li>
+                                <li><a href="{{ route('hrforms.incident-report-form') }}">Incident Report</a></li>
+                                <li><a href="javascript: void(0);">Proposal Form</a></li>
+                                <li><a href="javascript: void(0);">Disposal Form</a></li>
+                                <li><a href="javascript: void(0);">MoM (Minutes of Meeting) Form</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    @can('view', App\Models\Lead::find(1))
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="ri-spy-fill"></i>
+                            <span>LEADS</span>
+                        </a>
+                    @endcan
+
+                    <ul class="sub-menu" aria-expanded="false">
+                        @can('viewImport', App\Models\Lead::find(1))
+                            <li><a href="{{route('leads')}}">Import Leads</a></li>
+                        @endcan
+                        @can('viewLeadsFunnel', App\Models\Lead::find(1))
+                        <li><a href="{{route('assign')}}">Leads Funnel</a></li>
+                            @endcan
+                            <li><a href="{{route('apptaker-leads')}}">List</a></li>
                         {{--                        <li><a href="pages-directory.html">Directory</a></li>--}}
                         {{--                        <li><a href="pages-invoice.html">Invoice</a></li>--}}
                         {{--                        <li><a href="pages-404.html">Error 404</a></li>--}}

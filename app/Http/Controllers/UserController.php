@@ -58,22 +58,14 @@ class UserController extends Controller
 
    public function store(Request $request)
    {
-     $validator = Validator::make($request->all(),[
-         'name' => 'required|string|max:255',
-         'email' => 'required|string|email|max:255|unique:'.User::class,
-         'password' => ['required', 'confirmed', Rules\password::defaults()],
-         'password_confirmation' => 'required|same:password'
-     ]);
-
-      if($validator->fails()){
-          if($validator->errors()->has('password_confirmation')){
-              $errors = new MessageBag;
-              $errors->add('password_confirmation', 'The password confirmation does not match.');
-              return redirect()->back()->withErrors($errors)->withInput();
-          }else {
-              return redirect()->back()->withErrors($validator)->withInput();
-          }
-      }
+       $validator = $request->validate([
+           'name' => 'required',
+           'email' => 'required|email|unique:users,email',
+           'role_id' => 'required|exists:roles,id',
+           'password' => 'required|min:8|confirmed',
+           'password_confirmation' => 'required|min:8',
+           'username' => 'required|unique:users,username',
+       ]);
 
          $user = new User;
          $user->name = $request->name;
@@ -82,8 +74,6 @@ class UserController extends Controller
          $user->password = Hash::make($request->password);
          $user->username = $request->username;
          $user->save();
-
-
    }
 
    public  function edit($id)
@@ -98,9 +88,15 @@ class UserController extends Controller
            ]);
        }
    }
-   public function update()
+   public function update(Request $request)
    {
-
+       $form_date = array(
+           'name' => $request->name,
+           'username' => $request->username,
+           'email' => $request->email,
+           'role_id' => $request->role_id
+       );
+     User::whereId($request->hidden_id)->update($form_date);
    }
 
    public function  destroy(User $user)

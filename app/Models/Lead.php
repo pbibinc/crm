@@ -15,7 +15,17 @@ class Lead extends Model
         'company_name',
         'tel_num',
         'state_abbr',
+        'class_code',
         'website_originated',
         'disposition_name',
     ];
+    public function userProfile()
+    {
+        return $this->belongsTo(UserProfile::class);
+    }
+
+    public function dispositions()
+    {
+        return $this->belongsTo(Disposition::class);
+    }
 }

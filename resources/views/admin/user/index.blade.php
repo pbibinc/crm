@@ -1,6 +1,12 @@
 @extends('admin.admin_master')
 @section('admin')
-
+<style>
+    ul.error-list {
+        list-style: none!important;
+        margin: 0;
+        padding: 0;
+    }
+</style>
 
 <div class="page-content">
   <div class="container-fluid">
@@ -51,27 +57,6 @@
                                 </tr>
                             </thead><!-- end thead -->
                             <tbody >
-{{--                                @foreach ($users as $user)--}}
-{{--                                <tr>--}}
-{{--                                    <td><h6 class="mb-0">{{ $user->id }}</h6></td>--}}
-{{--                                    <td>{{ $user->name }}</td>--}}
-{{--                                    <td>{{ $user->email }}</td>--}}
-{{--                                    <td>{{ $user->username }}</td>--}}
-{{--                                    <td>{{ $user->role->name }}</td>--}}
-{{--                                    <td>{{ $user->created_at }}</td>--}}
-{{--                                    <td>{{ $user->updated_at }}</td>--}}
-{{--                                    <td>--}}
-{{--                                        @can('update', $user)--}}
-{{--                                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#assignRoleModal" data-user-id="{{ $user->id }} " data-role-id="{{ $user->role_id }}"><i class="ri-user-follow-fill"></i></button>--}}
-{{--                                        @endcan--}}
-{{--                                        @can('delete', $user)--}}
-{{--                                        <button class="btn btn-danger"><i class="ri-delete-bin-line"></i></button>--}}
-{{--                                        @endcan--}}
-{{--                                </tr>--}}
-
-{{--                                @endforeach--}}
-
-                            </td>
 
                             </tbody ><!-- end tbody -->
                         </table> <!-- end table -->
@@ -101,36 +86,37 @@
               @csrf
               <div class="form-group">
                 {!! Form::label('name', 'Name') !!}
-                {!! Form::text('name', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'Name']) !!}
+                {!! Form::text('name', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'Name', 'autocomplete' => 'off']) !!}
             </div>
 
             <div class="form-group">
                 {!! Form::label('username', 'UserName') !!}
-                {!! Form::text('username', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'UserName']) !!}
+                {!! Form::text('username', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'UserName', 'autocomplete' => 'off']) !!}
             </div>
 
             <div class="form-group">
                 {!! Form::label('email', 'Email') !!}
-                {!! Form::email('email', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'Email']) !!}
+                {!! Form::email('email', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'Email', 'autocomplete' => 'off']) !!}
             </div>
 
             <div class="form-group">
                 {!! Form::label('password', 'Password') !!}
-                {!! Form::password('password', ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'Password']) !!}
+                {!! Form::password('password', ['id' => 'pass2', 'class' => 'form-control', 'required' => 'required', 'placeholder' => 'Password']) !!}
             </div>
 
             <div class="form-group">
                 {!! Form::label('password_confirmation', 'Password Confirmation') !!}
-                {!! Form::password('password_confirmation', ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'Password Confirmation']) !!}
-                @error('password_confirmation')
-                <div class="alert alert-danger">{{$errors->first('password_confirmation')}}</div>
-                @enderror
+                {!! Form::password('password_confirmation', ['class' => 'form-control', 'required' => 'required', 'data-parsley-equalto' => '#pass2', 'placeholder' => 'Password Confirmation']) !!}
+                <span class="text-danger error-text" id="errorPassword"></span>
             </div>
 
             <div class="form-group">
                 {!! Form::label('role_id', 'Roles') !!}
                 {!! Form::select('role_id', $roles->pluck('name', 'id'), null, ['class' => 'form-control']) !!}
+
             </div>
+                <input type="hidden" name="action" id="action" value="add">
+                <input type="hidden" name="hidden_id" id="hidden_id" />
               {{-- <input type="hidden" name="action" id="action" value="add">
               <input type="hidden" name="hidden_id" id="hidden_id" /> --}}
 
@@ -147,35 +133,7 @@
 {{--end of modal--}}
 
 
-{{-- start of modal for updating--}}
-<div class="modal fade" id="dataModal" tabindex="-1" aria-labelledby="dataModal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="dataModalLabel">Add Position</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="dataModalForm">
-                    @csrf
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
-                        <input type="text" class="form-control" id="name" name="name" required>
-                    </div>
-                    <input type="hidden" name="action" id="action" value="add">
-                    <input type="hidden" name="hidden_id" id="hidden_id" />
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <input type="submit" name="action_button" id="action_button" value="Add" class="btn btn-primary">
-            </div>
-            </form>
-        </div>
-    </div>
-</div>
-</div>
-{{-- end of modal --}}
 
 {{-- start of deletion of modal --}}
 <div class="modal fade" id="confirmModal" tabindex="-1">
@@ -216,23 +174,46 @@
                 {data: 'action', name: 'action', orderable: false, searchable: false}
             ]
         });
+
     });
 
+
+
+    // configuring of modal for creating
+    $('#create_record').on('click', function(event){
+        $('.modal-title').text('Add New Record');
+        // $('#name').val(data.result.name);
+        $('#action_button').val('Add');
+        $('#action').val('Add');
+        $('#dataModal').modal('show');
+    })
+
+    // script for configuring edit modal
     $(document).on('click', '.edit', function(event){
         event.preventDefault();
         var id = $(this).attr('id');
         $('#form_result').html
         $.ajax({
-            url: "/admin/departments/"+id+"/edit",
+            url: "/admin/users/"+id+"/edit",
             headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             dataType:"json",
             success:function(data){
                 $('#name').val(data.result.name);
+                $('#username').val(data.result.username);
+                $('#email').val(data.result.email);
+                $('#role_id').val(data.result.role_id);
                 $('#hidden_id').val(id);
                 $('.modal-title').text('Edit Record');
                 $('#action_button').val('Update');
                 $('#action').val('Update');
                 $('#dataModal').modal('show');
+                $('#password, #password_confirmation').css('display', 'none');
+                $('#errorPassword').css('display', 'none');
+                var passwordLabel = $('label[for="password"]');
+                var passwordConfirmationLabel = $('label[for="password_confirmation"]');
+                $('#password, #password_confirmation').removeAttr('required');
+                passwordLabel.hide();
+                passwordConfirmationLabel.hide();
             },
             error: function(data){
                 var errors = data.responseJSON;
@@ -243,44 +224,40 @@
 
     })
 
-
-     $('#dataModalForm').on('submit', function(event){
+    //script for submission of form
+    $('#dataModalForm').on('submit', function(event){
         event.preventDefault();
-        console.log($(this).serialize());
-        $.ajax({
-        type: 'POST',
-        headers: {'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')},
-        url: "{{ route('admin.users.store') }}",
-        data:$(this).serialize(),
-        success: function(response){
-            if(response.errors)
-                {
-                    var errors = response.errors;
-                    $.each(errors, function(key, value){
-                     $('#' + key).addClass('is-invalid');
-                     $('#' + key + '_error').html(value);
-                    });
-                }
-                else
-                {
-                  // handle success message
-                  alert(response.success);
-                  $('#dataModal').modal('hide');
-                  location.reload();
-                  // reload the form or redirect to a new page
-                }
-                // $('#dataModal').modal('hide');
-                // location.reload();
-        },
-        error:function(xhr, status, error)
-             {
-                 console.log(xhr);
-                 console.log(status);
-                 console.log(error);
-             }
-      });
+        var action_url = '';
 
-     })
+        if($('#action').val() == 'Add')
+        {
+            action_url = "{{ route('admin.users.store') }}"
+        }
+        if($('#action').val() == 'Update')
+        {
+            action_url = "{{ route('admin.users.update') }}"
+        }
+
+        var name = $('#name').val();
+        //form sending on creationg
+        $.ajax({
+            type: 'POST',
+            headers: {'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')},
+            url: action_url,
+            data:$(this).serialize(),
+            success: function(response) {
+                $('#dataModal').modal('hide');
+                location.reload();
+            },
+            error: function(xhr){
+                var errors = xhr.responseJSON.errors;
+                var errorHtml = '<ul>';
+            
+            }
+        });
+    })
+
+
 
     //script for deletion
     var UserId
@@ -314,6 +291,54 @@
             }
         });
     });
+
+    $(document).ready(function() {
+        $("#dataModal").on('hidden.bs.modal', function(){
+            var form = document.querySelector('#dataModalForm');
+            form.reset();
+            $('#password, #password_confirmation').css('display', 'block');
+            $('#errorPassword').html('').removeClass('error-text');
+            var passwordLabel = $('label[for="password"]');
+            var passwordConfirmationLabel = $('label[for="password_confirmation"]');
+            $('#password, #password_confirmation').attr('required', 'required');
+            passwordLabel.show();
+            passwordConfirmationLabel.show();
+            $('#action_button').val('Add');
+            $('#action').val('add');
+            $('.modal-title').text('Add New Record');
+        });
+    });
+
+    $(document).ready(function(){
+        $('#dataModalForm').parsley();
+    });
+
+    //script for saving
+    // $('#dataModalForm').on('submit', function(event){
+    //     event.preventDefault();
+    //     console.log($(this).serialize());
+    //     $.ajax({
+    //          type: 'POST',
+    //          headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+    //          url: "{{ route('admin.users.store') }}",
+    //          data:$(this).serialize(),
+    //       success: function(response){
+            
+    //          alert(response.success);
+    //             $('#dataModal').modal('hide');
+    //            location.reload();
+             
+    //      },
+    //      error: function (xhr, status, error) {
+    //             var errors = xhr.responseJSON.errors;
+    //     }
+    
+    //    });
+
+    // });
+
+
+
 
 
 

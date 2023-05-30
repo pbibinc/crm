@@ -19,6 +19,10 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\DispositionController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\GeneralInformationController;
+use App\Http\Controllers\AssignLeadController;
+use App\Http\Controllers\AppTakerLeadsController;
+use App\Http\Controllers\DepartmentListController;
 use App\Http\Controllers\DashboardControllerNew;
 use App\Http\Controllers\TecnickcomPdfController;
 use App\Http\Controllers\CompanyHandbookController;
@@ -35,7 +39,7 @@ Route::controller(DemoController::class)->group(function () {
 });
 
 
-// Admin All Route
+ // Admin Configuration All Route
 Route::controller(AdminController::class)->group(function () {
     Route::get('/admin/logout', 'destroy')->name('admin.logout');
     Route::get('/admin/profile', 'Profile')->name('admin.profile');
@@ -45,13 +49,17 @@ Route::controller(AdminController::class)->group(function () {
     Route::get('/change/password', 'ChangePassword')->name('change.password');
     Route::post('/update/password', 'UpdatePassword')->name('update.password');
 });
+//end for Admin Configuration
 
+
+//Routes For Admin Module
 Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->group(function () {
     Route::post('/roles/{role}/permissions', [RoleController::class, 'assignPermissions'])->name('roles.permissions');
     Route::resource('/permissions', PermissionController::class)->except(['update']);
     Route::post('/permissions/update', [PermissionController::class, 'update'])->name('permissions.update');
     Route::resource('/roles', RoleController::class);
-    Route::resource('/users', UserController::class);
+    Route::resource('/users', UserController::class)->except(['update']);
+ Route::post('/users/update', [UserController::class, 'update'])->name('users.update');
     Route::resource('/positions', PositionController::class)->except('update');
     Route::post('/positions/update', [PositionController::class, 'update'])->name('positions.update');
     //  Route::delete('positions/destroy/{$id}/', [PositionController::class, 'destroy'])->name('positions.destroy');
@@ -63,11 +71,31 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->gro
     Route::post('/user-profiles/change-status', [UserProfileController::class, 'changeStatus'])->name('user-profiles.change_status');
     //  Route::put('/permission/{permission}', [PermissionController::class, 'update']);
 });
+//end Routes For admin module
 
-Route::controller(LeadController::class)->group(function () {
-    Route::get('leads', 'index')->name('leads');
-    Route::get('leads-export', 'export')->name('leads.export');
-    Route::post('leads-import', 'import')->name('leads.import');
+
+//Routes for Leads Modules
+
+Route::get('leads', [LeadController::class, 'index'])->name('leads');
+Route::get('leads-export', [LeadController::class, 'export'])->name('leads.export');
+Route::post('leads-import', [LeadController::class, 'import'])->name('leads.import');
+Route::post('add-leads', [LeadController::class, 'store'])->name('leads.store');
+
+Route::prefix('assign')->group(function () {
+    Route::get('/', [AssignLeadController::class, 'index'])->name('assign');
+    Route::get('/getDataTableLeads', [AssignLeadController::class, 'getDataTableLeads'])->name('getDataTableLeads');
+    Route::post('/assign-leads', [AssignLeadController::class, 'assign'])->name('assign-leads');
+    Route::post('/assign-random-leads', [AssignLeadController::class, 'assignRandomLeads'])->name('assign-random-leads');
+    Route::post('/assign-leads-user', [AssignLeadController::class, 'assignLeadsUser'])->name('assign-random-leads-user');
+    Route::post('/void-leads-user', [AssignLeadController::class, 'void'])->name('void-leads-user');
+    Route::post('/redeploy-leads-user', [AssignLeadController::class, 'redeploy'])->name('redeploy-leads-user');
+    Route::get('/{leads}/edit',[AssignLeadController::class, 'edit'])->name('edit-leads-user');
+    Route::post('/void-all',[AssignLeadController::class, 'voidAll'])->name('void-all');
+});
+
+
+Route::prefix('list-leads')->group(function  () {
+    Route::get('/', [AppTakerLeadsController::class, 'index'])->name('apptaker-leads');
 });
 
 // Dashboard 
@@ -127,9 +155,24 @@ Route::prefix('hrforms')->name('hrforms.')->group(function () {
 //     return app()->call('App\Http\Controllers\TecnickcomPdfController@generatePdf');
 // });
 
+//Ending Routes for leads modules
 
 Route::get('/hellosign', [HelloSignController::class, 'initiateSigning']);
 Route::post('/hellosign/callback', [HelloSignController::class, 'handleCallback']);
+
+//routes for Departments
+Route::prefix('departments')->group(function(){
+    Route::get('/it-department', [DepartmentListController::class, 'getItEmployeeList'])->name('it-department');
+    Route::get('/csr-department', [DepartmentListController::class, 'getCsrEmployeeList'])->name('csr-department');
+});
+//end Routes for departments
+
+//routes for Departments
+Route::prefix('departments')->group(function(){
+    Route::get('/it-department', [DepartmentListController::class, 'getItEmployeeList'])->name('it-department');
+    Route::get('/csr-department', [DepartmentListController::class, 'getCsrEmployeeList'])->name('csr-department');
+});
+//end Routes for departments
 
 
 Route::get('/register', [App\Http\Controllers\Auth\RegisteredUserController::class, 'create'])

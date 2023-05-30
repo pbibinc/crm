@@ -5,19 +5,18 @@
             <div class="navbar-brand-box">
                 <a href="index.html" class="logo logo-dark">
                     <span class="logo-sm">
-                        <img src="{{asset('backend/assets/images/pbiblgo.png')}}" alt="logo-sm" height="22">
+                        <img src="{{asset('backend/assets/images/logopbibinc.png')}}" alt="logo-sm" height="22">
                     </span>
                     <span class="logo-lg">
-                        <img src="{{asset('backend/assets/images/pbiblgo.png')}}" alt="logo-dark" height="20">
+                        <img src="{{asset('backend/assets/images/logopbibinc.png')}}" alt="logo-dark" height="20">
                     </span>
                 </a>
-
                 <a href="index.html" class="logo logo-light">
                     <span class="logo-sm">
-                        <img src="{{asset('backend/assets/images/pbiblgo.png')}}" alt="logo-sm-light" height="22">
+                        <img src="{{asset('backend/assets/images/logopbibinc.png')}}" alt="logo-sm-light" height="20">
                     </span>
                     <span class="logo-lg">
-                        <img src="{{asset('backend/assets/images/pbiblgo.png')}}" alt="logo-light" height="30">
+                        <img src="{{asset('backend/assets/images/logopbibinc.png')}}" alt="logo-light" height="70" >
                     </span>
                 </a>
             </div>
@@ -374,7 +373,7 @@
             <div class="dropdown d-inline-block user-dropdown">
                 <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="rounded-circle header-profile-user" src="{{asset('backend/assets/images/users/blippi.jpg')}}"
+                    <img class="rounded-circle header-profile-user" src="{{asset($userProfile->media->filepath)}}"
                         alt="Header Avatar">
                     <span class="d-none d-xl-inline-block ms-1">{{$adminData->name}}</span>
                     <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>

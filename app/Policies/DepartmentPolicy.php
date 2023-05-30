@@ -31,6 +31,8 @@ class DepartmentPolicy
     public function view(User $user, Department $department)
     {
         //
+        return $user->role->hasPermission('view_department');
+
     }
 
     /**
@@ -41,7 +43,7 @@ class DepartmentPolicy
      */
     public function create(User $user)
     {
-        return $user->role->hasPermission('create_dapartment');
+        return $user->role->hasPermission('create_department');
     }
 
     /**

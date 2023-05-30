@@ -14,6 +14,7 @@ class PermissionController extends Controller
 {
     public function index(Request $request)
     {
+        $this->authorize('view', Permission::find(1));
         if ($request->ajax()) {
             $data = Permission::select('id', 'name', 'created_at', 'updated_at')->get();
             $data->map(function ($item) {
