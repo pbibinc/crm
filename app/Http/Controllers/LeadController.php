@@ -39,7 +39,8 @@ class LeadController extends Controller
             }
             return DataTables::of($data)->make(true);
         }
-        return view('leads.generate_leads.index', compact('leads'));
+        return view('leads.generate_leads.index', compact('leads', 'newLeadsCount', 'assignLeadsCount', 'classCodeLeads'));
+
     }
     /**
      * @return \Illuminate\Support\Collection
@@ -47,8 +48,10 @@ class LeadController extends Controller
     public function import()
     {
         Excel::import(new LeadsImport,request()->file('file'));
+        Cache::forget('leads_data');
+        Cache::forget('leads_funnel');
+        Cache::forget('apptaker_leads');
         return back();
-        // dd(request()->file('file'));
     }
 
     public function store(Request $request)
