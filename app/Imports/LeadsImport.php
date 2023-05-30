@@ -14,8 +14,10 @@ class LeadsImport implements ToModel
     *
     * @return \Illuminate\Database\Eloquent\Model|null
     */
+    public $rows = 0;
     public function model(array $row)
     {
+        ++$this->rows;
         $lead = Lead::firstOrCreate(
             ['tel_num' => $row[1]],
             [

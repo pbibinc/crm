@@ -14,7 +14,18 @@
                                         <select class="form-control select2" id="userProfileDropdown">
                                             <option value="">select agents</option>
                                             @foreach($userProfiles as $userProfile)
-                                                <option value="{{$userProfile->id}}">{{$userProfile->firstname . " " . $userProfile->american_surname}}</option>
+                                            @php
+                                            $ratings = $userProfile->ratings;
+                                            $numberOfRatings = $ratings->count();
+                                            $sumOfRatings = $ratings->sum('rating');
+                                            $divisorRatings = $numberOfRatings * 5;
+                                            $overallRating = ($numberOfRatings > 0) ? $sumOfRatings / $numberOfRatings : 0;
+                                            $overallRatingPercentage = ($numberOfRatings > 0) ?  $sumOfRatings / $divisorRatings * 100 : 0 ;
+                                            $leadsCounter = count($userProfile->leads);
+                                            @endphp
+                                                <option value="{{$userProfile->id}}">
+                                                    {{$userProfile->firstname . " " . $userProfile->american_surname}} <small class="text-muted">({{ $overallRating }} star) ({{ $leadsCounter }} leads)</small>
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -25,7 +36,10 @@
                                         <select class="form-control select2" id="accountsDropdown">
                                             <option value="">select agents</option>
                                             @foreach($accounts as $account)
-                                                <option value="{{$account->id}}">{{$account->firstname . " " . $account->american_surname}}</option>
+                                            @php
+                                            $accountLeadsCounter = count($account->leads);
+                                            @endphp
+                                                <option value="{{$account->id}}">{{$account->firstname . " " . $account->american_surname}}<small class="text-muted"> ({{ $accountLeadsCounter }} leads)</small></option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -71,31 +85,29 @@
                             <div class="table-responsive">
                                 <table class="table table-bordered dt-responsive nowrap" id="dataTable" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <div class="row">
-
-                                        <div class="col-6">
+                                        <div class="col-3">
+                                            <label class="form-label">Time Zone</label>
+                                            <select name="timezone" id="timezoneDropdown" class="form-control select2" >
+                                                <option value="">Select a timezone</option>
+                                                <option value="">ALL</option>
+                                                @foreach ($timezones as $timezone => $identifier)
+                                                    <option value="{{ $timezone }}">{{ $timezone }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-3">
                                             <div class="mb-3">
                                                 <div class="form-group">
                                                     <label class="form-label">States</label>
-                                                    <select name="timezone" id="timezoneDropdown" class="form-control select2" >
-{{--                                                        <option value="">Select a timezone</option>--}}
-{{--                                                        <option value="">ALL</option>--}}
-{{--                                                        @foreach ($timezones as $timezone => $identifier)--}}
-{{--                                                            <option value="{{ $timezone }}">{{ $timezone }}</option>--}}
-{{--                                                        @endforeach--}}
-
+                                                    <select name="states" id="statesDropdown" class="form-control select2" >
                                                         <option value="">Select</option>
                                                         <option value="">All</option>
-                                                        <optgroup label="Alaskan/Hawaiian Time Zone">
                                                             <option value="AK">Alaska</option>
                                                             <option value="HI">Hawaii</option>
-                                                        </optgroup>
-                                                        <optgroup label="Pacific Time Zone">
                                                             <option value="CA">California</option>
                                                             <option value="NV">Nevada</option>
                                                             <option value="OR">Oregon</option>
                                                             <option value="WA">Washington</option>
-                                                        </optgroup>
-                                                        <optgroup label="Mountain Time Zone">
                                                             <option value="AZ">Arizona</option>
                                                             <option value="CO">Colorado</option>
                                                             <option value="ID">Idaho</option>
@@ -105,8 +117,6 @@
                                                             <option value="ND">North Dakota</option>
                                                             <option value="UT">Utah</option>
                                                             <option value="WY">Wyoming</option>
-                                                        </optgroup>
-                                                        <optgroup label="Central Time Zone">
                                                             <option value="AL">Alabama</option>
                                                             <option value="AR">Arkansas</option>
                                                             <option value="IL">Illinois</option>
@@ -122,8 +132,6 @@
                                                             <option value="TX">Texas</option>
                                                             <option value="TN">Tennessee</option>
                                                             <option value="WI">Wisconsin</option>
-                                                        </optgroup>
-                                                        <optgroup label="Eastern Time Zone">
                                                             <option value="CT">Connecticut</option>
                                                             <option value="DE">Delaware</option>
                                                             <option value="FL">Florida</option>
@@ -144,14 +152,23 @@
                                                             <option value="VT">Vermont</option>
                                                             <option value="VA">Virginia</option>
                                                             <option value="WV">West Virginia</option>
-                                                        </optgroup>
-
                                                     </select>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div class="col-6">
+                                        <div class="col-3">
+                                            <label class="form-label">Class Code</label>
+                                            <select name="classCodeLead" id="classCodeLeadDropdown" class="form-control select2" >
+                                                <option value="">Select Class Code</option>
+                                                <option value="">ALL</option>
+                                                @foreach ($classCodeLeads as $classCodeLead)
+                                                    <option value="{{ $classCodeLead->name }}">{{ $classCodeLead->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="col-3">
                                             <div class="mb-3">
                                                 <div class="form-group">
                                                     <label for="websiteOriginatedDropdown" class="form-label">Website Originated</label>
@@ -192,6 +209,7 @@
                                     <br>
 
                                         <div class="row">
+
                                             <div class="col-4">
                                                 <div class="d-grid mb-3">
                                                     <button type="button" id="assignRandomLeadsUser" class="btn btn-info waves-effect waves-light " data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign Random Leads to a user base to the quantity input on top">Assign Random Leads to user</button>
@@ -223,6 +241,7 @@
                                         <th>Company Name</th>
                                         <th>Tel Number</th>
                                         <th>State abbr</th>
+                                        <th>Class Code</th>
                                         <th>Website Originated</th>
                                         <th>Imported Date</th>
 {{--                                        <th>Updated at</th>--}}
@@ -248,6 +267,7 @@
                     <h5 class="modal-title"><b>Redeploy Leads To other Agent</b></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+
                 <div class="modal-body">
                     <select class="form-control" id="userProfileRedeployDropdown">
                         <option value="">select agents</option>
@@ -256,6 +276,7 @@
                         @endforeach
                     </select>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-success" name="submit_button" id="submit_button">Submit</button>
@@ -347,15 +368,14 @@
         </div>
     </div>
     {{-- end of deletion of modal --}}
-
-    <script>
-
-    {{--    <!-- Sweet Alerts js -->--}}
+    <script src="{{asset('backend/assets/libs/bootstrap-rating/bootstrap-rating.min.js')}}"></script>
+    <script src="{{asset('backend/assets/js/pages/rating-init.js') }}"></script>
+        {{--    <!-- Sweet Alerts js -->--}}
     {{--    <script src="{{asset('backend/assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>--}}
 
     {{--<!-- Sweet alert init js-->--}}
     {{--<script src="{{asset('backend/assets/js/pages/sweet-alerts.init.js')}}"></script>--}}
-
+    <script>
         // DATA TABLE
         $(document).ready(function() {
             $('.select2').select2();
@@ -367,20 +387,28 @@
                     data: function (d) {
                                 d.website_originated = $('#websiteOriginatedDropdown').val(),
                                 d.timezone = $('#timezoneDropdown').val(),
+                                d.states = $('#statesDropdown').val(),
+                                d.classCodeLead = $('#classCodeLeadDropdown').val(),
                                     // d.userProfile = $('#userProfileDropdown').val(),
                                 d.search = $('input[type="search"]').val()
                     }
                 },
                 columns: [
-                    {data: 'checkbox', name: 'checkbox',  searchable: false},
+                    {data: 'checkbox', name: 'checkbox',  orderable: false, searchable: false, title: '<input type="checkbox" id="check_all">'},
                     {data: 'id', name: 'id'},
                     {data: 'company_name', name: 'company_name'},
                     {data: 'tel_num', name: 'tel_num'},
                     {data: 'state_abbr', name: 'state_abbr'},
+                    {data: 'class_code', name: 'class_code'},
                     {data: 'website_originated', name: 'website_originated'},
                     {data: 'created_at_formatted', name: 'created_at', searchable:false},
 
                     ]
+            });
+
+            $(document).on('click', '#check_all', function(e){
+                $('.users_checkbox').prop('checked', $(this).is(':checked'));
+                e.stopPropagation();
             });
 
             // script for display leads that user have
@@ -412,10 +440,23 @@
                 $('#dataTable').DataTable().ajax.reload();
             });
 
+            $('#statesDropdown').on('change', function () {
+                var states = $(this).val();
+                $('#dataTable').DataTable().ajax.url("{{ route('assign') }}?states=" + states).load();
+            });
+
+
             $('#timezoneDropdown').on('change', function() {
                 var timezone = $(this).val();
                 $('#dataTable').DataTable().ajax.url("{{ route('assign') }}?timezone=" + timezone).load();
             });
+
+            $('#classCodeLeadDropdown').on('change', function () {
+                var classCodeLead = $(this).val();
+                $('#dataTable').DataTable().ajax.url("{{ route('assign') }}?classCodeLead=" + classCodeLead).load();
+            });
+
+    
 
             $("#voidAll").hide()
 
@@ -451,6 +492,7 @@
 
 
             // ajax script for randomly assign leads to user
+            
             $('#assignRandomLeadsUser').on('click', function (){
                 let userProfileId= $('#userProfileDropdown').val();
                 let accountProfileId= $('#accountsDropdown').val()

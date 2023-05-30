@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Imports\LeadsImport;
+use App\Models\Classcode;
+use App\Models\ClassCodeLead;
 use App\Models\Lead;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -20,13 +22,14 @@ class LeadController extends Controller
         $leads = Lead::get();
         $newLeadsCount = $leads->where('status', 1)->count();
         $assignLeadsCount = $leads->where('status', 2)->count();
+        $classCodeLeads = ClassCodeLead::all();
         if($request->ajax()){
             if(Cache::has('leads_data')){
                 $data = Cache::get('leads_data');
             }else{
                 $data = Lead::with('userProfile.position')
-                    ->select('id', 'company_name', 'tel_num', 'state_abbr',
-                        'website_originated', 'created_at', 'status', 'user_profile_id')->get();
+                    ->select('id', 'company_name', 'tel_num', 'state_abbr', 
+                        'website_originated', 'created_at', 'status', 'user_profile_id', 'class_code')->get();
                 $data->map(function ($item){
                     $item->created_at_formatted = Carbon::parse($item->created_at)->format('Y-m-d');
                     return $item;
@@ -36,7 +39,7 @@ class LeadController extends Controller
             }
             return DataTables::of($data)->make(true);
         }
-        return view('leads.generate_leads.index', compact('leads', 'newLeadsCount', 'assignLeadsCount'));
+        return view('leads.generate_leads.index', compact('leads', 'newLeadsCount', 'assignLeadsCount', 'classCodeLeads'));
 
     }
     /**
@@ -59,6 +62,8 @@ class LeadController extends Controller
            $lead->tel_num = $request->telNum;
            $lead->state_abbr = $request->stateAbbreviation;
            $lead->website_originated = $request->websiteOriginated;
+           $lead->class_code = $request->classCodeLead;
+        //    $lead->class_code = $request-clas
 
            $existingLead = Lead::where('tel_num', $lead->tel_num)->first();
            if($existingLead){

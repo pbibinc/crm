@@ -8,13 +8,23 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-6">
-                                    <form action="{{ route('leads.import') }}" method="POST" enctype="multipart/form-data">
+                                    <form action="{{ route('leads.import') }}" method="POST" id="import-form" enctype="multipart/form-data">
                                         @csrf
                                         <input type="file" name="file" class="form-control">
                                         <br>
-                                        <button class="btn btn-primary">Import Leads Data</button>
+                                        <button id="import-button" class="btn btn-primary">Import Leads Data</button>
                                     </form>
                                 </div>
+                                @if(session('success'))
+                                 <script>
+                                    Swal.fire({
+                                        title: "Success",
+                                        text:"{{ session('success') }}",
+                                        icon: "success",
+                                        button: "OK",
+                                    });
+                                 </script>
+                                @endif
                                 <div class="col-6">
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -68,6 +78,7 @@
                                                 <th>Company Name</th>
                                                 <th>Tel Number</th>
                                                 <th>State abbr</th>
+                                                <th>Class Code</th>
                                                 <th>Website Originated</th>
                                                 <th>Status</th>
                                                 <th>Imported at</th>
@@ -107,6 +118,17 @@
                                 </div>
 
                                 <div class="mb-3">
+                                    <label for="name" class="form-label">Class Code</label>
+                                    <select name="classCodeLead" id="classCodeLeadDropdown" class="form-control">
+                                        <option value="">Select Class Code</option>
+                                        <option value="">ALL</option>
+                                        @foreach ($classCodeLeads as $classCodeLead)
+                                            <option value="{{ $classCodeLead->name }}">{{ $classCodeLead->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
                                     <label for="name" class="form-label">State Abbreviation</label>
                                     <input type="text" class="form-control" id="stateAbbreviation" name="stateAbbreviation" data-parsley-length="[2, 2]" autocomplete="off" required>
                                 </div>
@@ -133,6 +155,7 @@
 <script>
     // DATA TABLE
     $(document).ready(function() {
+        $('.select2').select2();
         $('#dataTable').DataTable({
             processing: true,
             serverSide: true,
@@ -142,6 +165,7 @@
                 {data: 'company_name', name: 'company_name'},
                 {data: 'tel_num', name: 'tel_num'},
                 {data: 'state_abbr', name: 'state_abbr'},
+                {data: 'class_code', name: 'class_code'},
                 {data: 'website_originated', name: 'website_originated'},
                 {
                     data: 'status',

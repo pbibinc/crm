@@ -13,6 +13,7 @@ use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\GeneralInformationController;
 use App\Http\Controllers\AssignLeadController;
 use App\Http\Controllers\AppTakerLeadsController;
+use App\Http\Controllers\DepartmentListController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -63,7 +64,6 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->gro
 
 //Routes for Leads Modules
 
-
 Route::get('leads', [LeadController::class, 'index'])->name('leads');
 Route::get('leads-export', [LeadController::class, 'export'])->name('leads.export');
 Route::post('leads-import', [LeadController::class, 'import'])->name('leads.import');
@@ -81,6 +81,7 @@ Route::prefix('assign')->group(function () {
     Route::post('/void-all',[AssignLeadController::class, 'voidAll'])->name('void-all');
 });
 
+
 Route::prefix('list-leads')->group(function (){
     Route::get('/', [AppTakerLeadsController::class, 'index'])->name('apptaker-leads');
 });
@@ -89,7 +90,12 @@ Route::prefix('list-leads')->group(function (){
 //Ending Routes for leads modules
 
 
-
+//routes for Departments
+Route::prefix('departments')->group(function(){
+    Route::get('/it-department', [DepartmentListController::class, 'getItEmployeeList'])->name('it-department');
+    Route::get('/csr-department', [DepartmentListController::class, 'getCsrEmployeeList'])->name('csr-department');
+});
+//end Routes for departments
 
 
 Route::get('/register', [App\Http\Controllers\Auth\RegisteredUserController::class, 'create'])

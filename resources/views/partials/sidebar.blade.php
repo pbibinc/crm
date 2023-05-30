@@ -13,7 +13,7 @@
         <!-- User details -->
         <div class="user-profile text-center mt-3">
             <div class="">
-                <img src="{{asset('backend/assets/images/users/blippi.jpg')}}" alt="" class="avatar-md rounded-circle">
+                <img src="{{asset($userProfile->media->filepath)}}" alt="" class="avatar-md rounded-circle">
             </div>
             <div class="mt-3">
                 <h4 class="font-size-16 mb-1">{{$userProfile->firstname . ' ' . $userProfile->american_surname}}</h4>
@@ -133,6 +133,17 @@
                                 <li><a href="{{ route('admin.user-profiles.index') }}">User Profile</a></li>
                             @endcan
 
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="ri-user-2-line"></i>
+                        <span>Departments</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                     <li><a href="{{ route('it-department') }}">IT DEPARTMENT</a></li>
+                     <li><a href="{{ route('csr-department') }}">CSR DEPARTMENT</a></li>
                     </ul>
                 </li>
 

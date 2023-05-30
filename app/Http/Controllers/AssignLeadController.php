@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\ClassCodeLead;
 use App\Models\Lead;
 use App\Models\LeadsAssign;
 use App\Models\Site;
@@ -32,6 +33,7 @@ class AssignLeadController extends Controller
 //        dd($userProfiles);
         $sites = Site::all();
         $leads = Lead::all();
+        $classCodeLeads = ClassCodeLead::all();
         $timezones = [
             'Eastern' => ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV'],
             'Central' => ['AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI'],
@@ -48,10 +50,10 @@ class AssignLeadController extends Controller
             if(Cache::has('leads_funnel'))
             {
                 $data = Cache::get('leads_funnel');
+
                 if (!empty($request->get('timezone'))){
-                    $data = $data->filter(function ($row) use ($request){
-                        return $row['state_abbr'] == $request->get('timezone');
-                    });
+                    $timezoneStates = $timezones[$request->get('timezone')];
+                    $data = $data->whereIn('state_abbr', $timezoneStates);
                 }
 //                 Apply filters to the cached data
                 if (!empty($request->get('website_originated'))) {
@@ -61,19 +63,32 @@ class AssignLeadController extends Controller
                     });
 
                 }
+                if (!empty($request->get('states'))){
+                    $data = $data->filter(function ($row) use ($request){
+                        return $row['state_abbr'] == $request->get('states');
+                    });
+                }
+
+                if (!empty($request->get('classCodeLead'))){
+                    $data = $data->filter(function ($row) use ($request){
+                        return strtolower($row['class_code']) == strtolower($request->get('classCodeLead'));
+                    });
+                }
             }else{
                 $query = Lead::where('status', 1);
 
                 if (!empty($request->get('website_originated'))) {
                     $query->where('website_originated', $request->get('website_originated'));
                 }
-
-                if (!empty($request->get('timezone'))){
-                    $query->where('state_abbr', $request->get('timezone'));
+                if (!empty($request->get('states'))){
+                    $query->where('state_abbr', $request->get('states'));
+                }
+                if (!empty($request->get('classCodeLead'))){
+                    $query->where('class_code', $request->get('classCodeLead'));
                 }
 
                 $data = $query->select('id', 'company_name', 'tel_num', 'state_abbr',
-                    'website_originated', 'created_at', 'updated_at')->get();
+                    'class_code', 'website_originated', 'created_at', 'updated_at')->get();
 
                 Cache::put('leads_funnel', $data, 60 * 60);
             }
@@ -81,14 +96,6 @@ class AssignLeadController extends Controller
                 $data = $data->filter(function ($row) use ($request) {
                     return $row['website_originated'] == $request->get('website');
                 });
-            }
-
-            if (!empty($request->get('website_originated'))) {
-                $data = $data->filter(function ($row) use ($request) {
-                    return $row['website_originated'] == $request->get('website_originated');
-
-                });
-
             }
 
             return DataTables::of($data)->addIndexColumn()
@@ -108,7 +115,7 @@ class AssignLeadController extends Controller
 //
 //        dd($shuffledLeads);
 
-        return view('leads.assign_leads.index', compact('userProfiles', 'sites','timezones', 'accounts'));
+        return view('leads.assign_leads.index', compact('userProfiles', 'sites','timezones', 'accounts', 'classCodeLeads'));
     }
 
     public function getDataTableLeads(Request $request)
@@ -151,14 +158,17 @@ class AssignLeadController extends Controller
         $leadsId = $request->input('id');
         $userProfileId = $request->input('userProfileId');
         $accountProfileId = $request->input('accountProfileId');
+        
         if($userProfileId){
             $userProfile = UserProfile::find($userProfileId);
+            $leadsRecevierId = $userProfileId;
         }elseif ($accountProfileId){
             $userProfile = UserProfile::find($accountProfileId);
+            $leadsRecevierId = $accountProfileId;
         }
             Lead::whereIn('id', $leadsId)
                 ->update([
-                    'user_profile_id' => $userProfileId,
+                    'user_profile_id' => $leadsRecevierId,
                     'status' => 2
                 ]);
             Cache::forget('leads_funnel');

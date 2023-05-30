@@ -86,27 +86,27 @@
               @csrf
               <div class="form-group">
                 {!! Form::label('name', 'Name') !!}
-                {!! Form::text('name', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'Name', 'data-parsley-min' => 6]) !!}
+                {!! Form::text('name', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'Name', 'autocomplete' => 'off']) !!}
             </div>
 
             <div class="form-group">
                 {!! Form::label('username', 'UserName') !!}
-                {!! Form::text('username', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'UserName']) !!}
+                {!! Form::text('username', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'UserName', 'autocomplete' => 'off']) !!}
             </div>
 
             <div class="form-group">
                 {!! Form::label('email', 'Email') !!}
-                {!! Form::email('email', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'Email']) !!}
+                {!! Form::email('email', null, ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'Email', 'autocomplete' => 'off']) !!}
             </div>
 
             <div class="form-group">
                 {!! Form::label('password', 'Password') !!}
-                {!! Form::password('password', ['class' => 'form-control', 'required' => 'required', 'placeholder' => 'Password']) !!}
+                {!! Form::password('password', ['id' => 'pass2', 'class' => 'form-control', 'required' => 'required', 'placeholder' => 'Password']) !!}
             </div>
 
             <div class="form-group">
                 {!! Form::label('password_confirmation', 'Password Confirmation') !!}
-                {!! Form::password('password_confirmation', ['class' => 'form-control', 'type' => 'password', 'required' => 'required', 'placeholder' => 'Password Confirmation']) !!}
+                {!! Form::password('password_confirmation', ['class' => 'form-control', 'required' => 'required', 'data-parsley-equalto' => '#pass2', 'placeholder' => 'Password Confirmation']) !!}
                 <span class="text-danger error-text" id="errorPassword"></span>
             </div>
 
@@ -252,13 +252,7 @@
             error: function(xhr){
                 var errors = xhr.responseJSON.errors;
                 var errorHtml = '<ul>';
-                $.each(errors, function(key, value) {
-                    errorHtml += '<li>' + value + '</li>';
-                    $('#' + key).addClass('error-border');
-                });
-                errorHtml += '</ul>';
-                $('#errorPassword').html(errorHtml).addClass('error-text');
-
+            
             }
         });
     })
@@ -315,48 +309,33 @@
         });
     });
 
-    //script for saving
-    {{-- $('#dataModalForm').on('submit', function(event){--}}
-    {{--    event.preventDefault();--}}
-    {{--    console.log($(this).serialize());--}}
-    {{--    $.ajax({--}}
-    {{--    type: 'POST',--}}
-    {{--        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},--}}
-    {{--    url: "{{ route('admin.users.store') }}",--}}
-    {{--    data:$(this).serialize(),--}}
-    {{--    success: function(response){--}}
-    {{--        if(response.errors)--}}
-    {{--            {--}}
-    {{--                var errors = response.errors;--}}
-    {{--                $.each(errors, function(key, value){--}}
-    {{--                 $('#' + key).addClass('is-invalid');--}}
-    {{--                 $('#' + key + '_error').html(value);--}}
-    {{--                });--}}
-    {{--            }--}}
-    {{--            else--}}
-    {{--            {--}}
-    {{--              // handle success message--}}
-    {{--              alert(response.success);--}}
-    {{--              $('#dataModal').modal('hide');--}}
-    {{--              location.reload();--}}
-    {{--              // reload the form or redirect to a new page--}}
-    {{--            }--}}
-    {{--            // $('#dataModal').modal('hide');--}}
-    {{--            // location.reload();--}}
-    {{--    },--}}
-    {{--        error: function (xhr, status, error) {--}}
-    {{--            var errors = xhr.responseJSON.errors;--}}
-    {{--            var errorHtml = '<ul>';--}}
-    {{--            $.each(errors, function(key, value) {--}}
-    {{--                errorHtml += '<li>' + value + '</li>';--}}
-    {{--                $('#' + key).addClass('error-border');--}}
-    {{--            });--}}
-    {{--            errorHtml += '</ul>';--}}
-    {{--            $('#errorPassword').html(errorHtml).addClass('error-text');--}}
-    {{--        }--}}
-    {{--  });--}}
+    $(document).ready(function(){
+        $('#dataModalForm').parsley();
+    });
 
-    {{-- })--}}
+    //script for saving
+    // $('#dataModalForm').on('submit', function(event){
+    //     event.preventDefault();
+    //     console.log($(this).serialize());
+    //     $.ajax({
+    //          type: 'POST',
+    //          headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+    //          url: "{{ route('admin.users.store') }}",
+    //          data:$(this).serialize(),
+    //       success: function(response){
+            
+    //          alert(response.success);
+    //             $('#dataModal').modal('hide');
+    //            location.reload();
+             
+    //      },
+    //      error: function (xhr, status, error) {
+    //             var errors = xhr.responseJSON.errors;
+    //     }
+    
+    //    });
+
+    // });
 
 
 
