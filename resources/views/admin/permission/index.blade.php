@@ -41,7 +41,7 @@
 
             <h4 class="card-title mb-4">Permissions</h4>
 
-            <div class="table-responsive">
+            <div>
                 <table class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;" id="permission-table">
                     <thead class="table-light">
                         <tr>

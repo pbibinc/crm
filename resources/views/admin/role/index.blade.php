@@ -60,7 +60,7 @@
 
         <h4 class="card-title mb-4">Roles</h4>
 
-        <div class="table-responsive">
+        <div>
             <table class="table table-centered mb-0 align-middle table-hover table-nowrap">
                 <thead class="table-light">
                     <tr>

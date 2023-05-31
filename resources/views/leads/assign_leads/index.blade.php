@@ -82,7 +82,7 @@
                 <div class="col-xl-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="table-responsive">
+                            <div>
                                 <table class="table table-bordered dt-responsive nowrap" id="dataTable" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <div class="row">
                                         <div class="col-4">

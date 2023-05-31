@@ -29,7 +29,7 @@
                         @endcan
                 </div>
                 <h4 class="card-title mb-4">Departments</h4>
-                <div class="table-responsive">
+                <div>
                     <table id="data-table" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>

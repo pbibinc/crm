@@ -38,7 +38,7 @@
                         </a>
                 </div>
                 <h4 class="card-title mb-4">Positions</h4>
-                <div class="table-responsive">
+                <div>
                     <table id="position-table" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                         <thead>
                             <tr>

@@ -66,7 +66,7 @@
                                                 </div><!-- end cardbody -->
                                             </div>
                                         </div>
-                                        
+
                                  </div>
                             </div>
                         </div>
@@ -85,7 +85,7 @@
                                     </div>
                                 </div>
                                 <br>
-                                    <div class="table-responsive">
+                                    <div>
                                         <table class="table table-bordered dt-responsive nowrap" id="dataTable" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                             <thead>
                                             <tr>
