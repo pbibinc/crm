@@ -48,6 +48,13 @@ return [
     */
 
     'channels' => [
+        
+        // 'cache' => [
+        //     'driver' => 'single',
+        //     'path' => storage_path('logs/cache.log'),
+        //     'level' => 'debug',
+        // ],
+
         'stack' => [
             'driver' => 'stack',
             'channels' => ['single'],

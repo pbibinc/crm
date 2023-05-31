@@ -12,15 +12,17 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        // 'admin/*'
+        'admin/dashboard',
         'admin/positions/*',
         'admin/departments/*',
         'admin/user-profiles/*',
         'admin/permissions/*',
         'admin/users/*',
+        'hrforms/*',
         // 'admin/*',
         'leads/disposition/*',
         'leads/classcodes/*',
+        'leads/sic/*',
     ];
 
     protected function shouldPassThrough($request)
@@ -41,11 +43,19 @@ class VerifyCsrfToken extends Middleware
             return true;
         }
 
+        // if ($request->is('hrforms/*') && $request->isMethod('delete')) {
+        //     return true;
+        // }
+
         if ($request->is('leads/disposition/*') && $request->isMethod('delete')) {
             return true;
         }
 
         if ($request->is('leads/classcodes/*') && $request->isMethod('delete')) {
+            return true;
+        }
+
+        if ($request->is('leads/sic/*') && $request->isMethod('delete')) {
             return true;
         }
 

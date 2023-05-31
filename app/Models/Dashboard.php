@@ -19,4 +19,8 @@ class Dashboard extends Model
         'log_in',
         'log_out'
     ];
+
+    public function attendanceRecords(){
+        return $this->hasMany(Attendance::class, 'user_id');
+    }
 }

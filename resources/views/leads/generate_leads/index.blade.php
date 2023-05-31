@@ -250,5 +250,45 @@
 
         });
     });
+
+    // $(document).ready(function() {
+    //     $("#import-form").on("submit", function(e) {
+    //         e.preventDefault();
+
+    //         // Get form data
+    //         var formData = new FormData(this);
+
+    //         $.ajax({
+    //             url: "{{ route('leads.import') }}",
+    //             type: "POST",
+    //             data: formData,
+    //             contentType: false,
+    //             processData: false,
+    //             beforeSend: function() {
+    //                 // Show preloader
+    //                 $("#preloader").removeClass("d-none");
+
+    //                 // Disable the button to prevent multiple submissions
+    //                 $("#import").prop("disabled", true);
+    //             },
+    //             success: function(response) {
+    //                 // Handle success
+    //                 console.log(response);
+    //             },
+    //             error: function(xhr, status, error) {
+    //                 // Handle error
+    //                 console.error(xhr, status, error);
+    //             },
+    //             complete: function() {
+    //                 // Hide preloader
+    //                 $("#preloader").addClass("d-none");
+
+    //                 // Enable the button
+    //                 $("#import").prop("disabled", false);
+    //             }
+    //         });
+    //     });
+    // });
+
 </script>
 @endsection
