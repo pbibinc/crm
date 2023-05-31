@@ -22,6 +22,24 @@ class LeadController extends Controller
         $leads = Lead::get();
         $newLeadsCount = $leads->where('status', 1)->count();
         $assignLeadsCount = $leads->where('status', 2)->count();
+        $totalLeads = $newLeadsCount + $assignLeadsCount;
+        $unassignedPercentage = round(($newLeadsCount / $totalLeads) * 100);
+        if ($unassignedPercentage >= 50) {
+       
+           $arrowClass = 'ri-arrow-right-up-line'; 
+           $message = "of leads haven't been assigned";
+           $textClass = 'text-success';
+        } else {
+           $message = "Leads that haven't been assigned";
+           $arrowClass ='ri-arrow-right-down-line';  
+           $textClass = 'text-danger';
+         }
+         $assignData = [
+            'unassignedPercentage' => $unassignedPercentage,
+            'arrowClass' => $arrowClass,
+            'message' => $message,
+            'textClass' => $textClass
+        ];
         $classCodeLeads = ClassCodeLead::all();
         if($request->ajax()){
             if(Cache::has('leads_data')){
@@ -39,7 +57,7 @@ class LeadController extends Controller
             }
             return DataTables::of($data)->make(true);
         }
-        return view('leads.generate_leads.index', compact('leads', 'newLeadsCount', 'assignLeadsCount', 'classCodeLeads'));
+        return view('leads.generate_leads.index', compact('leads', 'newLeadsCount', 'assignLeadsCount', 'classCodeLeads', 'assignData'));
 
     }
     /**
@@ -63,8 +81,7 @@ class LeadController extends Controller
            $lead->state_abbr = $request->stateAbbreviation;
            $lead->website_originated = $request->websiteOriginated;
            $lead->class_code = $request->classCodeLead;
-        //    $lead->class_code = $request-clas
-
+           $lead->prime_lead = $request->leadType;
            $existingLead = Lead::where('tel_num', $lead->tel_num)->first();
            if($existingLead){
                return response()->json(['error' => 'Telephone number must be unique'], 422);

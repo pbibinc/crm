@@ -63,6 +63,7 @@ class AssignLeadController extends Controller
                     });
 
                 }
+
                 if (!empty($request->get('states'))){
                     $data = $data->filter(function ($row) use ($request){
                         return $row['state_abbr'] == $request->get('states');
@@ -74,24 +75,38 @@ class AssignLeadController extends Controller
                         return strtolower($row['class_code']) == strtolower($request->get('classCodeLead'));
                     });
                 }
+
+                if (!empty($request->get('leadType'))){
+                    $data = $data->filter(function ($row) use ($request){
+                        return $row['prime_lead'] == $request->get('leadType');
+                    });
+                }
+            
             }else{
                 $query = Lead::where('status', 1);
 
                 if (!empty($request->get('website_originated'))) {
                     $query->where('website_originated', $request->get('website_originated'));
                 }
+
                 if (!empty($request->get('states'))){
                     $query->where('state_abbr', $request->get('states'));
                 }
+
                 if (!empty($request->get('classCodeLead'))){
                     $query->where('class_code', $request->get('classCodeLead'));
                 }
 
+                if (!empty($request->get('leadType'))){
+                    $query->where('prime_lead', $request->get('leadType'));
+                }
+                
                 $data = $query->select('id', 'company_name', 'tel_num', 'state_abbr',
-                    'class_code', 'website_originated', 'created_at', 'updated_at')->get();
+                    'class_code', 'website_originated', 'created_at', 'updated_at', 'prime_lead')->get();
 
                 Cache::put('leads_funnel', $data, 60 * 60);
             }
+
             if (!empty($request->get('website'))) {
                 $data = $data->filter(function ($row) use ($request) {
                     return $row['website_originated'] == $request->get('website');
@@ -109,12 +124,6 @@ class AssignLeadController extends Controller
                 ->rawColumns(['checkbox', 'action'])
                 ->make(true);
         }
-//        $shuffledLeads = $leads->shuffle();
-//        $shuffledUsers = $userProfiles->shuffle();
-//        $numLeadsAssigned = 0;
-//
-//        dd($shuffledLeads);
-
         return view('leads.assign_leads.index', compact('userProfiles', 'sites','timezones', 'accounts', 'classCodeLeads'));
     }
 
@@ -151,6 +160,19 @@ class AssignLeadController extends Controller
                   ->make(true);
           }
 
+    }
+
+    public function assignPremiumLead(Request $request, Lead $lead)
+    {
+        $leadsId = $request->input('leadsId');
+        Lead::whereIn('id',  $leadsId)
+           ->update([
+            'prime_lead' => 2
+           ]);
+           Cache::forget('leads_funnel');
+           Cache::forget('leads_data');
+           Cache::forget('apptaker_leads');
+        return response()->json(['success' => 'Leads are succesfully assign into prime lead']);
     }
 
     public function assign(Request $request, Lead $lead)

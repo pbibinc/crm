@@ -79,6 +79,7 @@ Route::prefix('assign')->group(function () {
     Route::post('/redeploy-leads-user', [AssignLeadController::class, 'redeploy'])->name('redeploy-leads-user');
     Route::get('/{leads}/edit',[AssignLeadController::class, 'edit'])->name('edit-leads-user');
     Route::post('/void-all',[AssignLeadController::class, 'voidAll'])->name('void-all');
+    Route::post('/assign-premium-leads',[AssignLeadController::class, 'assignPremiumLead'])->name('assign-premium-leads');
 });
 
 

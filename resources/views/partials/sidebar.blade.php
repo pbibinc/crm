@@ -17,7 +17,7 @@
             </div>
             <div class="mt-3">
                 <h4 class="font-size-16 mb-1">{{$userProfile->firstname . ' ' . $userProfile->american_surname}}</h4>
-                <p class="mb-0"><em>{{$userProfile->position->name}}</em></p>
+                <p class="mb-0" style="color: white"><em>{{$userProfile->position->name}}</em></p>
                 <span class="text-muted"><i class="ri-record-circle-line align-middle font-size-14 text-success"></i> Online</span>
             </div>
         </div>
@@ -102,59 +102,59 @@
                 <li class="menu-title">Admin</li>
 
                 <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                    <a href="javascript: void(0);" class="has-arrow waves-effect" style="color: white;">
                         <i class="ri-lock-line"></i>
                         <span>Security</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ route('admin.users.index') }}">Accounts</a></li>
-                        <li><a href="{{ route('admin.roles.index') }}">Role</a></li>
+                        <li><a href="{{ route('admin.users.index') }}" style="color: white;">Accounts</a></li>
+                        <li><a href="{{ route('admin.roles.index') }}" style="color: white;">Role</a></li>
                         @can('view', App\Models\Permission::find(1))
-                            <li><a href="{{ route('admin.permissions.index') }}">Permission</a></li>
+                            <li><a href="{{ route('admin.permissions.index') }}" style="color: white;">Permission</a></li>
                         @endcan
                     </ul>
                 </li>
                 <li>
                     @can('viewAny', App\Models\UserProfile::find(1))
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="ri-user-2-line"></i>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect" style="color: white;">
+                        <i class="ri-user-2-line" ></i>
                         <span>Administrator</span>
                     </a>
                     @endcan
                     <ul class="sub-menu" aria-expanded="false">
                         @can('view', App\Models\Position::find(1))
-                            <li><a href="{{ route('admin.positions.index') }}">Position</a></li>
+                            <li><a href="{{ route('admin.positions.index') }}" style="color: white;">Position</a></li>
                         @endcan
 
                         @can('view', App\Models\Department::find(1))
-                        <li><a href="{{ route('admin.departments.index') }}">Departments</a></li>
+                        <li><a href="{{ route('admin.departments.index') }}" style="color: white;">Departments</a></li>
                             @endcan
                             @can('view', App\Models\UserProfile::find(1))
-                                <li><a href="{{ route('admin.user-profiles.index') }}">User Profile</a></li>
+                                <li><a href="{{ route('admin.user-profiles.index') }}" style="color: white;">User Profile</a></li>
                             @endcan
 
                     </ul>
                 </li>
 
                 <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="ri-user-2-line"></i>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect" style="color: white;">
+                        <i class="ri-user-2-line" ></i>
                         <span>Departments</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                     <li><a href="{{ route('it-department') }}">IT DEPARTMENT</a></li>
-                     <li><a href="{{ route('csr-department') }}">CSR DEPARTMENT</a></li>
+                     <li><a href="{{ route('it-department') }}" style="color: white;">IT DEPARTMENT</a></li>
+                     <li><a href="{{ route('csr-department') }}" style="color: white;">CSR DEPARTMENT</a></li>
                     </ul>
                 </li>
 
                 <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                    <a href="javascript: void(0);" class="has-arrow waves-effect" style="color: white;">
                         <i class="ri-profile-line"></i>
                         <span>QOUTATION FORMS</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="pages-starter.html">Application Forms</a></li>
-                        <li><a href="pages-starter.html">General Information</a></li>
+                        <li><a href="pages-starter.html" style="color: white;">Application Forms</a></li>
+                        <li><a href="pages-starter.html" style="color: white;">General Information</a></li>
 
 {{--                        <li><a href="pages-timeline.html">Timeline</a></li>--}}
 {{--                        <li><a href="pages-directory.html">Directory</a></li>--}}
@@ -166,7 +166,7 @@
 
                 <li>
                     @can('view', App\Models\Lead::find(1))
-                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <a href="javascript: void(0);" class="has-arrow waves-effect" style="color: white;">
                             <i class="ri-spy-fill"></i>
                             <span>LEADS</span>
                         </a>
@@ -174,12 +174,12 @@
 
                     <ul class="sub-menu" aria-expanded="false">
                         @can('viewImport', App\Models\Lead::find(1))
-                            <li><a href="{{route('leads')}}">Import Leads</a></li>
+                            <li><a href="{{route('leads')}}" style="color: white;">Import Leads</a></li>
                         @endcan
                         @can('viewLeadsFunnel', App\Models\Lead::find(1))
-                        <li><a href="{{route('assign')}}">Leads Funnel</a></li>
+                        <li><a href="{{route('assign')}}" style="color: white;">Leads Funnel</a></li>
                             @endcan
-                            <li><a href="{{route('apptaker-leads')}}">List</a></li>
+                            <li><a href="{{route('apptaker-leads')}}" style="color: white;">List</a></li>
                         {{--                        <li><a href="pages-directory.html">Directory</a></li>--}}
                         {{--                        <li><a href="pages-invoice.html">Invoice</a></li>--}}
                         {{--                        <li><a href="pages-404.html">Error 404</a></li>--}}

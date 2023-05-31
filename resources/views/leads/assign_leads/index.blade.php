@@ -85,7 +85,7 @@
                             <div class="table-responsive">
                                 <table class="table table-bordered dt-responsive nowrap" id="dataTable" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <div class="row">
-                                        <div class="col-3">
+                                        <div class="col-4">
                                             <label class="form-label">Time Zone</label>
                                             <select name="timezone" id="timezoneDropdown" class="form-control select2" >
                                                 <option value="">Select a timezone</option>
@@ -95,7 +95,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="col-3">
+                                        <div class="col-4">
                                             <div class="mb-3">
                                                 <div class="form-group">
                                                     <label class="form-label">States</label>
@@ -157,7 +157,23 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-3">
+                                        <div class="col-4">
+                                            <div class="mb-3">
+                                                <div class="form-group">
+                                                    <label for="websiteOriginatedDropdown" class="form-label">Website Originated</label>
+                                                    <select name="website_originated" id="websiteOriginatedDropdown" class="form-control select2">
+                                                        <option value="">Select a Website</option>
+                                                        <option value="">ALL</option>
+                                                        @foreach($sites as $site)
+                                                            <option value="{{substr($site->name, 0, strlen($site->name) - 4)}}">{{substr($site->name, 0, strlen($site->name) - 4)}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
                                             <label class="form-label">Class Code</label>
                                             <select name="classCodeLead" id="classCodeLeadDropdown" class="form-control select2" >
                                                 <option value="">Select Class Code</option>
@@ -168,16 +184,15 @@
                                             </select>
                                         </div>
 
-                                        <div class="col-3">
+                                        <div class="col-6">
                                             <div class="mb-3">
                                                 <div class="form-group">
-                                                    <label for="websiteOriginatedDropdown" class="form-label">Website Originated</label>
-                                                    <select name="website_originated" id="websiteOriginatedDropdown" class="form-control select2">
+                                                    <label for="leadTypeDropdown" class="form-label">Leads Type</label>
+                                                    <select name="lead_type" id="leadTypeDropdown" class="form-control select2">
                                                         <option value="">Select a Website</option>
                                                         <option value="">ALL</option>
-                                                        @foreach($sites as $site)
-                                                            <option value="{{substr($site->name, 0, strlen($site->name) - 4)}}">{{substr($site->name, 0, strlen($site->name) - 4)}}</option>
-                                                        @endforeach
+                                                        <option value="2">Prime Lead</option>
+                                                        <option value="1">Normal Lead</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -210,28 +225,31 @@
 
                                         <div class="row">
 
-                                            <div class="col-4">
+                                            <div class="col-3">
                                                 <div class="d-grid mb-3">
-                                                    <button type="button" id="assignRandomLeadsUser" class="btn btn-info waves-effect waves-light " data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign Random Leads to a user base to the quantity input on top">Assign Random Leads to user</button>
+                                                    <button type="button" id="assignRandomLeadsUser" class="btn btn-primary waves-effect waves-light " data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign Random Leads to a user base to the quantity input on top">Assign Random Leads to user</button>
                                                 </div>
                                             </div>
 
-                                            <div class="col-4">
+                                            <div class="col-3">
                                                 <div class="d-grid mb-3">
                                                     <button type="button" id="assignLead" class="btn btn-primary waves-effect waves-light " data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign checked Leads to a selected user">Assign Lead</button>
                                                 </div>
                                             </div>
 
-                                            <div class="col-4">
+                                            <div class="col-3">
                                                 <div class="d-grid mb-3">
-                                                <button type="button" id="assignRandomLeads" class="btn btn-info waves-effect waves-light " data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign Random Leads to a random user">Assign Random Leads</button>
+                                                    <button type="button" id="assignPremiumLead" class="btn btn-primary waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="top" title="Button for assgining premium leads">Assign Premium Lead</button>
                                                 </div>
                                             </div>
 
-
+                                            <div class="col-3">
+                                                <div class="d-grid mb-3">
+                                                <button type="button" id="assignRandomLeads" class="btn btn-primary waves-effect waves-light " data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign Random Leads to a random user">Assign Random Leads</button>
+                                                </div>
+                                            </div>
+                                
                                         </div>
-
-
 
                                     <br>
                                     <thead>
@@ -286,6 +304,25 @@
     </div>
     {{-- end of modal --}}
 
+     {{-- start for assiging premium leads modal --}}
+     <div class="modal fade" id="assigningPremiumLeadModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" >
+                    <h5 class="modal-title"><b>Confirmation</b></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Assiging Premium Leads Plss confirm.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" name="okAssignPremiumButton" id="okAssignPremiumButton">Assign</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- end of modal --}}
 
     {{-- start for voiding leads to user modal --}}
     <div class="modal fade" id="confirmModal" tabindex="-1">
@@ -390,19 +427,29 @@
                                 d.states = $('#statesDropdown').val(),
                                 d.classCodeLead = $('#classCodeLeadDropdown').val(),
                                     // d.userProfile = $('#userProfileDropdown').val(),
-                                d.search = $('input[type="search"]').val()
+                                d.search = $('input[type="search"]').val(),
+                                d.leadType = $('#leadTypeDropdown').val()
                     }
                 },
                 columns: [
                     {data: 'checkbox', name: 'checkbox',  orderable: false, searchable: false, title: '<input type="checkbox" id="check_all">'},
                     {data: 'id', name: 'id'},
-                    {data: 'company_name', name: 'company_name'},
+                    {
+                        data: 'company_name', 
+                        name: 'company_name',
+                        render: function(data, type, row){
+                            if(row.prime_lead == 2){
+                                return '<div class="d-flex justify-content-between">' + data + '<i class="far fa-gem"></i></div>'
+                            }else{
+                                return data;
+                            }
+                        }
+                    },
                     {data: 'tel_num', name: 'tel_num'},
                     {data: 'state_abbr', name: 'state_abbr'},
                     {data: 'class_code', name: 'class_code'},
                     {data: 'website_originated', name: 'website_originated'},
                     {data: 'created_at_formatted', name: 'created_at', searchable:false},
-
                     ]
             });
 
@@ -440,6 +487,10 @@
                 $('#dataTable').DataTable().ajax.reload();
             });
 
+            $('#leadTypeDropdown').on('change', function(){
+                $('#dataTable').DataTable().ajax.reload();
+            });
+
             $('#statesDropdown').on('change', function () {
                 var states = $(this).val();
                 $('#dataTable').DataTable().ajax.url("{{ route('assign') }}?states=" + states).load();
@@ -456,8 +507,56 @@
                 $('#dataTable').DataTable().ajax.url("{{ route('assign') }}?classCodeLead=" + classCodeLead).load();
             });
 
-    
+            //event for assigning premium leads
+            var leadsId = [];
+           $('#assignPremiumLead').on('click', function(){
+            $('.users_checkbox:checked').each(function (){
+                leadsId.push($(this).val());
+                });
+            if(leadsId.length === 0){
+                Swal.fire({
+                        title: 'Error',
+                        text: 'Please Select Lead',
+                        icon: 'error'
+                    });
+            }else{
+                $('#assigningPremiumLeadModal').modal('show');
+            }
+           });
 
+           $('#okAssignPremiumButton').on('click', function(){ 
+            console
+            $.ajax({
+                url:"{{route('assign-premium-leads')}}",
+                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                dataType:"json",
+                method: "POST",
+                data:{
+                    leadsId:leadsId
+                },
+                success: function(response){
+                     // Handle the response from the server
+                    console.log(response);
+                  if (response.success) {
+                     // Display a success message
+                     Swal.fire({
+                      title: 'Success',
+                      text: 'Leads assigned successfully.',
+                      icon: 'success'
+                      }).then(function() {
+                         location.reload();
+                        });
+                    }else {
+                        // Display an error message
+                       Swal.fire({
+                          title: 'Error',
+                          text: 'Failed to assign leads.',
+                          icon: 'error'   
+                       });
+                    }
+                }
+            })
+           });
             $("#voidAll").hide()
 
             $('#userProfileDropdown').on('change', function() {
@@ -559,6 +658,8 @@
                 $('#assignRandomLeadsToRandomUser').modal('show');
             });
 
+
+            
 
             // ajax script for assigning checked leads
             $('#assignLead').on('click', function (){

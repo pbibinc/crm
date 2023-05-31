@@ -3,14 +3,99 @@
     <div class="page-content pt-6">
         <link rel="stylesheet" href="{{asset('backend/assets/libs/twitter-bootstrap-wizard/prettify.css')}}">
         <div class="container-fluid">
+ 
             <div class="row">
+                <div class="row">
+
+                    <div class="col-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div class="flex-grow-1">
+                                        <p class="text-truncate font-size-14 mb-2">Total Appointed Leads</p>
+                                        <h4 class="mb-2">1452</h4>
+                                        <p class="text-muted mb-0"><span class="text-success fw-bold font-size-12 me-2"><i class="ri-arrow-right-up-line me-1 align-middle"></i>9.23%</span>from previous period</p>
+                                    </div>
+                                    <div class="avatar-sm">
+                                        <span class="avatar-title bg-light text-primary rounded-3">
+                                            <i class="mdi mdi-account-check font-size-24 " ></i>  
+                                        </span>
+                                    </div>
+                                </div>                                            
+                            </div><!-- end cardbody -->
+                        </div>
+                    </div>
+
+                    <div class="col-3">
+                        <div class="card bg-success">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div class="flex-grow-1">
+                                        <p class="text-truncate font-size-14 mb-2 text-white">Total Accounts</p>
+                                        <h4 class="mb-2 text-white">1452</h4>
+                                        <p class="text-white mb-0">
+                                            <span class="text-light fw-bold font-size-12 me-2" >
+                                                <i class="ri-arrow-right-up-line me-1 align-middle" ></i>9.23%
+                                            </span>
+                                            from previous period
+                                        </p>
+                                    </div>
+                                    <div class="avatar-sm">
+                                        <span class="avatar-title bg-light text-primary rounded-3">
+                                            <i class="mdi mdi-account-cash font-size-24" style="color: #28a745;"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div><!-- end card-body -->
+                        </div>
+                    </div>
+
+                    <div class="col-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div class="flex-grow-1">
+                                        <p class="text-truncate font-size-14 mb-2">Total Sales</p>
+                                        <h4 class="mb-2">1452</h4>
+                                        <p class="text-muted mb-0"><span class="text-success fw-bold font-size-12 me-2"><i class="ri-arrow-right-up-line me-1 align-middle"></i>9.23%</span>from previous period</p>
+                                    </div>
+                                    <div class="avatar-sm">
+                                        <span class="avatar-title bg-light text-primary rounded-3">
+                                            <i class="ri-shopping-cart-2-line font-size-24"></i>  
+                                        </span>
+                                    </div>
+                                </div>                                            
+                            </div><!-- end cardbody -->
+                        </div>
+                    </div>
+
+                    <div class="col-3">
+                        <div class="card bg-info text-white-50">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div class="flex-grow-1">
+                                        <p class="text-truncate font-size-14 mb-2">Total Sales</p>
+                                        <h4 class="mb-2">1452</h4>
+                                        <p class="text-muted mb-0"><span class="text-success fw-bold font-size-12 me-2"><i class="ri-arrow-right-up-line me-1 align-middle"></i>9.23%</span>from previous period</p>
+                                    </div>
+                                    <div class="avatar-sm">
+                                        <span class="avatar-title bg-light text-primary rounded-3">
+                                            <i class="ri-shopping-cart-2-line font-size-24"></i>  
+                                        </span>
+                                    </div>
+                                </div>                                            
+                            </div><!-- end cardbody -->
+                        </div>
+                    </div>
+                    
+                </div>
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
                             <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <div class="row">
 
-                                    <div class="col-4">
+                                    <div class="col-3">
                                         <div class="mb-3">
                                             <div class="form-group">
                                                 <label class="form-label">Time Zone</label>
@@ -25,7 +110,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-4">
+
+                                    <div class="col-3">
                                         <div class="mb-3">
                                             <div class="form-group">
                                                 <label for="" class="form-label">Select States</label>
@@ -86,24 +172,36 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-4">
+
+                                    <div class="col-3">
                                         <div class="mb-3">
                                             <div class="form-group">
                                                 <label class="form-label">Class Code</label>
                                                 <select name="classCode" id="classCodeLeadDropdown" class="form-control select2" >
-
                                                     <option value="">Select Classcode</option>
                                                     <option value="">ALL</option>
                                                     @foreach($classCodeLeads as $classCodeLead)
                                                         <option value="{{ $classCodeLead->name }}">{{ $classCodeLead->name }}</option>
                                                     @endforeach
-
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
 
-
+                                    <div class="col-3">
+                                        <div class="mb-3">
+                                            <div class="form-group">
+                                                <label for="leadTypeDropdown" class="form-label">Leads Type</label>
+                                                <select name="lead_type" id="leadTypeDropdown" class="form-control select2">
+                                                    <option value="">Select a Leads Type</option>
+                                                    <option value="">ALL</option>
+                                                    <option value="2">Prime Lead</option>
+                                                    <option value="1">Normal Lead</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                             
                                 <thead>
@@ -127,6 +225,8 @@
             </div>
         </div>
         @include('leads.apptaker_leads.assign-questionare')
+ 
+        <!--Modal for Call Back Disposition-->
         <div class="modal fade bs-example-modal-center" id="callbackModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -148,6 +248,66 @@
                                 <div>
                                     <textarea required class="form-control" rows="5"></textarea>
                                 </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success waves-effect waves-light">Submit</button>
+                        <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <!--Modal for GateKeeper Disposition-->
+        <div class="modal fade bs-example-modal-center" id="gateKeeperModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="mySmallModalLabel">Call Back Schedule</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-3">
+                                <label for="example-datetime-local-input" class="col-form-label">Date and time</label>
+                            </div>
+                            <div class="col-9">
+                                <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00" id="example-datetime-local-input">
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <label>Remarks</label>
+                                <div>
+                                    <textarea required class="form-control" rows="5"></textarea>
+                                </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success waves-effect waves-light">Submit</button>
+                        <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+       <!--Modal for No Answer Disposition-->
+        <div class="modal fade bs-example-modal-center" id="noAnswerModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="mySmallModalLabel">Set Time When To Call Back</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-3">
+                                <label for="example-datetime-local-input" class="col-form-label">Date and time</label>
+                            </div>
+                            <div class="col-9">
+                                <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00" id="example-datetime-local-input">
+                            </div>
                         </div>
                     </div>
 
@@ -180,11 +340,22 @@
                 data:function (d) {
                     d.website_originated = $('#websiteOriginatedDropdown').val(),
                     d.classCodeLead = $('#classCodeLeadDropdown').val(),
-                    d.states = $('#statesDropdown').val()
+                    d.states = $('#statesDropdown').val(),
+                    d.leadType = $('#leadTypeDropdown').val()
                 }
             },
             columns: [
-                {data: 'company_name_action', name: 'company_name_action'},
+                {
+                    data: 'company_name_action', 
+                    name: 'company_name_action',
+                    render: function(data, type, row){
+                            if(row.prime_lead == 2){
+                                return '<div class="d-flex justify-content-between">' + data + '<i class="far fa-gem"></i></div>'
+                            }else{
+                                return data;
+                            }
+                        }
+                },
                 {data: 'tel_num', name: 'tel_num'},
                 {data: 'class_code', name: 'class_code'},
                 {data: 'state_abbr', name: 'state_abbr'},
@@ -217,6 +388,10 @@
             e.preventDefault();
         });
 
+        $('#leadTypeDropdown').on('change', function() {
+            $('#datatable').DataTable().ajax.reload();
+            });
+
         $('#dataModal').on('hidden.bs.modal', function() {
             var formData = $('#dataModalForm').serializeArray();
             var dataObject = {};
@@ -245,6 +420,14 @@
             var selectedDisposition = $(this).val();
             if(selectedDisposition == '2'){
                 $('#callbackModal').modal('show');
+            }
+
+            if(selectedDisposition == '6'){
+                $('#noAnswerModal').modal('show');
+            }
+
+            if(selectedDisposition == '12'){
+                $('#gateKeeperModal').modal('show');
             }
         });
        

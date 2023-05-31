@@ -55,11 +55,16 @@ class AppTakerLeadsController extends Controller
                         return $row['state_abbr'] == $request->get('states');
                     });  
                 }
+                if (!empty($request->get('leadType'))) {
+                    $data = $data->filter(function ($row) use ($request){
+                        return $row['prime_lead'] == $request->get('leadType');
+                    });  
+                }
                 // log::info($data);
 
             }else{
                 $query = Lead::where('user_profile_id', $user->id);
-                $data = $query->select('id', 'company_name', 'tel_num', 'state_abbr', 'website_originated', 'created_at', 'disposition_id', 'class_code')->get();
+                $data = $query->select('id', 'company_name', 'tel_num', 'state_abbr', 'website_originated', 'created_at', 'disposition_id', 'class_code', 'prime_lead')->get();
 
                 $dispositions = Disposition::all();
                 $data->each(function ($lead) use ($dispositions){
@@ -79,6 +84,11 @@ class AppTakerLeadsController extends Controller
                 $data = $data->filter(function ($row) use ($request) {
                     return $row['state_abbr'] == $request->get('states');
                 });
+            }
+            if (!empty($request->get('leadType'))) {
+                $data = $data->filter(function ($row) use ($request){
+                    return $row['prime_lead'] == $request->get('leadType');
+                });  
             }
             // log::info($data);
             if (!empty($request->get('timezone'))){

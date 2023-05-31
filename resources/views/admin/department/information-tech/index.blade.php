@@ -25,10 +25,10 @@
                                             <input type="hidden" class="rating-tooltip" value={{ $overallRating }} data-filled="mdi mdi-star text-primary" data-empty="mdi mdi-star-outline text-muted" disabled="disabled"/>
                                         </li>
                                          <li class="list-inline-item">
-                                             <a role="button" class="text-reset" title="{{ asset($userProfile->streams_number) }}" data-bs-placemt="top" data-bs-toggle="tooltip" class="tooltips" href=""><i class="fas fa-phone-alt"></i></a>
+                                             <a role="button" class="text-reset" title="{{ $userProfile->streams_number }}" data-bs-placemt="top" data-bs-toggle="tooltip" class="tooltips" href=""><i class="fas fa-phone-alt"></i></a>
                                          </li>
                                          <li class="list-inline-item">
-                                             <a role="button" class="text-reset" title="{{ asset($userProfile->skype_profile) }}" data-bs-placement="top" data-bs-toggle="tooltip" class="tooltips" href=""><i class="fab fa-skype"></i></a>
+                                             <a role="button" class="text-reset" title="{{ $userProfile->skype_profile }}" data-bs-placement="top" data-bs-toggle="tooltip" class="tooltips" href=""><i class="fab fa-skype"></i></a>
                                          </li>
                                         
                                      </ul>                                   

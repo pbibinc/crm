@@ -27,32 +27,47 @@
                                 @endif
                                 <div class="col-6">
                                     <div class="row">
+
                                         <div class="col-lg-6">
-                                            <div class="card bg-info text-white-50">
+                                            <div class="card">
                                                 <div class="card-body">
-                                                    <div class="row">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <h5 class="mb-4 text-white"><i class="mdi mdi-account-hard-hat me-3"></i>New Leads</h5>
-                                                            <h2 class="text-white ml-auto">{{$newLeadsCount}}</h2>
+                                                    <div class="d-flex">
+                                                        <div class="flex-grow-1">
+                                                            <p class="text-truncate font-size-14 mb-2">New Leads</p>
+                                                            <h4 class="mb-2" style="color:#ffc107;">{{$newLeadsCount}}</h4>
+                                                            <p class="text-muted mb-0"><span class="text-success fw-bold font-size-12 me-2"><i class="mdi mdi-account-hard-hat me-3"></i>9.23%</span>from previous period</p>
                                                         </div>
-                                                    </div>
-                                                </div>
+                                                        <div class="avatar-sm">
+                                                            <span class="avatar-title bg-light text-primary rounded-3">
+                                                                <i class="mdi mdi-account-hard-hat font-size-24 " style="color: #ffc107;"></i>
+                                                                {{-- <i class="ri-shopping-cart-2-line font-size-24"></i>   --}}
+                                                            </span>
+                                                        </div>
+                                                    </div>                                            
+                                                </div><!-- end cardbody -->
                                             </div>
                                         </div>
 
                                         <div class="col-lg-6">
                                             <div class="card bg-info text-white-50">
                                                 <div class="card-body">
-                                                    <div class="row">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <h5 class="mb-4 text-white"><i class="mdi mdi-headset me-3"></i>Assign Leads</h5>
-                                                            <h2 class="text-white ml-auto">{{$assignLeadsCount}}</h2>
+                                                    <div class="d-flex">
+                                                        <div class="flex-grow-1">
+                                                            <p class="text-truncate font-size-14 mb-2" style="color:white">Assign Lead</p>
+                                                            <h4 class="mb-2" style="color:white">{{$assignLeadsCount}}</h4>
+                                                            <p class="text-muted mb-0"><span class="{{ $assignData['textClass'] }} fw-bold font-size-12 me-2"><i class="{{ $assignData['arrowClass'] }} me-1 align-middle"></i>{{ $assignData['unassignedPercentage'] }}%</span><span style="color: white;">{{ $assignData['message'] }}</span></p>
                                                         </div>
-                                                    </div>
-                                                </div>
+                                                        <div class="avatar-sm">
+                                                            <span class="avatar-title bg-light text-primary rounded-3">
+                                                                <i class="mdi mdi-headset font-size-24" style="color: #17a2b8;"></i>
+                                                            </span>
+                                                        </div>
+                                                    </div>                                            
+                                                </div><!-- end cardbody -->
                                             </div>
                                         </div>
-                                </div>
+                                        
+                                 </div>
                             </div>
                         </div>
                     </div>
@@ -125,6 +140,16 @@
                                         @foreach ($classCodeLeads as $classCodeLead)
                                             <option value="{{ $classCodeLead->name }}">{{ $classCodeLead->name }}</option>
                                         @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Leads Type</label>
+                                    <select name="\" id="leadTypeDropdown" class="form-control">
+                                        <option value="">Select Lead Class</option>
+                                        <option value="">ALL</option>
+                                        <option value="2">Prime</option>
+                                        <option value="1">Normal</option>
                                     </select>
                                 </div>
 
