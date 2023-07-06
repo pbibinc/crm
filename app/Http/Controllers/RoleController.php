@@ -4,13 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Permission;
 use App\Models\Role;
+use Barryvdh\Debugbar\Facades\Debugbar;
+use Barryvdh\Debugbar\Twig\Extension\Debug;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class RoleController extends Controller
 {
     public function index()
     {
+    
         $roles = Role::all();
+      
         return view('admin.role.index', compact('roles'));
     }
 

@@ -122,7 +122,7 @@
 <script>
 
 $(document).ready(function() {
-        $('#permission-table').DataTable({
+   $('#permission-table').DataTable({
             processing: true,
             serverSide: true,
             ajax: "{{ route('admin.permissions.index') }}",

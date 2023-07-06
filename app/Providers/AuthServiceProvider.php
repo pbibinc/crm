@@ -3,11 +3,13 @@
 namespace App\Providers;
 
 use App\Http\Controllers\AssignLeadController;
+use App\Models\Attendance;
 use App\Policies\LeadPolicy;
 use App\Policies\LeadsPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use App\Models\Lead;
+use App\Policies\AttendancePolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,8 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
         Lead::class => LeadPolicy::class,
+        Attendance::class => AttendancePolicy::class,
+       
     ];
 
     /**
@@ -29,9 +33,6 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
-        Gate::resource('leads', LeadsPolicy::class);
-
         //
     }
 }

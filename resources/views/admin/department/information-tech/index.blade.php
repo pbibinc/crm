@@ -21,9 +21,9 @@
                                      <h5 class="mt-0 font-size-18 mb-1">{{ $userProfile->firstname . ' ' . $userProfile->american_surname  }}</h5>
                                      <p class="text-muted font-size-14">{{ $userProfile->position->name }}</p>
                                      <ul class="social-links list-inline mb-0">
-                                        <li> 
+                                        {{-- <li> 
                                             <input type="hidden" class="rating-tooltip" value={{ $overallRating }} data-filled="mdi mdi-star text-primary" data-empty="mdi mdi-star-outline text-muted" disabled="disabled"/>
-                                        </li>
+                                        </li> --}}
                                          <li class="list-inline-item">
                                              <a role="button" class="text-reset" title="{{ $userProfile->streams_number }}" data-bs-placemt="top" data-bs-toggle="tooltip" class="tooltips" href=""><i class="fas fa-phone-alt"></i></a>
                                          </li>

@@ -37,11 +37,8 @@
                     <div class="dropdown float-end">
                         <a class="btn btn-success" data-bs-toggle="modal" data-bs-target="#dataModal" id="create_record">
                             ADD USER</a>
-
                     </div>
-
                     <h4 class="card-title mb-4">Users</h4>
-
                     <div>
                         <table id="usersTable"class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead class="table-light">

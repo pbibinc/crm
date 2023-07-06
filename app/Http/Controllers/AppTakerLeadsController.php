@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\ClassCodeLead;
 use App\Models\Disposition;
 use App\Models\Lead;
+use App\Models\RecreationalFacilities;
 use App\Models\Site;
+use App\Models\UnitedState;
+use App\Models\UserProfile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,7 +37,10 @@ class AppTakerLeadsController extends Controller
             'CA', 'OR', 'WA', 'AK', 'HI'
             ];
         $classCodeLeads = ClassCodeLead::all();
-       
+        $sortedClassCodeLeads = ClassCodeLead::sortByName($classCodeLeads);
+        $dispositions = Disposition::all();
+        $recreationalFacilities = RecreationalFacilities::all();
+        // $cityAddress = Lead::select('city')->distinct()->get();
         if($request->ajax()){
         
             if(Cache::has('apptaker_leads')){
@@ -63,10 +69,12 @@ class AppTakerLeadsController extends Controller
                 // log::info($data);
 
             }else{
-                $query = Lead::where('user_profile_id', $user->id);
+                $query = Lead::whereHas('userProfile', function ($q) use ($user){
+                    $q->where('user_profile_id', $user->id);
+                });
                 $data = $query->select('id', 'company_name', 'tel_num', 'state_abbr', 'website_originated', 'created_at', 'disposition_id', 'class_code', 'prime_lead')->get();
 
-                $dispositions = Disposition::all();
+                // $dispositions = Disposition::all();
                 $data->each(function ($lead) use ($dispositions){
                     $lead->dispositions = $dispositions;
                 });
@@ -115,21 +123,48 @@ class AppTakerLeadsController extends Controller
                 ->addColumn('company_name_action', function ($data){
                    return '<a href="#" data-toggle="modal" id="companyLink" name="companyLinkButtonData" data-target="#leadsDataModal" data-id="'.$data->id.'" data-name="'.$data->company_name.'">'.$data->company_name.'</a>';
                 })
-                ->addColumn('dispositions', function ($data){
-                    $options = '<option value="">dispositions</option>';
-                    foreach ($data->dispositions as $disposition){
-                        $options .= '<option value="'.$disposition->id.'">'.$disposition->name.'</option>';
-                    }
-                    return '<select name="dispositions" id="dispositionDrodown'.$data->id.'" data-row="'.$data->id.'" class="form-control select2">'.$options.'</select>';
-                })
+                // ->addColumn('dispositions', function ($data){
+                //     $options = '<option value="">dispositions</option>';
+                //     foreach ($data->dispositions as $disposition){
+                //         $options .= '<option value="'.$disposition->id.'">'.$disposition->name.'</option>';
+                //     }
+                //     return '<select name="dispositions" id="dispositionDrodown'.$data->id.'" data-row="'.$data->id.'" class="form-control select2">'.$options.'</select>';
+                // })
                 ->addColumn('company_name_action', function($data){
-                  return  '<a href="#" data-toggle="modal" id="companyLink'.$data->id.'" data-row="'.$data->id.'" name="companyLinkButtonData" data-target="#leadsDataModal" data-id="'.$data->id.'" data-name="'.$data->company_name.'">'.$data->company_name.'</a>';
+                  return  '<a href="#" data-toggle="modal" id="companyLink'.$data->id.'" data-row="'.$data->id.'" name="companyLinkButtonData" data-target="#leadsDataModal" data-telnum = "'.$data->tel_num.'"  data-state= "'.$data->state_abbr.'" data-id="'.$data->id.'" data-name="'.$data->company_name.'">'.$data->company_name.'</a>';
                 })
              
                 ->rawColumns(['company_name_action', 'dispositions', 'company_name_action',])
                 ->make(true);
         }
-        return view('leads.apptaker_leads.index', compact('timezones', 'sites', 'states', 'classCodeLeads'));
+        return view('leads.apptaker_leads.index', compact('timezones', 'sites', 'states', 'sortedClassCodeLeads', 'classCodeLeads', 'dispositions', 'recreationalFacilities'));
 
+    }
+    public function multiStateWork(Request $request)
+    {
+        $formData = $request->all();
+        Cache::put('multi_state', $formData,  60 * 60);
+        return response()->json(['message' => 'The leads are successfully added to DNC Queue']);
+    }
+
+    public function filterCities(Request $request)
+    {
+       $stateInput = $request->input('stateAbbr');
+       $zipcodeInput = $request->input('zipcode');
+       $cityInput = $request->input('city');
+       if($zipcodeInput != null){
+        $cities = UnitedState::where('zipcode', $zipcodeInput)->pluck('city')->first();
+        $zipcode = UnitedState::where('state_abbr', $stateInput)->get();
+       }
+       if($cityInput != null){
+        $zipcode = UnitedState::where('city', $cityInput)->pluck('zipcode')->first();
+        $cities = UnitedState::where('state_abbr', $stateInput)->get();
+       }
+       if($stateInput != null){
+        $cities = UnitedState::where('state_abbr', $stateInput)->get();
+        $zipcode = UnitedState::where('state_abbr', $stateInput)->get();
+       }
+    
+        return response()->json(['cities' => $cities, 'zipcode' => $zipcode]);
     }
 }

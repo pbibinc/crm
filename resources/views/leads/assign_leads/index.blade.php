@@ -3,83 +3,8 @@
     <div class="page-content pt-6">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-12">
-                    <div class="card ">
 
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-6">
-                                    <label class="form-label">App Taker</label>
-                                    <div class="col-lg-12">
-                                        <select class="form-control select2" id="userProfileDropdown">
-                                            <option value="">select agents</option>
-                                            @foreach($userProfiles as $userProfile)
-                                            @php
-                                            $ratings = $userProfile->ratings;
-                                            $numberOfRatings = $ratings->count();
-                                            $sumOfRatings = $ratings->sum('rating');
-                                            $divisorRatings = $numberOfRatings * 5;
-                                            $overallRating = ($numberOfRatings > 0) ? $sumOfRatings / $numberOfRatings : 0;
-                                            $overallRatingPercentage = ($numberOfRatings > 0) ?  $sumOfRatings / $divisorRatings * 100 : 0 ;
-                                            $leadsCounter = count($userProfile->leads);
-                                            @endphp
-                                                <option value="{{$userProfile->id}}">
-                                                    {{$userProfile->firstname . " " . $userProfile->american_surname}} <small class="text-muted">({{ $overallRating }} star) ({{ $leadsCounter }} leads)</small>
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label">Accounts</label>
-                                    <div class="col-lg-12">
-                                        <select class="form-control select2" id="accountsDropdown">
-                                            <option value="">select agents</option>
-                                            @foreach($accounts as $account)
-                                            @php
-                                            $accountLeadsCounter = count($account->leads);
-                                            @endphp
-                                                <option value="{{$account->id}}">{{$account->firstname . " " . $account->american_surname}}<small class="text-muted"> ({{ $accountLeadsCounter }} leads)</small></option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <br>
-                            <div class="d-grid mb-3">
-                                <button type="button" id="voidAll" class="btn btn-outline-danger waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="top" title="Button to void all leads to account">Void ALL Leads</button>
-                            </div>
-{{--                            <div class="p-3">--}}
-{{--                                <p>A message with auto close timer</p>--}}
-{{--                                <button type="button" class="btn btn-primary waves-effect waves-light" id="sa-close">Click me</button>--}}
-{{--                            </div>--}}
-
-                            <br>
-                            <table id="datatableLeads" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                <thead>
-                                <tr>
-                                    <th>Company Name</th>
-                                    <th>Tel Num</th>
-                                    <th>State Abbr</th>
-                                    <th>Website Originated</th>
-                                    <th>action</th>
-{{--                                    <th>Created At</th>--}}
-{{--                                    <th>Updated At</th>--}}
-{{--                                    <th>Disposition Name</th>--}}
-{{--                                    <th></th>--}}
-                                </tr>
-                                </thead>
-                                <tbody>
-
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xl-12">
+                <div class="col-8">
                     <div class="card">
                         <div class="card-body">
                             <div>
@@ -102,56 +27,9 @@
                                                     <select name="states" id="statesDropdown" class="form-control select2" >
                                                         <option value="">Select</option>
                                                         <option value="">All</option>
-                                                            <option value="AK">Alaska</option>
-                                                            <option value="HI">Hawaii</option>
-                                                            <option value="CA">California</option>
-                                                            <option value="NV">Nevada</option>
-                                                            <option value="OR">Oregon</option>
-                                                            <option value="WA">Washington</option>
-                                                            <option value="AZ">Arizona</option>
-                                                            <option value="CO">Colorado</option>
-                                                            <option value="ID">Idaho</option>
-                                                            <option value="MT">Montana</option>
-                                                            <option value="NE">Nebraska</option>
-                                                            <option value="NM">New Mexico</option>
-                                                            <option value="ND">North Dakota</option>
-                                                            <option value="UT">Utah</option>
-                                                            <option value="WY">Wyoming</option>
-                                                            <option value="AL">Alabama</option>
-                                                            <option value="AR">Arkansas</option>
-                                                            <option value="IL">Illinois</option>
-                                                            <option value="IA">Iowa</option>
-                                                            <option value="KS">Kansas</option>
-                                                            <option value="KY">Kentucky</option>
-                                                            <option value="LA">Louisiana</option>
-                                                            <option value="MN">Minnesota</option>
-                                                            <option value="MS">Mississippi</option>
-                                                            <option value="MO">Missouri</option>
-                                                            <option value="OK">Oklahoma</option>
-                                                            <option value="SD">South Dakota</option>
-                                                            <option value="TX">Texas</option>
-                                                            <option value="TN">Tennessee</option>
-                                                            <option value="WI">Wisconsin</option>
-                                                            <option value="CT">Connecticut</option>
-                                                            <option value="DE">Delaware</option>
-                                                            <option value="FL">Florida</option>
-                                                            <option value="GA">Georgia</option>
-                                                            <option value="IN">Indiana</option>
-                                                            <option value="ME">Maine</option>
-                                                            <option value="MD">Maryland</option>
-                                                            <option value="MA">Massachusetts</option>
-                                                            <option value="MI">Michigan</option>
-                                                            <option value="NH">New Hampshire</option>
-                                                            <option value="NJ">New Jersey</option>
-                                                            <option value="NY">New York</option>
-                                                            <option value="NC">North Carolina</option>
-                                                            <option value="OH">Ohio</option>
-                                                            <option value="PA">Pennsylvania</option>
-                                                            <option value="RI">Rhode Island</option>
-                                                            <option value="SC">South Carolina</option>
-                                                            <option value="VT">Vermont</option>
-                                                            <option value="VA">Virginia</option>
-                                                            <option value="WV">West Virginia</option>
+                                                        @foreach($states as $abbr => $name)
+                                                        <option value="{{$abbr}}">{{$name}}</option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
                                             </div>
@@ -173,6 +51,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
+
                                         <div class="col-6">
                                             <label class="form-label">Class Code</label>
                                             <select name="classCodeLead" id="classCodeLeadDropdown" class="form-control select2" >
@@ -203,6 +82,7 @@
 
 
                                     <div class="row">
+
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label class="form-label">Assign Lead Quantity</label>
@@ -255,14 +135,13 @@
                                     <thead>
                                     <tr>
                                         <th></th>
-                                        <th>ID</th>
                                         <th>Company Name</th>
                                         <th>Tel Number</th>
                                         <th>State abbr</th>
                                         <th>Class Code</th>
                                         <th>Website Originated</th>
                                         <th>Imported Date</th>
-{{--                                        <th>Updated at</th>--}}
+
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -273,6 +152,97 @@
                         </div>
                     </div>
                 </div>
+
+
+                <div class="col-4">
+                    <div class="card ">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label class="form-label">App Taker</label>
+                                    <div class="col-lg-12">
+                                        <select class="form-control select2" id="userProfileDropdown">
+                                            <option value="">select agents</option>
+                                            @foreach($userProfiles as $userProfile)
+                                            @php
+                                            $ratings = $userProfile->ratings;
+                                            $numberOfRatings = $ratings->count();
+                                            $sumOfRatings = $ratings->sum('rating');
+                                            $divisorRatings = $numberOfRatings * 5;
+                                            $overallRating = ($numberOfRatings > 0) ? $sumOfRatings / $numberOfRatings : 0;
+                                            $overallRatingPercentage = ($numberOfRatings > 0) ?  $sumOfRatings / $divisorRatings * 100 : 0 ;
+                                            $leadsCounter = count($userProfile->leads->filter(function($lead){
+                                                return $lead->pivot->current_user_id !== 0;
+                                            }));
+                                            @endphp
+                                                <option value="{{$userProfile->id}}">
+                                                    {{$userProfile->firstname . " " . $userProfile->american_surname}} <small class="text-muted">({{ $overallRating }} star) ({{ $leadsCounter }} leads)</small>
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-6">
+                                    <label class="form-label">Accounts</label>
+                                    <div class="col-lg-12">
+                                        <select class="form-control select2" id="accountsDropdown">
+                                            <option value="">select agents</option>
+                                        @foreach($accounts as $account)
+                                            @php
+                                            $accountLeadsCounter = count($account->leads);
+                                            @endphp
+                                                <option value="{{$account->id}}">{{$account->firstname . " " . $account->american_surname}}<small class="text-muted"> ({{ $accountLeadsCounter }} leads)</small></option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mt-3">
+                                <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="" class="form-label" id="selectStatesLabel">Select States</label>
+                                            <select name="states" id="userStatesDropdown" class="form-control select2">
+                                                <option value="">Select States</option>
+                                                <option value="">ALL</option>
+                                                @foreach($states as $abbr => $name)
+                                                <option value="{{ $abbr }}">{{$name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                </div>
+                                <div class="col-6">
+
+                                </div>
+                            </div>
+
+                            <br>
+
+                            <div class="d-grid mb-3">
+                                <button type="button" id="voidAll" class="btn btn-outline-danger waves-effect waves-light" data-bs-toggle="tooltip" data-bs-placement="top" title="Button to void all leads to account">Void ALL Leads</button>
+                            </div>
+
+                            <br>
+                            <table id="datatableLeads" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <thead>
+                                <tr>
+                                    <th>Company Name</th>
+                                    <th>Tel Num</th>
+                                    {{-- <th>State Abbr</th>
+                                    <th>Website Originated</th> --}}
+                                    <th>action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -299,6 +269,7 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-success" name="submit_button" id="submit_button">Submit</button>
                 </div>
+
             </div>
         </div>
     </div>
@@ -308,10 +279,12 @@
      <div class="modal fade" id="assigningPremiumLeadModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
+
                 <div class="modal-header" >
                     <h5 class="modal-title"><b>Confirmation</b></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+
                 <div class="modal-body">
                     <p>Assiging Premium Leads Plss confirm.</p>
                 </div>
@@ -404,6 +377,7 @@
             </div>
         </div>
     </div>
+    
     {{-- end of deletion of modal --}}
     <script src="{{asset('backend/assets/libs/bootstrap-rating/bootstrap-rating.min.js')}}"></script>
     <script src="{{asset('backend/assets/js/pages/rating-init.js') }}"></script>
@@ -428,12 +402,13 @@
                                 d.classCodeLead = $('#classCodeLeadDropdown').val(),
                                     // d.userProfile = $('#userProfileDropdown').val(),
                                 d.search = $('input[type="search"]').val(),
-                                d.leadType = $('#leadTypeDropdown').val()
+                                d.leadType = $('#leadTypeDropdown').val(),
+                                d.appTakerId = $('#userProfileDropdown').val(),
+                                d.accountsId = $('#accountsDropdown').val()
                     }
                 },
                 columns: [
                     {data: 'checkbox', name: 'checkbox',  orderable: false, searchable: false, title: '<input type="checkbox" id="check_all">'},
-                    {data: 'id', name: 'id'},
                     {
                         data: 'company_name', 
                         name: 'company_name',
@@ -474,8 +449,8 @@
                     // {data: 'id', name: 'id'},
                     {data: 'company_name', name: 'company_name'},
                     {data: 'tel_num', name: 'tel_num'},
-                    {data: 'state_abbr', name: 'state_abbr'},
-                    {data: 'website_originated', name: 'website_originated'},
+                    // {data: 'state_abbr', name: 'state_abbr'},
+                    // {data: 'website_originated', name: 'website_originated'},
                     // {data: 'created_at_formatted', name: 'created_at', searchable:false},
                     // {data: 'updated_at_formatted', name: 'updated_at', searchable:false},
                     {data: 'action', name: 'action', orderable: false, searchable: false}
@@ -487,25 +462,33 @@
                 $('#dataTable').DataTable().ajax.reload();
             });
 
+            //lead drop down configuration mainly use for filter
             $('#leadTypeDropdown').on('change', function(){
                 $('#dataTable').DataTable().ajax.reload();
             });
 
+            //states drop down configuration mainly use for filter
             $('#statesDropdown').on('change', function () {
                 var states = $(this).val();
                 $('#dataTable').DataTable().ajax.url("{{ route('assign') }}?states=" + states).load();
             });
 
-
+             //time zone drop down configuration mainly use for filter
             $('#timezoneDropdown').on('change', function() {
                 var timezone = $(this).val();
                 $('#dataTable').DataTable().ajax.url("{{ route('assign') }}?timezone=" + timezone).load();
             });
 
+            //class code drop down configuration mainly use for filter
             $('#classCodeLeadDropdown').on('change', function () {
                 var classCodeLead = $(this).val();
                 $('#dataTable').DataTable().ajax.url("{{ route('assign') }}?classCodeLead=" + classCodeLead).load();
             });
+
+              //StatesDropdown configuration mainly use for filter
+            //   $('#statesDropdown').on('change', function() {
+            //    $('#')
+            // });
 
             //event for assigning premium leads
             var leadsId = [];
@@ -513,6 +496,7 @@
             $('.users_checkbox:checked').each(function (){
                 leadsId.push($(this).val());
                 });
+                
             if(leadsId.length === 0){
                 Swal.fire({
                         title: 'Error',
@@ -522,7 +506,7 @@
             }else{
                 $('#assigningPremiumLeadModal').modal('show');
             }
-           });
+        });
 
            $('#okAssignPremiumButton').on('click', function(){ 
             console
@@ -556,39 +540,88 @@
                     }
                 }
             })
-           });
-            $("#voidAll").hide()
 
+           });
+
+           //hiding some content for event to be show
+            $("#voidAll").hide()
+            $('#selectStatesLabel').hide();
+            $('#userStatesDropdown').next('.select2-container').hide();
+
+            //Apptaker Dropdown Configuration
             $('#userProfileDropdown').on('change', function() {
                 $('#datatableLeads').DataTable().ajax.reload();
+                $('#dataTable').DataTable().ajax.reload();
                 let userProfileValue= $(this).val();
                if(userProfileValue != "")
-               {
+               {   
+                $.ajax({
+                    url: "{{ route('get-states')}}",
+                    type: 'GET',
+                    data:{
+                        userProfileValue: userProfileValue
+                     },
+                     success: function(data){
+                        var stateSelect = $('#userStatesDropdown');
+                        stateSelect.empty();
+                        stateSelect.append('<option value="">Select States</option>');
+                        stateSelect.append('<option value="">ALL</option>');
+                        $.each(data, function(key, value){
+                            stateSelect.append('<option value="' + key + '">' + value + '</option>')
+                        });
+                     }
+                });
                    $('#voidAll').show();
+                   $('#userStatesDropdown').next('.select2-container').show();
+                    $('#selectStatesLabel').show();
                    $('#accountsDropdown').prop('disabled', true);
                }else{
                    // console.log($('#voidAll'));
                    $("#voidAll").hide();
+                   $('#userStatesDropdown').next('.select2-container').hide();
+                    $('#selectStatesLabel').hide();
                    $('#accountsDropdown').prop('disabled', false);
                }
-
             });
 
+            //Accounts Dropdown Configuration
             $('#accountsDropdown').on('change', function () {
                 $('#datatableLeads').DataTable().ajax.reload();
+                $('#dataTable').DataTable().ajax.reload();
                 let accountsProfileValue= $(this).val();
                 if(accountsProfileValue != "")
                 {
+                    $.ajax({
+                    url: "{{ route('get-states')}}",
+                    type: 'GET',
+                    data:{
+                        userProfileValue: accountsProfileValue
+                     },
+                     success: function(data){
+                        var stateSelect = $('#userStatesDropdown');
+                        stateSelect.empty();
+                        stateSelect.append('<option value="">Select States</option>');
+                        stateSelect.append('<option value="">ALL</option>');
+                        $.each(data, function(key, value){
+                            stateSelect.append('<option value="' + key + '">' + value + '</option>')
+                        });
+                     }
+                });
                     $('#voidAll').show();
+                    $('#userStatesDropdown').next('.select2-container').show();
+                    $('#selectStatesLabel').show();
                     $('#userProfileDropdown').prop('disabled', true);
-
+                  
                 }else{
                     // console.log($('#voidAll'));
-                    $("#voidAll").hide()
+                    $("#voidAll").hide();
+                    $('#userStatesDropdown').next('.select2-container').hide();
+                    $('#selectStatesLabel').hide();
                     $('#userProfileDropdown').prop('disabled', false);
                 }
             });
 
+          
 
             // ajax script for randomly assign leads to user
             
@@ -718,7 +751,7 @@
                 }
             });
 
-
+          
 
             // ajax script for randomly assign leads to a random users
             $('#assign_random_ok_button').on('click', function (){
@@ -795,6 +828,7 @@
             dataType:"json",
             data:{
                 userProfileId:$('#userProfileDropdown').val(),
+                accountProfileId:$('#accountsDropdown').val(),
             },
             success:function (data){
                 Swal.fire({
@@ -818,6 +852,7 @@
 
         //script for showing modal of void confirmation
             var leadsId
+            var userProfileId
             $(document).on('click', '.btn-outline-danger', function(event){
                 leadsId = $(this).attr('id');
                 if(voidAllClicked){
@@ -828,9 +863,9 @@
                 }
             });
 
-
-
-            //script for voiding leads from user
+            var userProfileId = $('#userProfileDropdown').val()
+             var accountProfileId = $('#accountsDropdown').val()
+            //script for voiding lead from user
         $('#ok_button').click(function(){
             event.preventDefault();
             $.ajax({
@@ -840,6 +875,8 @@
                 dataType:"json",
                 data:{
                     id:leadsId,
+                    userProfileId:$('#userProfileDropdown').val(),
+                    accountProfileId:$('#accountsDropdown').val()
                 },
                 success:function (data){
                     Swal.fire({
@@ -867,6 +904,7 @@
         $(document).on('click', '.btn-outline-info', function (event){
             leadsIdRedeploy = $(this).attr('id');
             $('#dataModal').modal('show');
+            console.log(leadsIdRedeploy);
         });
 
 
@@ -901,6 +939,8 @@
                 }
             })
         });
+
+
 
     </script>
 

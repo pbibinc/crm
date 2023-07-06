@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\LeadAssignEvent;
+use App\Events\LeadReassignEvent;
 use App\Http\Controllers\Controller;
 use App\Models\ClassCodeLead;
 use App\Models\Lead;
+use App\Models\LeadHistory;
 use App\Models\LeadsAssign;
 use App\Models\Site;
 use App\Models\UnitedState;
@@ -18,6 +21,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Collective\Html\FormFacade as Form;
 use function PHPUnit\TestFixture\func;
 use DateTimeZone;
+use Illuminate\Support\Facades\Log;
 
 class AssignLeadController extends Controller
 {
@@ -29,6 +33,7 @@ class AssignLeadController extends Controller
             $query->where('name', 'Application Taker');
             })->get();
 
+     
         $accounts = UserProfile::all();
 //        dd($userProfiles);
         $sites = Site::all();
@@ -43,10 +48,31 @@ class AssignLeadController extends Controller
             'Hawaii-Aleutian' => ['HI']
         ];
 
+        $states = [
+            "AL" => "Alabama", "AK" => "Alaska", "AZ" => "Arizona", "AR" => "Arkansas", "CA" => "California", "CO" => "Colorado", "CT" => "Connecticut", "DE" => "Delaware",
+            "FL" => "Florida", "GA" => "Georgia", "HI" => "Hawaii", "ID" => "Idaho", "IL" => "Illinois", "IN" => "Indiana", "IA" => "Iowa", "KS" => "Kansas", "KY" => "Kentucky",
+            "LA" => "Louisiana", "ME" => "Maine", "MD" => "Maryland", "MA" => "Massachusetts", "MI" => "Michigan", "MN" => "Minnesota", "MS" => "Mississippi", "MO" => "Missouri",
+            "MT" => "Montana", "NE" => "Nebraska", "NV" => "Nevada", "NH" => "New Hampshire", "NJ" => "New Jersey", "NM" => "New Mexico", "NY" => "New York", "NC" => "North Carolina",
+            "ND" => "North Dakota", "OH" => "Ohio", "OK" => "Oklahoma", "OR" => "Oregon", "PA" => "Pennsylvania", "RI" => "Rhode Island", "SC" => "South Carolina", "SD" => "South Dakota",
+            "TN" => "Tennessee", "TX" => "Texas", "UT" => "Utah", "VT" => "Vermont", "VA" => "Virginia", "WA" => "Washington", "WV" => "West Virginia", "WI" => "Wisconsin", "WY" => "Wyoming",
+        ];
+      
+        $selectedUserProfile = null;
 
-//        $selectedTimezone = $request->input('timezone');
-//        $selectedStateAbbr = array_search($selectedTimezone, $timezones);
+        if($request->get('appTakerId')){
+            $selectedUserProfile = UserProfile::find($request->get('appTakerId'));
+        }if ($request->get('accountsId')) {
+            $selectedUserProfile = UserProfile::find($request->get('accountsId'));
+        }
+
+        if($selectedUserProfile){
+            $leadsCountByState = $selectedUserProfile->getLeadCountByState();
+        }else{
+            $leadsCountByState = [];
+        }
+
         if($request->ajax()){
+          
             if(Cache::has('leads_funnel'))
             {
                 $data = Cache::get('leads_funnel');
@@ -124,7 +150,7 @@ class AssignLeadController extends Controller
                 ->rawColumns(['checkbox', 'action'])
                 ->make(true);
         }
-        return view('leads.assign_leads.index', compact('userProfiles', 'sites','timezones', 'accounts', 'classCodeLeads'));
+        return view('leads.assign_leads.index', compact('userProfiles', 'sites','timezones', 'accounts', 'classCodeLeads', 'leadsCountByState', 'states'));
     }
 
     public function getDataTableLeads(Request $request)
@@ -132,34 +158,33 @@ class AssignLeadController extends Controller
         $userProfiles = UserProfile::all();
         $userProfileId = $request->input('userProfile');
         $accountProfileValue = $request->input('accountProfileValue');
-
         if($userProfileId){
-            $userProfile = UserProfile::with(['leads' => function($query){
+            $userProfile = UserProfile::with(['leads' => function($query) use ($userProfileId){
                 $query->where('status', 2);
             }])->find($userProfileId);
-            $leads = $userProfile ? $userProfile->leads : collect();
+            $leads = $userProfile ? $userProfile->leads()->where('current_user_id', '!=', 0) : collect();
         }elseif ($accountProfileValue){
             $accounts = UserProfile::find($accountProfileValue);
-            $leads = $accounts ? $accounts->leads()->where('status', 2)->get() : collect();
+            $leads = $accounts ? $accounts->leads()->where('status', 2)->where('current_user_id', '!=', 0)->get() : collect();
         }else{
             $leads = collect();
         }
           if($request->ajax()){
-              if(!empty($leads)){
-                 $data = $leads->toArray();
+              if($leads->count() > 0){
+                 $data = $leads;
               } else {
                   $data = [];
               }
               return DataTables::of($data)->addIndexColumn()
 //                  ->addColumn('checkbox', '<input type="checkbox" name="users_checkbox[]"  class="users_checkbox" value="{{$id}}" />')
                   ->addColumn('action', function ($row) {
-                      $voidButton = '<button class="btn btn-outline-danger waves-effect waves-light btn-sm" id="' . $row['id'] . '" name="void"  type="button"  ><i class="ri-user-unfollow-line" ></i></button>';
-                      $redeployButton = '<button class="btn btn-outline-info waves-effect waves-light btn-sm" id="' . $row['id'] . '" name="redeploy"  type="button " ><i class="ri-user-shared-line"></i></button>';
+                    $leadId = $row->lead_id;
+                      $voidButton = '<button class="btn btn-outline-danger waves-effect waves-light btn-sm" id="' . $leadId . '" name="void"  type="button"  ><i class="ri-user-unfollow-line" ></i></button>';
+                      $redeployButton = '<button class="btn btn-outline-info waves-effect waves-light btn-sm" id="' . $leadId . '" name="redeploy"  type="button " ><i class="ri-user-shared-line"></i></button>';
                       return $redeployButton . ' '. $voidButton;
                   })
                   ->make(true);
           }
-
     }
 
     public function assignPremiumLead(Request $request, Lead $lead)
@@ -188,11 +213,16 @@ class AssignLeadController extends Controller
             $userProfile = UserProfile::find($accountProfileId);
             $leadsRecevierId = $accountProfileId;
         }
-            Lead::whereIn('id', $leadsId)
-                ->update([
-                    'user_profile_id' => $leadsRecevierId,
-                    'status' => 2
-                ]);
+            $leads = Lead::whereIn('id', $leadsId)->get();
+            foreach($leads as $lead){
+               $lead->userProfile()->attach($userProfile , [
+                'assigned_at' => now(), 
+                'current_user_id' => $userProfile->id
+            ]);
+               $lead->status = 2;
+               $lead->save();
+               event(new LeadAssignEvent($lead, $userProfile->id, $userProfile->id, now()));
+            }
             Cache::forget('leads_funnel');
             Cache::forget('leads_data');
             Cache::forget('apptaker_leads');
@@ -210,18 +240,21 @@ class AssignLeadController extends Controller
      $shuffledUsers = $userProfiles->shuffle();
         foreach ($shuffledLeads as $index => $lead){
             $user = $shuffledUsers[$index % $shuffledUsers->count()];
-
-            $lead->user_profile_id = $user->id;
+            $lead->userProfile()->attach($user->id, [
+                'assigned_at' => now(),
+                'current_user_id' => $user->id
+         ]);
             $lead->status = 2;
             $lead->save();
-
+            event(new LeadAssignEvent($lead, $user->id, $user->id, now()));
         }
         Cache::forget('leads_funnel');
         Cache::forget('leads_data');
         Cache::forget('apptaker_leads');
         return response()->json(['success' => 'Random Leads are Assign to Different Users']);
-
     }
+
+
     public function assignLeadsUser(Request $request)
     {
         $quantityUserLeads = $request->input('leadsQuantityUser');
@@ -235,12 +268,15 @@ class AssignLeadController extends Controller
         }elseif($accountProfile){
             $userProfileId = $accountProfile;
         }
-        Lead::whereIn('id', $shuffledLeads->pluck('id'))
-            ->update([
-                'user_profile_id' => $userProfileId,
-                'status' => 2
+        foreach($shuffledLeads as $lead){
+            $lead->userProfile()->attach($userProfileId, [
+                'assigned_at' => now(), 
+                'current_user_id' => $userProfileId
             ]);
-
+            $lead->status = 2;
+            $lead->save();
+            event(new LeadAssignEvent($lead, $userProfileId, $userProfileId, now()));
+         }
         Cache::forget('leads_funnel');
         Cache::forget('leads_data');
         Cache::forget('apptaker_leads');
@@ -250,14 +286,23 @@ class AssignLeadController extends Controller
     public function void(Request $request)
     {
         $leadsId = $request->input('id');
+        if($request->input('userProfileId')){
+            $userProfileId = $request->input('userProfileId');
+        }
+        if($request->input('accountProfileId')){
+            $userProfileId = $request->input('accountProfileId');
+        }
         if(!is_array($leadsId)){
             $leadsId = explode(',', $leadsId);
         }
-        Lead::whereIn('id', $leadsId)
-            ->update([
-                'status' => 1,
-                'user_profile_id' => null,
-            ]);
+
+        $leads = Lead::whereIn('id', $leadsId)->get();
+        foreach ($leads as $lead) {
+            $lead->userProfile()->detach($userProfileId);
+            $lead->status = 1;
+            $lead->save();
+        }
+
         Cache::forget('leads_funnel');
         Cache::forget('leads_data');
         Cache::forget('apptaker_leads');
@@ -269,17 +314,40 @@ class AssignLeadController extends Controller
         $leadsId = $request->input('id');
         $userProfileId = $request->input('userProfileId');
         $userProfile = UserProfile::find($userProfileId);
-
-        if(!is_array($leadsId)){
-            $leadsId = explode(',',  $leadsId);
-        }
-        Lead::whereIn('id', $leadsId)
-            ->update([
-                'user_profile_id' => $userProfileId
+        $lead =Lead::find($leadsId);
+        if($request->ajax()){
+            $currentUserProfileId = $lead->userProfile()
+            ->where('current_user_id', '!=', 0)
+            ->pluck('user_profile_id')
+            ->first();
+            
+            if($currentUserProfileId !== null){
+                $lead->userProfile()->syncWithoutDetaching([
+                    $currentUserProfileId => [
+                        'current_user_id' => 0
+                    ]
+                ]);
+            }
+            if($lead->userProfile()->wherePivot('user_profile_id', $userProfileId)->exists()){
+                $lead->userProfile()->syncWithoutDetaching([
+                    $userProfileId => [
+                        'reassigned_at' => now(),
+                        'current_user_id' => $userProfileId
+                    ]
             ]);
-
-        return response()->json(['success' => 'Leads has been successfully redployed to'. $userProfile->firstname . ' ' . $userProfile->american_surname]);
+            }else{
+                $lead->userProfile()->attach($userProfileId, [
+                    'reassigned_at' => now(),
+                    'current_user_id' => $userProfileId
+                ]);
+            }
+            event(new LeadReassignEvent($lead, $userProfileId, $userProfileId, now()));
+            return response()->json(['success' => 'Leads has been successfully redployed to'. $userProfile->firstname . ' ' . $userProfile->american_surname]);
+        }else{
+            return response()->json(['error' => 'An error has been encountered']);
+        }
     }
+
     public function edit($id)
     {
         $data = Lead::findorFail($id);
@@ -288,23 +356,70 @@ class AssignLeadController extends Controller
 
     public function voidAll(Request $request)
     {
-       $leadsId =  Lead::where('user_profile_id', $request->input('userProfileId'))->pluck('id')->toArray();
-       $userProfile = UserProfile::find($request->input('userProfileId'));
+    //    $leadsId =  Lead::where('user_profile_id', $request->input('userProfileId'))->pluck('id')->toArray();
 
-        if(!is_array($leadsId)){
-            $leadsId = explode(',',  $leadsId);
+       $userProfileId = $request->input('userProfileId');
+       $accounProfileId = $request->input('accountProfileId');
+       if($userProfileId){
+        $leads = Lead::whereHas('userProfile', function($query) use ($userProfileId){
+            $query->where('user_profile_id', $userProfileId);
+        })->get();
+       }
+
+       if($accounProfileId){
+        $leads = Lead::whereHas('userProfile', function($query) use ($accounProfileId){
+            $query->where('user_profile_id', $accounProfileId);
+        })->get();
+       }
+    
+        // if(!is_array($leadsId)){
+        //     $leadsId = explode(',',  $leadsId);
+        // }
+        foreach($leads as $lead){
+            $lead->userProfile()->detach($userProfileId);
+            $lead->status = 1;
+            $lead->save();
         }
 
-       Lead::whereIn('id', $leadsId)
-           ->update([
-               'user_profile_id' => null,
-               'status' => 1
-           ]);
         Cache::forget('leads_funnel');
         Cache::forget('leads_data');
         Cache::forget('apptaker_leads');
 
-        return response()->json(['success' => 'success all leads has been voided into ' . $userProfile->firstname .  ' ' . $userProfile->american_surname]);
+        return response()->json(['success' => 'success all leads has been voided']);
+    }
+
+    public function getStates(Request $request)
+    {
+
+        $selectedUserProfile = null;
+        if($request->get('userProfileValue')){
+            $selectedUserProfile = UserProfile::find($request->get('userProfileValue'));
+        }
+        // if ($request->get('accountsId')) {
+        //     $selectedUserProfile = UserProfile::find($request->get('accountsId'));
+        // }
+        if($selectedUserProfile){
+            $leadsCountByState = $selectedUserProfile->getLeadCountByState();
+
+        }else{
+            $leadsCountByState = [];
+        }
+
+        $states = [
+            "AL" => "Alabama", "AK" => "Alaska", "AZ" => "Arizona", "AR" => "Arkansas", "CA" => "California", "CO" => "Colorado", "CT" => "Connecticut", "DE" => "Delaware",
+            "FL" => "Florida", "GA" => "Georgia", "HI" => "Hawaii", "ID" => "Idaho", "IL" => "Illinois", "IN" => "Indiana", "IA" => "Iowa", "KS" => "Kansas", "KY" => "Kentucky",
+            "LA" => "Louisiana", "ME" => "Maine", "MD" => "Maryland", "MA" => "Massachusetts", "MI" => "Michigan", "MN" => "Minnesota", "MS" => "Mississippi", "MO" => "Missouri",
+            "MT" => "Montana", "NE" => "Nebraska", "NV" => "Nevada", "NH" => "New Hampshire", "NJ" => "New Jersey", "NM" => "New Mexico", "NY" => "New York", "NC" => "North Carolina",
+            "ND" => "North Dakota", "OH" => "Ohio", "OK" => "Oklahoma", "OR" => "Oregon", "PA" => "Pennsylvania", "RI" => "Rhode Island", "SC" => "South Carolina", "SD" => "South Dakota",
+            "TN" => "Tennessee", "TX" => "Texas", "UT" => "Utah", "VT" => "Vermont", "VA" => "Virginia", "WA" => "Washington", "WV" => "West Virginia", "WI" => "Wisconsin", "WY" => "Wyoming",
+        ];
+
+        $stateArray = [];
+        foreach($states as $code => $name) {
+            $count = $leadsCountByState[$code] ?? 0;
+            $stateArray[$code] = $name . ' (' . $count . ')';
+        }
+        return response()->json($stateArray);
     }
 }
 

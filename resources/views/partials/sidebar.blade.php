@@ -17,7 +17,7 @@
             </div>
             <div class="mt-3">
                 <h4 class="font-size-16 mb-1">{{$userProfile->firstname . ' ' . $userProfile->american_surname}}</h4>
-                <p class="mb-0" style="color: white"><em>{{$userProfile->position->name}}</em></p>
+                <p class="mb-0"><em>{{$userProfile->position->name}}</em></p>
                 <span class="text-muted"><i class="ri-record-circle-line align-middle font-size-14 text-success"></i> Online</span>
             </div>
         </div>
@@ -27,142 +27,79 @@
             <!-- Left Menu Start -->
             <ul class="metismenu list-unstyled" id="side-menu">
                 <li class="menu-title">Menu</li>
-
+                @can('view', App\Models\Attendance::find(1))
                 <li>
                     <a href="{{ route('dashboard') }}" class="waves-effect">
                         <i class="ri-dashboard-line"></i><span class="badge rounded-pill bg-success float-end">3</span>
                         <span>Dashboard</span>
                     </a>
                 </li>
-
-{{--                <li>--}}
-{{--                    <a href="calendar.html" class=" waves-effect">--}}
-{{--                        <i class="ri-calendar-2-line"></i>--}}
-{{--                        <span>Calendar</span>--}}
-{{--                    </a>--}}
-{{--                </li>--}}
-
-{{--                <li>--}}
-{{--                    <a href="javascript: void(0);" class="has-arrow waves-effect">--}}
-{{--                        <i class="ri-mail-send-line"></i>--}}
-{{--                        <span>Email</span>--}}
-{{--                    </a>--}}
-{{--                    <ul class="sub-menu" aria-expanded="false">--}}
-{{--                        <li><a href="email-inbox.html">Inbox</a></li>--}}
-{{--                        <li><a href="email-read.html">Read Email</a></li>--}}
-{{--                    </ul>--}}
-{{--                </li>--}}
-
-{{--                <li>--}}
-{{--                    <a href="javascript: void(0);" class="has-arrow waves-effect">--}}
-{{--                        <i class="ri-layout-3-line"></i>--}}
-{{--                        <span>Layouts</span>--}}
-{{--                    </a>--}}
-{{--                    <ul class="sub-menu" aria-expanded="true">--}}
-{{--                        <li>--}}
-{{--                            <a href="javascript: void(0);" class="has-arrow">Vertical</a>--}}
-{{--                            <ul class="sub-menu" aria-expanded="true">--}}
-{{--                                <li><a href="layouts-dark-sidebar.html">Dark Sidebar</a></li>--}}
-{{--                                <li><a href="layouts-compact-sidebar.html">Compact Sidebar</a></li>--}}
-{{--                                <li><a href="layouts-icon-sidebar.html">Icon Sidebar</a></li>--}}
-{{--                                <li><a href="layouts-boxed.html">Boxed Layout</a></li>--}}
-{{--                                <li><a href="layouts-preloader.html">Preloader</a></li>--}}
-{{--                                <li><a href="layouts-colored-sidebar.html">Colored Sidebar</a></li>--}}
-{{--                            </ul>--}}
-{{--                        </li>--}}
-
-{{--                        <li>--}}
-{{--                            <a href="javascript: void(0);" class="has-arrow">Horizontal</a>--}}
-{{--                            <ul class="sub-menu" aria-expanded="true">--}}
-{{--                                <li><a href="layouts-horizontal.html">Horizontal</a></li>--}}
-{{--                                <li><a href="layouts-hori-topbar-light.html">Topbar light</a></li>--}}
-{{--                                <li><a href="layouts-hori-boxed-width.html">Boxed width</a></li>--}}
-{{--                                <li><a href="layouts-hori-preloader.html">Preloader</a></li>--}}
-{{--                                <li><a href="layouts-hori-colored-header.html">Colored Header</a></li>--}}
-{{--                            </ul>--}}
-{{--                        </li>--}}
-{{--                    </ul>--}}
-{{--                </li>--}}
-
-{{--                <li class="menu-title">Pages</li>--}}
-
-{{--                <li>--}}
-{{--                    <a href="javascript: void(0);" class="has-arrow waves-effect">--}}
-{{--                        <i class="ri-account-circle-line"></i>--}}
-{{--                        <span>Authentication</span>--}}
-{{--                    </a>--}}
-{{--                    <ul class="sub-menu" aria-expanded="false">--}}
-{{--                        <li><a href="auth-login.html">Login</a></li>--}}
-{{--                        <li><a href="auth-register.html">Register</a></li>--}}
-{{--                        <li><a href="auth-recoverpw.html">Recover Password</a></li>--}}
-{{--                        <li><a href="auth-lock-screen.html">Lock Screen</a></li>--}}
-{{--                    </ul>--}}
-{{--                </li>--}}
+                @endcan
 
                 <li class="menu-title">Admin</li>
 
                 <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect" style="color: white;">
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-lock-line"></i>
                         <span>Security</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ route('admin.users.index') }}" style="color: white;">Accounts</a></li>
-                        <li><a href="{{ route('admin.roles.index') }}" style="color: white;">Role</a></li>
+                        <li><a href="{{ route('admin.users.index') }}">Accounts</a></li>
+                        <li><a href="{{ route('admin.roles.index') }}" >Role</a></li>
                         @can('view', App\Models\Permission::find(1))
-                            <li><a href="{{ route('admin.permissions.index') }}" style="color: white;">Permission</a></li>
+                            <li><a href="{{ route('admin.permissions.index') }}" >Permission</a></li>
                         @endcan
                     </ul>
                 </li>
                 <li>
                     @can('viewAny', App\Models\UserProfile::find(1))
-                    <a href="javascript: void(0);" class="has-arrow waves-effect" style="color: white;">
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-user-2-line" ></i>
                         <span>Administrator</span>
                     </a>
                     @endcan
                     <ul class="sub-menu" aria-expanded="false">
                         @can('view', App\Models\Position::find(1))
-                            <li><a href="{{ route('admin.positions.index') }}" style="color: white;">Position</a></li>
+                            <li><a href="{{ route('admin.positions.index') }}" >Position</a></li>
                         @endcan
 
                         @can('view', App\Models\Department::find(1))
-                        <li><a href="{{ route('admin.departments.index') }}" style="color: white;">Departments</a></li>
+                        <li><a href="{{ route('admin.departments.index') }}" >Departments</a></li>
                             @endcan
                             @can('view', App\Models\UserProfile::find(1))
-                                <li><a href="{{ route('admin.user-profiles.index') }}" style="color: white;">User Profile</a></li>
+                                <li><a href="{{ route('admin.user-profiles.index') }}" >User Profile</a></li>
                             @endcan
 
                     </ul>
                 </li>
 
                 <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect" style="color: white;">
-                        <i class="ri-user-2-line" ></i>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect" >
+                        <i class="mdi mdi-account-group-outline" style="font-size: 22px" ></i>
                         <span>Departments</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                     <li><a href="{{ route('it-department') }}" style="color: white;">IT DEPARTMENT</a></li>
-                     <li><a href="{{ route('csr-department') }}" style="color: white;">CSR DEPARTMENT</a></li>
+                     <li><a href="{{ route('it-department') }}" >IT DEPARTMENT</a></li>
+                     <li><a href="{{ route('csr-department') }}" >CSR DEPARTMENT</a></li>
                     </ul>
                 </li>
 
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect" style="color: white;">
+                {{-- <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect" >
                         <i class="ri-profile-line"></i>
                         <span>QOUTATION FORMS</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="pages-starter.html" style="color: white;">Application Forms</a></li>
-                        <li><a href="pages-starter.html" style="color: white;">General Information</a></li>
+                        <li><a href="pages-starter.html" >Application Forms</a></li>
+                        <li><a href="pages-starter.html" >General Information</a></li> --}}
 
 {{--                        <li><a href="pages-timeline.html">Timeline</a></li>--}}
 {{--                        <li><a href="pages-directory.html">Directory</a></li>--}}
 {{--                        <li><a href="pages-invoice.html">Invoice</a></li>--}}
 {{--                        <li><a href="pages-404.html">Error 404</a></li>--}}
 {{--                        <li><a href="pages-500.html">Error 500</a></li>--}}
-                    </ul>
-                </li>
+                    {{-- </ul>
+                </li> --}}
 
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
@@ -197,7 +134,7 @@
 
                 <li>
                     @can('view', App\Models\Lead::find(1))
-                        <a href="javascript: void(0);" class="has-arrow waves-effect" style="color: white;">
+                        <a href="javascript: void(0);" class="has-arrow waves-effect" >
                             <i class="ri-spy-fill"></i>
                             <span>LEADS</span>
                         </a>
@@ -205,12 +142,12 @@
 
                     <ul class="sub-menu" aria-expanded="false">
                         @can('viewImport', App\Models\Lead::find(1))
-                            <li><a href="{{route('leads')}}" style="color: white;">Import Leads</a></li>
+                            <li><a href="{{route('leads')}}" >Import Leads</a></li>
                         @endcan
                         @can('viewLeadsFunnel', App\Models\Lead::find(1))
-                        <li><a href="{{route('assign')}}" style="color: white;">Leads Funnel</a></li>
+                        <li><a href="{{route('assign')}}" >Leads Funnel</a></li>
                             @endcan
-                            <li><a href="{{route('apptaker-leads')}}" style="color: white;">List</a></li>
+                            <li><a href="{{route('apptaker-leads')}}">List</a></li>
                         {{--                        <li><a href="pages-directory.html">Directory</a></li>--}}
                         {{--                        <li><a href="pages-invoice.html">Invoice</a></li>--}}
                         {{--                        <li><a href="pages-404.html">Error 404</a></li>--}}

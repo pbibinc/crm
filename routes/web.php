@@ -80,6 +80,15 @@ Route::get('leads', [LeadController::class, 'index'])->name('leads');
 Route::get('leads-export', [LeadController::class, 'export'])->name('leads.export');
 Route::post('leads-import', [LeadController::class, 'import'])->name('leads.import');
 Route::post('add-leads', [LeadController::class, 'store'])->name('leads.store');
+Route::get('get-data-dnc', [LeadController::class, 'getDncData'])->name('get.data.dnc');
+Route::post('dnc-leads-import', [LeadController::class, 'importDnc'])->name('dnc.lead.import');
+Route::get('leads-dnc', [LeadController::class, 'leadsDnc'])->name('leads.dnc');
+Route::delete('leads/{leads}/delete', [LeadController::class, 'destroy'])->name('leads.destroy');
+Route::post('leads/{leads}/restore', [LeadController::class, 'restore'])->name('leads.restore');
+Route::get('leads/archive', [LeadController::class, 'archive'])->name('leads.archive');
+Route::post('leads/{leads}/restore', [LeadController::class, 'restore'])->name('leads.restore');
+Route::post('leads/add/dnc', [LeadController::class, 'addDnc'])->name('leads.add.dnc');
+
 
 Route::prefix('assign')->group(function () {
     Route::get('/', [AssignLeadController::class, 'index'])->name('assign');
@@ -92,11 +101,15 @@ Route::prefix('assign')->group(function () {
     Route::get('/{leads}/edit',[AssignLeadController::class, 'edit'])->name('edit-leads-user');
     Route::post('/void-all',[AssignLeadController::class, 'voidAll'])->name('void-all');
     Route::post('/assign-premium-leads',[AssignLeadController::class, 'assignPremiumLead'])->name('assign-premium-leads');
+    Route::post('/delete-selected-leads', [AssignLeadController::class, 'deleteSelectedLeads'])->name('delete-selected-leads');
+    Route::get('getStates', [AssignLeadController::class, 'getStates'])->name('get-states');
 });
 
 
 Route::prefix('list-leads')->group(function  () {
     Route::get('/', [AppTakerLeadsController::class, 'index'])->name('apptaker-leads');
+    Route::post('/multi-state-work', [AppTakerLeadsController::class, 'multiStateWork'])->name('mutli.state.work');
+    Route::get('/filter-cities', [AppTakerLeadsController::class, 'filterCities'])->name('filter-cities');
 });
 
 // Dashboard 

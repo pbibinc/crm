@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class UserProfile extends Model
 {
@@ -33,9 +34,12 @@ class UserProfile extends Model
     {
         return $this->belongsTo(User::class);
     }
+
     public function leads()
     {
-        return $this->hasMany(Lead::class);
+        return $this->belongsToMany(Lead::class, 'leads_user_profile')
+        ->withPivot('assigned_at', 'reassigned_at', 'current_user_id')
+        ->withTimestamps();
     }
 
     public function ratings()
@@ -46,6 +50,15 @@ class UserProfile extends Model
     public function media()
     {
         return $this->belongsTo(Metadata::class);
+    }
+
+    public function getLeadCountByState()
+    {
+        return $this->leads()
+           ->select('state_abbr', DB::raw('count(*) as total'))
+           ->groupBy('state_abbr')
+           ->pluck('total', 'state_abbr')
+           ->toArray();
     }
 
 }

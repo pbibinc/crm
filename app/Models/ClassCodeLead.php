@@ -11,4 +11,9 @@ class ClassCodeLead extends Model
 
     protected $table = 'class_code_leads_table';
 
+    public static function sortByName($classCodeLeads)
+    {
+        return $classCodeLeads->sortBy('name');
+    }
+
 }

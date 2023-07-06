@@ -3,10 +3,8 @@
     <div class="page-content pt-6">
         <link rel="stylesheet" href="{{asset('backend/assets/libs/twitter-bootstrap-wizard/prettify.css')}}">
         <div class="container-fluid">
- 
             <div class="row">
                 <div class="row">
-
                     <div class="col-3">
                         <div class="card">
                             <div class="card-body">
@@ -32,7 +30,7 @@
                                 <div class="d-flex">
                                     <div class="flex-grow-1">
                                         <p class="text-truncate font-size-14 mb-2 text-white">Total Accounts</p>
-                                        <h4 class="mb-2 text-white">1452</h4>
+                                        <h4 class="mb-2 text-white">2312</h4>
                                         <p class="text-white mb-0">
                                             <span class="text-light fw-bold font-size-12 me-2" >
                                                 <i class="ri-arrow-right-up-line me-1 align-middle" ></i>9.23%
@@ -55,13 +53,13 @@
                             <div class="card-body">
                                 <div class="d-flex">
                                     <div class="flex-grow-1">
-                                        <p class="text-truncate font-size-14 mb-2">Total Sales</p>
-                                        <h4 class="mb-2">1452</h4>
+                                        <p class="text-truncate font-size-14 mb-2">Call Back</p>
+                                        <h4 class="mb-2">21</h4>
                                         <p class="text-muted mb-0"><span class="text-success fw-bold font-size-12 me-2"><i class="ri-arrow-right-up-line me-1 align-middle"></i>9.23%</span>from previous period</p>
                                     </div>
                                     <div class="avatar-sm">
                                         <span class="avatar-title bg-light text-primary rounded-3">
-                                            <i class="ri-shopping-cart-2-line font-size-24"></i>  
+                                            <i class="ri-phone-line font-size-24"></i>  
                                         </span>
                                     </div>
                                 </div>                                            
@@ -74,8 +72,8 @@
                             <div class="card-body">
                                 <div class="d-flex">
                                     <div class="flex-grow-1">
-                                        <p class="text-truncate font-size-14 mb-2">Total Sales</p>
-                                        <h4 class="mb-2">1452</h4>
+                                        <p class="text-truncate font-size-14 mb-2">Total Sales Per Month</p>
+                                        <h4 class="mb-2">200</h4>
                                         <p class="text-muted mb-0"><span class="text-success fw-bold font-size-12 me-2"><i class="ri-arrow-right-up-line me-1 align-middle"></i>9.23%</span>from previous period</p>
                                     </div>
                                     <div class="avatar-sm">
@@ -89,10 +87,12 @@
                     </div>
                     
                 </div>
+
                 <div class="col-12">
+
                     <div class="card">
                         <div class="card-body">
-                            <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            <table id="leadsApptakerDataTable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <div class="row">
 
                                     <div class="col-3">
@@ -210,17 +210,17 @@
                                         <th>Tel Num</th>
                                         <th>Class Code</th>
                                         <th>State Abbr</th>
-                                        <th>Disposition</th>
+                                        {{-- <th>Disposition</th> --}}
                                     </tr>
                                 </thead>
 
                                 <tbody>
 
-
                                 </tbody>
                             </table>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -234,6 +234,7 @@
                         <h5 class="modal-title" id="mySmallModalLabel">Call back</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
+
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-3">
@@ -255,6 +256,7 @@
                         <button type="button" class="btn btn-success waves-effect waves-light">Submit</button>
                         <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
                     </div>
+                    
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
@@ -293,7 +295,50 @@
         </div><!-- /.modal -->
 
        <!--Modal for No Answer Disposition-->
-        <div class="modal fade bs-example-modal-center" id="noAnswerModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal fade bs-example-modal-center" id="transactionLogModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="mySmallModalLabel">Set Time When To Call Back</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                          
+                                <div class="mb-3">
+                                    <div class="form-group">
+                                        <label class="form-label">Disposition</label>
+                                        <select name="timezone" id="dispositionDropDown" class="form-control" >
+                                            <option value="">Select Disposition</option>
+                                            <option value="">ALL</option>
+                                            @foreach ($dispositions as $disposition)
+                                                <option value="{{ $disposition->id }}">{{ $disposition->name }}</option>
+                                            @endforeach
+
+                                        </select>
+                                    </div>
+                                </div>
+                          
+                        </div>
+                        <div class="row mt-3">
+                            <label>Remarks</label>
+                                <div>
+                                    <textarea required class="form-control" rows="5"></textarea>
+                                </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success waves-effect waves-light">Submit</button>
+                        <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+
+           <!--Modal for No Answer Disposition-->
+           <div class="modal fade bs-example-modal-center" id="noAnswerModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -318,6 +363,7 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
+
     </div>
 
 
@@ -330,9 +376,13 @@
 <script src="{{asset('backend/assets/libs/inputmask/jquery.inputmask.min.js')}}"></script>
 
 
+ 
+
 <script>
+
     $(document).ready(function (){
-        $('#datatable').DataTable({
+        
+        $('#leadsApptakerDataTable').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
@@ -359,7 +409,7 @@
                 {data: 'tel_num', name: 'tel_num'},
                 {data: 'class_code', name: 'class_code'},
                 {data: 'state_abbr', name: 'state_abbr'},
-                {data: 'dispositions', name:'dispositions'},
+                // {data: 'dispositions', name:'dispositions'},
                 // {data: 'website_originated', name: 'website_originated', searchable:false},
 
             ]
@@ -367,83 +417,70 @@
 
         // scripts for reloading and configuring the dropdowns filters
         $('#websiteOriginatedDropdown').on('change', function () {
-            $('#datatable').DataTable().ajax.reload();
+            $('#leadsApptakerDataTable').DataTable().ajax.reload();
         });
 
         $('#timezoneDropdown').on('change', function() {
             var timezone = $(this).val();
-            $('#datatable').DataTable().ajax.url("{{ route('apptaker-leads') }}?timezone=" + timezone).load();
+            $('#leadsApptakerDataTable').DataTable().ajax.url("{{ route('apptaker-leads') }}?timezone=" + timezone).load();
+        });
+        $('#companyLink').on('click', function(){
+            console.log('test')
         });
         
         $('#classCodeLeadDropdown').on('change', function () {
              var classCodeLead = $(this).val();
-             $('#datatable').DataTable().ajax.reload();
+             $('#leadsApptakerDataTable').DataTable().ajax.reload();
         });
 
         $('#statesDropdown').on('change', function (){
-            $('#datatable').DataTable().ajax.reload();
+            $('#leadsApptakerDataTable').DataTable().ajax.reload();
         });
     
         $('#dataModal').on('submit', function (e) {
             e.preventDefault();
         });
 
+       
+
         $('#leadTypeDropdown').on('change', function() {
-            $('#datatable').DataTable().ajax.reload();
-            });
-
-        $('#dataModal').on('hidden.bs.modal', function() {
-            var formData = $('#dataModalForm').serializeArray();
-            var dataObject = {};
-
-            $.each(formData, function(index, field){
-                dataObject[field.name]  = field.value;
-            });
-            localStorage.setItem('formData', JSON.stringify(dataObject));
-
-            var dynamicRowQuantity = rowCounter - 1;
-
-            if(dynamicRowQuantity >= 1){
-                $('#dynamicAddRemove tbody tr').slice(dynamicRowQuantity).remove();
-            }else{
-                console.log(dynamicRowQuantity);
-            }
-
-            // $('#dynamicAddRemove tbody').empty();
+            $('#leadsApptakerDataTable').DataTable().ajax.reload();
         });
- 
 
-  
-        $(document).on('change', '[id^="dispositionDrodown"]', function(e){
+   
+ 
+        $(document).on('change', '#dispositionDropDown', function(e){
             var dropdownId = $(this).attr('id')
-            var rowId = dropdownId.replace('dispositionDropdown', '');
+            var rowId = dropdownId.replace('dispositionDropDown', '');
             var selectedDisposition = $(this).val();
+            if(selectedDisposition == '1'){
+                $('#leadsDataModal').modal('show');
+                $('#transactionLogModal').modal('hide');
+            }
             if(selectedDisposition == '2'){
                 $('#callbackModal').modal('show');
+                $('#transactionLogModal').modal('hide');
             }
 
             if(selectedDisposition == '6'){
                 $('#noAnswerModal').modal('show');
+                $('#transactionLogModal').modal('hide');
             }
 
             if(selectedDisposition == '12'){
                 $('#gateKeeperModal').modal('show');
+                $('#transactionLogModal').modal('hide');
             }
         });
        
-   
 
-        $(document).on('click', '[id^="companyLink"]', function(e){
-            var rowId = $(this).data('id');
-            var dropDown = $('select[data-row="'+rowId+'"]');
-            var selectedDisposition = dropDown.val();
-
-            if(selectedDisposition == 1){
-                e.preventDefault();
-                $('#leadsDataModal').modal('show');
-            }
-          
-        });
+        // $(document).on('click', '[id^="companyLink"]', function(e){
+        //     var rowId = $(this).data('id');
+        //     var dropDown = $('select[data-row="'+rowId+'"]');
+        //     var selectedDisposition = dropDown.val();
+        //         e.preventDefault();
+        //         $('#transactionLogModal').modal('show');
+        // });
 
     });
 </script>
