@@ -22,11 +22,13 @@ use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\GeneralInformationController;
 use App\Http\Controllers\AssignLeadController;
 use App\Http\Controllers\AppTakerLeadsController;
+use App\Http\Controllers\CallBackController;
 use App\Http\Controllers\DepartmentListController;
 use App\Http\Controllers\DashboardControllerNew;
 use App\Http\Controllers\TecnickcomPdfController;
 use App\Http\Controllers\CompanyHandbookController;
 use App\Http\Controllers\EmbeddedSignatureController;
+use Illuminate\Support\Facades\App;
 
 Route::get('/', function () {
     return view('welcome');
@@ -110,6 +112,12 @@ Route::prefix('list-leads')->group(function  () {
     Route::get('/', [AppTakerLeadsController::class, 'index'])->name('apptaker-leads');
     Route::post('/multi-state-work', [AppTakerLeadsController::class, 'multiStateWork'])->name('mutli.state.work');
     Route::get('/filter-cities', [AppTakerLeadsController::class, 'filterCities'])->name('filter-cities');
+    Route::get('/product/pdf', [AppTakerLeadsController::class, 'productPdf'])->name('product.pdf');
+    Route::get('/product/forms', [AppTakerLeadsController::class, 'productForms'])->name('product.forms');
+});
+
+Route::prefix('call-back')->group(function (){
+    Route::post('/store', [CallBackController::class, 'store'])->name('call-back.store');
 });
 
 // Dashboard 

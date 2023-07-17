@@ -7,9 +7,7 @@
                 <label for="" class="form-label">Gross Receipt</label>
             </div>
 
-            <div class="col-6">
-                <label for="" class="form-label">Gross Receipt</label>
-            </div>
+        
             
         </div>
 
@@ -19,9 +17,7 @@
                 <input class="form-control input-mask text-left" value="12345.67"  id="grossReceiptExcessLiability" onkeypress="return event.charCode >= 48 && event.charCode <= 57" data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'" disabled>
             </div>
             
-            <div class="col-6">
-                <input class="form-control input-mask text-left" value="12345.67"  id="employeePayrollExcessLiability" onkeypress="return event.charCode >= 48 && event.charCode <= 57" data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'" disabled>
-            </div>
+         
         </div>
         
         <div class="row mt-2">
@@ -83,14 +79,17 @@
         </div>
 
         <div class="row mb-3">
+
             <div class="col-6">
                 <label class="form-label">FEIN#</label>
                 <input id="fein" class="form-control input-mask" data-inputmask="'mask': '99-9999999'" inputmode="text">
             </div>
+
             <div class="col-6">
                 <label class="form-label">SSN#</label>
                 <input id="ssn" class="form-control input-mask" data-inputmask="'mask': '999-99-9999'" inputmode="text">
             </div>
+            
         </div>
 
         <div class="row mb-3">
@@ -114,22 +113,19 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-6">
+                <label for="">Have Losses?</label>
+            </div>
+        </div>
+
         <div class="row mb-3">
-
             <div class="col-6">
-                <label for="" class="form-label">Have Losses</label>
-                <input class="form-control percentageInputEmployee" type="number" value="10" id="workersCompYearOfLossesInput" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
-                {{-- <div class="square-switch">
-                    <input type="checkbox" id="currecntWorkersComp" switch="info"/>
-                    <label for="currecntWorkersComp" data-on-label="Yes" data-off-label="No"></label>
-                </div> --}}
+                <div class="square-switch">
+                    <input type="checkbox" id="haveLossWorkersComp" switch="info"/>
+                    <label for="haveLossWorkersComp" data-on-label="Yes" data-off-label="No"></label>
+                </div>
             </div>
-
-            <div class="col-6">
-                <label for="" class="form-label">Amount of Claims</label>
-                <input class="form-control input-mask text-left"  id="workersCompAmountOfClaimsInput" onkeypress="return event.charCode >= 48 && event.charCode <= 57" data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'">
-            </div>
-
         </div>
 
         <div class="row mb-3">
@@ -194,6 +190,62 @@
         </div>
         <input type="hidden" id="callBackDateHiddenInput" name="callBackDateHiddenInput" value=4>
     </form>
+
+
+    <div class="modal fade bs-example-modal-lg" id="haveLossModalWorkersComp" tabindex="-1" aria-labelledby="haveLossModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="haveLossModalWorkersCompLabel">Have Losses Questionare</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <select name="" id="dataOptionDropdownWorkersComp" class="form-select">
+                                <option value="1">MM/YEAR</option>
+                                <option value="2">DD/MM/YEAR</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                      <div class="col-6">
+                        <label for="" class="form-label">Number of Year</label>
+                      </div>  
+
+                      <div class="col-6">
+                        <label for="" class="form-label">Amount of Claims</label>
+                      </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <input class="form-control" type="date" value="2011-08-19" id="monthDayYearWorkersComp" hidden>
+                            <input class="form-control" type="month" value="2020-03" id="monthDateYearWorkersComp" hidden>
+                            <input type="hidden" name="workersCompHiddenInput" id="workersCompHiddenInput" value=2>
+                        </div>
+                        <div class="col-6">
+                            <input class="form-control input-mask text-left"  id="amountOfClaims" onkeypress="return event.charCode >= 48 && event.charCode <= 57" data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="saveHaveLossWorkersComp">Submit</button>
+                </div>
+                
+
+            </div>
+        </div>
+    </div>
+    
 </div>
 
 <script>
@@ -234,6 +286,19 @@
         
         $('#payrollWorkersComp').val(employeePayroll);
 
+        $('#saveHaveLossWorkersComp').on('click', function(){
+            console.log($('#workersCompHiddenInput').val());
+            console.log('button for subittion of have loss workers comp');
+        });
+        
+        $('#haveLossWorkersComp').on('change', function(){
+            if($(this).is(':checked')){
+                $('#haveLossModalWorkersComp').modal('show');
+            }else{
+
+            }
+        });
+
         $(document).on('change', '#ownersPayrollIncluded', function(){
             var payrollWorkersComp = $('#payrollWorkersComp');
             if($(this).val() == 1){
@@ -243,6 +308,30 @@
             }
         });
 
+        $('#dataOptionDropdownWorkersComp').on('change', function(){
+            if($(this).val() == 1){
+                $('#monthDateYearWorkersComp').removeAttr('hidden');
+                $('#monthDayYearWorkersComp').attr('hidden', true);
+            }
+            if($(this).val() == 2){
+                $('#monthDayYearWorkersComp').removeAttr('hidden');
+                $('#monthDateYearWorkersComp').attr('hidden', true);
+            }
+        });
+
+        $('#fein').on('input', function(e){
+            var feinValue = $(this).val();
+            localStorage.setItem('fein', feinValue);
+        });
+
+        
+        $('#ssn').on('input', function(e){
+            var ssnValue = $(this).val();
+            localStorage.setItem('ssn', ssnValue);
+        });
+
+        $('#fein').val(localStorage.getItem('fein'));
+        $('#ssn').val(localStorage.getItem('ssn'));
 
         function calculateEmployeeSum(){
             var sum = 0;

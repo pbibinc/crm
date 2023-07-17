@@ -33,7 +33,7 @@
         </div>
         <div class="col-4">
             <label for="" class="form-label">Policy Premium</label>
-            <input type="text" class="form-control" name="policyPremium" id="policyPremium" placeholder="">
+            <input class="form-control input-mask text-left" name="policyPremium" id="policyPremium" onkeypress="return event.charCode >= 48 && event.charCode <= 57" data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'">
         </div>
     </div>
     
@@ -66,5 +66,25 @@
         </div>
     </div>
 
-
 </div>
+
+<script>
+    $(document).ready(function(){
+        $('#generalLiabilityEffectiveDate').on('change', function(){
+            var effectiveDate = $(this).val();
+
+             // Convert the effective date string to a Date object
+            var effectiveDateObj = new Date(effectiveDate);
+
+            // Calculate the expiration date by adding one year to the effective date
+            var expirationDateObj = new Date(effectiveDateObj.getFullYear() + 1, effectiveDateObj.getMonth(), effectiveDateObj.getDate());
+            
+             // Format the expiration date as "YYYY-MM-DD" for setting the input value
+             var expirationDate = expirationDateObj.toISOString().split('T')[0]
+       
+            // Set the expiration date input value
+            $('#generalLiabilityExpirationDate').val(expirationDate);
+
+        });
+    })
+</script>

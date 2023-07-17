@@ -10,6 +10,7 @@ use App\Models\RecreationalFacilities;
 use App\Models\Site;
 use App\Models\UnitedState;
 use App\Models\UserProfile;
+use Barryvdh\DomPDF\PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -144,7 +145,7 @@ class AppTakerLeadsController extends Controller
     {
         $formData = $request->all();
         Cache::put('multi_state', $formData,  60 * 60);
-        return response()->json(['message' => 'The leads are successfully added to DNC Queue']);
+        return response()->json(['message' => 'added multiple selects']);
     }
 
     public function filterCities(Request $request)
@@ -166,5 +167,15 @@ class AppTakerLeadsController extends Controller
        }
     
         return response()->json(['cities' => $cities, 'zipcode' => $zipcode]);
+    }
+
+    public function productPdf(Request $request){
+        $formData = $request->all();
+           
+        $pdf = PDF::loadView('leads.apptaker_leads.product_pdf_viewer.general-liability-pdf-view', $formData);
+        return $pdf->download('product.pdf');
+    }
+    public function productForms(Request $request){
+        return view('leads.apptaker_leads.questionare-new-tab');
     }
 }

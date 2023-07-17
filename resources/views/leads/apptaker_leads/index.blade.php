@@ -85,11 +85,9 @@
                             </div><!-- end cardbody -->
                         </div>
                     </div>
-                    
                 </div>
 
                 <div class="col-12">
-
                     <div class="card">
                         <div class="card-body">
                             <table id="leadsApptakerDataTable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
@@ -236,24 +234,26 @@
                     </div>
 
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-3">
-                                <label for="example-datetime-local-input" class="col-form-label">Date and time</label>
-                            </div>
-                            <div class="col-9">
-                                <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00" id="example-datetime-local-input">
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <label>Remarks</label>
-                                <div>
-                                    <textarea required class="form-control" rows="5"></textarea>
+                        <form action="">
+                            <div class="row">
+                                <div class="col-3">
+                                    <label for="example-datetime-local-input" class="col-form-label">Date and time</label>
                                 </div>
-                        </div>
+                                <div class="col-9">
+                                    <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00" id="callBackDateTime" name="callBackDateTime">
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <label>Remarks</label>
+                                    <div>
+                                        <textarea required class="form-control" rows="5" id="callBackRemarks"></textarea>
+                                    </div>
+                            </div>
+                        </form>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success waves-effect waves-light">Submit</button>
+                        <button type="button" class="btn btn-success waves-effect waves-light" id="callbackDispoSubmitButton">Submit</button>
                         <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
                     </div>
                     
@@ -415,6 +415,11 @@
             ]
         });
 
+
+        $('#openFormLinkButton').on('click', function(e){
+            window.open("http://insuraprime_crm.test/admin/roles", "_blank", "width=400,height=800");
+        });
+
         // scripts for reloading and configuring the dropdowns filters
         $('#websiteOriginatedDropdown').on('change', function () {
             $('#leadsApptakerDataTable').DataTable().ajax.reload();
@@ -441,20 +446,17 @@
             e.preventDefault();
         });
 
-       
-
         $('#leadTypeDropdown').on('change', function() {
             $('#leadsApptakerDataTable').DataTable().ajax.reload();
         });
 
-   
- 
         $(document).on('change', '#dispositionDropDown', function(e){
             var dropdownId = $(this).attr('id')
             var rowId = dropdownId.replace('dispositionDropDown', '');
             var selectedDisposition = $(this).val();
             if(selectedDisposition == '1'){
-                $('#leadsDataModal').modal('show');
+                // $('#leadsDataModal').modal('show');
+                window.open("http://insuraprime_crm.test/list-leads/product/forms", "_blank", "width=600,height=800");
                 $('#transactionLogModal').modal('hide');
             }
             if(selectedDisposition == '2'){
@@ -467,8 +469,17 @@
                 $('#transactionLogModal').modal('hide');
             }
 
+            if(selectedDisposition == '11'){
+                $('#callbackModal').modal('show');
+                $('#transactionLogModal').modal('hide');
+            }
+
             if(selectedDisposition == '12'){
                 $('#gateKeeperModal').modal('show');
+                $('#transactionLogModal').modal('hide');
+            }
+
+            if(selectedDisposition == '13'){
                 $('#transactionLogModal').modal('hide');
             }
         });
@@ -481,6 +492,31 @@
         //         e.preventDefault();
         //         $('#transactionLogModal').modal('show');
         // });
+
+        $('#callbackDispoSubmitButton').on('click', function(e){
+            e.preventDefault();
+            var dateTime = $('#callBackDateTime').val();
+            var callBackRemarks = $('#callBackRemarks').val();
+            $.ajax({
+                url: "{{ route('call-back.store') }}",
+                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                dataType: 'json',
+                method: 'POST',
+                data: {
+                    dateTime: dateTime,
+                    callBackRemarks: callBackRemarks
+                },
+                success: function(response){
+                    Swal.fire({
+                      title: 'Success',
+                      text: 'Leads assigned successfully.',
+                      icon: 'success'
+                      }).then(function() {
+                         location.reload();
+                        });
+                }
+            });
+        });
 
     });
 </script>

@@ -18,20 +18,17 @@
         <div class="col-4">
             <div class="input-group">
               <span class="input-group-text">%</span>
-              <input class="form-control percentageInput" type="number" value="10" id="classcodePercentage">
+              <input class="form-control classCodePercentage" type="number" value="10" id="classcodePercentage">
             </div>
         </div>
     </div>
 
     <div id="additionalInput"></div>
 
-    <div class="row">
-        <div class="mb-3">
+    <div class="row mb-3">
+        <div>
             <label>Business Description</label>
-            <div>
-                
-                <textarea required class="form-control" id="businessDescription" rows="5"></textarea>
-            </div>
+            <textarea required class="form-control" id="businessDescription" rows="5"></textarea>
         </div>
     </div>
 
@@ -42,7 +39,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-6">
             <label class="form-label">Residential</label>
             <input id="residential" type="text" value="50" name="residential">
@@ -52,32 +49,24 @@
             <input id="commercial" type="text" value="50" name="commercial">
         </div>
     </div>
-    <br>
 
+    <div class="row mb-3">
 
-    <div class="row">
         <div class="col-6">
             <label class="form-label">New Contruction</label>
             <input id="newConstruction" type="text" value="50" name="newConstruction">
         </div>
+
         <div class="col-6">
-            <label class="form-label">Repair</label>
+            <label class="form-label">Repair/Remodel</label>
             <input id="repair" type="text" value="50" name="repair">
         </div>
-    </div>
-    <br>
 
-    <div class="row">
+    </div>
+
+    <div class="row mb-3">
         <div class="col-6">
             <label class="form-label">Multiple State Work</label>
-        </div>
-        <div class="col-6">
-            <label class="form-label">Self Performing Roofing</label>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-6">
             <div class="square-switch">
                 <input type="checkbox" id="multipleStateWork" switch="info"/>
                 <label for="multipleStateWork" data-on-label="Yes" data-off-label="No"></label>
@@ -85,6 +74,7 @@
         </div>
 
         <div class="col-6">
+            <label class="form-label">Self Performing Roofing</label>
             <div class="square-switch">
                 <input type="checkbox" id="roofing" switch="info"/>
                 <label for="roofing" data-on-label="Yes" data-off-label="No"></label>
@@ -92,18 +82,10 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mb-3">
+
         <div class="col-6">
             <label class="form-label">Concrete Foundation Work</label>
-        </div>
-        <div class="col-6">
-            <label class="form-label">Do you Perform Tract work?</label>
-        </div>
-    </div>
-
-    <div class="row">
-
-        <div class="col-6">
             <div class="square-switch">
                 <input type="checkbox" id="concreteFoundation" switch="info"/>
                 <label for="concreteFoundation" data-on-label="Yes" data-off-label="No"></label>
@@ -111,6 +93,7 @@
         </div>
 
         <div class="col-6">
+            <label class="form-label">Do you Perform Tract work?</label>
             <div class="square-switch">
                 <input type="checkbox" id="trackWork" switch="info"/>
                 <label for="trackWork" data-on-label="Yes" data-off-label="No"></label>
@@ -119,21 +102,10 @@
 
     </div>
 
-    <div class="row">
-
-        <div class="col-6">
-            <label class="form-label">Do you do any work for condominium</label>
-        </div>
-
-        <div class="col-6">
-            <label class="form-label">Will you perform any new/remodeling work in multi-dwelling residences?</label>
-        </div>
-
-    </div>
-
     <div class="row mb-3">
 
         <div class="col-6">
+            <label class="form-label">Do you do any work for condominium</label>
             <div class="square-switch">
                 <input type="checkbox" id="condoTownHouse" switch="info"/>
                 <label for="condoTownHouse" data-on-label="Yes" data-off-label="No"></label>
@@ -141,6 +113,7 @@
         </div>
 
         <div class="col-6">
+            <label class="form-label">Will you perform any new remodeling work in multi-dwelling residences?</label>
             <div class="square-switch">
                 <input type="checkbox" id="square-switch3" switch="info"/>
                 <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
@@ -149,8 +122,8 @@
     
     </div>
 
-    <div class="row mt-2">
-        <label for="form-label"><h6>Would you perform or subcontract work involving?</h6></label>
+    <div class="row">
+        <label for="form-label"><h6>Would you perform or subcontract work involving:</h6></label>
     </div>
 
     <div class="row">
@@ -223,32 +196,33 @@
 
     <div class="row">
         <div class="col-6">
-            <label for="#busEntity">Bus entity</label>
+            <label for="#busEntity">Business Entity</label>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-12">
             <select name="busEntity" id="busEntity" class="form-select">
-                <option value="">Business Entity</option>
+                <option value=""> </option>
+                <option value="Corporation">Corporation</option>
                 <option value="Individual/Sole Proprietor">Individual/Sole Proprietor</option>
-                <option value="Limited Liability Corp(LLC)">Limited Liability Corp(LLC)</option>
+                <option value="Limited Liability Corp(LLC)">Limited Liability Company(LLC)</option>
                 <option value="Partnership">Partnership</option>
                 <option value="corp">S-corp</option>
             </select>
         </div>
     </div>
 
-    <div class="row mt-2">
+    <div class="row">
         <div class="col-6">
-            <label for="#yearsInBusiness" class="form-label">years in business</label>
+            <label for="#yearsInBusiness" class="form-label">Years in Business</label>
         </div>
         <div class="col-6">
-            <label for="#yearsInProfession" class="form-label">years in profession</label>
+            <label for="#yearsInProfession" class="form-label">Years in Profession</label>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-6">
             <input class="form-control" type="number" value="1" id="yearsInBusiness">
         </div>
@@ -266,25 +240,25 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-6">
-            <input class="form-control" name="" id="largestProject" type="text" placeholder="Largest Project">
+            <textarea name="largestProject" id="largestProject"  rows="5" class="form-control"></textarea>
         </div>
         <div class="col-6">
             <input class="form-control input-mask text-left"  id="largestProjectAmount" onkeypress="return event.charCode >= 48 && event.charCode <= 57" data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'">
         </div>
     </div>
 
-    <div class="row mt-2">
+    <div class="row">
         <div class="col-6">
             <label class="form-label">Contact License</label>
         </div>
         <div class="col-6">
-            <label class="form-label">Company Name Under The License</label>
+            <label class="form-label">Name/Company Name</label>
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-6">
             <input class="form-control" type="text" id="contactLicense" placeholder="Largest Project">
         </div>
@@ -293,7 +267,7 @@
         </div>
     </div>
 
-    <div class="row mt-2">
+    <div class="row">
         <div class="col-6">
             <label for="" class="form-label">Have Losses</label>
         </div>
@@ -302,7 +276,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mb-3">
 
         <div class="col-6">
             <div class="square-switch">
@@ -320,6 +294,17 @@
 
     </div>
 
+    <div class="row mb-3">
+        <div class="col-6">
+            <label for="">Expiration of GL:</label>
+            <input class="form-control" type="date" value="2011-08-19T13:45:00" id="generalLiabilitiesExpirationInput">
+        </div>
+        <div class="col-6">
+            <label for="">Prior Carrier</label>
+            <input class="form-control" type="text" id="generalLiabilitiesPriorCarrierInput" placeholder="Prior Carrier">
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-6">
             <label for="" class="form-label">Limit</label>
@@ -329,7 +314,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-6">
             <select name="limitDropdown" id="limitDropdown" class="form-select">
                 <option value="1M/1M/1M">1M/1M/1M</option>
@@ -354,7 +339,7 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-6">
             <select name="fireDamageDropdown" id="fireDamageDropdown" class="form-select">
                 <option value="50000">$50,000</option>
@@ -383,16 +368,24 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-6">
             <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00" id="generalLiabilitiesCallback">
         </div>
         <div class="col-6">
-            <input class="form-control" type="text" id="companyNameUnderLicense" placeholder="Cross Sell">
+            <select name="crossSaleDropdown" id="crossSaleDropdown" class="form-select">
+                <option value=""></option>
+                <option value="Workers Comp">Workers Comp</option>
+                <option value="Commercial Auto">Commercial Auto</option>
+                <option value="Excess Liability">Excess Liability</option>
+                <option value="Tools and Equipment">Tools and Equipment</option>
+                <option value="Builders Risk">Builders Risk</option>
+                <option value="BOP">BOP</option>
+            </select>
         </div>
     </div>
 
-    <div class="row mt-3">
+    <div class="row">
         <label for="" class="form-label">remarks</label>
     </div>
 
@@ -425,18 +418,22 @@
                     </div>
 
                     <div class="row">
+
                       <div class="col-6">
                         <label for="" class="form-label">Number of Year</label>
                       </div>  
+
                       <div class="col-6">
                         <label for="" class="form-label">Amount of Claims</label>
                       </div>
+
                     </div>
 
                     <div class="row">
                         <div class="col-6">
                             <input class="form-control" type="date" value="2011-08-19" id="monthDayYear" hidden>
                             <input class="form-control" type="month" value="2020-03" id="monthDateYear" hidden>
+                            <input type="hidden" value=1>
                         </div>
                         <div class="col-6">
                             <input class="form-control input-mask text-left"  id="amountOfClaims" onkeypress="return event.charCode >= 48 && event.charCode <= 57" data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'">
@@ -445,11 +442,15 @@
 
                 </div>
 
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="saveHaveLossGeneralLiabilities">Submit</button>
+                </div>
+
             </div>
         </div>
     </div>
     
-    @include('leads.apptaker_leads.classcode-questionare');
+    @include('leads.apptaker_leads.classcode-questionare')
     
    {{-- start of subcontract modal --}}
     <div class="modal fade bs-example-modal-lg" id="subcontractModal" tabindex="-1" aria-labelledby="subcontractModal" aria-hidden="true">
@@ -463,12 +464,15 @@
                     <form action="subcontractModalForm">
                         @csrf
                         <div class="row">
+
                             <div class="col-6">
                                 <label class="form-label">Blasting Operation</label>
                             </div>
+
                             <div class="col-6">
                                 <label class="form-label">Hazardous Waste</label>
                             </div>
+
                         </div>
                     
                         <div class="row">
@@ -556,32 +560,38 @@
                                      @endphp 
 
                                 @if($cachedData)            
-                                @foreach($cachedData['statesDropdown'] as $index => $data)
+                                   @foreach(array_combine(array_keys($cachedData['statesDropdown']), array_keys($cachedData['statePercentage'])) as $index)
                                      <tr>
-                                        <td>  <select name="statesDropdown[{{ $index }}][state]" id="statesDropdown" class="form-control" >
+                                       
+                                        <td> 
+                                            <select name="statesDropdown[{{ $index }}][state]" id="statesDropdown" class="form-control" >
                                             <option value="">Select a timezone</option>
                                             <option value="">ALL</option>
                                             @foreach ($states as $state)
-                                                <option value="{{ $state }}" @if ($data['state'] === $state) selected @endif>{{ $state }}</option>
+                                               <option value="{{ $state }}" @if ($cachedData['statesDropdown'][$index]['state'] === $state) selected @endif>{{ $state }}</option>
                                             @endforeach
                                            </select>
-                                      </td>
+                                        </td>
                                   
-                                        @foreach($cachedData['statePercentage'] as $index => $data)
+                                    
                                         <td>
                                             <div class="input-group">
-                                                <input class="form-control" type="number" value="{{ $data['percentage'] }}" id="stateWorkPercentage" name="statePercentage[{{ $index }}][percentage]">
+                                                <input class="form-control percentageInput" type="number" value="{{ $cachedData['statePercentage'][$index]['percentage'] }}" id="stateWorkPercentage" name="statePercentage[{{ $index }}][percentage]">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text">%</span>
                                                 </div>
                                             </div>
                                         </td>
-                                        @endforeach
+                             
                                         <td>
-                                            <button type="button" id="addRowButton" class="btn btn-primary">Add Row</button>
+                                            @if($index == 0)
+                                             <button type="button" id="addRowButton" class="btn btn-primary">Add Row</button>
+                                            @else
+                                             <button class="btn btn-danger multiStateRemoveButton"  id="multiStateRemoveButton">Remove</button>
+                                            @endif
                                         </td>
                                     </tr>
-                                    @endforeach
+                                   @endforeach
                              
                                 @else
                                     
@@ -596,7 +606,7 @@
                                         </td>
                                         <td>
                                             <div class="input-group">
-                                                <input class="form-control" type="number" value="42" id="stateWorkPercentage" name="statePercentage[0][percentage]">
+                                                <input class="form-control percentageInput" type="number" value="42" id="stateWorkPercentage" name="statePercentage[0][percentage]">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text">%</span>
                                                 </div>
@@ -659,6 +669,9 @@
             postfix: '%'
         });
 
+        $('#saveHaveLossGeneralLiabilities').on('click', function(){
+            console.log('liabilit have losses button');
+        });
 
 
         $('#residential').on('change', function(){
@@ -667,6 +680,7 @@
 
             $('#commercial').val(value2);
         });
+
         $('#commercial').on('change', function(){
             var value2 =  parseInt($(this).val()) || 0;
             var value1 = 100 - value2;
@@ -695,6 +709,10 @@
             }else{
 
             }
+        });
+
+        $('.multiStateRemoveButton').on('click', function(){
+            $(this).closest('tr').remove();
         });
         
         $('#dataOptionDropdown').on('change', function(){
@@ -726,21 +744,41 @@
 
         function calculateSum(){
             var sum = 0;
-            $(".percentageInput").each(function(){
+            $(".classCodePercentage").each(function(){
                 sum += parseInt($(this).val(), 10);
             });
             return sum;
         }
 
         function addNewInput(){
-            $('#additionalInput').append('<div class="row mb-3"><div class="col-8"><div class="row"> <div class="col-2"><label>Class Code</label></div><div class="col-10"><select name="" id="" class="form-select"> @foreach ($sortedClassCodeLeads as $classCodeLead) <option value="{{ $classCodeLead->id }}">{{ $classCodeLead->name }}</option>@endforeach</select></div></div></div><div class="col-4"><div class="input-group"><span class="input-group-text">%</span><input class="form-control percentageInput" type="number" value="10" id="classcodePercentage"><button class="btn btn-danger remove-input" style="margin-left: 10px;">Remove</button></div></div></div></div>');
+            $('#additionalInput').append(`<div class="row mb-3">
+                <div class="col-8">
+                    <div class="row"> 
+                        <div class="col-2">
+                            <label>Class Code</label>
+                            </div>
+                            <div class="col-10">
+                                <select name="" id="" class="form-select"> 
+                                    @foreach ($sortedClassCodeLeads as $classCodeLead) 
+                                    <option value="{{ $classCodeLead->id }}">{{ $classCodeLead->name }}</option>
+                                    @endforeach
+                                    </select>
+                                    </div></div></div>
+                                    <div class="col-4">
+                                        <div class="input-group"><span class="input-group-text">%</span><input class="form-control classCodePercentage" type="number" value="10" id="classcodePercentage">
+                                        <button class="btn btn-danger remove-input" style="margin-left: 10px;">Remove</button>
+                                    </div>
+                     </div>
+                </div>
+                </div>`);
         }
         
         $(document).on('click', '.remove-input', function(){
             $(this).closest('.row').remove();
         });
 
-        $(document).on('change', '.percentageInput', function(){
+        $(document).on('change', '.classCodePercentage', function(){
+            console.log(calculateSum());
             if(calculateSum() < 100){
                 addNewInput();
             }else{
@@ -819,17 +857,17 @@
             recalculatePercentages();
 
         });
-    });
 
-    //event for showing the multiple state work
+
+          //event for showing the multiple state work
     $('#dataModal').on('show.bs.modal', function(){
-            var storedData = localStorage.getItem('formData');
-            var formData = JSON.parse(storedData);
-            var propertyNames = Object.keys(formData);
+            // var storedData = localStorage.getItem('formData');
+            // var formData = JSON.parse(storedData);
+            // var propertyNames = Object.keys(formData);
 
-            var rowProperties = propertyNames.filter(function(propertyName) {
-                return propertyName.startsWith('statesDropdown[') && propertyName.endsWith('][state]');
-            });
+            // var rowProperties = propertyNames.filter(function(propertyName) {
+            //     return propertyName.startsWith('statesDropdown[') && propertyName.endsWith('][state]');
+            // });
 
             var rowCount = rowCounter;
                 var newRow = `
@@ -881,23 +919,44 @@
 
     });
 
+    });
+
+  
+
     $('#dataModalForm').submit(function(event){
         var form = $(this);
         var formData = form.serialize();
-        $.ajax({
+        var percentageInputs = form.find('.percentageInput');
+        var shouldSubmit = false;
+        var totalPercentage = [];
+        percentageInputs.each(function() {
+          var percentageInput = $(this);
+          var percentageValue = percentageInput.val();
+          totalPercentage.push(percentageValue);
+        });
+        var sumPercentage = totalPercentage.reduce(function(a, b){
+            return parseInt(a) + parseInt(b);
+        }, 0);
+ 
+
+        if(sumPercentage == 100){
+            $.ajax({
             url:"{{ route('mutli.state.work') }}",
             headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             dataType:"json",
             method:"POST",
             data:formData,
             success: function(response){
-                console.log(response);
                 $('#dataModal').modal('hide');
             },
             error: function(xhr, status, error){
                 console.log('Error submitting form:', error);
             }
         });
+        }else{
+            alert('Total percentage must be 100%');
+        }
+     
     });
 
     $(document).on('change', '#generalLiabilitiesClassCodeDropdown', function(event){
@@ -909,8 +968,80 @@
        if(selectedClassCode == 164){
        $('#cleaningOutsideBuildingModal').modal('show');
        }
+       if(selectedClassCode == 189){
+        $('#concreteFoundationModal').modal('show');
+       }
+       if(selectedClassCode == 217){
+        $('#executiveSupervisorModal').modal('show');
+       }
+       if(selectedClassCode == 18){
+        $('#debrisRemovalModal').modal('show');
+       }
+       if(selectedClassCode == 223){
+        $('#assembledMillworkInstallationModal').modal('show');
+       }
+       if(selectedClassCode == 226){
+        $('#electricalWorkModal').modal('show');
+       }
+       if(selectedClassCode == 227){
+        $('#excavationNocModal').modal('show');
+       }
+       if(selectedClassCode == 31){
+        $('#fenceErectionContractorModal').modal('show');
+       }
+       if(selectedClassCode == 112){
+        $('#glazingContractorModal').modal('show');
+       }
+       if(selectedClassCode == 36){
+        $('#gradingLandModal').modal('show');
+       }
+       if(selectedClassCode == 114){
+        $('#handyManModal').modal('show');
+       }
+       if(selectedClassCode == 115){
+        $('#hvacModal').modal('show');
+       }
+       if(selectedClassCode == 17){
+        $('#janitorialServicesModal').modal('show');
+       }
+       if(selectedClassCode == 51){
+        $('masonryContractorModal').modal('show');
+       }
+       if(selectedClassCode == 245){
+        $('#paintingExteriorModal').modal('show');
+       }
+       if(selectedClassCode == 246){
+        $('#paintingInteriorModal').modal('show');
+       }
+       if(selectedClassCode == 196){
+        $('#plasteringModal').modal('show');
+       }
+       if(selectedClassCode == 191){
+        $('#plumbingResidentiallModal').modal('show');
+       }
+       if(selectedClassCode == 61){
+        $('#plumbingCommercialModal').modal('show');
+       }
+       if(selectedClassCode == 252){
+        $('#roofingNewCommercialModal').modal('show');
+       }
+       if(selectedClassCode == 253){
+        $('#roofingNewResidentialModal').modal('show');
+       }
+       if(selectedClassCode == 254){
+        $('#roofingRepairCommercialModal').modal('show');
+       }
+       if(selectedClassCode == 255){
+        $('#roofingRepairResidentialModal').modal('show');
+       }
+       if(selectedClassCode == 132){
+        $('#sidingDeckingInstallationModal').modal('show');
+       }
+       if(selectedClassCode == 119){
+        $('#landscapingContractorsModal').modal('show');
+       }
+
     });
     
-
 </script>
 {{-- End General Liabilities Tab--}}

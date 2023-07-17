@@ -81,7 +81,7 @@
                 <div class="col-lg-6">
                     <div class="mb-3">
                         <label class="form-label" for="progress-basicpill-phoneno-input">Fax</label>
-                        <input type="text" class="form-control" name="fax" id="fax" placeholder="fax">
+                        <input id="fax" name="fax" class="form-control input-mask" data-inputmask="'mask': '9-999999999'" inputmode="text" >
                     </div>
                 </div>
 
@@ -340,7 +340,7 @@
                     fullTimeEmployee: $('#fullTimeEmployee').val(),
                     partTimeEmployee: $('#partTimeEmployee').val(),
                     grossReceipt: $('#grossReceipt').val(),
-                    employeePayRoll: $('#employeePayRoll').val(),
+                    employeePayRoll: $('#employeePayRoll').val(), 
                     residential: $('#residential').val(),
                     commercial: $('#commercial').val(),
                     newConstruction: $('#newConstruction').val(),

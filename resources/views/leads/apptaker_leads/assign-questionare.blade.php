@@ -1,11 +1,11 @@
-<div class="modal fade bs-example-modal-xl" tabindex="-1" id="leadsDataModal" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header">
+{{-- <div class="modal fade bs-example-modal-xl" tabindex="-1" id="leadsDataModal" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable"> --}}
+        {{-- <div class="modal-content"> --}}
+            {{-- <div class="modal-header"> --}}
                 <h5 class="modal-title" id="myExtraLargeModalLabel">Extra large modal</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
+            {{-- </div> --}}
+            {{-- <div class="modal-body"> --}}
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
@@ -91,6 +91,21 @@
                                                             <span class="d-none d-sm-block">Tools Equipment</span>
                                                         </a>
                                                     </li>
+
+                                                    <li class="nav-item waves-effect waves-light">
+                                                        <a class="nav-link" data-bs-toggle="tab" href="#builders-risk-1" role="tab">
+                                                            <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+                                                            <span class="d-none d-sm-block">Builder Risk</span>
+                                                        </a>
+                                                    </li>
+
+                                                    <li class="nav-item waves-effect waves-light">
+                                                        <a class="nav-link" data-bs-toggle="tab" href="#business-owner-1" role="tab">
+                                                            <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+                                                            <span class="d-none d-sm-block">BOP</span>
+                                                        </a>
+                                                    </li>
+
                                             </ul>
 
                                             <!-- Tab panes -->
@@ -106,12 +121,16 @@
                                                
                                                @include('leads.apptaker_leads.tools-equipment')
 
+                                               @include('leads.apptaker_leads.builders-risk')
+
+                                               @include('leads.apptaker_leads.business-owners')
+
                                             </div>
 
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="progress-bank-detail">
-                                       <p>INFORMATION CONFIRMATION</p>
+                                       @include('leads.apptaker_leads.confirm-details')
                                     </div>
 
 
@@ -134,6 +153,8 @@
                                     {{--End of Submission--}}
 
                                 </div>
+
+
                                 <ul class="pager wizard twitter-bs-wizard-pager-link">
                                     <li class="previous"><a href="javascript: void(0);">Previous</a></li>
                                     <li class="next" id="nextButtonContainer"><a href="javascript: void(0);" id="nextButton">Next</a></li>
@@ -143,59 +164,59 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div><!-- /.modal-content -->
+            {{-- </div> --}}
+        {{-- </div><!-- /.modal-content --> --}}
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <script>
     
-       $('#progress-bank-detail').on('click', function(){
-            console.log('this test the progress-bank-detail');
-            var activeStep = $('.nav-link.active').attr('href');
-            if(activeStep == '#progress-bank-detail'){
-                $('#nextButtonContainer').hide();
-                $('#submitButtonContainer').show();
-            }
-            if(activeStep == '#progress-company-document'){
-                $('#nextButtonContainer').show();
-                $('#submitButtonContainer').hide();
-            }
-            if(activeStep == '#progress-company-document'){
-                $('#nextButtonContainer').show();
-                $('#submitButtonContainer').hide();
-            }
-        });
-        $('#progress-bank-detail').on('click', function(){
-            console.log('this test the progress-bank-detail');
-            var activeStep = $('.nav-link.active').attr('href');
-            if(activeStep == '#progress-bank-detail'){
-                $('#nextButtonContainer').hide();
-                $('#submitButtonContainer').show();
-            }
-            if(activeStep == '#progress-company-document'){
-                $('#nextButtonContainer').show();
-                $('#submitButtonContainer').hide();
-            }
-            if(activeStep == '#progress-company-document'){
-                $('#nextButtonContainer').show();
-                $('#submitButtonContainer').hide();
-            }
-        });
+    //    $('#progress-bank-detail').on('click', function(){
+    //         console.log('this test the progress-bank-detail');
+    //         var activeStep = $('.nav-link.active').attr('href');
+    //         if(activeStep == '#progress-bank-detail'){
+    //             $('#nextButtonContainer').hide();
+    //             $('#submitButtonContainer').show();
+    //         }
+    //         if(activeStep == '#progress-company-document'){
+    //             $('#nextButtonContainer').show();
+    //             $('#submitButtonContainer').hide();
+    //         }
+    //         if(activeStep == '#progress-company-document'){
+    //             $('#nextButtonContainer').show();
+    //             $('#submitButtonContainer').hide();
+    //         }
+    //     });
+    //     $('#progress-bank-detail').on('click', function(){
+    //         console.log('this test the progress-bank-detail');
+    //         var activeStep = $('.nav-link.active').attr('href');
+    //         if(activeStep == '#progress-bank-detail'){
+    //             $('#nextButtonContainer').hide();
+    //             $('#submitButtonContainer').show();
+    //         }
+    //         if(activeStep == '#progress-company-document'){
+    //             $('#nextButtonContainer').show();
+    //             $('#submitButtonContainer').hide();
+    //         }
+    //         if(activeStep == '#progress-company-document'){
+    //             $('#nextButtonContainer').show();
+    //             $('#submitButtonContainer').hide();
+    //         }
+    //     });
 
-        $('#progress-bank-detail').on('click', function(){
-            console.log('this test the progress-bank-detail');
-            var activeStep = $('.nav-link.active').attr('href');
-            if(activeStep == '#progress-bank-detail'){
-                $('#nextButtonContainer').hide();
-                $('#submitButtonContainer').show();
-            }
-            if(activeStep == '#progress-company-document'){
-                $('#nextButtonContainer').show();
-                $('#submitButtonContainer').hide();
-            }
-            if(activeStep == '#progress-company-document'){
-                $('#nextButtonContainer').show();
-                $('#submitButtonContainer').hide();
-            }
-        });
+    //     $('#progress-bank-detail').on('click', function(){
+    //         console.log('this test the progress-bank-detail');
+    //         var activeStep = $('.nav-link.active').attr('href');
+    //         if(activeStep == '#progress-bank-detail'){
+    //             $('#nextButtonContainer').hide();
+    //             $('#submitButtonContainer').show();
+    //         }
+    //         if(activeStep == '#progress-company-document'){
+    //             $('#nextButtonContainer').show();
+    //             $('#submitButtonContainer').hide();
+    //         }
+    //         if(activeStep == '#progress-company-document'){
+    //             $('#nextButtonContainer').show();
+    //             $('#submitButtonContainer').hide();
+    //         }
+    //     });
 </script>

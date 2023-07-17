@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "barryvdh/laravel-dompdf": "^2.0",
         "doctrine/dbal": "^3.6",
         "elibyy/tcpdf-laravel": "^10.0",
         "guzzlehttp/guzzle": "^7.2",
@@ -16,7 +17,6 @@
         "laravel/sanctum": "^2.14.1",
         "laravel/tinker": "^2.7",
         "maatwebsite/excel": "*",
-        "phpoffice/phpspreadsheet": "^1.18",
         "phpoffice/phpspreadsheet": "^1.18",
         "psr/simple-cache": "2.0",
         "pusher/pusher-php-server": "^7.2",
