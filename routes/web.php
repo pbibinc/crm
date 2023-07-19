@@ -9,6 +9,7 @@ use App\Http\Controllers\LeadController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\API\LeadDetailController;
 use App\Http\Controllers\BirthdayController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\Demo\DemoController;
@@ -114,6 +115,7 @@ Route::prefix('list-leads')->group(function  () {
     Route::get('/filter-cities', [AppTakerLeadsController::class, 'filterCities'])->name('filter-cities');
     Route::get('/product/pdf', [AppTakerLeadsController::class, 'productPdf'])->name('product.pdf');
     Route::get('/product/forms', [AppTakerLeadsController::class, 'productForms'])->name('product.forms');
+    Route::post('/list-lead-id', [AppTakerLeadsController::class, 'listLeadId'])->name('list-lead-id');
 });
 
 Route::prefix('call-back')->group(function (){
@@ -144,6 +146,9 @@ Route::prefix('leads')->group(function () {
     // SIC
     Route::resource('/sic', SICController::class)->except(['update']);
     Route::post('/sic/update', [SICController::class, 'update'])->name('sic.update');
+
+    
+    
 });
 
 Route::prefix('hrforms')->name('hrforms.')->group(function () {
@@ -195,6 +200,11 @@ Route::prefix('departments')->group(function(){
     Route::get('/csr-department', [DepartmentListController::class, 'getCsrEmployeeList'])->name('csr-department');
 });
 //end Routes for departments
+
+//Route for sending css file into front end
+Route::get('/assets/css/{file}', function ($file) {
+    return response()->file(public_path('assets/css/' . $file));
+})->where('file', '.*');
 
 
 Route::get('/register', [App\Http\Controllers\Auth\RegisteredUserController::class, 'create'])

@@ -178,4 +178,9 @@ class AppTakerLeadsController extends Controller
     public function productForms(Request $request){
         return view('leads.apptaker_leads.questionare-new-tab');
     }
+
+    public function listLeadId(Request $request){
+  
+        Cache::put('lead_id', $request->input('leadId'), 60 * 60);
+    }
 }

@@ -415,9 +415,8 @@
             ]
         });
 
-
         $('#openFormLinkButton').on('click', function(e){
-            window.open("http://insuraprime_crm.test/admin/roles", "_blank", "width=400,height=800");
+            window.open("http://localhost:3000/appoinnted-lead-questionare", "_blank", "width=400,height=800");
         });
 
         // scripts for reloading and configuring the dropdowns filters
@@ -455,8 +454,20 @@
             var rowId = dropdownId.replace('dispositionDropDown', '');
             var selectedDisposition = $(this).val();
             if(selectedDisposition == '1'){
-                // $('#leadsDataModal').modal('show');
-                window.open("http://insuraprime_crm.test/list-leads/product/forms", "_blank", "width=600,height=800");
+                $.ajax({
+                url: "{{ route('list-lead-id') }}",
+                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                dataType: 'json',
+                method: 'POST',
+                data: {
+                    leadId: leadsId
+                },
+                success: function(response){
+                 
+                }
+               
+            });
+            window.open("http://localhost:3000/appoinnted-lead-questionare", "_blank", "width=918,height=849");
                 $('#transactionLogModal').modal('hide');
             }
             if(selectedDisposition == '2'){
