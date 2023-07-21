@@ -1,6 +1,6 @@
 import React from "react";
 
-class Select extends React.Component {
+class SelectElement extends React.Component {
     render() {
         const {
             optionContent,
@@ -23,4 +23,4 @@ class Select extends React.Component {
     }
 }
 
-export default Select;
+export default SelectElement;

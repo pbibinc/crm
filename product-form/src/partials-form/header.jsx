@@ -2,11 +2,11 @@ import React from "react";
 import "/public/backend/assets/css/bootstrap.min.css";
 import "/public/backend/assets/css/icons.min.css";
 import "/public/backend/assets/css/app.min.css";
+
 import logo from "/public/backend/assets/images/pibib.png";
 import LeadDetails from "../data/lead-details";
 const Header = () => {
     const lead = LeadDetails();
-    console.log(lead);
     return (
         <header id="page-topbar">
             <div className="navbar-header">

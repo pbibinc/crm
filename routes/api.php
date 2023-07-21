@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\ClassCodeDataController;
 use App\Http\Controllers\API\LeadDetailController;
 use App\Http\Controllers\LeadController;
 use App\Models\Lead;
@@ -24,3 +25,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('leads', [LeadDetailController::class, 'index'])->withoutMiddleware(['auth:sanctum']);
 Route::get('leads/lead-details', [LeadDetailController::class, 'show'])->withoutMiddleware(['auth:sanctum']);
 Route::get('leads/lead-details/lead-address', [LeadDetailController::class, 'leadAddress'])->withoutMiddleware(['auth:sanctum']);
+Route::get('classcode/data', [ClassCodeDataController::class, 'index'])->withoutMiddleware(['auth:sanctum']);

@@ -16,7 +16,12 @@ const LeadAddress = () => {
         };
         fetchLeadAddress();
     }, []);
-    return leadAddress;
+    // console.log(leadAddress.data);
+    if (!leadAddress || !leadAddress.data) {
+        return <div>Loading...</div>;
+    }
+
+    return leadAddress.data;
 };
 
 export default LeadAddress;
