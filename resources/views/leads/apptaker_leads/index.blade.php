@@ -467,11 +467,15 @@
                 }
                
             });
-            window.open("http://localhost:3000/appoinnted-lead-questionare", "_blank", "width=918,height=849");
+            window.open("http://localhost:3000/appoinnted-lead-questionare", "_blank", "width=1000,height=849");
                 $('#transactionLogModal').modal('hide');
             }
             if(selectedDisposition == '2'){
                 $('#callbackModal').modal('show');
+                $('#transactionLogModal').modal('hide');
+            }
+            if(selectedDisposition == '3'){
+                $('#leadsDataModal').modal('show');
                 $('#transactionLogModal').modal('hide');
             }
 

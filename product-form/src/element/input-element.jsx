@@ -1,6 +1,14 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-const Input = ({ type, classValue, id, inputValue, validation }) => {
+const Input = ({
+    type,
+    classValue,
+    id,
+    inputValue,
+    validation,
+    onBlur,
+    onChange,
+}) => {
     const { register } = useForm();
     return (
         <input
@@ -8,6 +16,8 @@ const Input = ({ type, classValue, id, inputValue, validation }) => {
             className={classValue}
             id={id}
             defaultValue={inputValue}
+            onBlur={onBlur}
+            onChange={onChange}
             {...register(id, { validation })}
         />
     );

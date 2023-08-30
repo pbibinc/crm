@@ -1,23 +1,27 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 const LeadDetails = () => {
     const [lead, setLead] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchLead = async () => {
             try {
-                const response = await fetch(
+                const response = await axios.get(
                     `http://insuraprime_crm.test/api/leads/lead-details`
                 );
-                const data = await response.json();
-                setLead(data);
+                setLead(response.data);
+                setLoading(false);
             } catch (error) {
                 console.error("Error fetching lead", error);
+                setLoading(false);
             }
         };
         fetchLead();
     }, []);
-    return lead;
+
+    return { lead, loading };
 };
 
 export default LeadDetails;

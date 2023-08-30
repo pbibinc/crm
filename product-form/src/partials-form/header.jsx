@@ -1,12 +1,24 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import "/public/backend/assets/css/bootstrap.min.css";
 import "/public/backend/assets/css/icons.min.css";
 import "/public/backend/assets/css/app.min.css";
-
 import logo from "/public/backend/assets/images/pibib.png";
-import LeadDetails from "../data/lead-details";
+import { ContextData } from "../contexts/context-data-provider";
+
 const Header = () => {
-    const lead = LeadDetails();
+    const { lead } = useContext(ContextData);
+    if(lead){
+        sessionStorage.setItem("lead", JSON.stringify(lead));
+    }
+
+    localStorage.setItem("leadId", JSON.stringify(lead?.data?.id));
+    const storedLeadData = JSON.parse(sessionStorage.getItem("lead"));
+    const storedLeadId = JSON.parse(localStorage.getItem("generalInformationStoredData"));
+
+    if(storedLeadData?.data?.id !== storedLeadId?.id){
+        localStorage.removeItem("generalInformationStoredData");
+    }
+
     return (
         <header id="page-topbar">
             <div className="navbar-header">

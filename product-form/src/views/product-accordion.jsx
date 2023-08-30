@@ -1,35 +1,69 @@
 import React from "react";
 import Accordion from "react-bootstrap/Accordion";
 import GeneralLiabilitiesForm from "../product-form/general-liabilites-form";
+import WorkersCompensationForm from "../product-form/workers-compensation_form";
+import CommercialAutoForm from "../product-form/commercial-auto_form";
+import ContextDataProvider from "../contexts/context-data-provider";
+import ExcessLiabilitiesForm from "../product-form/excess_liability_form";
+
 
 function ProductAccordion() {
     return (
-        <Accordion defaultActiveKey="0">
-            <Accordion.Item eventKey="0">
-                <Accordion.Header className="info">
-                    General Liabilites Questionare
-                </Accordion.Header>
-                <Accordion.Body>
-                    <GeneralLiabilitiesForm />
-                </Accordion.Body>
-            </Accordion.Item>
+        <>
+            <div className="row mb-4">
+                <Accordion>
+                    <Accordion.Item eventKey="0">
+                        <Accordion.Header className="info">
+                            General Liabilites Questionare
+                        </Accordion.Header>
+                        <Accordion.Body>
+                            <ContextDataProvider>
+                             <GeneralLiabilitiesForm />
+                            </ContextDataProvider>
+                        </Accordion.Body>
+                    </Accordion.Item>
+                </Accordion>
+            </div>
 
-            <Accordion.Item eventKey="1">
-                <Accordion.Header className="info">
-                    Excess Liability Questionare
-                </Accordion.Header>
-                <Accordion.Body>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    Duis aute irure dolor in reprehenderit in voluptate velit
-                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                    occaecat cupidatat non proident, sunt in culpa qui officia
-                    deserunt mollit anim id est laborum.
-                </Accordion.Body>
-            </Accordion.Item>
-        </Accordion>
+            <div className="row mb-4">
+                <Accordion>
+                    <Accordion.Item eventKey="0">
+                        <Accordion.Header className="info">
+                            Workers Compensation Questionare
+                        </Accordion.Header>
+                        <Accordion.Body>
+                            <WorkersCompensationForm />
+                        </Accordion.Body>
+                    </Accordion.Item>
+                </Accordion>
+            </div>
+
+            <div className="row mb-4">
+            <Accordion>
+                <Accordion.Item eventKey="0">
+                    <Accordion.Header className="info">
+                        Commercial Auto Questionare
+                    </Accordion.Header>
+                    <Accordion.Body>
+                        <CommercialAutoForm />
+                    </Accordion.Body>
+                </Accordion.Item>
+            </Accordion>
+            </div>
+
+            <Accordion>
+                <Accordion.Item eventKey="0">
+                    <Accordion.Header className="info">
+                        Excess Liabilities
+                    </Accordion.Header>
+                    <Accordion.Body>
+                        <ExcessLiabilitiesForm
+                         />
+                    </Accordion.Body>
+                </Accordion.Item>
+            </Accordion>
+
+        </>
     );
 }
 

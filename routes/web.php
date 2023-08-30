@@ -146,9 +146,6 @@ Route::prefix('leads')->group(function () {
     // SIC
     Route::resource('/sic', SICController::class)->except(['update']);
     Route::post('/sic/update', [SICController::class, 'update'])->name('sic.update');
-
-    
-    
 });
 
 Route::prefix('hrforms')->name('hrforms.')->group(function () {

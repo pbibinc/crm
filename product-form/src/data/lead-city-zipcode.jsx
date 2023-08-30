@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 const LeadZipCodeCities = () => {
     const [leadZipCodeCities, setLeadZipCodeCities] = useState(null);
@@ -6,11 +7,10 @@ const LeadZipCodeCities = () => {
     useEffect(() => {
         const fetchLeadZipCodeCities = async () => {
             try {
-                const response = await fetch(
+                const response = await axios.get(
                     `http://insuraprime_crm.test/api/leads/lead-details/lead-address`
                 );
-                const data = await response.json();
-                setLeadZipCodeCities(data);
+                setLeadZipCodeCities(response.data);
             } catch (error) {
                 console.error("Error fetching lead zipcode cities", error);
             }
@@ -22,15 +22,15 @@ const LeadZipCodeCities = () => {
         return <div>Loading...</div>;
     }
 
-    let zipCityArray = [];
+    let zipCity = [];
 
     if (Array.isArray(leadZipCodeCities.data)) {
-        zipCityArray = leadZipCodeCities.data.map((address) => ({
+        zipCity = leadZipCodeCities.data.map((address) => ({
             zipcode: address.zipcode,
             city: address.city,
         }));
     } else if (typeof leadZipCodeCities.data === "object") {
-        zipCityArray = Object.entries(leadZipCodeCities.data).map(
+        zipCity = Object.entries(leadZipCodeCities.data).map(
             ([zipcode, city]) => ({
                 zipcode,
                 city,
@@ -38,7 +38,8 @@ const LeadZipCodeCities = () => {
         );
     }
 
-    return zipCityArray;
+
+    return { zipCity };
 };
 
 export default LeadZipCodeCities;

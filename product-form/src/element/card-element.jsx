@@ -9,6 +9,7 @@ class Card extends React.Component {
                     <h3>{headerContent}</h3>
                 </div>
                 <div className="card-body">{bodyContent}</div>
+                {/*  */}
             </div>
         );
     }

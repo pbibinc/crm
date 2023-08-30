@@ -1,9 +1,11 @@
 import React from "react";
+import Form from 'react-bootstrap/Form';
+
 
 class Label extends React.Component {
     render() {
         const { labelContent, forValue } = this.props;
-        return <label htmlFor={forValue}>{labelContent}</label>;
+        return <Form.Label  htmlFor={forValue} >{labelContent}</Form.Label>;
     }
 }
 

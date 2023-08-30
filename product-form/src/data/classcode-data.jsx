@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 const ClassCodeData = () => {
     const [classCodeData, setClassCodeData] = useState(null);
     useEffect(() => {
         const fetchClassCodeData = async () => {
             try {
-                const response = await fetch(
+                const response = await axios.get(
                     "   http://insuraprime_crm.test/api/classcode/data"
                 );
-                const data = await response.json();
-                setClassCodeData(data);
+                setClassCodeData(response.data);
             } catch (error) {
                 console.error("Error fetching class code data", error);
             }
@@ -37,7 +37,7 @@ const ClassCodeData = () => {
         );
     }
 
-    return classCodeArray;
+    return {classCodeArray};
 };
 
 export default ClassCodeData;

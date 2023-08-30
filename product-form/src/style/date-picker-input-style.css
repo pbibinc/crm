@@ -1,0 +1,28 @@
+/* CustomDatePicker.css */
+.custom-datepicker-input {
+    /* Add your custom styling here */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #333;
+    outline: none;
+    /* Add more styles as needed */
+}
+
+/* Styling for the datepicker dropdown (month and year dropdowns) */
+.react-datepicker-wrapper .react-datepicker__input-container {
+    display: inline-block;
+}
+
+/* Example styles for the dropdown arrow icon */
+.react-datepicker-wrapper .react-datepicker__input-container::after {
+    content: "\u25BC"; /* Downward pointing triangle */
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #999;
+    font-size: 12px;
+}

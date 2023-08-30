@@ -1,7 +1,14 @@
 <?php
 
 use App\Http\Controllers\API\ClassCodeDataController;
+use App\Http\Controllers\API\CommercialAutoController;
+use App\Http\Controllers\API\GeneralInformationData;
+use App\Http\Controllers\API\GeneralInformationDataController;
 use App\Http\Controllers\API\LeadDetailController;
+use App\Http\Controllers\API\RecreationalController;
+use App\Http\Controllers\API\StateAddressController;
+use App\Http\Controllers\API\GeneralLiabilitiesDataController;
+use App\Http\Controllers\API\WorkersCompDataController;
 use App\Http\Controllers\LeadController;
 use App\Models\Lead;
 use Illuminate\Http\Request;
@@ -22,7 +29,21 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
 Route::get('leads', [LeadDetailController::class, 'index'])->withoutMiddleware(['auth:sanctum']);
 Route::get('leads/lead-details', [LeadDetailController::class, 'show'])->withoutMiddleware(['auth:sanctum']);
 Route::get('leads/lead-details/lead-address', [LeadDetailController::class, 'leadAddress'])->withoutMiddleware(['auth:sanctum']);
 Route::get('classcode/data', [ClassCodeDataController::class, 'index'])->withoutMiddleware(['auth:sanctum']);
+Route::get('states', [StateAddressController::class, 'states'])->withoutMiddleware(['auth:sanctum']);
+Route::get('recreational', [RecreationalController::class, 'recreationalFactilies'])->withoutMiddleware(['auth:sanctum']);
+Route::post('general-information-data', [GeneralInformationDataController::class, 'getGeneralInformationData'])->withoutMiddleware(['auth:sanctum']);
+Route::get('general_information', [GeneralInformationDataController::class, 'generalInformationData'])->withoutMiddleware(['auth:sanctum']);
+Route::put('general-information-data/{id}', [GeneralInformationDataController::class, 'updateGenneralInformationData'])->withoutMiddleware(['auth:sanctum']);
+Route::post('general-liabilities-data', [GeneralLiabilitiesDataController::class, 'saveGeneralLiabilities'])->withoutMiddleware(['auth:sanctum']);
+Route::put('general-liabilities-data/{id}', [GeneralLiabilitiesDataController::class, 'updateGeneralLiabilities'])->withoutMiddleware(['auth:sanctum']);
+Route::post('workers-comp-data/store', [WorkersCompDataController::class, 'saveWorkersComp'])->withoutMiddleware(['auth:sanctum']);
+Route::put('workers-comp-data/{id}', [WorkersCompDataController::class, 'updateWorkersComp'])->withoutMiddleware(['auth:sanctum']);
+Route::get('workers-comp-data/get/{id}', [WorkersCompDataController::class, 'getWorkersCompData'])->withoutMiddleware(['auth:sanctum']);
+Route::post('commercial-auto-data/store', [CommercialAutoController::class, 'saveCommercialAuto'])->withoutMiddleware(['auth:sanctum']);
+Route::put('commercial-auto-data/update/{id}', [CommercialAutoController::class, 'updateCommercialAuto'])->withoutMiddleware(['auth:sanctum']);
+

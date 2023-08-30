@@ -9,6 +9,7 @@
         "barryvdh/laravel-dompdf": "^2.0",
         "doctrine/dbal": "^3.6",
         "elibyy/tcpdf-laravel": "^10.0",
+        "fruitcake/laravel-cors": "^3.0",
         "guzzlehttp/guzzle": "^7.2",
         "hellosign/hellosign-php-sdk": "3.*@dev",
         "inspector-apm/inspector-laravel": "^4.7",
