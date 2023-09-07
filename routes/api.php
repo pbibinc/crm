@@ -1,13 +1,16 @@
 <?php
 
+use App\Http\Controllers\API\BuildersRiskController;
 use App\Http\Controllers\API\ClassCodeDataController;
 use App\Http\Controllers\API\CommercialAutoController;
+use App\Http\Controllers\API\ExcessLiabilityController;
 use App\Http\Controllers\API\GeneralInformationData;
 use App\Http\Controllers\API\GeneralInformationDataController;
 use App\Http\Controllers\API\LeadDetailController;
 use App\Http\Controllers\API\RecreationalController;
 use App\Http\Controllers\API\StateAddressController;
 use App\Http\Controllers\API\GeneralLiabilitiesDataController;
+use App\Http\Controllers\API\ToolsEquipmentController;
 use App\Http\Controllers\API\WorkersCompDataController;
 use App\Http\Controllers\LeadController;
 use App\Models\Lead;
@@ -46,4 +49,9 @@ Route::put('workers-comp-data/{id}', [WorkersCompDataController::class, 'updateW
 Route::get('workers-comp-data/get/{id}', [WorkersCompDataController::class, 'getWorkersCompData'])->withoutMiddleware(['auth:sanctum']);
 Route::post('commercial-auto-data/store', [CommercialAutoController::class, 'saveCommercialAuto'])->withoutMiddleware(['auth:sanctum']);
 Route::put('commercial-auto-data/update/{id}', [CommercialAutoController::class, 'updateCommercialAuto'])->withoutMiddleware(['auth:sanctum']);
-
+Route::post('excess-liability-data/store', [ExcessLiabilityController::class, 'saveExcessLiability'])->withoutMiddleware(['auth:sanctum']);
+Route::put('excess-liability-data/update/{id}', [ExcessLiabilityController::class, 'updateExcessLiability'])->withoutMiddleware(['auth:sanctum']);
+Route::post('tools-equipment/store', [ToolsEquipmentController::class, 'storeToolsEquipment'])->withoutMiddleware(['auth:sanctum']);
+Route::put('tools-equipment/update/{id}', [ToolsEquipmentController::class, 'updateToolsEquipment'])->withoutMiddleware(['auth:sanctum']);
+Route::post('builders-risk/store', [BuildersRiskController::class, 'storedBuildersRisk'])->withoutMiddleware(['auth:sanctum']);
+Route::put('builders-risk/update/{id}', [BuildersRiskController::class, 'updateBuildersRisk'])->withoutMiddleware(['auth:sanctum']);

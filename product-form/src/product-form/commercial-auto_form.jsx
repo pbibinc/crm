@@ -161,7 +161,7 @@ const CommercialAutoForm = () => {
     };
 
        //handeling cross sell drodown data
-       let crossSellArray = [
+    let crossSellArray = [
         { value: "General Liabilities", label: "General Liabilities" },
         { value: "Workers Compensation", label: "Workers Compensation" },
         { value: "Commercial Property", label: "Commercial Property" },
@@ -254,6 +254,7 @@ const CommercialAutoForm = () => {
             crossSell: crossSell,
             isHaveLossChecked: isHaveLossChecked,
             haveLossDateOption: haveLossDateOption,
+
         }
 
         sessionStorage.setItem("commercialAutoStoredData", JSON.stringify(storedCommercialAutoData));
@@ -359,7 +360,7 @@ const CommercialAutoForm = () => {
 
             <Card body>
                 <Row
-                classValue="mb-3"
+                    classValue="mb-3"
                     rowContent={[
                         <Column
                             key="vehicleInformationColumn"
@@ -1337,7 +1338,7 @@ const CommercialAutoForm = () => {
                 }
             />
 
-<Row
+            <Row
                 classValue="mb-3"
                 rowContent={[
                     <Column

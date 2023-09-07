@@ -30,8 +30,8 @@ const Header = () => {
                 <div
                     className="d-flex"
                     style={{
-                        marginTop: "7%",
-                        marginLeft: "-5%",
+                        marginTop: "0%",
+                        marginLeft: "0%",
                     }}
                 >
                     <img
@@ -39,8 +39,8 @@ const Header = () => {
                         alt="Logo"
                         className="navbar-logo"
                         style={{
-                            width: "70%",
-                            height: "70%",
+                            width: "30%",
+                            height: "30%",
                         }}
                     />
                 </div>

@@ -221,8 +221,6 @@ class CommercialAutoController extends BaseController
 
             if($data['cross_sell']){
                 $crossSell = CrossSell::getCrossSelByLeadIdProduct($id, 3);
-                $crossSell->lead_id = $data['leadId'];
-                $crossSell->product = 3;
                 $crossSell->cross_sell = $data['cross_sell']['value'];
                 $crossSell->save();
             }

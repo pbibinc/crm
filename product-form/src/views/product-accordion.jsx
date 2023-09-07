@@ -5,6 +5,8 @@ import WorkersCompensationForm from "../product-form/workers-compensation_form";
 import CommercialAutoForm from "../product-form/commercial-auto_form";
 import ContextDataProvider from "../contexts/context-data-provider";
 import ExcessLiabilitiesForm from "../product-form/excess_liability_form";
+import ToolsEquipmentForm from "../product-form/tools-equipment-form";
+import BuilderRiskForm from "../product-form/builder-risk_form";
 
 
 function ProductAccordion() {
@@ -51,6 +53,7 @@ function ProductAccordion() {
             </Accordion>
             </div>
 
+            <div className="row mb-4">
             <Accordion>
                 <Accordion.Item eventKey="0">
                     <Accordion.Header className="info">
@@ -62,6 +65,35 @@ function ProductAccordion() {
                     </Accordion.Body>
                 </Accordion.Item>
             </Accordion>
+            </div>
+
+            <div className="row mb-4">
+            <Accordion>
+                <Accordion.Item eventKey="0">
+                    <Accordion.Header className="info">
+                        Tools Equipment
+                    </Accordion.Header>
+                    <Accordion.Body>
+                        <ToolsEquipmentForm
+                         />
+                    </Accordion.Body>
+                </Accordion.Item>
+            </Accordion>
+            </div>
+
+            <div className="row mb-4">
+            <Accordion>
+                <Accordion.Item eventKey="0">
+                    <Accordion.Header className="info">
+                        Builders Risk
+                    </Accordion.Header>
+                    <Accordion.Body>
+                        <BuilderRiskForm
+                         />
+                    </Accordion.Body>
+                </Accordion.Item>
+            </Accordion>
+            </div>
 
         </>
     );
