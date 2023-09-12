@@ -58,5 +58,14 @@ class GeneralInformation extends Model
         return $this->hasOne(CommercialAuto::class, 'general_information_id', 'id');
     }
 
+    public function lead()
+    {
+        return $this->belongsTo(Lead::class, 'leads_id', 'id');
+    }
+
+    public function excessLiability()
+    {
+        return $this->hasOne(ExcessLiability::class, 'general_information_id', 'id');
+    }
 
 }

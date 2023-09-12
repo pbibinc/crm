@@ -152,14 +152,58 @@
                 {{ $generalInformation->commercialAuto->commercialAutoSupplemental->is_vehicle_customized ? 'Yes' : 'No'}}
             </div>
         </div>
+        @if ($generalInformation->commercialAuto->commercialAutoSupplemental->vehicle_maintenance_program || $generalInformation->commercialAuto->commercialAutoSupplemental->is_vehicle_customized)
+        <div class="row mb-4">
+            @if ($generalInformation->commercialAuto->commercialAutoSupplemental->vehicle_maintenance_program )
+            <div class="col-6">
+                <b>Description:</b>
+                {{ $generalInformation->commercialAuto->commercialAutoSupplemental->vehicle_maintenace_description}}
+            </div>
+            @endif
+            @if ($generalInformation->commercialAuto->commercialAutoSupplemental->is_vehicle_customized)
+            <div class="col-6">
+                <b>Description:</b>
+                {{ $generalInformation->commercialAuto->commercialAutoSupplemental->vehicle_customized_description}}
+            </div>
+            @endif
+        </div>
+        @endif
         <div class="row mb-4">
             <div class="col-6">
-                <b>Vehicle Maintance Program in Operation:</b>
-                {{ $generalInformation->commercialAuto->commercialAutoSupplemental->vehicle_maintenance_program ? 'Yes' : 'No'}}
+                <b>Vehicles owned by the prospect:</b>
+                {{ $generalInformation->commercialAuto->commercialAutoSupplemental->is_vehicle_owned_by_prospect ? 'Yes' : 'No'}}
             </div>
             <div class="col-6">
-                <b>Vehicle Customized, altered or have special equipment:</b>
-                {{ $generalInformation->commercialAuto->commercialAutoSupplemental->is_vehicle_customized ? 'Yes' : 'No'}}
+                <b>Policy coverage been declined, canceled or non renewed 3 years prior:</b>
+                {{ $generalInformation->commercialAuto->commercialAutoSupplemental->declined_canceled_nonrenew_policy ? 'Yes' : 'No'}}
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-6">
+                <b>Prospect had losses in the past 4 years:</b>
+                {{ $generalInformation->commercialAuto->commercialAutoSupplemental->prospect_loss ? 'Yes' : 'No'}}
+            </div>
+            <div class="col-6">
+                <b>Owned vehicles used for towing special equipment:</b>
+                {{ $generalInformation->commercialAuto->commercialAutoSupplemental->vehicle_use_for_towing ? 'Yes' : 'No'}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="row mb-4">
+            <h4 class="card-title">Previous Commercial Auto Policy</h4>
+        </div>
+        <div class="row mb-4">
+            <div class="col-6">
+                <b>Expiration of Commercial Auto:</b>
+                {{ $generalInformation->lead->commercialAutoExpirationProduct->expiration_date }}
+            </div>
+            <div class="col-6">
+                <b>Prior Carrier:</b>
+                {{$generalInformation->lead->commercialAutoExpirationProduct->prior_carrier }}
             </div>
         </div>
     </div>

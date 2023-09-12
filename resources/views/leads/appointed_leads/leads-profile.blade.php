@@ -172,27 +172,11 @@
                         </div>
 
                         <div class="tab-pane" id="excessLiabiliy" role="tabpanel">
-                            <div class="card">
-                                <div class="card-body">
-
-                                    <p class="mb-0">
-                                        Excess Liability Content
-                                    </p>
-
-                                </div>
-                            </div>
+                            @include('leads.appointed_leads.excess-liability-profile', ['generalInformation' => $generalInformation])
                         </div>
 
                         <div class="tab-pane" id="toolsEquipment" role="tabpanel">
-                            <div class="card">
-                                <div class="card-body">
-
-                                    <p class="mb-0">
-                                        Tools Equipment Content
-                                    </p>
-
-                                </div>
-                            </div>
+                            @include('leads.appointed_leads.tools-equipment-profile', ['generalInformation' => $generalInformation])
                         </div>
 
                         <div class="tab-pane" id="buildersRisk" role="tabpanel">

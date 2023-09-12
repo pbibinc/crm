@@ -33,4 +33,6 @@ class ExpirationProduct extends Model
         }
         return null;
     }
+
+
 }
