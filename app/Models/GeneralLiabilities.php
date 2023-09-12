@@ -37,4 +37,36 @@ class GeneralLiabilities extends Model
         'cross_sell'
     ];
 
+    public function generalInformation()
+    {
+        return $this->belongsTo(GeneralInformation::class);
+    }
+
+    public function coverageLimit()
+    {
+        return $this->hasOne(CoverageLimit::class, 'id', 'coverage_limit_id');
+    }
+
+    public function classCodes()
+    {
+        return $this->hasMany(ClassCodePercentage::class, 'general_liabilities_id', 'id');
+    }
+
+    public function multiStates()
+    {
+        return $this->hasMany(MultipleState::class, 'general_liabilities_id', 'id');
+    }
+
+    public function generalLiabilityFacilities()
+    {
+        return $this->hasMany(GeneralLiabilitiesRecreationalFacilities::class, 'general_liabilities_id', 'id');
+    }
+
+    public function subcontractor()
+    {
+        return $this->hasOne(Subcontractor::class, 'general_liabilities_id', 'id');
+    }
+
+
+
 }

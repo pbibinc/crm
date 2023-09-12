@@ -60,5 +60,9 @@ class UserProfile extends Model
            ->pluck('total', 'state_abbr')
            ->toArray();
     }
+    public function fullName()
+    {
+        return $this->firstname . ' ' . $this->lastname;
+    }
 
 }

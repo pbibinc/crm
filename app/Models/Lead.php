@@ -40,6 +40,31 @@ class Lead extends Model
         ->withTimestamps();
     }
 
+    public static function getAppointedLeads()
+    {
+        $leads = self::where('disposition_id', 1)->with('userProfile')->get();
+
+        if($leads){
+            return $leads;
+        }
+        return null;
+    }
+
+
+    public static function getLeads($id)
+    {
+        $lead = self::find($id);
+
+        if($lead){
+            return $lead;
+        }
+        return null;
+    }
+
+    public function GeneralInformation()
+    {
+        return $this->hasOne(GeneralInformation::class, 'leads_id');
+    }
     // protected static function booted()
     // {
     //     static::pivotAttached(function ($lead, $relationName, $pivotIds, $pivotIdsAttributes){

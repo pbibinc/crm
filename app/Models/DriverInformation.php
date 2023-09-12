@@ -32,4 +32,11 @@ class DriverInformation extends Model
         }
         return null;
     }
+
+    public function driverSpouse()
+    {
+        return $this->hasOne(DriverSpouse::class, 'driver_information_id', 'id');
+    }
+
+
 }

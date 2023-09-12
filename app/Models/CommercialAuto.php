@@ -36,4 +36,19 @@ class CommercialAuto extends Model
         }
         return null;
     }
+
+    public function vehicleInformation()
+    {
+        return $this->hasMany(VehicleInformation::class, 'commercial_auto_id', 'id');
+    }
+
+    public function driverInformation()
+    {
+        return $this->hasMany(DriverInformation::class, 'commercial_auto_id', 'id');
+    }
+
+    public function commercialAutoSupplemental()
+    {
+        return $this->hasOne(CommercialAutoSupllemental::class, 'commercial_auto_id', 'id');
+    }
 }

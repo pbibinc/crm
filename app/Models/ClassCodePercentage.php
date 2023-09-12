@@ -16,4 +16,9 @@ class ClassCodePercentage extends Model
         'general_liabilities_id',
         'classcode_id',
     ];
+
+    public function classCodeLead()
+    {
+        return $this->hasOne(ClassCodeLead::class, 'id', 'classcode_id');
+    }
 }

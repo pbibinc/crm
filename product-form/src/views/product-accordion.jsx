@@ -7,6 +7,7 @@ import ContextDataProvider from "../contexts/context-data-provider";
 import ExcessLiabilitiesForm from "../product-form/excess_liability_form";
 import ToolsEquipmentForm from "../product-form/tools-equipment-form";
 import BuilderRiskForm from "../product-form/builder-risk_form";
+import BusinessOwnersPolicyForm from "../product-form/business-owners-policy_form";
 
 
 function ProductAccordion() {
@@ -90,6 +91,19 @@ function ProductAccordion() {
                     <Accordion.Body>
                         <BuilderRiskForm
                          />
+                    </Accordion.Body>
+                </Accordion.Item>
+            </Accordion>
+            </div>
+
+            <div className="row mb-4">
+            <Accordion>
+                <Accordion.Item eventKey="0">
+                    <Accordion.Header className="info">
+                        Business Owner Policy
+                    </Accordion.Header>
+                    <Accordion.Body>
+                        <BusinessOwnersPolicyForm/>
                     </Accordion.Body>
                 </Accordion.Item>
             </Accordion>

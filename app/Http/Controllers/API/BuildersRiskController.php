@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\API;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\BuildersRisk;
+use App\Models\ExpirationProduct;
 use App\Models\GeneralInformation;
+use App\Models\HaveLoss;
 use App\Models\NewContruction;
 use App\Models\Rennovation;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -71,6 +74,23 @@ class BuildersRiskController extends BaseController
                 $renovation->description_operation = $data['descriptionOfOperationsForTheProject'];
                 $renovation->save();
             }
+
+            $expirationAuto = new ExpirationProduct();
+            $expirationAuto->lead_id = $data['leadId'];
+            $expirationAuto->product = 6;
+            $expirationAuto->expiration_date = Carbon::parse($data['expirationOfIM'])->toDateString();
+            $expirationAuto->prior_carrier = $data['priorCarrier'];
+            $expirationAuto->save();
+
+            if($data['isHaveLossChecked'] == true){
+                $HaveLosstable = new HaveLoss();
+                $HaveLosstable->lead_id = $data['leadId'];
+                $HaveLosstable->product = 6;
+                $HaveLosstable->date_of_claim = Carbon::parse($data['dateOfClaim'])->toDateTimeString();
+                $HaveLosstable->loss_amount = $data['lossAmount'];
+                $HaveLosstable->save();
+            }
+
             DB::commit();
         }catch(\Exception $e){
             DB::rollback();
@@ -121,22 +141,68 @@ class BuildersRiskController extends BaseController
 
             if($statusConstruction == "New Construction")
             {
-                $newContruction = NewContruction::getNewContructionData($buildersRiskId);
-                $newContruction->builders_risk_id = $buildersRisk->id;
-                $newContruction->description_operation = $data['operationDescription'];
-                $newContruction->save();
+                $newContruction = NewContruction::getNewConstructionData($buildersRiskId);
+                $renovationationDelete = Rennovation::getRennovationData($buildersRiskId);
+                if($newContruction){
+                    $newContruction->description_operation = $data['operationDescription'];
+                    $newContruction->save();
+
+                }else{
+                    $newContruction = new NewContruction();
+                    $newContruction->builders_risk_id = $buildersRiskId;
+                    $newContruction->description_operation = $data['operationDescription'];
+                    $newContruction->save();
+
+                }
+                if($renovationationDelete){
+                    $renovationationDelete->delete();
+                }
+
+
             }elseif($statusConstruction == "Renovation"){
                 $renovation = Rennovation::getRennovationData($buildersRiskId);
-                $renovation->builders_risk_id = $buildersRisk->id;
-                $renovation->description = $data['propertyDescription'];
-                $renovation->last_update_roofing = $data['roofingUpdateYear'];
-                $renovation->last_update_heating = $data['heatingUpdateYear'];
-                $renovation->last_update_plumbing = $data['plumbingUpdateYear'];
-                $renovation->last_update_electrical = $data['electricalUpdateYear'];
-                $renovation->stucture_occupied = $data['structureOccupiedDuringRemodelRenovation'];
-                $renovation->structure_built = $data['whenWasTheStructureBuilt'];
-                $renovation->description_operation = $data['descriptionOfOperationsForTheProject'];
-                $renovation->save();
+                $newContructionDelete = NewContruction::getNewConstructionData($buildersRiskId);
+                if($renovation){
+                    $renovation->description = $data['propertyDescription'];
+                    $renovation->last_update_roofing = $data['roofingUpdateYear'];
+                    $renovation->last_update_heating = $data['heatingUpdateYear'];
+                    $renovation->last_update_plumbing = $data['plumbingUpdateYear'];
+                    $renovation->last_update_electrical = $data['electricalUpdateYear'];
+                    $renovation->stucture_occupied = $data['structureOccupiedDuringRemodelRenovation'];
+                    $renovation->structure_built = $data['whenWasTheStructureBuilt'];
+                    $renovation->description_operation = $data['descriptionOfOperationsForTheProject'];
+                    $renovation->save();
+                }else{
+                    $renovation = new Rennovation();
+                    $renovation->builders_risk_id = $buildersRiskId;
+                    $renovation->description = $data['propertyDescription'];
+                    $renovation->last_update_roofing = $data['roofingUpdateYear'];
+                    $renovation->last_update_heating = $data['heatingUpdateYear'];
+                    $renovation->last_update_plumbing = $data['plumbingUpdateYear'];
+                    $renovation->last_update_electrical = $data['electricalUpdateYear'];
+                    $renovation->stucture_occupied = $data['structureOccupiedDuringRemodelRenovation'];
+                    $renovation->structure_built = $data['whenWasTheStructureBuilt'];
+                    $renovation->description_operation = $data['descriptionOfOperationsForTheProject'];
+                    $renovation->save();
+                    if($newContructionDelete){
+                        $newContructionDelete->delete();
+                    }
+                }
+                if($newContructionDelete){
+                    $newContructionDelete->delete();
+                }
+
+            }
+
+            $expirationBuildersRisk = ExpirationProduct::getExpirationProductByLeadIdProduct($id, 6);
+            $expirationBuildersRisk->prior_carrier = $data['priorCarrier'];
+            $expirationBuildersRisk->save();
+
+            if($data['isHaveLossChecked'] == true){
+                $HaveLosstable = HaveLoss::getHaveLossbyLeadIdProduct($id, 6);
+                $HaveLosstable->date_of_claim = Carbon::parse($data['dateOfClaim'])->toDateTimeString();
+                $HaveLosstable->loss_amount = $data['lossAmount'];
+                $HaveLosstable->save();
             }
             DB::commit();
         }catch(\Exception $e){

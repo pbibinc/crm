@@ -67,7 +67,7 @@
               </div>
               <input type="hidden" name="action" id="action" value="add">
               <input type="hidden" name="hidden_id" id="hidden_id" />
-           
+
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -127,7 +127,7 @@
         $("#dataModal").modal("show");
     });
 
-    // When submitting form 
+    // When submitting form
     $("#dataModalForm").on("submit", function (event) {
         event.preventDefault();
 
@@ -135,7 +135,7 @@
         var action_url = '';
         if ($("#action").val() == "Add") {
             action_url = "{{ route('disposition.store') }}";
-        } 
+        }
         if ($("#action").val() == "Update") {
             action_url = "{{ route('disposition.update') }}";
         }
@@ -161,7 +161,7 @@
     // end submitting new entry
 
     // script for configuring edit modal
-    $(document).on('click', '.edit', function(event){ 
+    $(document).on('click', '.edit', function(event){
         event.preventDefault();
         var id = $(this).attr('id');
         $('#form_result').html;

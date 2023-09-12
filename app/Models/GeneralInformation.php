@@ -42,4 +42,21 @@ class GeneralInformation extends Model
         }
         return null;
     }
+
+    public function generalLiabilities()
+    {
+        return $this->hasOne(GeneralLiabilities::class);
+    }
+
+    public function workersCompensation()
+    {
+        return $this->hasOne(WorkersCompensation::class, 'general_information_id', 'id');
+    }
+
+    public function commercialAuto()
+    {
+        return $this->hasOne(CommercialAuto::class, 'general_information_id', 'id');
+    }
+
+
 }

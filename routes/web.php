@@ -29,6 +29,7 @@ use App\Http\Controllers\DashboardControllerNew;
 use App\Http\Controllers\TecnickcomPdfController;
 use App\Http\Controllers\CompanyHandbookController;
 use App\Http\Controllers\EmbeddedSignatureController;
+use App\Http\Controllers\QuotationController;
 use Illuminate\Support\Facades\App;
 
 Route::get('/', function () {
@@ -116,13 +117,20 @@ Route::prefix('list-leads')->group(function  () {
     Route::get('/product/pdf', [AppTakerLeadsController::class, 'productPdf'])->name('product.pdf');
     Route::get('/product/forms', [AppTakerLeadsController::class, 'productForms'])->name('product.forms');
     Route::post('/list-lead-id', [AppTakerLeadsController::class, 'listLeadId'])->name('list-lead-id');
+
+});
+
+Route::prefix('quoataion')->group(function (){
+    Route::get('/appointed-leads', [QuotationController::class, 'appointedLeadsView'])->name('appointed-leads');
+    Route::post('/lead-profile', [QuotationController::class, 'leadProfile'])->name('lead-profile');
+    Route::get('/lead-profile-view', [QuotationController::class, 'leadProfileView'])->name('lead-profile-view');
 });
 
 Route::prefix('call-back')->group(function (){
     Route::post('/store', [CallBackController::class, 'store'])->name('call-back.store');
 });
 
-// Dashboard 
+// Dashboard
 Route::prefix('dashboard')->group(function () {
     Route::resource('/', DashboardControllerNew::class)->except(['edit', 'update', 'delete', 'create', 'show', 'edit']);
     Route::get('/', [DashboardControllerNew::class, 'index'])->name('dashboard');
@@ -174,10 +182,6 @@ Route::prefix('hrforms')->name('hrforms.')->group(function () {
     // Route::get('/attendance-records', [AttendanceController::class, 'filters'])->name('attendance-filters');
 });
 
-// PDF Example (tecnickcom/tcpdf)
-// Route::get('/tecnickcom-pdf', function (Request $request) {
-//     return app()->call('App\Http\Controllers\TecnickcomPdfController@generatePdf');
-// });
 
 //Ending Routes for leads modules
 

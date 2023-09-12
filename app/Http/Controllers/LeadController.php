@@ -35,12 +35,12 @@ class LeadController extends Controller
         $totalLeads = $newLeadsCount + $assignLeadsCount;
         $unassignedPercentage = round(($newLeadsCount / $totalLeads) * 100);
         if ($unassignedPercentage >= 50) {
-           $arrowClass = 'ri-arrow-right-up-line'; 
+           $arrowClass = 'ri-arrow-right-up-line';
            $message = "of leads haven't been assigned";
            $textClass = 'text-success';
         } else {
            $message = "Leads that haven't been assigned";
-           $arrowClass ='ri-arrow-right-down-line';  
+           $arrowClass ='ri-arrow-right-down-line';
            $textClass = 'text-danger';
          }
          $assignData = [
@@ -56,7 +56,7 @@ class LeadController extends Controller
                 Log::info($data);
             }else{
                 $data = Lead::with('userProfile')
-                    ->select('id', 'company_name', 'tel_num', 'state_abbr', 
+                    ->select('id', 'company_name', 'tel_num', 'state_abbr',
                         'website_originated', 'created_at', 'status', 'class_code')->get();
                 $data->map(function ($item){
                     $item->created_at_formatted = Carbon::parse($item->created_at)->format('Y-m-d');
@@ -96,7 +96,7 @@ class LeadController extends Controller
 
     public function addDnc(Request $request)
     {
-      
+
         if($request->ajax()){
             $telNum = $request->input('telNum');
             if(empty($telNum)){
@@ -126,7 +126,7 @@ class LeadController extends Controller
             $leads = [];
            }
            return $leads;
-    }   
+    }
 
     public function archive(Request $request)
     {
@@ -141,7 +141,7 @@ class LeadController extends Controller
                    ->rawColumns(['restore'])
             ->make(true);
         }
-       
+
         return view('leads.generate_leads.archive');
     }
 
@@ -167,12 +167,12 @@ class LeadController extends Controller
     }
 
     public function leadsDnc(Request $request)
-    {      
+    {
         if($request->ajax())
         {
             if(Cache::get('leads_dnc')){
                 $leads = Cache::get('leads_dnc');
-                
+
             }else{
                 $leads = collect();
             }
@@ -180,7 +180,7 @@ class LeadController extends Controller
                             ->whereIn('tel_num', $leads->pluck('tel_num'))
                             ->select('id','company_name', 'tel_num', 'state_abbr')
                             ->get();
-                            
+
                 return DataTables::of($data)
                        ->addIndexColumn()
                        ->addColumn('checkbox', '<input type="checkbox" name="leads_checkbox[]"  class="leads_checkbox" value="{{$id}}" />')
@@ -189,9 +189,9 @@ class LeadController extends Controller
                 //     })
                 ->rawColumns(['checkbox'])
                 ->make(true);
-          
-        }   
-           
+
+        }
+
     }
 
     public function export(Request $request)
@@ -230,5 +230,6 @@ class LeadController extends Controller
         Cache::forget('apptaker_leads');
         return response()->json(['success' => 'Leads Succesfully Created']);
     }
+
 
 }

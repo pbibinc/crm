@@ -15,50 +15,58 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const BuilderRiskForm = () => {
-
+    //setting for getting stored buildersRiskData
+    const storedBuildersRiskData = () => {
+        const buildersRiskData = JSON.parse(sessionStorage.getItem("buildersRiskData"));
+        if(buildersRiskData){
+            return buildersRiskData;
+        }else{
+            return [];
+        }
+    }
     //setting for getting stored lead data
     const storedLeads = JSON.parse(sessionStorage.getItem("lead"));
 
     //setup most of the state varibles here
-    const [isEditing, setIsEditing] = useState(true);
-    const [isUpdate, setIsUpdate] = useState(false);
+    const [isEditing, setIsEditing] = useState(() => storedBuildersRiskData()?.isUpdate == true ? false : true);
+    const [isUpdate, setIsUpdate] = useState(() => storedBuildersRiskData()?.isUpdate || false);
     // const [crossSell, setCrossSell] = useState("");
     // const [priorCarrier, setPriorCarrier] = useState("");
     // const [expirationOfIM, setExpirationOfIM] = useState(new Date());
     // const [dateofClaim, setDateofClaim] = useState(new Date());
     // const [lossAmount, setLossAmount] = useState("");
-    const [propertyAddress, setPropertyAddress] = useState("");
-    const [valueOfExistingStructure, setValueOfExistingStructure] = useState("");
-    const [valueOfWorkBeingPerformed, setValueOfWorkBeingPerformed] = useState("");
-    const [porjectStarted, setPorjectStarted] = useState("");
-    const [operationDescription, setOperationDescription] = useState("");
-    const [propertyDescription, setPropertyDescription] = useState("");
-    const [roofingUpdateYear , setRoofingUpdateYear] = useState("");
-    const [heatingUpdateYear, setHeatingUpdateYear] = useState("");
-    const [plumbingUpdateYear , setPlumbingUpdateYear] = useState("");
-    const [electricalUpdateYear, setElectricalUpdateYear] = useState("");
-    const [structureOccupiedDuringRemodelRenovation, setStructureOccupiedDuringRemodelRenovation] = useState("");
-    const [whenWasTheStructureBuilt, setWhenWasTheStructureBuilt] = useState("");
-    const [descriptionOfOperationsForTheProject, setDescriptionOfOperationsForTheProject] = useState("");
+    const [propertyAddress, setPropertyAddress] = useState(() => storedBuildersRiskData()?.propertyAddress || "");
+    const [valueOfExistingStructure, setValueOfExistingStructure] = useState(() => storedBuildersRiskData()?.valueOfExistingStructure || "");
+    const [valueOfWorkBeingPerformed, setValueOfWorkBeingPerformed] = useState(() => storedBuildersRiskData()?.valueOfWorkBeingPerformed || "");
+    const [porjectStarted, setPorjectStarted] = useState(() => storedBuildersRiskData()?.porjectStarted || {});
+    const [operationDescription, setOperationDescription] = useState(() => storedBuildersRiskData()?.operationDescription || "");
+    const [propertyDescription, setPropertyDescription] = useState(() => storedBuildersRiskData()?.propertyDescription || "");
+    const [roofingUpdateYear , setRoofingUpdateYear] = useState(() => storedBuildersRiskData()?.roofingUpdateYear || "");
+    const [heatingUpdateYear, setHeatingUpdateYear] = useState(() => storedBuildersRiskData()?.heatingUpdateYear || "");
+    const [plumbingUpdateYear , setPlumbingUpdateYear] = useState(() => storedBuildersRiskData()?.plumbingUpdateYear || "");
+    const [electricalUpdateYear, setElectricalUpdateYear] = useState(() => storedBuildersRiskData()?.electricalUpdateYear || "");
+    const [structureOccupiedDuringRemodelRenovation, setStructureOccupiedDuringRemodelRenovation] = useState(() => storedBuildersRiskData()?.structureOccupiedDuringRemodelRenovation || "");
+    const [whenWasTheStructureBuilt, setWhenWasTheStructureBuilt] = useState(() => storedBuildersRiskData()?.whenWasTheStructureBuilt || "");
+    const [descriptionOfOperationsForTheProject, setDescriptionOfOperationsForTheProject] = useState(() => storedBuildersRiskData()?.descriptionOfOperationsForTheProject || "");
 
-    const [constructionType, setConstructionType] = useState({});
-    const [protectionClass, setProtectionClass] = useState({});
-    const [squareFootage, setSquareFootage] = useState("");
-    const [numberOfFloors, setNumberOfFloors] = useState("");
-    const [numberOfUnitsDwelling, setNumberOfUnitsDwelling] = useState("");
-    const [jobSiteSecurity, setJobSiteSecurity] = useState({});
-    const [distanceToNearestFireHydrant, setDistanceToNearestFireHydrant] = useState("");
-    const [distanceToNearestFireStation, setDistanceToNearestFireStation] = useState("");
+    const [constructionType, setConstructionType] = useState(() => storedBuildersRiskData()?.constructionType || {});
+    const [protectionClass, setProtectionClass] = useState(() => storedBuildersRiskData()?.protectionClass || {});
+    const [squareFootage, setSquareFootage] = useState(() => storedBuildersRiskData()?.squareFootage || "");
+    const [numberOfFloors, setNumberOfFloors] = useState(() => storedBuildersRiskData()?.numberOfFloors || "");
+    const [numberOfUnitsDwelling, setNumberOfUnitsDwelling] = useState(() => storedBuildersRiskData()?.numberOfUnitsDwelling || "");
+    const [jobSiteSecurity, setJobSiteSecurity] = useState(() => storedBuildersRiskData()?.jobSiteSecurity || {});
+    const [distanceToNearestFireHydrant, setDistanceToNearestFireHydrant] = useState(() => storedBuildersRiskData()?.distanceToNearestFireHydrant || "");
+    const [distanceToNearestFireStation, setDistanceToNearestFireStation] = useState(() => storedBuildersRiskData()?.distanceToNearestFireStation || "");
 
-    const [expirationOfIM, setExpirationOfIM] = useState(new Date());
-    const [priorCarrier, setPriorCarrier] = useState("");
+    const [expirationOfIM, setExpirationOfIM] = useState(() => storedBuildersRiskData()?.expirationOfIM ? new Date(storedBuildersRiskData()?.expirationOfIM) : new Date());
+    const [priorCarrier, setPriorCarrier] = useState(() => storedBuildersRiskData()?.priorCarrier || "");
 
-    const [dateOfClaim, setDateOfClaim] = useState(new Date());
-    const [lossAmount, setLossAmount] = useState("");
+    const [dateOfClaim, setDateOfClaim] = useState(() => storedBuildersRiskData()?.dateOfClaim ? new Date(storedBuildersRiskData()?.dateOfClaim) : new Date());
+    const [lossAmount, setLossAmount] = useState(() => storedBuildersRiskData()?.lossAmount || "");
 
 
     //code for settig renovation and new construction
-    const [newConstructionRenovation, setNewConstructionRenovation] = useState("");
+    const [newConstructionRenovation, setNewConstructionRenovation] = useState(() => storedBuildersRiskData()?.newConstructionRenovation || "");
 
     //setting for construction type option
     const constructionTypeOptions = [
@@ -84,8 +92,8 @@ const BuilderRiskForm = () => {
 
 
     //setting for have loss click switch
-    const [isHaveLossChecked, setIsHaveLossChecked] = useState(false);
-    const [haveLossDateOption, setHaveLossDateOption] = useState(1);
+    const [isHaveLossChecked, setIsHaveLossChecked] = useState(() => storedBuildersRiskData()?.isHaveLossChecked || false);
+    const [haveLossDateOption, setHaveLossDateOption] = useState(() => storedBuildersRiskData()?.haveLossDateOption || {value: 1, label: "MM/DD/YYYY"});
     const handleHaveLossChange = (event) => {
         setIsHaveLossChecked(event.target.checked);
     };
@@ -106,7 +114,7 @@ const BuilderRiskForm = () => {
         valueOfExistingStructure: valueOfExistingStructure,
         valueOfWorkBeingPerformed: valueOfWorkBeingPerformed,
         porjectStarted:porjectStarted.value,
-        newConstructionRenovation:newConstructionRenovation,
+        newConstructionRenovation:newConstructionRenovation.value,
 
         operationDescription:operationDescription,
 
@@ -139,6 +147,77 @@ const BuilderRiskForm = () => {
         leadId:storedLeads?.data?.id,
     };
     console.log(builderRiskFormData);
+
+    useEffect(() => {
+        const buildersRiskData = {
+            propertyAddress: propertyAddress,
+            valueOfExistingStructure: valueOfExistingStructure,
+            valueOfWorkBeingPerformed: valueOfWorkBeingPerformed,
+            porjectStarted:porjectStarted,
+            newConstructionRenovation:newConstructionRenovation,
+
+            operationDescription:operationDescription,
+
+            propertyDescription:propertyDescription,
+            roofingUpdateYear:roofingUpdateYear,
+            heatingUpdateYear:heatingUpdateYear,
+            plumbingUpdateYear:plumbingUpdateYear,
+            electricalUpdateYear:electricalUpdateYear,
+            structureOccupiedDuringRemodelRenovation:structureOccupiedDuringRemodelRenovation,
+            whenWasTheStructureBuilt:whenWasTheStructureBuilt,
+            descriptionOfOperationsForTheProject:descriptionOfOperationsForTheProject,
+
+            constructionType:constructionType,
+            protectionClass:protectionClass,
+            squareFootage:squareFootage,
+            numberOfFloors:numberOfFloors,
+            numberOfUnitsDwelling:numberOfUnitsDwelling,
+            jobSiteSecurity:jobSiteSecurity,
+            distanceToNearestFireHydrant:distanceToNearestFireHydrant,
+            distanceToNearestFireStation:distanceToNearestFireStation,
+
+            expirationOfIM:expirationOfIM,
+            priorCarrier:priorCarrier,
+
+            isHaveLossChecked:isHaveLossChecked,
+            dateOfClaim:dateOfClaim,
+            lossAmount:lossAmount,
+            haveLossDateOption:haveLossDateOption,
+
+            isUpdate:isUpdate,
+            isEditing:isEditing,
+        }
+        sessionStorage.setItem("buildersRiskData", JSON.stringify(buildersRiskData));
+    }, [propertyAddress,
+        valueOfExistingStructure,
+        valueOfWorkBeingPerformed,
+        porjectStarted,
+        newConstructionRenovation,
+        operationDescription,
+        propertyDescription,
+        roofingUpdateYear,
+        heatingUpdateYear,
+        plumbingUpdateYear,
+        electricalUpdateYear,
+        structureOccupiedDuringRemodelRenovation,
+        whenWasTheStructureBuilt,
+        descriptionOfOperationsForTheProject,
+        constructionType,
+        protectionClass,
+        squareFootage,
+        numberOfFloors,
+        numberOfUnitsDwelling,
+        jobSiteSecurity,
+        distanceToNearestFireHydrant,
+        distanceToNearestFireStation,
+        expirationOfIM,
+        priorCarrier,
+        isHaveLossChecked,
+        dateOfClaim,
+        lossAmount,
+        haveLossDateOption,
+        isUpdate,
+        isEditing,]);
 
     function submitBuilderRiskForm() {
         const leadId = storedLeads?.data?.id;
@@ -180,6 +259,8 @@ const BuilderRiskForm = () => {
                     <Form.Control
                        type="text"
                        onChange={(e) => setPropertyAddress(e.target.value)}
+                       disabled={!isEditing}
+                       value={propertyAddress}
                     />
                 </>
               ]}
@@ -199,8 +280,8 @@ const BuilderRiskForm = () => {
                            allowNegative={false}
                            placeholder="$0.00"
                            onChange={(e) => setValueOfExistingStructure(e.target.value)}
-                        //    value={miscellaneousTools}
-                        //    disabled={!isEditing}
+                           value={valueOfExistingStructure}
+                           disabled={!isEditing}
                          />
                 </>
 
@@ -226,8 +307,8 @@ const BuilderRiskForm = () => {
                            allowNegative={false}
                            placeholder="$0.00"
                            onChange={(e) => setValueOfWorkBeingPerformed(e.target.value)}
-                        //    value={miscellaneousTools}
-                        //    disabled={!isEditing}
+                           value={valueOfWorkBeingPerformed}
+                           disabled={!isEditing}
                          />
                 </>
               ]}
@@ -249,6 +330,8 @@ const BuilderRiskForm = () => {
                         classNamePrefix="select"
                         onChange={(e) => setPorjectStarted({value: e.value, label: e.label})}
                         options={[{value: "yes", label: "Yes"}, {value: "no", label: "No"}]}
+                        isDisabled={!isEditing}
+                        value={porjectStarted}
                     />
                 </>
               ]}
@@ -263,7 +346,9 @@ const BuilderRiskForm = () => {
                       className="basic-single"
                       classNamePrefix="select"
                       options={[{value: "New Construction", label: "New Construction"}, {value: "Renovation", label: "Renovation"}]}
-                      onChange={(e) => setNewConstructionRenovation(e.value)}
+                      onChange={(e) => setNewConstructionRenovation({value: e.value, label: e.label})}
+                      isDisabled={!isEditing}
+                      value={newConstructionRenovation}
                     />
                 </>
 
@@ -272,7 +357,7 @@ const BuilderRiskForm = () => {
         ]}
 
       />
-    {newConstructionRenovation === "New Construction" &&
+    {newConstructionRenovation.value === "New Construction" &&
       <Row
         classValue="mb-4"
         rowContent={[
@@ -286,6 +371,8 @@ const BuilderRiskForm = () => {
                      as={"textarea"}
                      rows={6}
                      onChange={(e) => setOperationDescription(e.target.value)}
+                     disabled={!isEditing}
+                     value={operationDescription}
                     />
                 </>
 
@@ -294,7 +381,7 @@ const BuilderRiskForm = () => {
         ]}
         />
     }
- {newConstructionRenovation === "Renovation" &&
+ {newConstructionRenovation.value === "Renovation" &&
  (
     <>
          <Row
@@ -310,6 +397,8 @@ const BuilderRiskForm = () => {
                      as={"textarea"}
                      rows={6}
                      onChange={(e) => setPropertyDescription(e.target.value)}
+                     disabled={!isEditing}
+                     value={propertyDescription}
                     />
                  </>
 
@@ -331,6 +420,8 @@ const BuilderRiskForm = () => {
                             mask="9999"
                             placeholder="Year"
                             onChange={(e) => setRoofingUpdateYear(e.target.value)}
+                            disabled={!isEditing}
+                            value={roofingUpdateYear}
                        />
                     </>
                   ]}
@@ -346,6 +437,8 @@ const BuilderRiskForm = () => {
                             mask="9999"
                             placeholder="Year"
                             onChange={(e) => setHeatingUpdateYear(e.target.value)}
+                            disabled={!isEditing}
+                            value={heatingUpdateYear}
                        />
                     </>
 
@@ -368,6 +461,8 @@ const BuilderRiskForm = () => {
                             mask="9999"
                             placeholder="Year"
                             onChange={(e) => setPlumbingUpdateYear(e.target.value)}
+                            disabled={!isEditing}
+                            value={plumbingUpdateYear}
                        />
                     </>
                   ]}
@@ -383,6 +478,8 @@ const BuilderRiskForm = () => {
                             mask="9999"
                             placeholder="Year"
                             onChange={(e) => setElectricalUpdateYear(e.target.value)}
+                            disabled={!isEditing}
+                            value={electricalUpdateYear}
                        />
                     </>
 
@@ -403,6 +500,8 @@ const BuilderRiskForm = () => {
                      as={"textarea"}
                      rows={6}
                      onChange={(e) => setStructureOccupiedDuringRemodelRenovation(e.target.value)}
+                     disabled={!isEditing}
+                     value={structureOccupiedDuringRemodelRenovation}
                     />
                 </>
 
@@ -422,6 +521,8 @@ const BuilderRiskForm = () => {
                     <Form.Control
                      tabIndex="text"
                      onChange={(e) => setWhenWasTheStructureBuilt(e.target.value)}
+                     disabled={!isEditing}
+                     value={whenWasTheStructureBuilt}
                     />
                 </>
 
@@ -442,6 +543,8 @@ const BuilderRiskForm = () => {
                      as={"textarea"}
                      rows={6}
                      onChange={(e) => setDescriptionOfOperationsForTheProject(e.target.value)}
+                     disabled={!isEditing}
+                     value={descriptionOfOperationsForTheProject}
                     />
                 </>
 
@@ -465,6 +568,8 @@ const BuilderRiskForm = () => {
                         classNamePrefix="select"
                         options={constructionTypeOptions}
                         onChange={(e) => setConstructionType({value: e.value, label: e.label})}
+                        isDisabled={!isEditing}
+                        value={constructionType}
                     />
                 </>
               ]}
@@ -480,6 +585,8 @@ const BuilderRiskForm = () => {
                       classNamePrefix="select"
                       options={protectionClassOptions}
                       onChange={(e) => setProtectionClass({value: e.value, label: e.label})}
+                      isDisabled={!isEditing}
+                      value={protectionClass}
                     />
                 </>
 
@@ -501,6 +608,8 @@ const BuilderRiskForm = () => {
                     <Form.Control
                        type="number"
                        onChange={(e) => setSquareFootage(e.target.value)}
+                       disabled={!isEditing}
+                       value={squareFootage}
                     />
                 </>
               ]}
@@ -514,6 +623,8 @@ const BuilderRiskForm = () => {
                     <Form.Control
                        type="number"
                        onChange={(e) => setNumberOfFloors(e.target.value)}
+                       disabled={!isEditing}
+                       value={numberOfFloors}
                     />
                 </>
 
@@ -534,6 +645,8 @@ const BuilderRiskForm = () => {
                     <Form.Control
                        type="number"
                        onChange={(e) => setNumberOfUnitsDwelling(e.target.value)}
+                       disabled={!isEditing}
+                       value={numberOfUnitsDwelling}
                     />
                 </>
               ]}
@@ -553,6 +666,8 @@ const BuilderRiskForm = () => {
                             {value:"Fenced", label: "Fenced"},
                         ]}
                           onChange={(e) => setJobSiteSecurity({value: e.value, label: e.label})}
+                          isDisabled={!isEditing}
+                          value={jobSiteSecurity}
                     />
                 </>
 
@@ -573,6 +688,8 @@ const BuilderRiskForm = () => {
                     <Form.Control
                        type="number"
                        onChange={(e) => setDistanceToNearestFireHydrant(e.target.value)}
+                       disabled={!isEditing}
+                       value={distanceToNearestFireHydrant}
                     />
                 </>
               ]}
@@ -586,6 +703,8 @@ const BuilderRiskForm = () => {
                     <Form.Control
                        type="number"
                        onChange={(e) => setDistanceToNearestFireStation(e.target.value)}
+                       disabled={!isEditing}
+                       value={distanceToNearestFireStation}
                     />
                 </>
 
@@ -594,7 +713,7 @@ const BuilderRiskForm = () => {
         ]}
 
       />
-            <Row
+        <Row
             classValue = "mb-3"
             rowContent = {[
                 <Column
@@ -625,7 +744,7 @@ const BuilderRiskForm = () => {
                      placeholderText="MM/DD/YYYY"
                      selected={expirationOfIM}
                      onChange={(date) => setExpirationOfIM(date)}
-                    //  disabled={!isEditing}
+                     disabled={!isEditing}
                     />
                     </>
                  }
@@ -641,7 +760,8 @@ const BuilderRiskForm = () => {
                          placeholder="Prior Carrier"
                          onChange={(e) => setPriorCarrier(e.target.value)}
                          value={priorCarrier}
-                        //  disabled={!isEditing}
+                         disabled={!isEditing}
+
                         />
                         </>
                     }
@@ -661,9 +781,10 @@ const BuilderRiskForm = () => {
                         type="switch"
                         id="haveLossCheckSwitch"
                         onChange={handleHaveLossChange}
+                        disabled={!isEditing}
+                        checked={isHaveLossChecked}
                     />
                     </>
-
                  }
                 />
             }
@@ -682,6 +803,8 @@ const BuilderRiskForm = () => {
                                       classNamePrefix="select"
                                       options={dateOptions}
                                       onChange={handleDateOptionsChange}
+                                      isDisabled={!isEditing}
+                                      value={haveLossDateOption}
                                   />
                               </>
                           }
@@ -709,11 +832,13 @@ const BuilderRiskForm = () => {
                                   <Row
                                       rowContent={
                                           <DatePicker
-                                            //   selected={dateofClaim}
+                                              selected={dateOfClaim}
                                               placeholderText="MM/DD/YYYY"
                                               showMonthDropdown
                                               showYearDropdown
                                               className="form-control form-date-picker"
+                                              onChange={(date) => setDateOfClaim(date)}
+                                              disabled={!isEditing}
                                           />
                                       }
                                   />
@@ -723,13 +848,15 @@ const BuilderRiskForm = () => {
                                   <Row
                                       rowContent={
                                           <DatePicker
-                                            //   selected={dateofClaim}
+                                              selected={dateOfClaim}
                                               dateFormat="MM/yyyy"
                                               placeholderText="MM/YYYY"
                                               showMonthYearPicker
                                               showMonthDropdown
                                               showYearDropdown
                                               className="form-control form-date-picker"
+                                              onChange={(date) => setDateOfClaim(date)}
+                                              disabled={!isEditing}
                                           />
                                       }
                                   />
@@ -744,7 +871,7 @@ const BuilderRiskForm = () => {
                           <>
                               <Label labelContent="Loss Amount" />
                               <NumericFormat
-                                //   value={lossAmount}
+                                  value={lossAmount}
                                   className="form-control"
                                   thousandSeparator={true}
                                   prefix={"$"}
@@ -752,6 +879,8 @@ const BuilderRiskForm = () => {
                                   fixedDecimalScale={true}
                                   allowNegative={false}
                                   placeholder="$0.00"
+                                  onChange={(e) => setLossAmount(e.target.value)}
+                                  disabled={!isEditing}
                               />
                           </>
                       }
@@ -782,7 +911,7 @@ const BuilderRiskForm = () => {
                                             showYearDropdown
                                             className="form-control form-date-picker"
                                             placeholderText="MM/DD/YYYY"
-                                            // disabled={!isEditing}
+                                            disabled={!isEditing}
                                         />
                                     }
                                 />
@@ -802,7 +931,7 @@ const BuilderRiskForm = () => {
                                     name="generalLiabilitiesCrossSellDropdown"
                                     // options={crossSellArray}
                                     // onChange={(e) => setCrossSell({value: e.value, label: e.label})}
-                                    // isDisabled={!isEditing}
+                                    isDisabled={!isEditing}
                                     // value={crossSell}
                                 />
                             </>
@@ -822,6 +951,7 @@ const BuilderRiskForm = () => {
                         <Form.Control
                             as={"textarea"}
                             rows={6}
+                            disabled={!isEditing}
                         />
                         </>
                       }
@@ -861,7 +991,7 @@ const BuilderRiskForm = () => {
                                         variant="success"
                                         size="lg"
                                         onClick={submitBuilderRiskForm}
-                                        // disabled={!isEditing}
+                                        disabled={!isEditing}
                                          >
                                          <SaveIcon />
                                          </Button>
@@ -877,7 +1007,7 @@ const BuilderRiskForm = () => {
                                         <Button
                                         variant="primary"
                                         size="lg"
-                                        // disabled={isEditing}
+                                        disabled={isEditing}
                                         onClick={() => setIsEditing(true)}
                                         >
                                          <SaveAsIcon />

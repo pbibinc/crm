@@ -130,42 +130,31 @@
                             </ul>
                         </li>
                     </ul>
-                </li>
-
-                <li>
-                    @can('view', App\Models\Lead::find(1))
-                        <a href="javascript: void(0);" class="has-arrow waves-effect" >
-                            <i class="ri-spy-fill"></i>
-                            <span>LEADS</span>
-                        </a>
-                    @endcan
-
-                    <ul class="sub-menu" aria-expanded="false">
-                        @can('viewImport', App\Models\Lead::find(1))
-                            <li><a href="{{route('leads')}}" >Import Leads</a></li>
-                        @endcan
-                        @can('viewLeadsFunnel', App\Models\Lead::find(1))
-                        <li><a href="{{route('assign')}}" >Leads Funnel</a></li>
-                            @endcan
-                            <li><a href="{{route('apptaker-leads')}}">List</a></li>
-                        {{--                        <li><a href="pages-directory.html">Directory</a></li>--}}
-                        {{--                        <li><a href="pages-invoice.html">Invoice</a></li>--}}
-                        {{--                        <li><a href="pages-404.html">Error 404</a></li>--}}
-                        {{--                        <li><a href="pages-500.html">Error 500</a></li>--}}
-                    </ul>
-                </li>
 
 
+               <li class="menu-title">Sales</li>
+               <li>
+                @can('view', App\Models\Lead::find(1))
+                    <a href="javascript: void(0);" class="has-arrow waves-effect" >
+                        <i class="ri-headphone-fill"></i>
+                        <span>App Taker</span>
+                    </a>
+                @endcan
 
-{{--                <li class="menu-title">Components</li>--}}
+                <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="{{route('apptaker-leads')}}">Lead List</a></li>
+                        <li><a href="{{route('apptaker-leads')}}">Call Back</a></li>
+                        <li><a href="{{route('apptaker-leads')}}">Lead List</a></li>
+                </ul>
+            </li>
 
-{{--                <li>--}}
-{{--                    <a href="javascript: void(0);" class="has-arrow waves-effect">--}}
-{{--                        <i class="ri-pencil-ruler-2-line"></i>--}}
-{{--                        <span>UI Elements</span>--}}
-{{--                    </a>--}}
-{{--                    <ul class="sub-menu" aria-expanded="false">--}}
-{{--                        <li><a href="ui-alerts.html">Alerts</a></li>--}}
+               <li>
+                   <a href="javascript: void(0);" class="has-arrow waves-effect">
+                       <i class="ri-clipboard-fill"></i>
+                       <span>Quotation</span>
+                   </a>
+                   <ul class="sub-menu" aria-expanded="false">
+                       <li><a href="{{route('appointed-leads')}}">Appointed Leads</a></li>
 {{--                        <li><a href="ui-buttons.html">Buttons</a></li>--}}
 {{--                        <li><a href="ui-cards.html">Cards</a></li>--}}
 {{--                        <li><a href="ui-carousel.html">Carousel</a></li>--}}
@@ -181,23 +170,48 @@
 {{--                        <li><a href="ui-video.html">Video</a></li>--}}
 {{--                        <li><a href="ui-general.html">General</a></li>--}}
 
-{{--                    </ul>--}}
-{{--                </li>--}}
+                   </ul>
+               </li>
 
-{{--                <li>--}}
-{{--                    <a href="javascript: void(0);" class="has-arrow waves-effect">--}}
-{{--                        <i class="ri-vip-crown-2-line"></i>--}}
-{{--                        <span>Advanced UI</span>--}}
-{{--                    </a>--}}
-{{--                    <ul class="sub-menu" aria-expanded="false">--}}
+               <li class="menu-title">Leads</li>
+               <li>
+                @can('view', App\Models\Lead::find(1))
+                    <a href="javascript: void(0);" class="has-arrow waves-effect" >
+                        <i class="ri-spy-fill"></i>
+                        <span>LEADS FUNNEL</span>
+                    </a>
+                @endcan
+
+            <ul class="sub-menu" aria-expanded="false">
+                @can('viewImport', App\Models\Lead::find(1))
+                    <li><a href="{{route('leads')}}" >Import Leads</a></li>
+                @endcan
+                @can('viewLeadsFunnel', App\Models\Lead::find(1))
+                <li><a href="{{route('assign')}}" >Assign Leads</a></li>
+                    @endcan
+                <li><a href="pages-directory.html">Leads Profile</a></li>
+                {{--                        <li><a href="pages-invoice.html">Invoice</a></li>--}}
+                {{--                        <li><a href="pages-404.html">Error 404</a></li>--}}
+                {{--                        <li><a href="pages-500.html">Error 500</a></li>--}}
+            </ul>
+
+        </li>
+
+               {{-- <li>
+                   <a href="javascript: void(0);" class="has-arrow waves-effect">
+                       <i class="ri-vip-crown-2-line"></i>
+                       <span>Leads</span>
+                   </a>
+                   <ul class="sub-menu" aria-expanded="false"> --}}
+
 {{--                        <li><a href="advance-rangeslider.html">Range Slider</a></li>--}}
 {{--                        <li><a href="advance-roundslider.html">Round Slider</a></li>--}}
 {{--                        <li><a href="advance-session-timeout.html">Session Timeout</a></li>--}}
 {{--                        <li><a href="advance-sweet-alert.html">Sweetalert 2</a></li>--}}
 {{--                        <li><a href="advance-rating.html">Rating</a></li>--}}
 {{--                        <li><a href="advance-notifications.html">Notifications</a></li>--}}
-{{--                    </ul>--}}
-{{--                </li>--}}
+                   {{-- </ul>
+               </li> --}}
 
 {{--                <li>--}}
 {{--                    <a href="javascript: void(0);" class="waves-effect">--}}

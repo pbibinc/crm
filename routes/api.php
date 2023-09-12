@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\BuildersRiskController;
+use App\Http\Controllers\API\BusinessOwnersPolicyController;
 use App\Http\Controllers\API\ClassCodeDataController;
 use App\Http\Controllers\API\CommercialAutoController;
 use App\Http\Controllers\API\ExcessLiabilityController;
@@ -55,3 +56,5 @@ Route::post('tools-equipment/store', [ToolsEquipmentController::class, 'storeToo
 Route::put('tools-equipment/update/{id}', [ToolsEquipmentController::class, 'updateToolsEquipment'])->withoutMiddleware(['auth:sanctum']);
 Route::post('builders-risk/store', [BuildersRiskController::class, 'storedBuildersRisk'])->withoutMiddleware(['auth:sanctum']);
 Route::put('builders-risk/update/{id}', [BuildersRiskController::class, 'updateBuildersRisk'])->withoutMiddleware(['auth:sanctum']);
+Route::post('business-owners-policy/store', [BusinessOwnersPolicyController::class, 'storeBusinessOwnersPolicy'])->withoutMiddleware(['auth:sanctum']);
+Route::put('business-owners-policy/update/{id}', [BusinessOwnersPolicyController::class, 'updateBusinessOwnersPolicy'])->withoutMiddleware(['auth:sanctum']);

@@ -23,4 +23,9 @@ class WorkersCompensation extends Model
 
     protected $table = 'workers_compensation_table';
 
+    public function classCodePerEmployee()
+    {
+        return $this->hasMany(ClasscodePerEmployee::class, 'workers_compensation_id', 'id');
+    }
+
 }

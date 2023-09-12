@@ -10,12 +10,17 @@ class GeneralLiabilitiesRecreationalFacilities extends Model
     use HasFactory;
 
     protected $table = 'general_liability_facilities_table';
-    
+
     public $timestamps = false;
 
     protected $fillable = [
         'general_liabilities_id',
         'recreational_facilities_id'
     ];
-    
+
+    public function recreationalFacilities()
+    {
+        return $this->hasOne(RecreationalFacilities::class, 'id', 'recreational_facilities_id');
+    }
+
 }

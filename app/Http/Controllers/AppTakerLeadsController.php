@@ -43,15 +43,15 @@ class AppTakerLeadsController extends Controller
         $recreationalFacilities = RecreationalFacilities::all();
         // $cityAddress = Lead::select('city')->distinct()->get();
         if($request->ajax()){
-        
+
             if(Cache::has('apptaker_leads')){
                 $data = Cache::get('apptaker_leads');
-             
+
                 if (!empty($request->get('timezone'))){
                     $timezoneStates = $timezones[$request->get('timezone')];
                     $data = $data->whereIn('state_abbr', $timezoneStates);
                 }
-                
+
                 if (!empty($request->get('classCodeLead'))){
                     $data = $data->filter(function ($row) use ($request){
                         return strtolower($row['class_code']) == strtolower($request->get('classCodeLead'));
@@ -60,12 +60,12 @@ class AppTakerLeadsController extends Controller
                 if (!empty($request->get('states'))) {
                     $data = $data->filter(function ($row) use ($request){
                         return $row['state_abbr'] == $request->get('states');
-                    });  
+                    });
                 }
                 if (!empty($request->get('leadType'))) {
                     $data = $data->filter(function ($row) use ($request){
                         return $row['prime_lead'] == $request->get('leadType');
-                    });  
+                    });
                 }
                 // log::info($data);
 
@@ -97,7 +97,7 @@ class AppTakerLeadsController extends Controller
             if (!empty($request->get('leadType'))) {
                 $data = $data->filter(function ($row) use ($request){
                     return $row['prime_lead'] == $request->get('leadType');
-                });  
+                });
             }
             // log::info($data);
             if (!empty($request->get('timezone'))){
@@ -134,7 +134,7 @@ class AppTakerLeadsController extends Controller
                 ->addColumn('company_name_action', function($data){
                   return  '<a href="#" data-toggle="modal" id="companyLink'.$data->id.'" data-row="'.$data->id.'" name="companyLinkButtonData" data-target="#leadsDataModal" data-telnum = "'.$data->tel_num.'"  data-state= "'.$data->state_abbr.'" data-id="'.$data->id.'" data-name="'.$data->company_name.'">'.$data->company_name.'</a>';
                 })
-             
+
                 ->rawColumns(['company_name_action', 'dispositions', 'company_name_action',])
                 ->make(true);
         }
@@ -165,13 +165,13 @@ class AppTakerLeadsController extends Controller
         $cities = UnitedState::where('state_abbr', $stateInput)->get();
         $zipcode = UnitedState::where('state_abbr', $stateInput)->get();
        }
-    
+
         return response()->json(['cities' => $cities, 'zipcode' => $zipcode]);
     }
 
     public function productPdf(Request $request){
         $formData = $request->all();
-           
+
         $pdf = PDF::loadView('leads.apptaker_leads.product_pdf_viewer.general-liability-pdf-view', $formData);
         return $pdf->download('product.pdf');
     }
@@ -180,7 +180,7 @@ class AppTakerLeadsController extends Controller
     }
 
     public function listLeadId(Request $request){
-  
+
         Cache::put('lead_id', $request->input('leadId'), 60 * 60);
     }
 }
