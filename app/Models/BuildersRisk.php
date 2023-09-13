@@ -39,4 +39,14 @@ class BuildersRisk extends Model
         return null;
     }
 
+    public function newConstruction()
+    {
+        return $this->hasOne(NewContruction::class, 'builders_risk_id', 'id');
+    }
+
+    public function renovation()
+    {
+        return $this->hasOne(Rennovation::class, 'builders_risk_id', 'id');
+    }
+
 }

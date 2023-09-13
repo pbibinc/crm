@@ -68,4 +68,19 @@ class GeneralInformation extends Model
         return $this->hasOne(ExcessLiability::class, 'general_information_id', 'id');
     }
 
+    public function toolsEquipment()
+    {
+        return $this->hasOne(ToolsEquipment::class, 'general_information_id', 'id');
+    }
+
+    public function buildersRisk()
+    {
+        return $this->hasOne(BuildersRisk::class, 'general_information_id', 'id');
+    }
+
+    public function businessOwners()
+    {
+        return $this->hasOne(BusinessOwnersPolicy::class, 'general_information_id', 'id');
+    }
+
 }

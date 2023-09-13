@@ -71,6 +71,23 @@ class Lead extends Model
         return $this->hasOne(ExpirationProduct::class, 'lead_id')->where('product', 3);
     }
 
+    public function toolsEquipmentExpirationProduct()
+    {
+        return $this->hasOne(ExpirationProduct::class, 'lead_id')->where('product', 5);
+    }
 
+    public function buildersRiskExpirationProduct()
+    {
+        return $this->hasOne(ExpirationProduct::class, 'lead_id')->where('product', 6);
+    }
 
+    public function businessOwnersExpirationProduct()
+    {
+        return $this->hasOne(ExpirationProduct::class, 'lead_id')->where('product', 7);
+    }
+
+    public function leadHistories()
+    {
+        return $this->hasMany(LeadHistory::class, 'lead_id');
+    }
 }

@@ -33,7 +33,7 @@ class AssignLeadController extends Controller
             $query->where('name', 'Application Taker');
             })->get();
 
-     
+
         $accounts = UserProfile::all();
 //        dd($userProfiles);
         $sites = Site::all();
@@ -56,7 +56,7 @@ class AssignLeadController extends Controller
             "ND" => "North Dakota", "OH" => "Ohio", "OK" => "Oklahoma", "OR" => "Oregon", "PA" => "Pennsylvania", "RI" => "Rhode Island", "SC" => "South Carolina", "SD" => "South Dakota",
             "TN" => "Tennessee", "TX" => "Texas", "UT" => "Utah", "VT" => "Vermont", "VA" => "Virginia", "WA" => "Washington", "WV" => "West Virginia", "WI" => "Wisconsin", "WY" => "Wyoming",
         ];
-      
+
         $selectedUserProfile = null;
 
         if($request->get('appTakerId')){
@@ -72,7 +72,7 @@ class AssignLeadController extends Controller
         }
 
         if($request->ajax()){
-          
+
             if(Cache::has('leads_funnel'))
             {
                 $data = Cache::get('leads_funnel');
@@ -107,7 +107,7 @@ class AssignLeadController extends Controller
                         return $row['prime_lead'] == $request->get('leadType');
                     });
                 }
-            
+
             }else{
                 $query = Lead::where('status', 1);
 
@@ -126,7 +126,7 @@ class AssignLeadController extends Controller
                 if (!empty($request->get('leadType'))){
                     $query->where('prime_lead', $request->get('leadType'));
                 }
-                
+
                 $data = $query->select('id', 'company_name', 'tel_num', 'state_abbr',
                     'class_code', 'website_originated', 'created_at', 'updated_at', 'prime_lead')->get();
 
@@ -205,7 +205,7 @@ class AssignLeadController extends Controller
         $leadsId = $request->input('id');
         $userProfileId = $request->input('userProfileId');
         $accountProfileId = $request->input('accountProfileId');
-        
+
         if($userProfileId){
             $userProfile = UserProfile::find($userProfileId);
             $leadsRecevierId = $userProfileId;
@@ -216,7 +216,7 @@ class AssignLeadController extends Controller
             $leads = Lead::whereIn('id', $leadsId)->get();
             foreach($leads as $lead){
                $lead->userProfile()->attach($userProfile , [
-                'assigned_at' => now(), 
+                'assigned_at' => now(),
                 'current_user_id' => $userProfile->id
             ]);
                $lead->status = 2;
@@ -270,7 +270,7 @@ class AssignLeadController extends Controller
         }
         foreach($shuffledLeads as $lead){
             $lead->userProfile()->attach($userProfileId, [
-                'assigned_at' => now(), 
+                'assigned_at' => now(),
                 'current_user_id' => $userProfileId
             ]);
             $lead->status = 2;
@@ -320,7 +320,7 @@ class AssignLeadController extends Controller
             ->where('current_user_id', '!=', 0)
             ->pluck('user_profile_id')
             ->first();
-            
+
             if($currentUserProfileId !== null){
                 $lead->userProfile()->syncWithoutDetaching([
                     $currentUserProfileId => [
@@ -371,7 +371,7 @@ class AssignLeadController extends Controller
             $query->where('user_profile_id', $accounProfileId);
         })->get();
        }
-    
+
         // if(!is_array($leadsId)){
         //     $leadsId = explode(',',  $leadsId);
         // }

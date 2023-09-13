@@ -38,4 +38,9 @@ class ToolsEquipment extends Model
         }
         return null;
     }
+
+    public function equipmentInformation()
+    {
+        return $this->hasMany(EquipmentInformation::class, 'tools_equipment_id', 'id');
+    }
 }

@@ -65,4 +65,13 @@ class UserProfile extends Model
         return $this->firstname . ' ' . $this->lastname;
     }
 
+    public static function getFullName($id)
+    {
+        $userProfile = self::find($id);
+        if($userProfile){
+            return $userProfile->fullName();
+        }
+        return null;
+    }
+
 }

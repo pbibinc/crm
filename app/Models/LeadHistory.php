@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class LeadHistory extends Model
 {
     use HasFactory;
-    
+
     protected $table = 'lead_histories';
 
     protected $fillable =  [
@@ -16,4 +16,9 @@ class LeadHistory extends Model
         'user_profile_id',
         'changes',
     ];
+
+    public function userProfile()
+    {
+        return $this->belongsTo(UserProfile::class, 'user_profile_id', 'id');
+    }
 }
