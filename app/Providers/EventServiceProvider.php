@@ -2,11 +2,13 @@
 
 namespace App\Providers;
 
+use App\Events\AppointmentTaken;
 use App\Events\LeadAssignEvent;
 use App\Events\LeadImportEvent;
 use App\Events\LeadReassignEvent;
 use App\Listeners\BroadcastUserLoginNotification;
 use App\Listeners\BroadcastUserLogoutNotification;
+use App\Listeners\LogAppointmentTaken;
 use App\Listeners\LogLeadAssignListener;
 use App\Listeners\LogLeadImportListener;
 use App\Listeners\LogLeadReassignListener;
@@ -67,6 +69,11 @@ class EventServiceProvider extends ServiceProvider
         Event::listen(
             LeadImportEvent::class,
             [LogLeadImportListener::class, 'handle']
+        );
+
+        Event::listen(
+            AppointmentTaken::class,
+            [LogAppointmentTaken::class, 'handle']
         );
 
         Event::listen(queueable(function(LeadImportEvent $event){

@@ -32,12 +32,9 @@ class BuildersRiskController extends BaseController
                 $buildersRisk->has_project_started = true;
             }elseif($data['porjectStarted'] == "no"){
                 $buildersRisk->has_project_started = false;
+                $buildersRisk->project_started_date = Carbon::parse($data['dateProjectStarted'])->toDateString();
 
-            }
-            if($data['porjectStarted'] == "yes"){
-                $buildersRisk->project_started_date = $data['projectStartedDate'];
-            }else{
-                $buildersRisk->project_started_date = null;
+
             }
             $statusConstruction = $buildersRisk->construction_status = $data['newConstructionRenovation'];
             if($statusConstruction == "New Construction"){
@@ -113,15 +110,13 @@ class BuildersRiskController extends BaseController
             $buildersRisk->value_of_work = $data['valueOfWorkBeingPerformed'];
             if($data['porjectStarted'] == "yes"){
                 $buildersRisk->has_project_started = true;
+                $buildersRisk->project_started_date = null;
             }elseif($data['porjectStarted'] == "no"){
                 $buildersRisk->has_project_started = false;
+                $buildersRisk->project_started_date = Carbon::parse($data['dateProjectStarted'])->toDateString();
 
             }
-            if($data['porjectStarted'] == "yes"){
-                $buildersRisk->project_started_date = $data['projectStartedDate'];
-            }else{
-                $buildersRisk->project_started_date = null;
-            }
+
             $statusConstruction = $buildersRisk->construction_status = $data['newConstructionRenovation'];
             if($statusConstruction == "New Construction"){
                 $buildersRisk->construction_status = 1;

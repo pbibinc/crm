@@ -88,30 +88,39 @@
                         <div class="card">
                             <div class="card-body">
                                 <ul class="nav nav-pills nav-justified" role="tablist">
+                                    @if ($generalInformation->generalLiabilities)
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link active" data-bs-toggle="tab" href="#generalLiabilites" role="tab">
                                             <span class="d-block d-sm-none"><i class="ri-umbrella-fill"></i></span>
                                             <span class="d-none d-sm-block">GL<i class="ri-umbrella-fill"  style="vertical-align: middle;"></i></span>
                                         </a>
                                     </li>
+                                    @endif
+                                    @if ($generalInformation->workersCompensation)
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link" data-bs-toggle="tab" href="#workersCompensation" role="tab">
                                             <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
                                             <span class="d-none d-sm-block">WC<i class="ri-admin-fill" style="vertical-align: middle;"></i></span>
                                         </a>
                                     </li>
+                                    @endif
+                                    @if ($generalInformation->commercialAuto)
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link" data-bs-toggle="tab" href="#commercialAuto" role="tab">
                                             <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
                                             <span class="d-none d-sm-block">CA<i class="ri-car-fill" style="vertical-align: middle;"></i></span>
                                         </a>
                                     </li>
+                                    @endif
+                                    @if ($generalInformation->excessLiability)
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link" data-bs-toggle="tab" href="#excessLiabiliy" role="tab">
                                             <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
                                             <span class="d-none d-sm-block">EL<i class=" ri-hand-coin-fill" style="vertical-align: middle;"></i></span>
                                         </a>
                                     </li>
+                                    @endif
+                                    @if ($generalInformation->toolsEquipment)
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link" data-bs-toggle="tab" href="#toolsEquipment" role="tab">
                                             {{-- <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span> --}}
@@ -119,18 +128,23 @@
 
                                         </a>
                                     </li>
+                                    @endif
+                                    @if ($generalInformation->buildersRisk)
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link" data-bs-toggle="tab" href="#buildersRisk" role="tab">
                                             <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
                                             <span class="d-none d-sm-block">BR<i class="ri-building-fill" style="vertical-align: middle;"></i></span>
                                         </a>
                                     </li>
+                                    @endif
+                                    @if ($generalInformation->businessOwnersPolicy)
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link" data-bs-toggle="tab" href="#bop" role="tab">
                                             <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
                                             <span class="d-none d-sm-block">BOP<i class="ri-suitcase-fill" style="vertical-align: middle;"></i></span>
                                         </a>
                                     </li>
+                                    @endif
                                 </ul>
                             </div>
                         </div>
@@ -139,33 +153,42 @@
 
                 <div class="row">
                     <div class="tab-content p-3 text-muted">
-                        <div class="tab-pane active" id="generalLiabilites" role="tabpanel">
+                        @if ($generalInformation->generalLiabilities)
+                         <div class="tab-pane active" id="generalLiabilites" role="tabpanel">
                             @include('leads.appointed_leads.general-liability-profile', ['generalLiabilities' => $generalLiabilities])
-                        </div>
-
-                        <div class="tab-pane" id="workersCompensation" role="tabpanel">
-                           @include('leads.appointed_leads.workers-comp-profile', ['generalInformation' => $generalInformation])
-                        </div>
-
-                        <div class="tab-pane" id="commercialAuto" role="tabpanel">
+                         </div>
+                        @endif
+                        @if ($generalInformation->workersCompensation)
+                         <div class="tab-pane" id="workersCompensation" role="tabpanel">
+                            @include('leads.appointed_leads.workers-comp-profile', ['generalInformation' => $generalInformation])
+                         </div>
+                        @endif
+                        @if ($generalInformation->commercialAuto)
+                          <div class="tab-pane" id="commercialAuto" role="tabpanel">
                             @include('leads.appointed_leads.commercial-auto-profile', ['generalInformation' => $generalInformation])
-                        </div>
-
+                          </div>
+                        @endif
+                        @if ($generalInformation->excessLiability)
                         <div class="tab-pane" id="excessLiabiliy" role="tabpanel">
                             @include('leads.appointed_leads.excess-liability-profile', ['generalInformation' => $generalInformation])
                         </div>
-
-                        <div class="tab-pane" id="toolsEquipment" role="tabpanel">
+                        @endif
+                        @if ($generalInformation->toolsEquipment)
+                         <div class="tab-pane" id="toolsEquipment" role="tabpanel">
                             @include('leads.appointed_leads.tools-equipment-profile', ['generalInformation' => $generalInformation])
-                        </div>
-
-                        <div class="tab-pane" id="buildersRisk" role="tabpanel">
-                         @include('leads.appointed_leads.builders-risk-profile', ['generalInformation' => $generalInformation])
-                        </div>
-
+                         </div>
+                        @endif
+                        @if ($generalInformation->buildersRisk)
+                          <div class="tab-pane" id="buildersRisk" role="tabpanel">
+                            @include('leads.appointed_leads.builders-risk-profile', ['generalInformation' => $generalInformation])
+                           </div>
+                        @endif
+                        @if ($generalInformation->businessOwnersPolicy)
                         <div class="tab-pane" id="bop" role="tabpanel">
                             @include('leads.appointed_leads.business-owners-profile', ['generalInformation' => $generalInformation])
                         </div>
+                        @endif
+
                     </div>
                 </div>
 

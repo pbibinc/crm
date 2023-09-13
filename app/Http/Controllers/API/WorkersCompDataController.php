@@ -35,6 +35,13 @@ class WorkersCompDataController extends BaseController
         $workersCompensation->save();
 
         //save have loss
+        if($data['have_loss'] == true){
+            $workersCompensationHaveLoss = new WorkersCompensationHaveLoss();
+            $workersCompensationHaveLoss->workers_compensation_id = $workersCompensation->id;
+            $workersCompensationHaveLoss->date_of_claim = Carbon::parse($data['date_of_claim'])->toDateString();
+            $workersCompensationHaveLoss->loss_amount = $data['loss_amount'];
+            $workersCompensationHaveLoss->save();
+        }
         $workerCompHaveloss = new WorkersCompensationHaveLoss();
         $workerCompHaveloss->workers_compensation_id = $workersCompensation->id;
         $workerCompHaveloss->date_of_claim = Carbon::parse($data['date_of_claim'])->toDateString();
@@ -81,10 +88,13 @@ class WorkersCompDataController extends BaseController
        $workersCompensation->remarks = $data['remarks'];
        $workersCompensation->save();
 
+
+       if($data['have_loss'] == true){
        $workerCompHaveloss = WorkersCompensationHaveLoss::where('workers_compensation_id', $workersCompenSationId)->first();
        $workerCompHaveloss->date_of_claim = Carbon::parse($data['date_of_claim'])->toDateString();
        $workerCompHaveloss->loss_amount = $data['loss_amount'];
        $workerCompHaveloss->save();
+       }
 
        $classCodePerEmployee = ClasscodePerEmployee::where('workers_compensation_id', $workersCompenSationId)->get();
        $classCodePerEmployeeDelete = $classCodePerEmployee->each->delete();

@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Events\AppointmentTaken;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\GeneralInformation;
 use App\Models\Lead;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class GeneralInformationDataController extends BaseController
 {
@@ -41,16 +44,19 @@ class GeneralInformationDataController extends BaseController
 
             $generalInformation->save();
 
+
             $Lead = Lead::getLeads($data['lead_id']);
             $Lead->disposition_id = 1;
             $Lead->save();
+            Log::info("General Information Data", []);
+            event(new AppointmentTaken($Lead, $Lead->userProfile[0]->id, $Lead->userProfile[0]->id, now()));
 
             DB::commit();
         }catch(\Exception $e){
             DB::rollback();
+            Log::info("Error for General Information", [$e->getMessage()]);
             return response()->json(['message' => $e->getMessage()], 500);
         }
-
 
         // return $this->sendResponse($generalInformation,'General Information Data retrieved successfully.');
     }

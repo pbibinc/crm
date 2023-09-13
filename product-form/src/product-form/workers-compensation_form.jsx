@@ -27,10 +27,11 @@ const WorkersCompensationForm = () => {
         return storedData;
     };
 
+    const generalInfomrationInstance = JSON.parse(sessionStorage.getItem("generalInformationStoredData"));
     const [totalEmployee, setTotalEmployee] = useState(0);
     const [employeeDescription, setEmployeeDescription] = useState("");
     const [employeeNumber, setEmployeeNumber] = useState([0]);
-    const generalInfomrationInstance = JSON.parse(sessionStorage.getItem("generalInformationStoredData"));
+
     const leadInstance = JSON.parse(sessionStorage.getItem("lead"));
     const [totalEmployeeSum, setTotalEmployeeSum] = useState(0);
     const [employeePayroll, setEmployeePayroll] = useState(0);
@@ -194,12 +195,14 @@ const WorkersCompensationForm = () => {
 
     useEffect(() => {
         const storedGeneralInformationInstance = JSON.parse(sessionStorage.getItem("generalInformationStoredData") || "{}");
-        setOwnersPayroll(parseInt(storedGeneralInformationInstance.owners_payroll));
+        const payrollOwnerFloat = parseFloat(storedGeneralInformationInstance.owners_payroll.replace(/[^0-9.]/g, ''));
+        setOwnersPayroll(Math.floor(payrollOwnerFloat));
     }, []);
 
     useEffect(() => {
         const storedGeneralInformationInstance = JSON.parse(sessionStorage.getItem("generalInformationStoredData") || "{}");
-        setEmployeePayroll(parseInt(storedGeneralInformationInstance.employee_payroll));
+        const payrollEmployeeFloat = parseFloat(storedGeneralInformationInstance.employee_payroll.replace(/[^0-9.]/g, ''));
+        setEmployeePayroll(Math.floor(payrollEmployeeFloat));
     }, []);
 
     const handlePayrollChange = (event) => {
@@ -208,10 +211,12 @@ const WorkersCompensationForm = () => {
 
         if (payrollDropdownChange === 1) {
             setTotalPayroll(employeePayroll + ownersPayroll);
-        } else {
+        } else  {
             setTotalPayroll(employeePayroll);
         }
     };
+
+
 
     {
         /* Ending Setup Computing total employee payroll*/
@@ -265,6 +270,7 @@ const WorkersCompensationForm = () => {
         remarks: remarks,
 
         //workers comp object data for loss
+        have_loss: ishaveLossChecked,
         date_of_claim: dateofClaim,
         loss_amount: lossAmount
             ? parseFloat(lossAmount.replace("$", "").replace(",", "")).toFixed(
@@ -275,8 +281,8 @@ const WorkersCompensationForm = () => {
         //workers comp object data for employee description per employee
         employee_description: employeeDescription,
         number_of_employee: employeeNumber,
-    };
 
+    };
 
 
 
@@ -434,8 +440,8 @@ const WorkersCompensationForm = () => {
                             <>
                                 <Label labelContent="Employee Payroll" />
                                 <Form.Control
-                                    type="number"
-                                    value={totalPayroll}
+                                    type="text"
+                                    value={`$${totalPayroll}`}
                                     disabled={true}
                                 />
                             </>

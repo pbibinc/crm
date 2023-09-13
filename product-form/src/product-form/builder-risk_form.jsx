@@ -63,6 +63,7 @@ const BuilderRiskForm = () => {
 
     const [dateOfClaim, setDateOfClaim] = useState(() => storedBuildersRiskData()?.dateOfClaim ? new Date(storedBuildersRiskData()?.dateOfClaim) : new Date());
     const [lossAmount, setLossAmount] = useState(() => storedBuildersRiskData()?.lossAmount || "");
+    const [dateProjectStarted, setDateProjectStarted] = useState(() => storedBuildersRiskData()?.dateProjectStarted ? new Date(storedBuildersRiskData()?.dateProjectStarted) : new Date());
 
 
     //code for settig renovation and new construction
@@ -114,7 +115,9 @@ const BuilderRiskForm = () => {
         valueOfExistingStructure: valueOfExistingStructure,
         valueOfWorkBeingPerformed: valueOfWorkBeingPerformed,
         porjectStarted:porjectStarted.value,
+        dateProjectStarted:dateProjectStarted,
         newConstructionRenovation:newConstructionRenovation.value,
+
 
         operationDescription:operationDescription,
 
@@ -154,6 +157,7 @@ const BuilderRiskForm = () => {
             valueOfExistingStructure: valueOfExistingStructure,
             valueOfWorkBeingPerformed: valueOfWorkBeingPerformed,
             porjectStarted:porjectStarted,
+            dateProjectStarted:dateProjectStarted,
             newConstructionRenovation:newConstructionRenovation,
 
             operationDescription:operationDescription,
@@ -357,6 +361,34 @@ const BuilderRiskForm = () => {
         ]}
 
       />
+      {porjectStarted.value === "no"  && (
+             <Row
+             classValue="mb-4"
+             rowContent={[
+              <Column
+              key="projectDateColumng"
+              classValue="col-6"
+              colContent={[
+                <>
+                    <Label labelContent="Project Date "/>
+                    <DatePicker
+                       selected={dateProjectStarted}
+                       placeholderText="MM/DD/YYYY"
+                       showMonthDropdown
+                       showYearDropdown
+                       className="form-control form-date-picker"
+                       onChange={(date) => setDateProjectStarted(date)}
+                       disabled={!isEditing}
+                    />
+
+                </>
+              ]}
+            />,
+             ]}
+            />
+
+      )}
+
     {newConstructionRenovation.value === "New Construction" &&
       <Row
         classValue="mb-4"

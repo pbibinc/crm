@@ -17,7 +17,7 @@ import SaveAsiCon from "@mui/icons-material/SaveAs";
 console
 import SaveIcon from "@mui/icons-material/Save";
 import { ContextData } from "../contexts/context-data-provider";
-
+import { NumericFormat } from "react-number-format";
 const GeneralInformationForm = () => {
     const { lead, zipcodes, cities, zipCity } = useContext(ContextData);
 
@@ -219,12 +219,9 @@ const GeneralInformationForm = () => {
 
     // Hande Amount change for Material Cost
     const handleAmountChange = (event) => {
-        const numbericValue = event.target.value.replace(/[^0-9]/g, "");
-        const formattedValue = numbericValue.replace(
-            /\B(?=(\d{3})+(?!\d))/g,
-            ","
-        );
-        setAmount(formattedValue);
+
+
+        setAmount(event.target.value);
     };
 
 
@@ -538,15 +535,14 @@ const GeneralInformationForm = () => {
                             colContent={
                                 <>
                                     <Label labelContent="Gross Receipt" />
-                                    <InputMask
-                                        mask="999,999,999.99"
-                                        prefix="$"
-                                        placeholder="0"
-                                        maskPlaceholder={null}
-                                        id="grossReceipt"
-                                        name="grossReceipt"
+                                    <NumericFormat
                                         className="form-control"
-                                        inputMode="numeric"
+                                        thousandSeparator={true}
+                                        prefix={"$"}
+                                        decimalScale={2}
+                                        fixedDecimalScale={true}
+                                        allowNegative={false}
+                                        placeholder="$0.00"
                                         value={grossReceipt}
                                         disabled={!isEditing}
                                         onChange={(e) =>
@@ -562,15 +558,14 @@ const GeneralInformationForm = () => {
                             colContent={
                                 <>
                                     <Label labelContent="Employee Payroll" />
-                                    <InputMask
-                                        mask="999,999,999.99"
-                                        prefix="$"
-                                        placeholder="0"
-                                        maskPlaceholder={null}
-                                        id="employeePayroll"
-                                        name="employeePayroll"
-                                        className="form-control"
-                                        inputMode="numeric"
+                                    <NumericFormat
+                                       className="form-control"
+                                       thousandSeparator={true}
+                                       prefix={"$"}
+                                       decimalScale={2}
+                                       fixedDecimalScale={true}
+                                       allowNegative={false}
+                                       placeholder="$0.00"
                                         value={employeePayroll}
                                         disabled={!isEditing}
                                         onChange={(e) =>
@@ -591,15 +586,14 @@ const GeneralInformationForm = () => {
                             colContent={
                                 <>
                                     <Label labelContent="Sub Out/1099" />
-                                    <InputMask
-                                        mask="999,999,999.99"
-                                        prefix="$"
-                                        placeholder="0"
-                                        maskPlaceholder={null}
-                                        id="subOut"
-                                        name="subOut"
-                                        className="form-control"
-                                        inputMode="numeric"
+                                    <NumericFormat
+                                       className="form-control"
+                                       thousandSeparator={true}
+                                       prefix={"$"}
+                                       decimalScale={2}
+                                       fixedDecimalScale={true}
+                                       allowNegative={false}
+                                       placeholder="$0.00"
                                         value={subOut}
                                         disabled={!isEditing}
                                         onChange={(e) =>
@@ -615,16 +609,14 @@ const GeneralInformationForm = () => {
                             colContent={
                                 <>
                                     <Label labelContent="Owners Payroll" />
-                                    <InputMask
-                                        mask="999,999,999.99"
-                                        alwaysShowMask={false}
-                                        prefix="$"
-                                        placeholder="0"
-                                        maskPlaceholder={null}
-                                        id="ownersPayroll"
-                                        name="ownersPayroll"
-                                        className="form-control"
-                                        inputMode="numeric"
+                                    <NumericFormat
+                                         className="form-control"
+                                         thousandSeparator={true}
+                                         prefix={"$"}
+                                         decimalScale={2}
+                                         fixedDecimalScale={true}
+                                         allowNegative={false}
+                                         placeholder="$0.00"
                                         value={ownersPayroll}
                                         disabled={!isEditing}
                                         onChange={(e) =>
@@ -666,12 +658,17 @@ const GeneralInformationForm = () => {
                             key="materialCostInput"
                             classValue="col-10"
                             colContent={
-                                <Form.Control
-                                    type="text"
-                                    id="materialCost"
-                                    value={`$${amount}`}
-                                    disabled={!isEditing}
-                                    onChange={handleAmountChange}
+                                <NumericFormat
+                                className="form-control"
+                                thousandSeparator={true}
+                                prefix={"$"}
+                                decimalScale={2}
+                                fixedDecimalScale={true}
+                                allowNegative={false}
+                                placeholder="$0.00"
+                                value={`$${amount}`}
+                                disabled={!isEditing}
+                                onChange={handleAmountChange}
                                 />
                             }
                         />,

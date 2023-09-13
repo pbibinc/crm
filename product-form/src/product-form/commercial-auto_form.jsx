@@ -228,7 +228,7 @@ const CommercialAutoForm = () => {
         date_of_claim: dateOfClaim,
         loss_amount: lossAmount,
     };
-
+    console.log(commercialAutoFormData);
 
     useEffect(() => {
         const storedCommercialAutoData = {

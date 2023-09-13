@@ -142,7 +142,7 @@
             </div>
             <div class="col-6">
                 <b>Largest Project Amount:</b>
-                ${{ number_format($generalLiabilities->largest_project_amount, 2)}}
+                {{$generalLiabilities->largest_project_amount}}
             </div>
         </div>
 
@@ -202,7 +202,7 @@
             </div>
             <div class="col-6">
                 <b>Policy Premium:</b>
-                ${{ number_format($generalLiabilities->policy_premium), 2}}
+                {{ $generalLiabilities->policy_premium}}
             </div>
         </div>
     </div>

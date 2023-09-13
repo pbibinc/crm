@@ -33,14 +33,23 @@
                                 <p class="mb-0 text-muted font-14">Assigned to: {{ $leadHistory->userProfile->fullName()}}.</p>
                                 <span class="cd-date">{{ \Carbon\Carbon::parse($changes->assigned_at)->format('M-j-Y g:iA')}}</span>
                             </div>
-                            @elseif (isset($changes->application_take_at))
+                            @elseif (isset($changes->reassigned_at))
+                            <div class="cd-timeline-img cd-success">
+                                <i class="mdi mdi-account-arrow-right"></i>
+                            </div>
+                            <div class="cd-timeline-content">
+                                <p class="mb-0 text-muted font-14">Reassigned to: {{ $leadHistory->userProfile->fullName()}}.</p>
+                                <span class="cd-date">{{ \Carbon\Carbon::parse($changes->reassigned_at)->format('M-j-Y g:iA')}}</span>
+                            </div>
+                            @elseif (isset($changes->appointed_by))
                             <div class="cd-timeline-img cd-success">
                                 <i class="mdi mdi-book-edit"></i>
                             </div>
                             <div class="cd-timeline-content">
                                 <p class="mb-0 text-muted font-14">Application Taken by: {{ $leadHistory->userProfile->fullName() }}.</p>
-                                <span class="cd-date">{{  \Carbon\Carbon::parse($changes->application_take_at)->format('M-j-Y g:iA') }}</span>
+                                <span class="cd-date">{{  \Carbon\Carbon::parse($changes->appointed_by)->format('M-j-Y g:iA') }}</span>
                             </div>
+
                             @endif
 
                     </div>

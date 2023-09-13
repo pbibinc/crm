@@ -107,16 +107,19 @@ class BusinessOwnersPolicyController extends BaseController
             $expirationBuildersRisk->expiration_date = Carbon::parse($data['expirationOfIM'])->toDateString();
             $expirationBuildersRisk->prior_carrier = $data['priorCarrier'];
             $expirationBuildersRisk->save();
+            $HaveLosstable = HaveLoss::getHaveLossbyLeadIdProduct($id, 7);
 
             if($data['isHaveLossChecked'] == true){
-                $HaveLosstable = HaveLoss::getHaveLossbyLeadIdProduct($id, 7);
+
                 $HaveLosstable->date_of_claim = Carbon::parse($data['dateOfClaim'])->toDateTimeString();
                 $HaveLosstable->loss_amount = $data['lossAmount'];
                 $HaveLosstable->save();
             }elseif($data['isHaveLossChecked'] == false)
             {
-                $HaveLosstable = HaveLoss::getHaveLossbyLeadIdProduct($id, 7);
-                $HaveLosstable->delete();
+                if($HaveLosstable){
+                    $HaveLosstable = HaveLoss::getHaveLossbyLeadIdProduct($id, 7);
+                    $HaveLosstable->delete();
+                }
             }
 
             DB::commit();
