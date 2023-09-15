@@ -19,6 +19,15 @@ const Header = () => {
         localStorage.removeItem("generalInformationStoredData");
     }
 
+    function formatPhoneNumber(phoneNumberString) {
+        const cleaned = ('' + phoneNumberString).replace(/\D/g, ''); // Remove any non-numeric characters
+        const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/); // Match the number pattern
+        if (match) {
+            return '(' + match[1] + ') ' + match[2] + '-' + match[3];
+        }
+        return null;
+    }
+
     return (
         <header id="page-topbar">
             <div className="navbar-header">
@@ -44,7 +53,7 @@ const Header = () => {
                         }}
                     />
                 </div>
-                <div className="d-flex">{lead?.data?.tel_num}</div>
+                <div className="d-flex">{formatPhoneNumber(lead?.data?.tel_num)}</div>
             </div>
         </header>
     );

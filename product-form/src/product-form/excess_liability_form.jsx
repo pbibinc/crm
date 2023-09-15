@@ -392,7 +392,7 @@ useEffect(() => {
 
                 }
             />
-              <Row
+              {/* <Row
                 classValue="mb-3"
                 rowContent={[
                     <Column
@@ -428,6 +428,69 @@ useEffect(() => {
                                         <SaveAsIcon />
                                     </Button>
                                 </div>
+                            </>
+                        }
+                    />,
+                ]}
+            /> */}
+            <Row
+                classValue="mb-3"
+                rowContent={[
+
+                    <Column
+                        key="workersCompAddButtonColumn"
+                        classValue="col-10"
+                        colContent={
+                            <>
+
+                            </>
+                        }
+                    />,
+                    <Column
+                        key="workersCompEditButtonColumn"
+                        classValue="col-2"
+                        colContent={
+                            <>
+                            <Row
+                              rowContent={
+                                <>
+                                    <Column
+                                       key="submitButtonColumn"
+                                       classValue="col-6"
+                                       colContent={
+                                        <div className="d-grid gap-2">
+                                        <Button
+                                        variant="success"
+                                        size="lg"
+                                        onClick={submitExcessliabilityForm}
+                                        disabled={!isEditing}
+                                         >
+                                         <SaveIcon />
+                                         </Button>
+                                         </div>
+
+                                        }
+                                    />
+                                    <Column
+                                       key="editButtonColumn"
+                                       classValue="col-6"
+                                       colContent={
+                                        <div className="d-grid gap-2">
+                                        <Button
+                                        variant="primary"
+                                        size="lg"
+                                        disabled={isEditing}
+                                        onClick={() => setIsEditing(true)}
+                                        >
+                                         <SaveAsIcon />
+                                        </Button>
+                                            </div>
+                                        }
+                                    />
+                                </>
+                              }
+                            />
+
                             </>
                         }
                     />,

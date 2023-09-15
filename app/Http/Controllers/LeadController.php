@@ -53,7 +53,6 @@ class LeadController extends Controller
         if($request->ajax()){
             if(Cache::has('leads_data')){
                 $data = Cache::get('leads_data');
-                Log::info($data);
             }else{
                 $data = Lead::with('userProfile')
                     ->select('id', 'company_name', 'tel_num', 'state_abbr',
@@ -84,7 +83,6 @@ class LeadController extends Controller
     public function importDnc(Request $request)
     {
         $file = $request->file('dnc-file');
-
         $import = new DncImport();
         Excel::import($import, $file);
         Cache::forget('leads_dnc');
@@ -96,11 +94,10 @@ class LeadController extends Controller
 
     public function addDnc(Request $request)
     {
-
         if($request->ajax()){
             $telNum = $request->input('telNum');
             if(empty($telNum)){
-                return response()->json(['message' => 'there is no matching lead', 'hasLead' => false]);
+                return response()->json(['message' => 'please enter a tel num lead', 'hasLead' => false]);
             }else{
                 $leadsDnc = Cache::get('leads_dnc');
                 $telNums = [$telNum];

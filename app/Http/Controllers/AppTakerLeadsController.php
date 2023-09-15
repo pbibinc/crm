@@ -24,6 +24,7 @@ class AppTakerLeadsController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
+
         $timezones = [
             'Eastern' => ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV'],
             'Central' => ['AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI'],
@@ -42,8 +43,8 @@ class AppTakerLeadsController extends Controller
         $dispositions = Disposition::all();
         $recreationalFacilities = RecreationalFacilities::all();
         // $cityAddress = Lead::select('city')->distinct()->get();
+        $dataCount = Lead::getLeadsAppointed($user->id);
         if($request->ajax()){
-
             if(Cache::has('apptaker_leads')){
                 $data = Cache::get('apptaker_leads');
 
@@ -72,8 +73,10 @@ class AppTakerLeadsController extends Controller
             }else{
                 $query = Lead::whereHas('userProfile', function ($q) use ($user){
                     $q->where('user_profile_id', $user->id);
-                });
+                })
+                ->where('status', 2);
                 $data = $query->select('id', 'company_name', 'tel_num', 'state_abbr', 'website_originated', 'created_at', 'disposition_id', 'class_code', 'prime_lead')->get();
+                $leadCollection = $data;
 
                 // $dispositions = Disposition::all();
                 $data->each(function ($lead) use ($dispositions){
@@ -110,13 +113,6 @@ class AppTakerLeadsController extends Controller
                     return strtolower($row['class_code']) == strtolower($request->get('classCodeLead'));
                 });
             }
-
-            // if (!empty($request->get('states'))){
-            //     $data = $data->filter(function ($row) use ($request){
-            //         return $row['state_abbr'] == $request->get('states');
-            //     });
-            // }
-
             return DataTables::of($data)->addIndexColumn()
                 ->addColumn('created_at_formatted', function ($data) {
                     return Carbon::parse($data->created_at)->format('Y-m-d H:i:s');
@@ -124,21 +120,18 @@ class AppTakerLeadsController extends Controller
                 ->addColumn('company_name_action', function ($data){
                    return '<a href="#" data-toggle="modal" id="companyLink" name="companyLinkButtonData" data-target="#leadsDataModal" data-id="'.$data->id.'" data-name="'.$data->company_name.'">'.$data->company_name.'</a>';
                 })
-                // ->addColumn('dispositions', function ($data){
-                //     $options = '<option value="">dispositions</option>';
-                //     foreach ($data->dispositions as $disposition){
-                //         $options .= '<option value="'.$disposition->id.'">'.$disposition->name.'</option>';
-                //     }
-                //     return '<select name="dispositions" id="dispositionDrodown'.$data->id.'" data-row="'.$data->id.'" class="form-control select2">'.$options.'</select>';
-                // })
+
                 ->addColumn('company_name_action', function($data){
                   return  '<a href="#" data-toggle="modal" id="companyLink'.$data->id.'" data-row="'.$data->id.'" name="companyLinkButtonData" data-target="#leadsDataModal" data-telnum = "'.$data->tel_num.'"  data-state= "'.$data->state_abbr.'" data-id="'.$data->id.'" data-name="'.$data->company_name.'">'.$data->company_name.'</a>';
                 })
 
                 ->rawColumns(['company_name_action', 'dispositions', 'company_name_action',])
+                ->with(['totalDataCount' => $data->count()])
                 ->make(true);
         }
-        return view('leads.apptaker_leads.index', compact('timezones', 'sites', 'states', 'sortedClassCodeLeads', 'classCodeLeads', 'dispositions', 'recreationalFacilities'));
+
+
+        return view('leads.apptaker_leads.index', compact('timezones', 'sites', 'states', 'sortedClassCodeLeads', 'classCodeLeads', 'dispositions', 'recreationalFacilities', 'dataCount'));
 
     }
     public function multiStateWork(Request $request)

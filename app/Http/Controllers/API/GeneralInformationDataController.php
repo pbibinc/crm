@@ -47,8 +47,8 @@ class GeneralInformationDataController extends BaseController
 
             $Lead = Lead::getLeads($data['lead_id']);
             $Lead->disposition_id = 1;
+            $Lead->status= 3;
             $Lead->save();
-            Log::info("General Information Data", []);
             event(new AppointmentTaken($Lead, $Lead->userProfile[0]->id, $Lead->userProfile[0]->id, now()));
 
             DB::commit();

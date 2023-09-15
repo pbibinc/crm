@@ -18,6 +18,7 @@ console
 import SaveIcon from "@mui/icons-material/Save";
 import { ContextData } from "../contexts/context-data-provider";
 import { NumericFormat } from "react-number-format";
+import Swal from "sweetalert2";
 const GeneralInformationForm = () => {
     const { lead, zipcodes, cities, zipCity } = useContext(ContextData);
 
@@ -160,10 +161,21 @@ const GeneralInformationForm = () => {
 
         axios[method](url, generalInfomrationFormData)
             .then((response) => {
-                alert(JSON.stringify(response.data));
                 setIsEditing(false);
                 SetIsUpdate(true);
-
+                if(isUpdate) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success",
+                        text: "General Information has been updated",
+                    })
+                }else{
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success",
+                        text: "General Information has been saved",
+                    })
+                }
             })
             .catch((error) => {
                 console.log("Error::", error);

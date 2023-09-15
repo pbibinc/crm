@@ -90,4 +90,20 @@ class Lead extends Model
     {
         return $this->hasMany(LeadHistory::class, 'lead_id');
     }
+
+    public static function getLeadsAppointed($userProfileId)
+    {
+
+        $leads = self::where('disposition_id', 1)
+        ->where('status', 3)
+        ->whereHas('userProfile', function ($query) use ($userProfileId) {
+            $query->where('user_id', $userProfileId);
+        })
+        ->get();
+
+        if(!$leads->isEmpty()){
+            return $leads;
+        }
+        return null;
+    }
 }

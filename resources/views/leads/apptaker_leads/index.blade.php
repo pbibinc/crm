@@ -11,15 +11,15 @@
                                 <div class="d-flex">
                                     <div class="flex-grow-1">
                                         <p class="text-truncate font-size-14 mb-2">Total Appointed Leads</p>
-                                        <h4 class="mb-2">1452</h4>
+                                        <h4 class="mb-2">{{ count($dataCount) }}</h4>
                                         <p class="text-muted mb-0"><span class="text-success fw-bold font-size-12 me-2"><i class="ri-arrow-right-up-line me-1 align-middle"></i>9.23%</span>from previous period</p>
                                     </div>
                                     <div class="avatar-sm">
                                         <span class="avatar-title bg-light text-primary rounded-3">
-                                            <i class="mdi mdi-account-check font-size-24 " ></i>  
+                                            <i class="mdi mdi-account-check font-size-24 " ></i>
                                         </span>
                                     </div>
-                                </div>                                            
+                                </div>
                             </div><!-- end cardbody -->
                         </div>
                     </div>
@@ -29,18 +29,19 @@
                             <div class="card-body">
                                 <div class="d-flex">
                                     <div class="flex-grow-1">
-                                        <p class="text-truncate font-size-14 mb-2 text-white">Total Accounts</p>
-                                        <h4 class="mb-2 text-white">2312</h4>
+                                        <p class="text-truncate font-size-14 mb-2 text-white">Total Assigned Lead</p>
+                                        <h4 class="mb-2 text-white"><span id="dataCount"></span></h4>
                                         <p class="text-white mb-0">
                                             <span class="text-light fw-bold font-size-12 me-2" >
-                                                <i class="ri-arrow-right-up-line me-1 align-middle" ></i>9.23%
+                                                <i class="mdi mdi-account-arrow-left" ></i>9.23%
+
                                             </span>
                                             from previous period
                                         </p>
                                     </div>
                                     <div class="avatar-sm">
                                         <span class="avatar-title bg-light text-primary rounded-3">
-                                            <i class="mdi mdi-account-cash font-size-24" style="color: #28a745;"></i>
+                                            <i class="mdi mdi mdi-account-arrow-left font-size-24" style="color: #28a745;"></i>
                                         </span>
                                     </div>
                                 </div>
@@ -59,10 +60,10 @@
                                     </div>
                                     <div class="avatar-sm">
                                         <span class="avatar-title bg-light text-primary rounded-3">
-                                            <i class="ri-phone-line font-size-24"></i>  
+                                            <i class="ri-phone-line font-size-24"></i>
                                         </span>
                                     </div>
-                                </div>                                            
+                                </div>
                             </div><!-- end cardbody -->
                         </div>
                     </div>
@@ -78,10 +79,10 @@
                                     </div>
                                     <div class="avatar-sm">
                                         <span class="avatar-title bg-light text-primary rounded-3">
-                                            <i class="ri-shopping-cart-2-line font-size-24"></i>  
+                                            <i class="ri-shopping-cart-2-line font-size-24"></i>
                                         </span>
                                     </div>
-                                </div>                                            
+                                </div>
                             </div><!-- end cardbody -->
                         </div>
                     </div>
@@ -199,9 +200,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
-                            
+
                                 <thead>
                                     <tr>
                                         <th>Company Name</th>
@@ -223,7 +224,7 @@
             </div>
         </div>
         @include('leads.apptaker_leads.assign-questionare')
- 
+
         <!--Modal for Call Back Disposition-->
         <div class="modal fade bs-example-modal-center" id="callbackModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -256,7 +257,7 @@
                         <button type="button" class="btn btn-success waves-effect waves-light" id="callbackDispoSubmitButton">Submit</button>
                         <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
                     </div>
-                    
+
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
@@ -304,7 +305,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                          
+
                                 <div class="mb-3">
                                     <div class="form-group">
                                         <label class="form-label">Disposition</label>
@@ -318,7 +319,7 @@
                                         </select>
                                     </div>
                                 </div>
-                          
+
                         </div>
                         <div class="row mt-3">
                             <label>Remarks</label>
@@ -376,12 +377,12 @@
 <script src="{{asset('backend/assets/libs/inputmask/jquery.inputmask.min.js')}}"></script>
 
 
- 
+
 
 <script>
 
     $(document).ready(function (){
-        
+
         $('#leadsApptakerDataTable').DataTable({
             processing: true,
             serverSide: true,
@@ -392,11 +393,15 @@
                     d.classCodeLead = $('#classCodeLeadDropdown').val(),
                     d.states = $('#statesDropdown').val(),
                     d.leadType = $('#leadTypeDropdown').val()
+                },
+                dataSrc: function(json){
+                    $('#dataCount').html(json.totalDataCount);
+                    return json.data;
                 }
             },
             columns: [
                 {
-                    data: 'company_name_action', 
+                    data: 'company_name_action',
                     name: 'company_name_action',
                     render: function(data, type, row){
                             if(row.prime_lead == 2){
@@ -415,6 +420,11 @@
             ]
         });
 
+        //submmit functionalities for call back disposition
+        $('#callbackDispoSubmitButton').on('click', function(e){
+
+        });
+
         $('#openFormLinkButton').on('click', function(e){
             window.open("http://localhost:3000/appoinnted-lead-questionare", "_blank", "width=400,height=800");
         });
@@ -431,7 +441,7 @@
         $('#companyLink').on('click', function(){
             console.log('test')
         });
-        
+
         $('#classCodeLeadDropdown').on('change', function () {
              var classCodeLead = $(this).val();
              $('#leadsApptakerDataTable').DataTable().ajax.reload();
@@ -440,7 +450,7 @@
         $('#statesDropdown').on('change', function (){
             $('#leadsApptakerDataTable').DataTable().ajax.reload();
         });
-    
+
         $('#dataModal').on('submit', function (e) {
             e.preventDefault();
         });
@@ -463,9 +473,9 @@
                     leadId: leadsId
                 },
                 success: function(response){
-                 
+
                 }
-               
+
             });
             window.open("http://localhost:3000/appoinnted-lead-questionare", "_blank", "width=1000,height=849");
                 $('#transactionLogModal').modal('hide');
@@ -498,7 +508,7 @@
                 $('#transactionLogModal').modal('hide');
             }
         });
-       
+
 
         // $(document).on('click', '[id^="companyLink"]', function(e){
         //     var rowId = $(this).data('id');

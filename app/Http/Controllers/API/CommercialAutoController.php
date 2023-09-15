@@ -225,23 +225,19 @@ class CommercialAutoController extends BaseController
                 $crossSell->save();
             }
 
-            if($data['have_loss'] == true){
-                $HaveLosstable = HaveLoss::getHaveLossbyLeadIdProduct($id, 3);
-                if($HaveLosstable){
-                    $HaveLosstable->lead_id = $data['leadId'];
-                $HaveLosstable->product = 3;
-                $HaveLosstable->date_of_claim = Carbon::parse($data['date_of_claim'])->toDateTimeString();
-                $HaveLosstable->loss_amount = $data['loss_amount'];
-                $HaveLosstable->save();
-                }else{
-                    $haveLoss = new HaveLoss();
-                    $haveLoss->lead_id = $data['leadId'];
-                    $haveLoss->product = 3;
-                    $haveLoss->date_of_claim = Carbon::parse($data['date_of_claim'])->toDateTimeString();
-                    $haveLoss->loss_amount = $data['loss_amount'];
-                    $haveLoss->save();
+            if($data['have_loss']) {
+                HaveLoss::updateOrCreate(
+                    ['lead_id' => $data['leadId'], 'product' => 3],
+                    [
+                        'date_of_claim' => Carbon::parse($data['date_of_claim'])->toDateTimeString(),
+                        'loss_amount' => $data['loss_amount']
+                    ]
+                );
+            } else {
+                $haveLossRecord = HaveLoss::where('lead_id', $data['leadId'])->where('product', 3)->first();
+                if($haveLossRecord) {
+                    $haveLossRecord->delete();
                 }
-
             }
 
             DB::commit();

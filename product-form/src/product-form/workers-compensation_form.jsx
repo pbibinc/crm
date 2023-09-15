@@ -283,6 +283,7 @@ const WorkersCompensationForm = () => {
         number_of_employee: employeeNumber,
 
     };
+    console.log(workersCompFormData);
 
 
 
@@ -819,7 +820,7 @@ const WorkersCompensationForm = () => {
                     </>
                 }
             />
-            <Row
+            {/* <Row
                 classValue="mb-3"
                 rowContent={[
                     <Column
@@ -855,6 +856,70 @@ const WorkersCompensationForm = () => {
                                         <SaveAsIcon />
                                     </Button>
                                 </div>
+                            </>
+                        }
+                    />,
+                ]}
+            /> */}
+
+            <Row
+                classValue="mb-3"
+                rowContent={[
+
+                    <Column
+                        key="toolsEquipmentSubmmitButtonColumn"
+                        classValue="col-10"
+                        colContent={
+                            <>
+
+                            </>
+                        }
+                    />,
+                    <Column
+                        key="toolsEquipmentEdittButtonColumn"
+                        classValue="col-2"
+                        colContent={
+                            <>
+                            <Row
+                              rowContent={
+                                <>
+                                    <Column
+                                       key="submitButtonColumn"
+                                       classValue="col-6"
+                                       colContent={
+                                        <div className="d-grid gap-2">
+                                        <Button
+                                        variant="success"
+                                        size="lg"
+                                        onClick={submitWorkersCompensationForm}
+                                        disabled={!isEditing}
+                                         >
+                                         <SaveIcon />
+                                         </Button>
+                                         </div>
+
+                                        }
+                                    />
+                                    <Column
+                                       key="editButtonColumn"
+                                       classValue="col-6"
+                                       colContent={
+                                        <div className="d-grid gap-2">
+                                        <Button
+                                        variant="primary"
+                                        size="lg"
+                                        disabled={isEditing}
+                                        onClick={() => SetIsEditing(true)}
+                                        >
+                                         <SaveAsIcon />
+                                        </Button>
+                                            </div>
+                                        }
+                                    />
+                                </>
+                              }
+                            />
+
                             </>
                         }
                     />,

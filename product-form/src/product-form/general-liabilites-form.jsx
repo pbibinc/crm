@@ -1396,7 +1396,7 @@ const GeneralLiabilitiesForm = () => {
                         classValue="col-6"
                         colContent={
                             <>
-                                <Label labelContent="Contact License" />
+                                <Label labelContent="Contractor License" />
                                 <Form.Control
                                     type="text"
                                     id="contactLicenseInput"
@@ -1755,7 +1755,7 @@ const GeneralLiabilitiesForm = () => {
                     />
                 }
             />
-            <Row
+            {/* <Row
                 classValue="mb-4"
                 rowContent={[
                     <Column
@@ -1791,6 +1791,69 @@ const GeneralLiabilitiesForm = () => {
                                         <SaveAsIcon />
                                     </Button>
                                 </div>
+                            </>
+                        }
+                    />,
+                ]}
+            /> */}
+            <Row
+                classValue="mb-3"
+                rowContent={[
+
+                    <Column
+                        key="generalLiabilitiesAddButtonColumn"
+                        classValue="col-10"
+                        colContent={
+                            <>
+
+                            </>
+                        }
+                    />,
+                    <Column
+                        key="generalLiabilitiesEditButtonColumn"
+                        classValue="col-2"
+                        colContent={
+                            <>
+                            <Row
+                              rowContent={
+                                <>
+                                    <Column
+                                       key="submitButtonColumn"
+                                       classValue="col-6"
+                                       colContent={
+                                        <div className="d-grid gap-2">
+                                        <Button
+                                        variant="success"
+                                        size="lg"
+                                        onClick={submitGeneralLiabilitiesForm}
+                                        disabled={!isEditing}
+                                         >
+                                         <SaveIcon />
+                                         </Button>
+                                         </div>
+
+                                        }
+                                    />
+                                    <Column
+                                       key="editButtonColumn"
+                                       classValue="col-6"
+                                       colContent={
+                                        <div className="d-grid gap-2">
+                                        <Button
+                                        variant="primary"
+                                        size="lg"
+                                        disabled={isEditing}
+                                        onClick={() => setIsEditing(true)}
+                                        >
+                                         <SaveAsIcon />
+                                        </Button>
+                                            </div>
+                                        }
+                                    />
+                                </>
+                              }
+                            />
+
                             </>
                         }
                     />,
