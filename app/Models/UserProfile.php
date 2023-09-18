@@ -20,6 +20,11 @@ class UserProfile extends Model
 
     ];
 
+    public function userProfiles()
+    {
+        return self::all();
+    }
+
     public function position()
     {
         return $this->belongsTo(Position::class);
@@ -65,6 +70,11 @@ class UserProfile extends Model
         return $this->firstname . ' ' . $this->lastname;
     }
 
+    public function fullAmericanName()
+    {
+        return $this->firstname . ' ' . $this->american_surname;
+    }
+
     public static function getFullName($id)
     {
         $userProfile = self::find($id);
@@ -72,6 +82,16 @@ class UserProfile extends Model
             return $userProfile->fullName();
         }
         return null;
+    }
+
+    public function apptaker()
+    {
+        return self::where('position_id', 26)->get();
+    }
+
+    public function qouter()
+    {
+        return self::where('position_id', 33)->get();
     }
 
 }

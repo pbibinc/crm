@@ -128,7 +128,7 @@
                                                 <button type="button" id="assignRandomLeads" class="btn btn-primary waves-effect waves-light " data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign Random Leads to a random user">Assign Random Leads</button>
                                                 </div>
                                             </div>
-                                
+
                                         </div>
 
                                     <br>
@@ -198,7 +198,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="row mt-3">
                                 <div class="col-6">
                                         <div class="form-group">
@@ -377,7 +377,7 @@
             </div>
         </div>
     </div>
-    
+
     {{-- end of deletion of modal --}}
     <script src="{{asset('backend/assets/libs/bootstrap-rating/bootstrap-rating.min.js')}}"></script>
     <script src="{{asset('backend/assets/js/pages/rating-init.js') }}"></script>
@@ -410,7 +410,7 @@
                 columns: [
                     {data: 'checkbox', name: 'checkbox',  orderable: false, searchable: false, title: '<input type="checkbox" id="check_all">'},
                     {
-                        data: 'company_name', 
+                        data: 'company_name',
                         name: 'company_name',
                         render: function(data, type, row){
                             if(row.prime_lead == 2){
@@ -496,7 +496,7 @@
             $('.users_checkbox:checked').each(function (){
                 leadsId.push($(this).val());
                 });
-                
+
             if(leadsId.length === 0){
                 Swal.fire({
                         title: 'Error',
@@ -508,7 +508,7 @@
             }
         });
 
-           $('#okAssignPremiumButton').on('click', function(){ 
+           $('#okAssignPremiumButton').on('click', function(){
             console
             $.ajax({
                 url:"{{route('assign-premium-leads')}}",
@@ -535,7 +535,7 @@
                        Swal.fire({
                           title: 'Error',
                           text: 'Failed to assign leads.',
-                          icon: 'error'   
+                          icon: 'error'
                        });
                     }
                 }
@@ -554,7 +554,7 @@
                 $('#dataTable').DataTable().ajax.reload();
                 let userProfileValue= $(this).val();
                if(userProfileValue != "")
-               {   
+               {
                 $.ajax({
                     url: "{{ route('get-states')}}",
                     type: 'GET',
@@ -611,7 +611,7 @@
                     $('#userStatesDropdown').next('.select2-container').show();
                     $('#selectStatesLabel').show();
                     $('#userProfileDropdown').prop('disabled', true);
-                  
+
                 }else{
                     // console.log($('#voidAll'));
                     $("#voidAll").hide();
@@ -621,10 +621,10 @@
                 }
             });
 
-          
+
 
             // ajax script for randomly assign leads to user
-            
+
             $('#assignRandomLeadsUser').on('click', function (){
                 let userProfileId= $('#userProfileDropdown').val();
                 let accountProfileId= $('#accountsDropdown').val()
@@ -692,7 +692,7 @@
             });
 
 
-            
+
 
             // ajax script for assigning checked leads
             $('#assignLead').on('click', function (){
@@ -751,7 +751,7 @@
                 }
             });
 
-          
+
 
             // ajax script for randomly assign leads to a random users
             $('#assign_random_ok_button').on('click', function (){

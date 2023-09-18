@@ -23,6 +23,7 @@ use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\GeneralInformationController;
 use App\Http\Controllers\AssignLeadController;
 use App\Http\Controllers\AppTakerLeadsController;
+use App\Http\Controllers\AssignAppointedLeadController;
 use App\Http\Controllers\CallBackController;
 use App\Http\Controllers\DepartmentListController;
 use App\Http\Controllers\DashboardControllerNew;
@@ -63,7 +64,7 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->gro
     Route::post('/permissions/update', [PermissionController::class, 'update'])->name('permissions.update');
     Route::resource('/roles', RoleController::class);
     Route::resource('/users', UserController::class)->except(['update']);
- Route::post('/users/update', [UserController::class, 'update'])->name('users.update');
+    Route::post('/users/update', [UserController::class, 'update'])->name('users.update');
     Route::resource('/positions', PositionController::class)->except('update');
     Route::post('/positions/update', [PositionController::class, 'update'])->name('positions.update');
     //  Route::delete('positions/destroy/{$id}/', [PositionController::class, 'destroy'])->name('positions.destroy');
@@ -117,13 +118,15 @@ Route::prefix('list-leads')->group(function  () {
     Route::get('/product/pdf', [AppTakerLeadsController::class, 'productPdf'])->name('product.pdf');
     Route::get('/product/forms', [AppTakerLeadsController::class, 'productForms'])->name('product.forms');
     Route::post('/list-lead-id', [AppTakerLeadsController::class, 'listLeadId'])->name('list-lead-id');
-
+    Route::get('/assign-appointed-lead', [AssignAppointedLeadController::class, 'index'])->name('assign-appointed-lead');
+    Route::post('/assign-appointed-lead/assign-lead', [AssignAppointedLeadController::class, 'assignAppointedLead'])->name('assign-leads-market-specialist');
 });
 
 Route::prefix('quoataion')->group(function (){
     Route::get('/appointed-leads', [QuotationController::class, 'appointedLeadsView'])->name('appointed-leads');
     Route::post('/lead-profile', [QuotationController::class, 'leadProfile'])->name('lead-profile');
     Route::get('/lead-profile-view', [QuotationController::class, 'leadProfileView'])->name('lead-profile-view');
+    Route::get('');
 });
 
 Route::prefix('call-back')->group(function (){

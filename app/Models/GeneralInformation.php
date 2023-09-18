@@ -83,4 +83,34 @@ class GeneralInformation extends Model
         return $this->hasOne(BusinessOwnersPolicy::class, 'general_information_id', 'id');
     }
 
+    public static function getProductByGeneralInformationId($generalInformationId)
+    {
+        $generalInfo = self::find($generalInformationId);
+
+        $product = [];
+        if($generalInfo->generalLiabilities){
+            array_push($product, 'General Liabilities');
+        }
+        if($generalInfo->workersCompensation){
+            array_push($product, 'Workers Compensation');
+        }
+        if($generalInfo->commercialAuto){
+            array_push($product, 'Commercial Auto');
+        }
+        if($generalInfo->excessLiability){
+            array_push($product, 'Excess Liability');
+        }
+        if($generalInfo->toolsEquipment){
+            array_push($product, 'Tools Equipment');
+        }
+        if($generalInfo->buildersRisk){
+            array_push($product, 'Builders Risk');
+        }
+        if($generalInfo->businessOwners){
+            array_push($product, 'Business Owners');
+        }
+
+        return $product;
+    }
+
 }
