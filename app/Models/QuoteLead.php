@@ -16,5 +16,9 @@ class QuoteLead extends Model
         'lead_id'
     ];
 
+    public function QuoteInformation()
+    {
+        return $this->hasOne(QuoteInformation::class, 'quoting_lead_id');
+    }
 
 }

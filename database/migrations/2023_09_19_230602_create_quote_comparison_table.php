@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('quote_comparison_table', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('quote_information_id')->constrained('quote_information_table');
+            $table->foreignId('quotation_product_id')->constrained('quotation_product_table');
             $table->foreignId('quotation_market_id')->constrained('quotation_market_table');
             $table->string('full_payment');
             $table->string('down_payment');

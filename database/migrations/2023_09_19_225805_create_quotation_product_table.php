@@ -13,12 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('quote_information_table', function (Blueprint $table) {
+        Schema::create('quotation_product_table', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('telemarket_id')->constrained('user_profiles');
-            $table->foreignId('quoting_lead_id')->constrained('quote_lead_table');
+            $table->foreignId('quote_information_id')->constrained('quote_information_table');
+            $table->integer('product');
+            $table->timestamp('sent_out_date')->nullable();
             $table->integer('status');
-            $table->string('remarks');
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('quote_information_table');
+        Schema::dropIfExists('quotation_product_table');
     }
 };

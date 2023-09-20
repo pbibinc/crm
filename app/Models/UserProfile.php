@@ -94,4 +94,9 @@ class UserProfile extends Model
         return self::where('position_id', 33)->get();
     }
 
+    public function quoationLeads()
+    {
+        return $this->hasMany(quoationLeads::class);
+    }
+
 }

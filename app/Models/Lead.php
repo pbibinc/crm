@@ -40,9 +40,15 @@ class Lead extends Model
         ->withTimestamps();
     }
 
+
+    public function quoterUserProfile()
+    {
+        return $this->belongsToMany(UserProfile::class, 'quote_lead_table', 'leads_id', 'user_profiles_id');
+    }
+
     public static function getAppointedLeads()
     {
-        $leads = self::where('disposition_id', 1)->with('userProfile')->get();
+        $leads = self::where('disposition_id', 1)->where('status', 3)->with('userProfile')->get();
 
         if($leads){
             return $leads;
@@ -105,6 +111,25 @@ class Lead extends Model
             return $leads;
         }
         return null;
+    }
+
+    public static function getAssignQuoteLeadsByUserProfileId($userProfileId)
+    {
+        $leads = self::where('disposition_id', 1)
+        ->where('status', 4)
+        ->whereHas('quoterUserProfile', function ($query) use ($userProfileId) {
+            $query->where('user_profiles_id', $userProfileId);
+        })->get();
+        if($leads)
+        {
+            return $leads;
+        }
+        return null;
+    }
+
+    public function quoteLead()
+    {
+        return $this->hasOne(QuoteLead::class, 'leads_id');
     }
 
 

@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\GeneralLiabilities;
 use App\Models\Lead;
+use App\Models\QuoationMarket;
 use App\Models\UnitedState;
 use App\Models\UserProfile;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 class QuotationController extends Controller
@@ -20,13 +22,12 @@ class QuotationController extends Controller
     {
 
         if($request->ajax()){
-            $leads = Lead::getAppointedLeads();
+            $leads = Lead::getAssignQuoteLeadsByUserProfileId(Auth::user()->userProfile->id);
 
             return DataTables::of($leads)
             ->addColumn('current_user', function($lead){
                 $userProfile = $lead->userProfile->first();
                 $currentUserName = $userProfile ? $userProfile->fullName(): 'N/A';
-
                 return $currentUserName;
             })
             ->addColumn('action', function($lead){
@@ -34,7 +35,6 @@ class QuotationController extends Controller
                  return $viewButton;
             })
             ->make(true);
-
         }
         return view('leads.appointed_leads.index');
     }
@@ -43,6 +43,7 @@ class QuotationController extends Controller
     {
         $lead = Lead::getLeads($request->leadId);
         $generalInformation = $lead->generalInformation;
+
         $timeLimit = 60 * 60;
 
         Cache::put('appointedLead', $lead, $timeLimit);
@@ -75,6 +76,7 @@ class QuotationController extends Controller
             'Hawaii-Aleutian' => 'Pacific/Honolulu'
         ];
         $timezoneForState = null;
+        $quationMarket = QuoationMarket::all();
 
         if(!$lead || !$generalInformation){
             return redirect()->route('leads.appointed-leads')->withErrors('No DATA found');
@@ -85,14 +87,20 @@ class QuotationController extends Controller
             if(in_array($lead->state_abbr, $states)){
                 $timezoneForState =  $timezoneStrings[$timezone];
             }
-
         }
         $localTime = Carbon::now($timezoneForState);
         $generalLiabilities = $generalInformation->generalLiabilities;
         // dd($generalInformation->id);
 
+        return view('leads.appointed_leads.leads-profile', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket'));
+    }
 
+    public function SaveQuotaionInformation(Request $request)
+    {
+        if($request->ajax())
+        {
 
-        return view('leads.appointed_leads.leads-profile', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities',));
+        }
+        dd($request);
     }
 }

@@ -195,6 +195,7 @@
             </div>
             <div class="col-4">
                 @include('leads.appointed_leads.history-log', ['generalInformation' => $generalInformation])
+                @include('leads.appointed_leads.quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket])
             </div>
         </div>
     </div>

@@ -120,13 +120,14 @@ Route::prefix('list-leads')->group(function  () {
     Route::post('/list-lead-id', [AppTakerLeadsController::class, 'listLeadId'])->name('list-lead-id');
     Route::get('/assign-appointed-lead', [AssignAppointedLeadController::class, 'index'])->name('assign-appointed-lead');
     Route::post('/assign-appointed-lead/assign-lead', [AssignAppointedLeadController::class, 'assignAppointedLead'])->name('assign-leads-market-specialist');
+    Route::get('/assign-appointed-lead/get-data-table', [AssignAppointedLeadController::class, 'getDataTable'])->name('get-data-table');
 });
 
 Route::prefix('quoataion')->group(function (){
     Route::get('/appointed-leads', [QuotationController::class, 'appointedLeadsView'])->name('appointed-leads');
     Route::post('/lead-profile', [QuotationController::class, 'leadProfile'])->name('lead-profile');
     Route::get('/lead-profile-view', [QuotationController::class, 'leadProfileView'])->name('lead-profile-view');
-    Route::get('');
+    Route::post('/save-quotation-information', [QuotationController::class, 'SaveQuotaionInformation'])->name('save-quotation-information');
 });
 
 Route::prefix('call-back')->group(function (){
