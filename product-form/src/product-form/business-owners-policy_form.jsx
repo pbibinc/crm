@@ -114,8 +114,8 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
         yearBuilt,
         squareFootage,
         numberOfFloors,
-        automaticSprinklerSystem,
-        automaticFireAlarm,
+        automaticSprinklerSystem:automaticSprinklerSystem?.value,
+        automaticFireAlarm:automaticFireAlarm?.value,
         distanceToNearestFireHydrant,
         distanceToNearestFireStation,
         automaticCommercialCookingExtinguishingSystem:automaticCommercialCookingExtinguishingSystem?.value,
@@ -447,12 +447,18 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
               colContent={[
                 <>
                     <Label labelContent="Automatic Sprinkler System"/>
-                    <Form.Control
-                       type="text"
-                       onChange={(e) => setAutomaticSprinklerSystem(e.target.value)}
-                       disabled={!isEditing}
-                       value={automaticSprinklerSystem}
-                    />
+                    <Select
+                    className="basic-single"
+                    classNamePrefix="select"
+                    options={[
+                        {value: "Yes", label: "Yes"},
+                        {value: "No", label: "No"},
+                    ]}
+                    onChange={(e) => setAutomaticSprinklerSystem({value:e.value, label:e.label})}
+                    isDisabled={!isEditing}
+                    value={automaticSprinklerSystem}
+                   />
+
                 </>
               ]}
             />,
@@ -462,14 +468,18 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
               colContent={[
                 <>
                     <Label labelContent="Automatic Fire Alarm"/>
-                    <Form.Control
-                       type="text"
-                       onChange={(e) => setAutomaticFireAlarm(e.target.value)}
-                       disabled={!isEditing}
-                       value={automaticFireAlarm}
-                    />
+                    <Select
+                    className="basic-single"
+                    classNamePrefix="select"
+                    options={[
+                        {value: "Yes", label: "Yes"},
+                        {value: "No", label: "No"},
+                    ]}
+                    onChange={(e) => setAutomaticFireAlarm({value:e.value, label:e.label})}
+                    isDisabled={!isEditing}
+                    value={automaticFireAlarm}
+                   />
                 </>
-
               ]}
             />,
         ]}

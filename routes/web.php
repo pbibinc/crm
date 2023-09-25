@@ -127,7 +127,11 @@ Route::prefix('quoataion')->group(function (){
     Route::get('/appointed-leads', [QuotationController::class, 'appointedLeadsView'])->name('appointed-leads');
     Route::post('/lead-profile', [QuotationController::class, 'leadProfile'])->name('lead-profile');
     Route::get('/lead-profile-view', [QuotationController::class, 'leadProfileView'])->name('lead-profile-view');
-    Route::post('/save-quotation-information', [QuotationController::class, 'SaveQuotaionInformation'])->name('save-quotation-information');
+    Route::post('/save-quotation-comparison', [QuotationController::class, 'saveQuoteComparison'])->name('save-quotation-comparison');
+    Route::post('/save-quotation-product', [QuotationController::class, 'saveQuotationProduct'])->name('save-quotation-product');
+    Route::get('/get-comparison-data', [QuotationController::class, 'getComparisonData'])->name('get-comparison-data');
+    Route::post('/update-quotation-comparison', [QuotationController::class, 'updateQuotationComparison'])->name('update-quotation-comparison');
+    Route::post('/delete-quotation-comparison', [QuotationController::class, 'deleteQuotationComparison'])->name('delete-quotation-comparison');
 });
 
 Route::prefix('call-back')->group(function (){

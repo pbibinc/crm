@@ -141,9 +141,19 @@
         });
         $('#assignAppointedLead').on('click', function(){
             var id = [];
+            var productsArray = [];
             $('.users_checkbox:checked').each(function(){
                 id.push($(this).val());
+                var row = $(this).closest('tr');
+                var productDiv = row.find('.product-column');
+                var products = [];
+                productDiv.find('h6').each(function(){
+                    products.push($(this).text());
+                });
+                productsArray.push(products);
+
             });
+
             var marketSpecialistUserProfileId = $('#marketSpecialistDropDown').val();
             var agentUserProfileId = $('#agentDropDown').val();
             if(id.length > 0){
@@ -155,6 +165,7 @@
                         method: "POST",
                         data: {
                             id:id,
+                            product:productsArray,
                             marketSpecialistUserProfileId:marketSpecialistUserProfileId, agentUserProfileId:agentUserProfileId
                         },
                         success: function(data){
@@ -164,6 +175,14 @@
                                 icon: 'success'
                             });
                             $('#assignAppointedLeadsTable').DataTable().ajax.reload();
+                            $('#datatableLeads').DataTable().ajax.reload();
+                        },
+                        error: function(data){
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Ther is a error while assigning leads',
+                                icon: 'error'
+                            });
                         }
                     });
                 }else{

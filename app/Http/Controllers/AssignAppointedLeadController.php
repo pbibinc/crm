@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\GeneralInformation;
 use App\Models\Lead;
+use App\Models\QuotationProduct;
 use App\Models\QuoteInformation;
 use App\Models\QuoteLead;
 use App\Models\UserProfile;
@@ -56,7 +57,7 @@ class AssignAppointedLeadController extends Controller
                         }, $group);
                         $containers[] = '<div>' . implode(' ', $spans) . '</div>';
                     }
-                    return implode('', $containers);
+                    return '<div class="product-column">'. implode('', $containers) . '</div>';
                    })
                    ->addColumn('current_user', function($appointedLeads){
                           $userProfile = $appointedLeads->userProfile->first();
@@ -66,7 +67,7 @@ class AssignAppointedLeadController extends Controller
                    ->addColumn('checkbox', function($appointedLeads) {
                         $userProfile = $appointedLeads->userProfile->first();
                         $currentUserId = $userProfile ? $userProfile->id : null;
-                        $value = $appointedLeads->id . '_' . $currentUserId;
+                        $value = $appointedLeads->id . '_' . $currentUserId ;
                         return '<input type="checkbox" name="users_checkbox[]" class="users_checkbox" value="' . $value . '" />';
                     })
                    ->rawColumns(['products', 'checkbox'])
@@ -76,16 +77,21 @@ class AssignAppointedLeadController extends Controller
     }
     public function assignAppointedLead(Request $request)
     {
+
         try{
             DB::beginTransaction();
 
             $combinedIds = $request->input('id');
+            $products = $request->input('product');
+            $combinedData = array_map(function($id, $product) {
+                return ['id' => $id, 'product' => $product];
+            }, $combinedIds, $products);
             $marketingSpecialistId = $request->input('marketSpecialistUserProfileId');
             $agentId = $request->input('agentUserProfileId');
             $userProfileId = $marketingSpecialistId ? $marketingSpecialistId : $agentId;
             if($userProfileId || $combinedIds){
-                foreach($combinedIds as $value){
-                    list($leadsId, $userId) = explode('_', $value);
+                foreach($combinedData as $value){
+                    list($leadsId, $userId) = explode('_', $value['id']);
 
                     $quoteLead = new QuoteLead();
                     $quoteLead->user_profiles_id = $userProfileId;
@@ -98,6 +104,14 @@ class AssignAppointedLeadController extends Controller
                     $quoteInformation->status = 2;
                     $quoteInformation->remarks = ' ';
                     $quoteInformation->save();
+
+                    foreach($value['product'] as $product){
+                        $quotationProduct = new QuotationProduct();
+                        $quotationProduct->quote_information_id = $quoteInformation->id;
+                        $quotationProduct->product = $product;
+                        $quotationProduct->status = 2;
+                        $quotationProduct->save();
+                    }
 
                     $lead = Lead::find($leadsId);
                     $lead->status = 4;

@@ -156,6 +156,7 @@
                    <ul class="sub-menu" aria-expanded="false">
                        <li><a href="{{route('appointed-leads')}}">For Qoute Leads</a></li>
                        <li><a href="{{route('assign-appointed-lead')}}">Assign Appointed Leads</a></li>
+                       <li><a href="{{route('assign-appointed-lead')}}">Assign Quoted Leads</a></li>
 {{--                        <li><a href="ui-buttons.html">Buttons</a></li>--}}
 {{--                        <li><a href="ui-cards.html">Cards</a></li>--}}
 {{--                        <li><a href="ui-carousel.html">Carousel</a></li>--}}

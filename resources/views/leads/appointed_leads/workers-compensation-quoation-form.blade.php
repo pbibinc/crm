@@ -1,14 +1,14 @@
-<h6>General Liabilities Quoation Form<i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
+<h6>Workers Compensation Quoation Form<i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
 <div class="card ">
     <div class="card-body">
-        <div class="card border border-primary generalLiabilitiesFirsCardForm">
+        <div class="card border border-primary workersCompFirsCardForm">
             <div class="card-body">
                 <div class="row mb-4">
                     <div class="col-10">
 
                     </div>
                     <div class="col-2">
-                        <button class="btn btn-success" id="addGLPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
+                        <button class="btn btn-success" id="addWorkCompPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
                     </div>
                 </div>
                 <div class="row mb-4">
@@ -60,7 +60,7 @@
             </div>
         </div>
 
-        <div id="GLCardContainer"></div>
+        <div id="workerCompContainer"></div>
 
     </div>
 
@@ -85,7 +85,7 @@
 
       function  doSomethingWithQuoteComparison() {
         if(quoteComparison.length > 0){
-            $('.generalLiabilitiesFirsCardForm').hide();
+            $('.workersCompFirsCardForm').hide();
            quoteComparison.forEach(function(data) {
            let selectOptions = `<option value="">Select Market</option>`;
            market.forEach(function(market) {
@@ -99,7 +99,7 @@
 
                         </div>
                         <div class="col-4 text-right">
-                            <button class="btn btn-success addGLPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
+                            <button class="btn btn-success addWorkersCompPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
                             <button class="btn btn-danger removeSavedDataButton"><i class="mdi mdi-minus-circle"></i></button>
                         </div>
                     </div>
@@ -150,14 +150,14 @@
                 </div>
             </div>
            `;
-           $('#GLCardContainer').append(cardContent);
+           $('#workerCompContainer').append(cardContent);
           });
 
         }
         };
 
 
-        $(document).on('click', '.addGLPriceComparison', function(){
+        $(document).on('click', '.addWorkersCompPriceComparison', function(){
 
          let cardContent = `
             <div class="card border border-primary">
@@ -167,7 +167,7 @@
 
                         </div>
                         <div class="col-4 text-right">
-                            <button class="btn btn-success addGLPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
+                            <button class="btn btn-success addWorkersCompPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
                             <button class="btn btn-danger removeCardButton"><i class="mdi mdi-minus-circle"></i></button>
                         </div>
                     </div>
@@ -221,16 +221,16 @@
             </div>
         `;
 
-        $('#GLCardContainer').append(cardContent);
+        $('#workerCompContainer').append(cardContent);
         });
 
-        $('#GLCardContainer').on('click', '.removeCardButton', function(){
+        $('#workerCompContainer').on('click', '.removeCardButton', function(){
             $(this).closest('.card').remove();
 
         });
         $(".input-mask").inputmask();
 
-        $('#GLCardContainer').on('click', '.removeSavedDataButton', function(){
+        $('#workerCompContainer').on('click', '.removeSavedDataButton', function(){
             var $card = $(this).closest('.card');
 
             Swal.fire({

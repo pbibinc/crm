@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\GeneralLiabilities;
 use App\Models\Lead;
 use App\Models\QuoationMarket;
+use App\Models\QuotationProduct;
+use App\Models\QuoteComparison;
 use App\Models\UnitedState;
 use App\Models\UserProfile;
 use Carbon\Carbon;
@@ -95,12 +97,83 @@ class QuotationController extends Controller
         return view('leads.appointed_leads.leads-profile', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket'));
     }
 
-    public function SaveQuotaionInformation(Request $request)
+    public function saveQuotationProduct(Request $request)
     {
         if($request->ajax())
         {
-
+            $quoteInformationId = $request->input('quoteInformationId');
+            $product = $request->input('type');
+            $quoteProduct = new QuotationProduct();
+            $quoteProduct->quote_information_id = $quoteInformationId;
+            $quoteProduct->product = $product;
+            $quoteProduct->status = 2;
+            $quoteProduct->save();
         }
-        dd($request);
+    }
+
+    public function saveQuoteComparison(Request $request)
+    {
+        if($request->ajax())
+        {
+            $quotationInformationId = $request->input('id');
+            $marketId = $request->input('market');
+            $fullPayment = $request->input('fullPayment');
+            $downPayment = $request->input('downPayment');
+            $monthlyPayment = $request->input('monthlyPayment');
+            $brokerFee = $request->input('brokerFee');
+
+            $quoteComparison = new QuoteComparison();
+            $quoteComparison->quotation_product_id = $quotationInformationId;
+            $quoteComparison->quotation_market_id = $marketId;
+            $quoteComparison->full_payment = $fullPayment;
+            $quoteComparison->down_payment = $downPayment;
+            $quoteComparison->monthly_payment = $monthlyPayment;
+            $quoteComparison->broker_fee = $brokerFee;
+            $quoteComparison->save();
+        }
+    }
+
+    public function getComparisonData(Request $request)
+    {
+        if($request->ajax())
+        {
+            $quoteInformationId = $request->input('id');
+            $quoteComparison = QuoteComparison::where('quotation_product_id', $quoteInformationId)->get();
+            $market = QuoationMarket::all();
+            return response()->json(['quoteComparison' => $quoteComparison, 'market' => $market]);
+        }
+    }
+
+    public function updateQuotationComparison(Request $request)
+    {
+        if($request->ajax())
+        {
+            $id = $request->input('id');
+            $marketId = $request->input('market');
+            $fullPayment = $request->input('fullPayment');
+            $downPayment = $request->input('downPayment');
+            $monthlyPayment = $request->input('monthlyPayment');
+            $brokerFee = $request->input('brokerFee');
+            $productId = $request->input('productId');
+
+            $quoteComparison = QuoteComparison::find($id);
+            $quoteComparison->quotation_product_id = $productId;
+            $quoteComparison->quotation_market_id = $marketId;
+            $quoteComparison->full_payment = $fullPayment;
+            $quoteComparison->down_payment = $downPayment;
+            $quoteComparison->monthly_payment = $monthlyPayment;
+            $quoteComparison->broker_fee = $brokerFee;
+            $quoteComparison->save();
+        }
+    }
+
+    public function deleteQuotationComparison(Request $request)
+    {
+        if($request->ajax())
+        {
+            $id = $request->input('id');
+            $quoteComparison = QuoteComparison::find($id);
+            $quoteComparison->delete();
+        }
     }
 }

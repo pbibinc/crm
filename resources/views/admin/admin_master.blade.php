@@ -32,7 +32,7 @@
     <!-- DataTables -->
     <link href="{{asset('backend/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css')}}" rel="stylesheet" type="text/css" />
 
-    
+
     <link href="{{ asset('backend/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('backend/assets/libs/datatables.net-select-bs4/css/select.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
 
@@ -224,6 +224,12 @@
 
 <!-- Sweet alert init js-->
 <script src="{{asset('backend/assets/js/pages/sweet-alerts.init.js')}}"></script>
+
+<!-- form mask -->
+<script src="{{ asset('backend/assets/libs/inputmask/jquery.inputmask.min.js') }}"></script>
+
+<!-- form mask init -->
+<script src="{{ asset('backend/assets/js/pages/form-mask.init.js') }}"></script>
 
 
 <script>
