@@ -14,10 +14,9 @@ class QuotationProduct extends Model
 
     protected $fillable = [
         'quote_information_id',
-        'product_id',
-        'quantity',
-        'price',
-        'total',
+        'product',
+        'sent_out_date',
+        'status',
     ];
 
     public function QouteComparison()
@@ -34,9 +33,11 @@ class QuotationProduct extends Model
     {
         return self::where('quote_information_id', $quote_information_id)
             ->where('product', $product)
-            ->first()
-            ->id;
+            ->first();
+    }
 
-
+    public function quotedProduct()
+    {
+        return self::where('status', 1)->get();
     }
 }

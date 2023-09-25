@@ -121,6 +121,7 @@ class QuotationController extends Controller
             $downPayment = $request->input('downPayment');
             $monthlyPayment = $request->input('monthlyPayment');
             $brokerFee = $request->input('brokerFee');
+            $reccomended = $request->input('reccomended');
 
             $quoteComparison = new QuoteComparison();
             $quoteComparison->quotation_product_id = $quotationInformationId;
@@ -129,6 +130,7 @@ class QuotationController extends Controller
             $quoteComparison->down_payment = $downPayment;
             $quoteComparison->monthly_payment = $monthlyPayment;
             $quoteComparison->broker_fee = $brokerFee;
+            $quoteComparison->recommended = $reccomended == 'true' ? 1  : 0;
             $quoteComparison->save();
         }
     }
@@ -154,6 +156,7 @@ class QuotationController extends Controller
             $downPayment = $request->input('downPayment');
             $monthlyPayment = $request->input('monthlyPayment');
             $brokerFee = $request->input('brokerFee');
+            $reccomended = $request->input('reccomended');
             $productId = $request->input('productId');
 
             $quoteComparison = QuoteComparison::find($id);
@@ -163,6 +166,7 @@ class QuotationController extends Controller
             $quoteComparison->down_payment = $downPayment;
             $quoteComparison->monthly_payment = $monthlyPayment;
             $quoteComparison->broker_fee = $brokerFee;
+            $quoteComparison->recommended = $reccomended == 'true' ? 1  : 0;
             $quoteComparison->save();
         }
     }
@@ -175,5 +179,27 @@ class QuotationController extends Controller
             $quoteComparison = QuoteComparison::find($id);
             $quoteComparison->delete();
         }
+    }
+
+    public function sendQuotationProduct(Request $request)
+    {
+        if($request->ajax())
+        {
+            $id = $request->input('id');
+            $quoteProduct = QuotationProduct::find($id);
+            $quoteProduct->status = 1;
+            $quoteProduct->sent_out_date = Carbon::now();
+            $quoteProduct->save();
+        }
+    }
+
+    public function getQuotedProduct(Request $request)
+    {
+
+        if($request->ajax())
+        {
+
+        }
+        return view('leads.broker_leads.assign-quoted-leads');
     }
 }

@@ -232,9 +232,9 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
               classValue="mb-4"
               rowContent={[
                 <Column
-                  key="propertyAddress"
+                  key="propertyAddressColumn"
                   classValue="col-12"
-                  colContent={[
+                  colContent={
                     <>
                        <Label labelContent="Property Address"/>
                        <Form.Control
@@ -245,9 +245,8 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                           value={propertyAddress}
                         />
                     </>
-                  ]}
+                  }
                 />,
-
                 ]}
             />
             <Row
@@ -256,7 +255,7 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                 <Column
                   key="lossPayeeInformation"
                   classValue="col-6"
-                  colContent={[
+                  colContent={
                     <>
                        <Label labelContent="Loss Payee Information"/>
                        <Form.Control
@@ -266,12 +265,12 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                             value={lossPayeeInformation}
                         />
                     </>
-                  ]}
+                  }
                 />,
                 <Column
                   key="buildingIndustry"
                   classValue="col-6"
-                  colContent={[
+                  colContent={
                     <>
                        <Label labelContent="Building Industry"/>
                        <Select
@@ -283,7 +282,7 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                           value={buildingIndustry}
                        />
                     </>
-                  ]}
+                  }
                 />,
 
                 ]}
@@ -294,7 +293,7 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                 <Column
                   key="occupancyColumn"
                   classValue="col-6"
-                  colContent={[
+                  colContent={
                     <>
                        <Label labelContent="Occupancy (Who owns the building?)"/>
                        <Select
@@ -306,12 +305,12 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                             value={occupancy}
                         />
                     </>
-                  ]}
+                  }
                 />,
                 <Column
                   key="costOfBuildingColumn"
                   classValue="col-6"
-                  colContent={[
+                  colContent={
                     <>
                        <Label labelContent="Value of Cost of the Building"/>
                        <NumericFormat
@@ -327,7 +326,7 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                            value={costOfBuilding}
                          />
                     </>
-                  ]}
+                  }
                 />,
 
                 ]}
@@ -338,7 +337,7 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                 <Column
                   key="businessPropertyLimitColumn"
                   classValue="col-6"
-                  colContent={[
+                  colContent={
                     <>
                        <Label labelContent="What is the business property limit"/>
                        <NumericFormat
@@ -354,12 +353,12 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                            value={buildingPropertyLimit}
                          />
                     </>
-                  ]}
+                  }
                 />,
                 <Column
                   key="buildingConstructionTypeColumn"
                   classValue="col-6"
-                  colContent={[
+                  colContent={
                     <>
                        <Label labelContent="Building Construction Type"/>
                         <Select
@@ -371,7 +370,7 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                              value={buildingConstructionType}
                         />
                     </>
-                  ]}
+                  }
                 />,
 
                 ]}
@@ -383,7 +382,7 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                 <Column
                   key="yearBuiltColumn"
                   classValue="col-6"
-                  colContent={[
+                  colContent={
                     <>
                        <Label labelContent="Year Built"/>
                        <InputMask
@@ -395,7 +394,7 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                             value={yearBuilt}
                        />
                     </>
-                  ]}
+                  }
                 />,
 
                 ]}
@@ -407,7 +406,7 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
             <Column
               key="squareFootageColumn"
               classValue="col-6"
-              colContent={[
+              colContent={
                 <>
                     <Label labelContent="Square Footage"/>
                     <Form.Control
@@ -417,12 +416,12 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                        value={squareFootage}
                     />
                 </>
-              ]}
+              }
             />,
             <Column
               key="numberOfFlooersColumn"
               classValue="col-6"
-              colContent={[
+              colContent={
                 <>
                     <Label labelContent="Number of Floors"/>
                     <Form.Control
@@ -433,10 +432,9 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                     />
                 </>
 
-              ]}
+              }
             />,
         ]}
-
       />
        <Row
         classValue="mb-4"
@@ -444,7 +442,7 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
             <Column
               key="automaticSprinklerSystemColumn"
               classValue="col-6"
-              colContent={[
+              colContent={
                 <>
                     <Label labelContent="Automatic Sprinkler System"/>
                     <Select
@@ -460,12 +458,12 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                    />
 
                 </>
-              ]}
+              }
             />,
             <Column
               key="automaticFireAlarmColumn"
               classValue="col-6"
-              colContent={[
+              colContent={
                 <>
                     <Label labelContent="Automatic Fire Alarm"/>
                     <Select
@@ -480,10 +478,9 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                     value={automaticFireAlarm}
                    />
                 </>
-              ]}
+              }
             />,
         ]}
-
       />
 
       <Row
@@ -492,7 +489,7 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
             <Column
               key="distanceToNearestFireHydrantColumn"
               classValue="col-6"
-              colContent={[
+              colContent={
                 <>
                     <Label labelContent="Distance to Nearest Fire Hydrant"/>
                     <Form.Control
@@ -502,12 +499,12 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                        value={distanceToNearestFireHydrant}
                     />
                 </>
-              ]}
+              }
             />,
             <Column
               key="distanceToNearestFireStationColumn"
               classValue="col-6"
-              colContent={[
+              colContent={
                 <>
                     <Label labelContent="Distance to Nearest Fire Station"/>
                     <Form.Control
@@ -518,18 +515,18 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                     />
                 </>
 
-              ]}
+              }
             />,
         ]}
-
       />
+
        <Row
          classValue="mb-4"
          rowContent={[
             <Column
               key="commercialCoockingColumn"
               classValue="col-12"
-              colContent={[
+              colContent={
                 <>
                   <Label labelContent="Automatic Commercial Cooking Extinguishing System"/>
                   <Select
@@ -544,18 +541,19 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                     value={automaticCommercialCookingExtinguishingSystem}
                    />
                 </>
-                  ]}
+                  }
             />,
 
          ]}
         />
+
         <Row
          classValue="mb-4"
          rowContent={[
             <Column
               key="automaticBurglarAlarmColumn"
               classValue="col-6"
-              colContent={[
+              colContent={
                 <>
                   <Label labelContent="Automatic Burglar Alarm"/>
                   <Select
@@ -571,12 +569,12 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                     value={automaticBurglarAlarm}
                    />
                 </>
-                  ]}
+                  }
             />,
             <Column
             key="securityCameraColumn"
             classValue="col-6"
-            colContent={[
+            colContent={
               <>
                 <Label labelContent="Security Camera"/>
                 <Select
@@ -592,18 +590,18 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                   value={securityCamera}
                  />
               </>
-                ]}
+                }
           />,
 
          ]}
         />
-           <Row
+        <Row
               classValue="mb-4"
               rowContent={[
                 <Column
                   key="lastUpdateRoofingYearColumn"
                   classValue="col-6"
-                  colContent={[
+                  colContent={
                     <>
                        <Label labelContent="Last Update to Roofing Year"/>
                        <InputMask
@@ -615,12 +613,12 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                             value={lastUpdateRoofingYear}
                        />
                     </>
-                  ]}
+                  }
                 />,
                 <Column
                   key="lastUpdateHeartingYearColumn"
                   classValue="col-6"
-                  colContent={[
+                  colContent={
                     <>
                         <Label labelContent="Last Update to Heating Year"/>
                         <InputMask
@@ -633,7 +631,7 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                        />
                     </>
 
-                  ]}
+                  }
                 />,
             ]}
         />
@@ -644,7 +642,7 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                 <Column
                   key="lastUpdatePlumbingYearColumn"
                   classValue="col-6"
-                  colContent={[
+                  colContent={
                     <>
                        <Label labelContent="Last Update to Plumbing Year"/>
                        <InputMask
@@ -656,12 +654,12 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                             value={lastUpdatePlumbingYear}
                        />
                     </>
-                  ]}
+                  }
                 />,
                 <Column
                   key="lastUpdateElectricalYearColumn"
                   classValue="col-6"
-                  colContent={[
+                  colContent={
                     <>
                         <Label labelContent="Last Update to Electrical Year"/>
                         <InputMask
@@ -674,7 +672,7 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                        />
                     </>
 
-                  ]}
+                  }
                 />,
             ]}
         />
@@ -740,7 +738,7 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                 <Column
                   key="amountOfBusinessOwnersPolicyColumn"
                   classValue="col-6"
-                  colContent={[
+                  colContent={
                     <>
                        <Label labelContent="Amount of Business Owners Policy"/>
                        <NumericFormat
@@ -756,11 +754,11 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                             value={amountOfBusinessOwnersPolicy}
                          />
                     </>
-                  ]}
+                  }
                 />,
 
                 ]}
-        />
+         />
          <Row
             classValue="mb-3"
             rowContent={
@@ -877,7 +875,7 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                               />
                           </>
                       }
-                  />,
+                   />,
               ]}
           />
 
@@ -934,7 +932,7 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
                 }
             />
 
-<Row
+            <Row
                 classValue="mb-3"
                 rowContent={[
 

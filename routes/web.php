@@ -132,6 +132,8 @@ Route::prefix('quoataion')->group(function (){
     Route::get('/get-comparison-data', [QuotationController::class, 'getComparisonData'])->name('get-comparison-data');
     Route::post('/update-quotation-comparison', [QuotationController::class, 'updateQuotationComparison'])->name('update-quotation-comparison');
     Route::post('/delete-quotation-comparison', [QuotationController::class, 'deleteQuotationComparison'])->name('delete-quotation-comparison');
+    Route::post('/send-quotation-product', [QuotationController::class, 'sendQuotationProduct'])->name('send-quotation-product');
+    Route::get('/get-quoted-product', [QuotationController::class, 'getQuotedProduct'])->name('get-quoted-product');
 });
 
 Route::prefix('call-back')->group(function (){

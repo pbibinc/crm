@@ -72,7 +72,7 @@
             url: "{{ route('get-comparison-data') }}",
             headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             method: "GET",
-            data: {id: {{$quoteProduct}}},
+            data: {id: {{$quoteProduct->id}}},
             success: function(data){
                 quoteComparison = data.quoteComparison;
                 market = data.market;
@@ -283,7 +283,7 @@
             var downPayment = $card.find('#downPayment').val();
             var monthlyPayment = $card.find('#monthlyPayment').val();
             var brokerFee = $card.find('#brokerFee').val();
-            var id = {{$quoteProduct}};
+            var id = {{$quoteProduct->id}};
 
 
             var formData = {
@@ -330,7 +330,7 @@
             var downPayment = $card.find('#downPayment').val();
             var monthlyPayment = $card.find('#monthlyPayment').val();
             var brokerFee = $card.find('#brokerFee').val();
-            var productId = {{$quoteProduct}};
+            var productId = {{$quoteProduct->id}};
             var id = $card.find('#quoteComparisonId').val();
 
             var formData = {
