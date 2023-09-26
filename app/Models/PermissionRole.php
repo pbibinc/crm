@@ -10,4 +10,6 @@ class PermissionRole extends Model
     use HasFactory;
 
     protected $table = 'permission_role';
+
+    public $timestamps = false;
 }
