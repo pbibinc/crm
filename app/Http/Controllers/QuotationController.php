@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\BrokerQuotation;
 use App\Models\GeneralLiabilities;
 use App\Models\Lead;
 use App\Models\QuoationMarket;
@@ -14,6 +15,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
 class QuotationController extends Controller
@@ -195,11 +198,66 @@ class QuotationController extends Controller
 
     public function getQuotedProduct(Request $request)
     {
+        $userProfile = new UserProfile();
 
         if($request->ajax())
         {
+            $quotationProduct = new QuotationProduct();
+            $quotedProduct = $quotationProduct->quotedProduct();
+            // Log::info('test the full american name', [$quotedProduct->QuoteInformation->QuoteLead->userProfile->fullAmericanName()]);
+            return DataTables::of($quotedProduct)
+            ->addColumn('formatted_sent_out_date', function($quotedProduct){
+                $sentOutDate = $quotedProduct->sent_out_date ? Carbon::parse($quotedProduct->sent_out_date)->format('Y-m-d H:i:s') : 'N/A';
+                return $sentOutDate;
+            })
+            ->addColumn('lead', function($quotedProduct){
+                $lead = $quotedProduct->QuoteInformation->QuoteLead->leads->company_name;
+                return $lead;
+            })
+            ->addColumn('market_specialist', function($quotedProduct){
+                $marketSpecialist = $quotedProduct->QuoteInformation->QuoteLead->userProfile->fullAmericanName();
+                return $marketSpecialist;
+            })
+            ->addColumn('checkBox', function($quotedProduct){
+                $checkBox = '<input type="checkbox"  class="checkBox" name="quoteProduct" id="quoteProduct" value="'.$quotedProduct->id.'">';
+                return $checkBox;
+            })
+            ->rawColumns(['checkBox'])
+            ->make(true);
+        }
+        return view('leads.broker_leads.assign-quoted-leads', compact('userProfile'));
+    }
+
+    public function assignBrokerAssistant(Request $request)
+    {
+        if($request->ajax())
+        {
+            try{
+                DB::beginTransaction();
+                $productIds = $request->input('id');
+                if($request->input('marketSpecialistUserProfileId')){
+                 $userProfileId = $request->input('marketSpecialistUserProfileId');
+                }else{
+                 $userProfileId = $request->input('agentUserProfileId');
+                }
+                foreach($productIds as $productId)
+                {
+                   $brokerQuotation = new BrokerQuotation();
+                   $brokerQuotation->quotation_product_id = $productId;
+                   $brokerQuotation->user_profile_id = $userProfileId;
+                   $brokerQuotation->assign_date = Carbon::now();
+                   $brokerQuotation->save();
+
+                   $quotationProduct = QuotationProduct::find($productId);
+                   $quotationProduct->status = 3;
+                   $quotationProduct->save();
+                }
+                DB::commit();
+            }catch(\Exception $e){
+                DB::rollback();
+                Log::error('Error in assign broker assistant', [$e->getMessage()]);
+            }
 
         }
-        return view('leads.broker_leads.assign-quoted-leads');
     }
 }

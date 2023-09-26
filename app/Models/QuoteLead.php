@@ -21,4 +21,14 @@ class QuoteLead extends Model
         return $this->hasOne(QuoteInformation::class, 'quoting_lead_id');
     }
 
+    public function leads()
+    {
+        return $this->belongsTo(Lead::class, 'leads_id');
+    }
+
+    public function userProfile()
+    {
+        return $this->belongsTo(UserProfile::class, 'user_profiles_id');
+    }
+
 }
