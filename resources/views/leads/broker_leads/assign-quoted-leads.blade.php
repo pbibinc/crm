@@ -118,10 +118,9 @@
             $(".productCheckBox:checked").each(function(){
                 idsArr.push($(this).val());
             });
-
             if(idsArr.length <=0)
             {
-                alert("Please select atleast one record to assign.");
+               alert("Please select atleast one record to assign.");
             }  else {
                 if(brokerAssistantId || agentUserProfileId)
                  {

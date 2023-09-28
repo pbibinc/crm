@@ -53,8 +53,10 @@
             headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             method: "POST",
             data: {leadId:leadId},
-            success: function(){
-                window.location.href = "{{ url('quoataion/lead-profile-view') }}";
+            success: function(data){
+                // console.log(data.lead);
+                // console.log(data.generalInformation);
+                window.location.href = `{{ url('quoataion/lead-profile-view/${data.lead}/${data.generalInformation}') }}`;
             }
         })
       })

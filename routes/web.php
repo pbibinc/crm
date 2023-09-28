@@ -126,7 +126,7 @@ Route::prefix('list-leads')->group(function  () {
 Route::prefix('quoataion')->group(function (){
     Route::get('/appointed-leads', [QuotationController::class, 'appointedLeadsView'])->name('appointed-leads');
     Route::post('/lead-profile', [QuotationController::class, 'leadProfile'])->name('lead-profile');
-    Route::get('/lead-profile-view', [QuotationController::class, 'leadProfileView'])->name('lead-profile-view');
+    Route::get('/lead-profile-view/{leadId}/{generalInformationId}', [QuotationController::class, 'leadProfileView'])->name('lead-profile-view');
     Route::post('/save-quotation-comparison', [QuotationController::class, 'saveQuoteComparison'])->name('save-quotation-comparison');
     Route::post('/save-quotation-product', [QuotationController::class, 'saveQuotationProduct'])->name('save-quotation-product');
     Route::get('/get-comparison-data', [QuotationController::class, 'getComparisonData'])->name('get-comparison-data');
@@ -135,6 +135,8 @@ Route::prefix('quoataion')->group(function (){
     Route::post('/send-quotation-product', [QuotationController::class, 'sendQuotationProduct'])->name('send-quotation-product');
     Route::get('/get-quoted-product', [QuotationController::class, 'getQuotedProduct'])->name('get-quoted-product');
     Route::post('/assign-broker-assistant', [QuotationController::class, 'assignBrokerAssistant'])->name('assign-broker-assistant');
+    Route::get('/get-pending-product', [QuotationController::class, 'getPendingProduct'])->name('get-pending-product');
+    Route::post('/quoted-product-profile', [QuotationController::class, 'quotedProductProfile'])->name('quoted-product-profile');
 });
 
 Route::prefix('call-back')->group(function (){

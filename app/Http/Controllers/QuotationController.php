@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\BrokerQuotation;
+use App\Models\GeneralInformation;
 use App\Models\GeneralLiabilities;
 use App\Models\Lead;
 use App\Models\QuoationMarket;
@@ -49,21 +50,22 @@ class QuotationController extends Controller
         $lead = Lead::getLeads($request->leadId);
         $generalInformation = $lead->generalInformation;
 
-        $timeLimit = 60 * 60;
-
-        Cache::put('appointedLead', $lead, $timeLimit);
-        Cache::put('generalInformation', $generalInformation, $timeLimit);
-
-
-        return redirect()->route('lead-profile-view');
+        return response()->json(['lead' => $lead->id, 'generalInformation' => $generalInformation->id]);
+        // $timeLimit = 60 * 60;
+        // Cache::put('appointedLead', $lead, $timeLimit);
+        // Cache::put('generalInformation', $generalInformation, $timeLimit);
+        // return redirect()->route('lead-profile-view');
         // return view('leads.appointed_leads.index', compact('lead')
-
     }
-    public function leadProfileView()
+    public function leadProfileView($leadId, $generalInformationId)
     {
-        $lead = Cache::get('appointedLead');
-        $generalInformation = Cache::get('generalInformation');
+
+        // $lead = Cache::get('appointedLead');
+        // $generalInformation = Cache::get('generalInformation');
         // $generalLiabilities = GeneralLiabilities::
+
+        $lead = Lead::find($leadId);
+        $generalInformation = GeneralInformation::find($generalInformationId);
         $timezones = [
             'Eastern' => ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV'],
             'Central' => ['AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI'],
@@ -96,9 +98,10 @@ class QuotationController extends Controller
         $localTime = Carbon::now($timezoneForState);
         $generalLiabilities = $generalInformation->generalLiabilities;
         // dd($generalInformation->id);
-
         return view('leads.appointed_leads.leads-profile', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket'));
     }
+
+
 
     public function saveQuotationProduct(Request $request)
     {
@@ -248,7 +251,6 @@ class QuotationController extends Controller
     {
         if($request->ajax())
         {
-
             try{
                 DB::beginTransaction();
                 $productIds = $request->input('ids');
@@ -269,12 +271,6 @@ class QuotationController extends Controller
                    $quotationProduct = QuotationProduct::find($productId);
                    $quotationProduct->status = 3;
                    $quotationProduct->save();
-
-                   $lead = Lead::find($quotationProduct->QuoteInformation->QuoteLead->leads->id);
-                   if($lead->status == 4){
-                       $lead->status = 5;
-                       $lead->save();
-                   }
                 }
                 DB::commit();
             }catch(\Exception $e){
@@ -284,4 +280,34 @@ class QuotationController extends Controller
             }
         }
     }
+
+    public function getPendingProduct(Request $request)
+    {
+        if($request->ajax())
+        {
+            $quotationProduct = new BrokerQuotation();
+            $userProfileId = Auth::user()->userProfile->id;
+            $pendingProduct = $quotationProduct->getAssignQoutedLead($userProfileId);
+            return DataTables::of($pendingProduct)
+            ->addIndexColumn()
+            ->addColumn('company_name', function($pendingProduct){
+                $lead = $pendingProduct->QuoteInformation->QuoteLead->leads->company_name;
+                return $lead;
+            })
+            ->addColumn('viewButton', function($pendingProduct){
+                $viewButton = '<button class="edit btn btn-info btn-sm viewButton" id="' . $pendingProduct->id . '"><i class="ri-eye-line"></i></button>';;
+                return $viewButton;
+            })
+            ->rawColumns(['viewButton'])
+            ->make(true);
+        }
+
+        return view('leads.broker_leads.index');
+    }
+
+    public function quotedProductProfile(Request $request)
+    {
+        dd($request);
+    }
+
 }
