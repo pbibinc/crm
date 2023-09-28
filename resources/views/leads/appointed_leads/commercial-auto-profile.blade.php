@@ -145,7 +145,7 @@
         <div class="row mb-4">
             <div class="col-6">
                 <b>Vehicle Maintance Program in Operation:</b>
-                {{ $generalInformation->commercialAuto->commercialAutoSupplemental->vehicle_maintenance_program ? 'Yes' : 'No'}}
+                {{ $generalInformation->commercialAuto->commercialAutoSupplemental->vehicle_maintenance_program == 1 ? 'Yes' : 'No'}}
             </div>
             <div class="col-6">
                 <b>Vehicle Customized, altered or have special equipment:</b>

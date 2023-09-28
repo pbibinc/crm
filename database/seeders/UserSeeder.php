@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
             'role_id' => 5,
             'name' => 'admin',
             'email' => 'admin@gmail.com',
-            'password' => 'password',
+            'password' => '$2y$10$rGET1JC4RHIml.EboWuABOxzgNGUB9EQZLTQsjOf2NkkKiOKlCEOi',
             'username' => 'admin',
             'is_admin' => 1
         ]);

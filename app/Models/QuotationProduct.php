@@ -31,9 +31,10 @@ class QuotationProduct extends Model
 
     public static function getQuotationProductByProduct($product , $quote_information_id)
     {
-        return self::where('quote_information_id', $quote_information_id)
+        $query = self::where('quote_information_id', $quote_information_id)
             ->where('product', $product)
             ->first();
+            return $query;
     }
 
     public function quotedProduct()

@@ -18,4 +18,6 @@ class BrokerQuotation extends Model
         'remarks',
     ];
 
+    public $timestamps = false;
+
 }

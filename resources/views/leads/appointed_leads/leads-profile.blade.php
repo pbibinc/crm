@@ -193,13 +193,15 @@
 
             </div>
             <div class="col-4">
+
                 @include('leads.appointed_leads.history-log', ['generalInformation' => $generalInformation])
                 <div class="tab-content p-3 text-muted">
                     <div class="quotation-form" id="generalLiabilitiesQuoationForm" role="tabpanel">
                         @if ($generalInformation->generalLiabilities)
                          @include('leads.appointed_leads.quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('General Liabilities', $lead->quoteLead->QuoteInformation->id)])
-                        @endif
+                         @endif
                     </div>
+
                     <div class="quotation-form" id="workersCompensationForm" role="tabpanel">
                         @if ($generalInformation->workersCompensation)
                            @include('leads.appointed_leads.workers-compensation-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Workers Compensation', $lead->quoteLead->QuoteInformation->id)])
@@ -210,22 +212,22 @@
                          @include('leads.appointed_leads.commercial-auto-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Commercial Auto', $lead->quoteLead->QuoteInformation->id)])
                         @endif
                     </div>
-                    <div class="quotation-form" id="excessLiabilityForm" role="tabpanel">
+                    {{-- <div class="quotation-form" id="excessLiabilityForm" role="tabpanel">
                         @if ($generalInformation->excessLiability)
                          @include('leads.appointed_leads.excess-liability-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Excess Liability', $lead->quoteLead->QuoteInformation->id)])
                         @endif
-                    </div>
-                    <div class="quotation-form" id="toolsEquipmentForm" role="tabpanel">
+                    </div> --}}
+                    {{-- <div class="quotation-form" id="toolsEquipmentForm" role="tabpanel">
                         @if ($generalInformation->buildersRisk)
                           @include('leads.appointed_leads.tools-equipment-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Tools Equipment', $lead->quoteLead->QuoteInformation->id)])
                         @endif
-                    </div>
-                    <div class="quotation-form" id="buildersRiskForm" role="tabpanel">
+                    </div> --}}
+                    {{-- <div class="quotation-form" id="buildersRiskForm" role="tabpanel">
                         @include('leads.appointed_leads.builders-risk-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Builders Risk', $lead->quoteLead->QuoteInformation->id)])
-                    </div>
-                    <div class="quotation-form" id="businessOwnersPolicyForm" role="tabpanel">
+                    </div> --}}
+                    {{-- <div class="quotation-form" id="businessOwnersPolicyForm" role="tabpanel">
                         @include('leads.appointed_leads.business-owners-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Business Owners', $lead->quoteLead->QuoteInformation->id)])
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

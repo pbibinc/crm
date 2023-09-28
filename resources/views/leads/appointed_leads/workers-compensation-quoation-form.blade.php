@@ -5,7 +5,8 @@
             <div class="card-body">
                 <div class="row mb-4">
                     <div class="col-10">
-
+                        <input class="form-check-input" type="checkbox" id="workerscompReccommendedCheckBox">
+                        <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                     </div>
                     <div class="col-2">
                         <button class="btn btn-success" id="addWorkCompPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
@@ -62,6 +63,16 @@
 
         <div id="workerCompContainer"></div>
 
+        <div class="col-12">
+            <div class="d-grid mb-3">
+                @if ($quoteProduct->status === 2)
+                    <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveWorkersCompQuoationProduct">Save Quotation</button>
+                @else
+                <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveWorkersCompQuoationProduct" disabled>Save Quotation</button>
+                @endif
+            </div>
+        </div>
+
     </div>
 
 </div>
@@ -96,7 +107,8 @@
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-8">
-
+                            <input class="form-check-input" type="checkbox" id="workerscompReccommendedCheckBox">
+                            <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                         </div>
                         <div class="col-4 text-right">
                             <button class="btn btn-success addWorkersCompPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
@@ -164,7 +176,8 @@
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-8">
-
+                            <input class="form-check-input" type="checkbox" id="workerscompReccommendedCheckBox">
+                            <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                         </div>
                         <div class="col-4 text-right">
                             <button class="btn btn-success addWorkersCompPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
@@ -283,6 +296,7 @@
             var downPayment = $card.find('#downPayment').val();
             var monthlyPayment = $card.find('#monthlyPayment').val();
             var brokerFee = $card.find('#brokerFee').val();
+            var reccomended = $card.find('#workerscompReccommendedCheckBox').is(':checked');
             var id = {{$quoteProduct->id}};
 
 
@@ -292,6 +306,7 @@
                 downPayment: downPayment,
                 monthlyPayment: monthlyPayment,
                 brokerFee: brokerFee,
+                reccomended: reccomended,
                 id: id
             };
 

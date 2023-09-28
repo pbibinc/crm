@@ -79,7 +79,6 @@
 </div>
 <script>
     $(document).ready(function (){
-
         $('#saveQuoationProduct').on('click', function(){
             var id = {{ $quoteProduct->id }};
             $.ajax({

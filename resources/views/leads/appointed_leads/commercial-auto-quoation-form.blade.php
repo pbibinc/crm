@@ -5,7 +5,8 @@
             <div class="card-body">
                 <div class="row mb-4">
                     <div class="col-10">
-
+                        <input class="form-check-input" type="checkbox" id="reccommendedCommercialAutoCheckBox">
+                        <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                     </div>
                     <div class="col-2">
                         <button class="btn btn-success addCommercialAutoPriceComparison" id="addCommercialAutoPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
@@ -62,11 +63,49 @@
 
         <div id="CommercialAutoContainer"></div>
 
+        <div class="col-12">
+            <div class="d-grid mb-3">
+                @if ($quoteProduct->status === 2)
+                    <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveCommercialAutoQuoationProduct">Save Quotation</button>
+                @else
+                <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveCommercialAutoQuoationProduct" disabled>Save Quotation</button>
+                @endif
+            </div>
+        </div>
+
     </div>
 
 </div>
 <script>
     $(document).ready(function (){
+        $('#saveCommercialAutoQuoationProduct').on('click', function(){
+            var id = {{ $quoteProduct->id }};
+            $.ajax({
+                url: "{{ route('send-quotation-product') }}",
+                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                method: "POST",
+                data: {id: id},
+                success: function(){
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'has been saved',
+                        icon: 'success'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Something went wrong',
+                        icon: 'error'
+                    });
+                    console.log(errorThrown);
+                }
+            });
+        });
         let quoteComparison;
         $.ajax({
             url: "{{ route('get-comparison-data') }}",
@@ -96,7 +135,8 @@
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-8">
-
+                            <input class="form-check-input" type="checkbox" id="reccommendedCommercialAutoCheckBox">
+                        <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                         </div>
                         <div class="col-4 text-right">
                             <button class="btn btn-success addCommercialAutoPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
@@ -164,7 +204,8 @@
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-8">
-
+                            <input class="form-check-input" type="checkbox" id="reccommendedCommercialAutoCheckBox">
+                        <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                         </div>
                         <div class="col-4 text-right">
                             <button class="btn btn-success addCommercialAutoPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>

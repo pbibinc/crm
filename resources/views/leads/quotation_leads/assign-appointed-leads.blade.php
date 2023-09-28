@@ -25,6 +25,7 @@
                             <thead>
                                 <tr>
                                     <th></th>
+                                    <th>ID</th>
                                     <th>Company Name</th>
                                     {{-- <th>State</th> --}}
                                     <th>Products</th>
@@ -93,6 +94,7 @@
             ajax: "{{ route('assign-appointed-lead') }}",
             columns: [
                 {data: 'checkbox', name: 'checkbox'},
+                {data: 'id', name: 'id'},
                 {data: 'company_name', name: 'company_name'},
                 // {data: 'state_abbr', name: 'state_abbr'},
                 {data: 'products', name: 'products'},
