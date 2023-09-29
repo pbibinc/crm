@@ -47,7 +47,7 @@
                 method: "POST",
                 data: {id:$id},
                 success: function(data){
-                    window.location.href = "{{ url('quoataion/quoted-product-profile') }}";
+                    window.location.href = `{{ url('quoataion/broker-profile-view/${data.leadId}/${data.generalInformationId}/${data.productId}') }}`;
                 }
             })
         });

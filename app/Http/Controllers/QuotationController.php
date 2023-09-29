@@ -13,6 +13,7 @@ use App\Models\QuoteComparison;
 use App\Models\UnitedState;
 use App\Models\UserProfile;
 use Carbon\Carbon;
+use Demo\Product;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -51,19 +52,10 @@ class QuotationController extends Controller
         $generalInformation = $lead->generalInformation;
 
         return response()->json(['lead' => $lead->id, 'generalInformation' => $generalInformation->id]);
-        // $timeLimit = 60 * 60;
-        // Cache::put('appointedLead', $lead, $timeLimit);
-        // Cache::put('generalInformation', $generalInformation, $timeLimit);
-        // return redirect()->route('lead-profile-view');
-        // return view('leads.appointed_leads.index', compact('lead')
+
     }
     public function leadProfileView($leadId, $generalInformationId)
     {
-
-        // $lead = Cache::get('appointedLead');
-        // $generalInformation = Cache::get('generalInformation');
-        // $generalLiabilities = GeneralLiabilities::
-
         $lead = Lead::find($leadId);
         $generalInformation = GeneralInformation::find($generalInformationId);
         $timezones = [
@@ -101,7 +93,45 @@ class QuotationController extends Controller
         return view('leads.appointed_leads.leads-profile', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket'));
     }
 
+    public function brokerProfileView($leadId, $generalInformationId, $productId)
+    {
+        $lead = Lead::find($leadId);
+        $generalInformation = GeneralInformation::find($generalInformationId);
+        $product = QuotationProduct::find($productId);
+        $timezones = [
+            'Eastern' => ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV'],
+            'Central' => ['AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI'],
+            'Mountain' => ['AZ', 'CO', 'ID', 'MT', 'NV', 'NM', 'UT', 'WY'],
+            'Pacific' => ['CA', 'OR', 'WA'],
+            'Alaska' => ['AK'],
+            'Hawaii-Aleutian' => ['HI']
+        ];
+        $timezoneStrings = [
+            'Eastern' => 'America/New_York',
+            'Central' => 'America/Chicago',
+            'Mountain' => 'America/Denver',
+            'Pacific' => 'America/Los_Angeles',
+            'Alaska' => 'America/Anchorage',
+            'Hawaii-Aleutian' => 'Pacific/Honolulu'
+        ];
+        $timezoneForState = null;
+        $quationMarket = QuoationMarket::all();
 
+        if(!$lead || !$generalInformation){
+            return redirect()->route('leads.appointed-leads')->withErrors('No DATA found');
+            // dd($lead, $generalInformation );
+        }
+        $usAddress = UnitedState::getUsAddress($generalInformation->zipcode);
+        foreach($timezones as $timezone => $states){
+            if(in_array($lead->state_abbr, $states)){
+                $timezoneForState =  $timezoneStrings[$timezone];
+            }
+        }
+
+        $localTime = Carbon::now($timezoneForState);
+        $generalLiabilities = $generalInformation->generalLiabilities;
+        return view('leads.appointed_leads.broker-lead-profile-view', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product'));
+    }
 
     public function saveQuotationProduct(Request $request)
     {
@@ -295,7 +325,7 @@ class QuotationController extends Controller
                 return $lead;
             })
             ->addColumn('viewButton', function($pendingProduct){
-                $viewButton = '<button class="edit btn btn-info btn-sm viewButton" id="' . $pendingProduct->id . '"><i class="ri-eye-line"></i></button>';;
+                $viewButton = '<button class="edit btn btn-info btn-sm viewButton" id="' . $pendingProduct->id . '"><i class="ri-eye-line"></i></button>';
                 return $viewButton;
             })
             ->rawColumns(['viewButton'])
@@ -307,7 +337,11 @@ class QuotationController extends Controller
 
     public function quotedProductProfile(Request $request)
     {
-        dd($request);
+        $productId = $request->input('id');
+        $leadId = QuotationProduct::find($productId)->QuoteInformation->QuoteLead->leads->id;
+        $generalInformationId = QuotationProduct::find($productId)->QuoteInformation->QuoteLead->leads->generalInformation->id;
+
+        return response()->json(['leadId' => $leadId, 'generalInformationId' => $generalInformationId, 'productId' => $productId]);
     }
 
 }

@@ -11,7 +11,7 @@
 
                 <div class="row">
                     <div>
-                        <h6>Contact <i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
+                        <h6>Contact<i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
                         <div class="card">
                             <div class="card-body">
                                 <div class="col-6">
@@ -88,60 +88,60 @@
                         <div class="card">
                             <div class="card-body">
                                 <ul class="nav nav-pills nav-justified" role="tablist">
-                                    @if ($generalInformation->generalLiabilities)
+                                    @if ($product->product == 'General Liabilities')
                                     <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link navProfile active" data-bs-toggle="tab" href="#generalLiabilites" role="tab" id="generalLiabilitiesButton">
+                                        <a class="nav-link active" data-bs-toggle="tab" href="#generalLiabilites" role="tab" id="generalLiabilitiesButton">
                                             <span class="d-block d-sm-none"><i class="ri-umbrella-fill"></i></span>
-                                            <span class="d-none d-sm-block">GL<i class="ri-umbrella-fill"  style="vertical-align: middle;"></i></span>
+                                            <span class="d-none d-sm-block">General Liabilities<i class="ri-umbrella-fill"  style="vertical-align: middle;"></i></span>
                                         </a>
                                     </li>
                                     @endif
-                                    @if ($generalInformation->workersCompensation)
+                                    @if ($product->product == 'Workers Compensation')
                                     <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link navProfile" data-bs-toggle="tab" href="#workersCompensation" role="tab">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#workersCompensation" role="tab">
                                             <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
-                                            <span class="d-none d-sm-block">WC<i class="ri-admin-fill" style="vertical-align: middle;"></i></span>
+                                            <span class="d-none d-sm-block">Workers Compensation<i class="ri-admin-fill" style="vertical-align: middle;"></i></span>
                                         </a>
                                     </li>
                                     @endif
-                                    @if ($generalInformation->commercialAuto)
+                                    @if ($product->product == 'Commercial Auto')
                                     <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link navProfile" data-bs-toggle="tab" href="#commercialAuto" role="tab">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#commercialAuto" role="tab">
                                             <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
-                                            <span class="d-none d-sm-block">CA<i class="ri-car-fill" style="vertical-align: middle;"></i></span>
+                                            <span class="d-none d-sm-block">Commercial Auto<i class="ri-car-fill" style="vertical-align: middle;"></i></span>
                                         </a>
                                     </li>
                                     @endif
-                                    @if ($generalInformation->excessLiability)
+                                    @if ($product->product == 'Excess Liabilities')
                                     <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link navProfile" data-bs-toggle="tab" href="#excessLiabiliy" role="tab">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#excessLiabiliy" role="tab">
                                             <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
-                                            <span class="d-none d-sm-block">EL<i class=" ri-hand-coin-fill" style="vertical-align: middle;"></i></span>
+                                            <span class="d-none d-sm-block">Commercial Auto<i class=" ri-hand-coin-fill" style="vertical-align: middle;"></i></span>
                                         </a>
                                     </li>
                                     @endif
-                                    @if ($generalInformation->toolsEquipment)
+                                    @if ($product->product == 'Tools Equipment')
                                     <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link navProfile" data-bs-toggle="tab" href="#toolsEquipment" role="tab">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#toolsEquipment" role="tab">
                                             {{-- <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span> --}}
-                                            <span class="d-none d-sm-block">TE<i class="ri-tools-fill" style="vertical-align: middle;"></i></span>
+                                            <span class="d-none d-sm-block">Tools Equipment<i class="ri-tools-fill" style="vertical-align: middle;"></i></span>
 
                                         </a>
                                     </li>
                                     @endif
-                                    @if ($generalInformation->buildersRisk)
+                                    @if ($product->product == 'Builders Risk')
                                     <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link navProfile" data-bs-toggle="tab" href="#buildersRisk" role="tab">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#buildersRisk" role="tab">
                                             <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
-                                            <span class="d-none d-sm-block">BR<i class="ri-building-fill" style="vertical-align: middle;"></i></span>
+                                            <span class="d-none d-sm-block">Builders Risk<i class="ri-building-fill" style="vertical-align: middle;"></i></span>
                                         </a>
                                     </li>
                                     @endif
-                                    @if ($generalInformation->businessOwnersPolicy)
+                                    @if ($product->product == 'Business Owners')
                                     <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link navProfile" data-bs-toggle="tab" href="#bop" role="tab">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#bop" role="tab">
                                             <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
-                                            <span class="d-none d-sm-block">BOP<i class="ri-suitcase-fill" style="vertical-align: middle;"></i></span>
+                                            <span class="d-none d-sm-block">Business Owners<i class="ri-suitcase-fill" style="vertical-align: middle;"></i></span>
                                         </a>
                                     </li>
                                     @endif
@@ -153,38 +153,38 @@
 
                 <div class="row">
                     <div class="tab-content p-3 text-muted">
-                        @if ($generalInformation->generalLiabilities)
-                         <div class="tab-pane active" id="generalLiabilites" role="tabpanel">
+                        @if ($product->product == 'General Liabilities')
+                         <div class="tab-pane active" id="brokerGeneralLiabilites" role="tabpanel">
                             @include('leads.appointed_leads.general-liability-profile', ['generalLiabilities' => $generalLiabilities])
                          </div>
                         @endif
-                        @if ($generalInformation->workersCompensation)
-                         <div class="tab-pane" id="workersCompensation" role="tabpanel">
+                        @if ($product->product == 'Workers Compensation')
+                         <div class="tab-pane" id="brokerWorkersCompensation" role="tabpanel">
                             @include('leads.appointed_leads.workers-comp-profile', ['generalInformation' => $generalInformation])
                          </div>
                         @endif
-                        @if ($generalInformation->commercialAuto)
-                          <div class="tab-pane" id="commercialAuto" role="tabpanel">
+                        @if ($product->product == 'Commercial Auto')
+                          <div class="tab-pane" id="brokerCommercialAuto" role="tabpanel">
                             @include('leads.appointed_leads.commercial-auto-profile', ['generalInformation' => $generalInformation])
                           </div>
                         @endif
-                        @if ($generalInformation->excessLiability)
-                        <div class="tab-pane" id="excessLiabiliy" role="tabpanel">
+                        @if ($product->product == 'Excess Liabilities')
+                        <div class="tab-pane" id="brokerExcessLiabiliy" role="tabpanel">
                             @include('leads.appointed_leads.excess-liability-profile', ['generalInformation' => $generalInformation])
                         </div>
                         @endif
-                        @if ($generalInformation->toolsEquipment)
-                         <div class="tab-pane" id="toolsEquipment" role="tabpanel">
+                        @if ($product->product == 'Tools Equipment')
+                         <div class="tab-pane" id="brokerToolsEquipment" role="tabpanel">
                             @include('leads.appointed_leads.tools-equipment-profile', ['generalInformation' => $generalInformation])
                          </div>
                         @endif
-                        @if ($generalInformation->buildersRisk)
-                          <div class="tab-pane" id="buildersRisk" role="tabpanel">
+                        @if ($product->product == 'Builders Risk')
+                          <div class="tab-pane" id="brokerBuildersRisk" role="tabpanel">
                             @include('leads.appointed_leads.builders-risk-profile', ['generalInformation' => $generalInformation])
                            </div>
                         @endif
-                        @if ($generalInformation->businessOwnersPolicy)
-                        <div class="tab-pane" id="bop" role="tabpanel">
+                        @if ($product->product == 'Business Owners')
+                        <div class="tab-pane" id="brokerBop" role="tabpanel">
                             @include('leads.appointed_leads.business-owners-profile', ['generalInformation' => $generalInformation])
                         </div>
                         @endif
@@ -192,25 +192,30 @@
                 </div>
 
             </div>
+
             <div class="col-4">
                 @include('leads.appointed_leads.history-log', ['generalInformation' => $generalInformation])
+
                 <div class="tab-content p-3 text-muted">
+
                     <div class="quotation-form" id="generalLiabilitiesQuoationForm" role="tabpanel">
-                        @if ($generalInformation->generalLiabilities )
+                        @if ($product->product == 'General Liabilities' )
                          @include('leads.appointed_leads.quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('General Liabilities', $lead->quoteLead->QuoteInformation->id)])
                          @endif
                     </div>
 
                     <div class="quotation-form" id="workersCompensationForm" role="tabpanel">
-                        @if ($generalInformation->workersCompensation)
+                        @if ($product->product == 'Workers Compensation')
                            @include('leads.appointed_leads.workers-compensation-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Workers Compensation', $lead->quoteLead->QuoteInformation->id)])
                         @endif
                     </div>
+
                     <div class="quotation-form" id="commercialAutoForm" role="tabpanel">
-                        @if ($generalInformation->commercialAuto)
+                        @if ($product->product == 'Commercial Auto')
                          @include('leads.appointed_leads.commercial-auto-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Commercial Auto', $lead->quoteLead->QuoteInformation->id)])
                         @endif
                     </div>
+
                     {{-- <div class="quotation-form" id="excessLiabilityForm" role="tabpanel">
                         @if ($generalInformation->excessLiability)
                          @include('leads.appointed_leads.excess-liability-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Excess Liability', $lead->quoteLead->QuoteInformation->id)])
@@ -231,37 +236,17 @@
             </div>
         </div>
     </div>
-
 </div>
-
 <script>
     $(document).ready(function (){
-        $('.quotation-form').hide()
-        var target = '#generalLiabilitiesQuoationForm';
-        $(target).show();
-        $('.navProfile').on('click', function(){
-            $('.quotation-form').hide()
-            target = $(this).attr('href');
-            if(target == '#generalLiabilites'){
-                $('#generalLiabilitiesQuoationForm').show();
-            }else if(target == '#workersCompensation'){
-                $('#workersCompensationForm').show();
-            }else if(target == '#commercialAuto'){
-                $('#commercialAutoForm').show();
-            }else if(target == '#excessLiabiliy'){
-                $('#excessLiabilityForm').show();
-            }
-            else if(target == '#toolsEquipment'){
-                $('#toolsEquipmentForm').show();
-            }
-            else if(target == '#buildersRisk'){
-                $('#buildersRiskForm').show();
-            }
-            else if(target == '#bop'){
-                $('#businessOwnersPolicyForm').show();
-            }
-        });
-
+        var product ={!! json_encode($product->product) !!};
+        if(product == 'General Liabilties'){
+            $('#brokerGeneralLiabilites').show();
+        }else if(product == 'Workers Compensation'){
+            $('#brokerWorkersCompensation').show();
+        }else if(product == 'Commercial Auto'){
+            $('#brokerCommercialAuto').show();
+        }
     });
 </script>
 @endsection

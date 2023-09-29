@@ -4,57 +4,43 @@
       max-height: 600px;
      }
 </style>
-<h6>History Logs <i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
+<h6>Logs & Activities <i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
     <div class="card">
         <div class="card-body">
-            <div class="scrollable">
-                <section id="cd-timeline" class="cd-container">
-                    <div class="cd-timeline-block">
-                        <div class="cd-timeline-img cd-success">
-                            <i class="mdi mdi-cloud-upload"></i>
-                        </div>
-                        <div class="cd-timeline-content">
-                            <p class="mb-0 text-muted font-14">Leads Has been uploaded.</p>
-                            <span class="cd-date">{{ \Carbon\Carbon::parse($generalInformation->lead->created_at)->format('M-j-Y g:iA') }}</span>
-                        </div>
+            <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#activityLogs" role="tab" aria-selected="false">
+                        <span class="d-none d-sm-block">Activity Log</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#logNotes" role="tab" aria-selected="false">
+                        <span class="d-none d-sm-block">Notes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#createNotes" role="tab" aria-selected="false">
+                        <span class="d-none d-sm-block">Create Notes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#settings1" role="tab" aria-selected="true">
+                        <span class="d-none d-sm-block">File Upload</span>
+                    </a>
+                </li>
+            </ul>
 
-                    </div>
-                    @foreach ($generalInformation->lead->leadHistories as $leadHistory)
-                    <div class="cd-timeline-block">
-
-                        @php
-                        $changes = json_decode($leadHistory->changes);
-                        @endphp
-                            @if (isset($changes->assigned_at))
-                            <div class="cd-timeline-img cd-success">
-                                <i class="mdi mdi-account-arrow-left"></i>
-                            </div>
-                            <div class="cd-timeline-content">
-                                <p class="mb-0 text-muted font-14">Assigned to: {{ $leadHistory->userProfile->fullName()}}.</p>
-                                <span class="cd-date">{{ \Carbon\Carbon::parse($changes->assigned_at)->format('M-j-Y g:iA')}}</span>
-                            </div>
-                            @elseif (isset($changes->reassigned_at))
-                            <div class="cd-timeline-img cd-success">
-                                <i class="mdi mdi-account-arrow-right"></i>
-                            </div>
-                            <div class="cd-timeline-content">
-                                <p class="mb-0 text-muted font-14">Reassigned to: {{ $leadHistory->userProfile->fullName()}}.</p>
-                                <span class="cd-date">{{ \Carbon\Carbon::parse($changes->reassigned_at)->format('M-j-Y g:iA')}}</span>
-                            </div>
-                            @elseif (isset($changes->appointed_by))
-                            <div class="cd-timeline-img cd-success">
-                                <i class="mdi mdi-book-edit"></i>
-                            </div>
-                            <div class="cd-timeline-content">
-                                <p class="mb-0 text-muted font-14">Application Taken by: {{ $leadHistory->userProfile->fullName() }}.</p>
-                                <span class="cd-date">{{  \Carbon\Carbon::parse($changes->appointed_by)->format('M-j-Y g:iA') }}</span>
-                            </div>
-
-                            @endif
-
-                    </div>
-                    @endforeach
-                </section>
+            <div class="tab-content p-3 text-muted">
+                <div class="tab-pane" id="activityLogs" role="tabpanel">
+                    @include('leads.appointed_leads.log-activity.activity-log', ['generalInformation' => $generalInformation])
+                </div>
+                <div class="tab-pane" id="logNotes" role="tabpanel">
+                    @include('leads.appointed_leads.log-activity.notes-log', ['generalInformation' => $generalInformation])
+                </div>
+                <div class="tab-pane" id="createNotes" role="tabpanel">
+                    @include('leads.appointed_leads.log-activity.create-notes', ['generalInformation' => $generalInformation])
+                </div>
             </div>
-        </div>
     </div>
+</div>
+

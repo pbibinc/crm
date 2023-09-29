@@ -30,6 +30,7 @@ use App\Http\Controllers\DashboardControllerNew;
 use App\Http\Controllers\TecnickcomPdfController;
 use App\Http\Controllers\CompanyHandbookController;
 use App\Http\Controllers\EmbeddedSignatureController;
+use App\Http\Controllers\NotesController;
 use App\Http\Controllers\QuotationController;
 use Illuminate\Support\Facades\App;
 
@@ -137,6 +138,8 @@ Route::prefix('quoataion')->group(function (){
     Route::post('/assign-broker-assistant', [QuotationController::class, 'assignBrokerAssistant'])->name('assign-broker-assistant');
     Route::get('/get-pending-product', [QuotationController::class, 'getPendingProduct'])->name('get-pending-product');
     Route::post('/quoted-product-profile', [QuotationController::class, 'quotedProductProfile'])->name('quoted-product-profile');
+    Route::get('/broker-profile-view/{leadId}/{generalInformationId}/{productId}', [QuotationController::class, 'brokerProfileView'])->name('broker-profile-view');
+    Route::post('/create-notes', [NotesController::class, 'createNotes'])->name('create-notes');
 });
 
 Route::prefix('call-back')->group(function (){

@@ -132,5 +132,10 @@ class Lead extends Model
         return $this->hasOne(QuoteLead::class, 'leads_id');
     }
 
+    public function notes()
+    {
+        return $this->hasMany(LeadNotes::class, 'lead_id');
+    }
+
 
 }
