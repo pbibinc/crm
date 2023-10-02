@@ -23,7 +23,7 @@
 
 <script>
     $(document).ready(function(){
-        $('#createNotes').on('click', function(){
+        $('#createNotes').on('click', '#logNote', function(){
             var noteTitle = $('#noteTitle').val();
             var noteDescription = $('#noteDescription').val();
             var leadId = {!! json_encode($generalInformation->lead->id) !!};

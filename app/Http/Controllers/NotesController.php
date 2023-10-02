@@ -25,4 +25,13 @@ class NotesController extends Controller
         $leadNotes->description = $noteDescription;
         $leadNotes->save();
     }
+
+    public function getNotes($id)
+    {
+        if(request()->ajax()){
+            $leadNotes = LeadNotes::findorFail($id);
+            $fullamericanName = $leadNotes->userProfile->fullAmericanName();
+            return response()->json(['result' => $leadNotes, 'fullamericanName' => $fullamericanName]);
+        }
+    }
 }

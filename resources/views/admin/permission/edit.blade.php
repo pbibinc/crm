@@ -5,7 +5,7 @@
             <h5 class="modal-title" id="updatePermissionModalLabel">Edit Permission</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <form method="POST" id="updatePermissionForm" action="{{ route('admin.permissions.update'), $permission }}" > 
+          <form method="POST" id="updatePermissionForm" action="{{ route('admin.permissions.update'), $permission }}" >
             @csrf
             @method('PUT')
             <div class="modal-body">
@@ -23,7 +23,7 @@
         </div>
       </div>
     </div>
-   
+
   </div>
   <script>
   $(document).ready(function () {
@@ -37,7 +37,7 @@
         const labelElement = document.getElementById('name');
         labelElement.value = permissionName;
         $('#permissionId').val(permissionId);
-     
+
     });
 
     $('#updatePermissionForm').submit(function(event){
@@ -65,5 +65,5 @@
       });
     })
 });
- 
+
    </script> --}}

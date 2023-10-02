@@ -32,13 +32,19 @@
 
             <div class="tab-content p-3 text-muted">
                 <div class="tab-pane" id="activityLogs" role="tabpanel">
-                    @include('leads.appointed_leads.log-activity.activity-log', ['generalInformation' => $generalInformation])
+                    <div class="scrollable">
+                     @include('leads.appointed_leads.log-activity.activity-log', ['generalInformation' => $generalInformation])
+                    </div>
                 </div>
                 <div class="tab-pane" id="logNotes" role="tabpanel">
-                    @include('leads.appointed_leads.log-activity.notes-log', ['generalInformation' => $generalInformation])
+                    <div class="scrollable">
+                     @include('leads.appointed_leads.log-activity.notes-log', ['generalInformation' => $generalInformation])
+                    </div>
                 </div>
                 <div class="tab-pane" id="createNotes" role="tabpanel">
-                    @include('leads.appointed_leads.log-activity.create-notes', ['generalInformation' => $generalInformation])
+                    <div class="scrollable">
+                     @include('leads.appointed_leads.log-activity.create-notes', ['generalInformation' => $generalInformation])
+                    </div>
                 </div>
             </div>
     </div>

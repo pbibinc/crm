@@ -1,4 +1,4 @@
-<div class="scrollable">
+
 <section id="cd-timeline" class="cd-container">
     <div class="cd-timeline-block">
         <div class="cd-timeline-img cd-success">
@@ -46,4 +46,4 @@
     </div>
     @endforeach
 </section>
-</div>
+

@@ -124,7 +124,7 @@ Route::prefix('list-leads')->group(function  () {
     Route::get('/assign-appointed-lead/get-data-table', [AssignAppointedLeadController::class, 'getDataTable'])->name('get-data-table');
 });
 
-Route::prefix('quoataion')->group(function (){
+Route::prefix('quoatation')->group(function (){
     Route::get('/appointed-leads', [QuotationController::class, 'appointedLeadsView'])->name('appointed-leads');
     Route::post('/lead-profile', [QuotationController::class, 'leadProfile'])->name('lead-profile');
     Route::get('/lead-profile-view/{leadId}/{generalInformationId}', [QuotationController::class, 'leadProfileView'])->name('lead-profile-view');
@@ -140,6 +140,7 @@ Route::prefix('quoataion')->group(function (){
     Route::post('/quoted-product-profile', [QuotationController::class, 'quotedProductProfile'])->name('quoted-product-profile');
     Route::get('/broker-profile-view/{leadId}/{generalInformationId}/{productId}', [QuotationController::class, 'brokerProfileView'])->name('broker-profile-view');
     Route::post('/create-notes', [NotesController::class, 'createNotes'])->name('create-notes');
+    Route::get('/{note}/get-notes', [NotesController::class, 'getNotes'])->name('get-notes');
 });
 
 Route::prefix('call-back')->group(function (){

@@ -110,13 +110,6 @@
 {{-- end of deletion of modal --}}
      </div><!-- end card -->
   </div><!-- end card -->
-
-
-
-
-
-
-
 </div>
 
 <script>

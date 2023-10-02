@@ -56,7 +56,7 @@
             success: function(data){
                 // console.log(data.lead);
                 // console.log(data.generalInformation);
-                window.location.href = `{{ url('quoataion/lead-profile-view/${data.lead}/${data.generalInformation}') }}`;
+                window.location.href = `{{ url('quoatation/lead-profile-view/${data.lead}/${data.generalInformation}') }}`;
             }
         })
       })

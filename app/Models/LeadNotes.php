@@ -17,4 +17,15 @@ class LeadNotes extends Model
         'title',
         'description',
     ];
+
+    public function lead()
+    {
+        return $this->belongsTo(Lead::class);
+    }
+
+
+    public function userProfile()
+    {
+        return $this->belongsTo(UserProfile::class, 'user_profile_id');
+    }
 }
