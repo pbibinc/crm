@@ -1,17 +1,14 @@
-<h6>General Liabilities Quoation Form <i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
+<h6>Excess Liabilities Quoation Form<i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
 <div class="card ">
     <div class="card-body">
-        <div class="card border border-primary generalLiabilitiesFirsCardForm">
+        <div class="card border border-primary excessLiabilityFirsCardForm">
             <div class="card-body">
                 <div class="row mb-4">
                     <div class="col-10">
-                        <div class="form-check form-switch mb-3" dir="ltr">
-                          <input class="form-check-input" type="checkbox" id="reccommendedCheckBox">
-                          <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
-                        </div>
+
                     </div>
                     <div class="col-2">
-                        <button class="btn btn-success" id="addGLPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
+                        <button class="btn btn-success addExcessLiabilityPriceComparison" id="addExcessLiabilityPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
                     </div>
                 </div>
                 <div class="row mb-4">
@@ -57,29 +54,30 @@
                     </div>
                 </div>
                 <div class="row">
-                    <button class="btn btn-primary saveGLFormButton">Save</button>
+                    <button class="btn btn-primary saveFormButton">Save</button>
                 </div>
                 <input class="form-control" value={{ $generalInformation->lead->id }} id="leadId" type="hidden">
             </div>
         </div>
 
-        <div id="GLCardContainer"></div>
+        <div id="ExcessLiabilityContainer"></div>
 
         <div class="col-12">
             <div class="d-grid mb-3">
                 @if ($quoteProduct->status === 2)
-                    <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveQuoationProduct">Save Quotation</button>
+                    <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveExcessLiabilityQuoationProduct">Save Quotation</button>
                 @else
-                <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveQuoationProduct" disabled>Save Quotation</button>
+                <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveExcessLiabilityQuoationProduct" disabled>Save Quotation</button>
                 @endif
             </div>
         </div>
 
     </div>
+
 </div>
 <script>
     $(document).ready(function (){
-        $('#saveQuoationProduct').on('click', function(){
+        $('#saveExcessLiabilityQuoationProduct').on('click', function(){
             var id = {{ $quoteProduct->id }};
             $.ajax({
                 url: "{{ route('send-quotation-product') }}",
@@ -103,7 +101,6 @@
                         text: 'Something went wrong',
                         icon: 'error'
                     });
-                    console.log(errorThrown);
                 }
             });
         });
@@ -125,7 +122,7 @@
 
       function  doSomethingWithQuoteComparison() {
         if(quoteComparison.length > 0){
-            $('.generalLiabilitiesFirsCardForm').hide();
+            $('.excessLiabilityFirsCardForm').hide();
            quoteComparison.forEach(function(data) {
            let selectOptions = `<option value="">Select Market</option>`;
            market.forEach(function(market) {
@@ -136,12 +133,11 @@
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-8">
-                            <input class="form-check-input" type="checkbox" id="reccommendedCheckBox" ${data.recommended === 1 ? 'checked' : '' }>
-                            <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
+
                         </div>
                         <div class="col-4 text-right">
-                            <button class="btn btn-success addGLPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
-                            <button class="btn btn-danger removeSavedGLDataButton"><i class="mdi mdi-minus-circle"></i></button>
+                            <button class="btn btn-success addExcessLiabilityPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
+                            <button class="btn btn-danger removeSavedDataButton"><i class="mdi mdi-minus-circle"></i></button>
                         </div>
                     </div>
                     <div class="row mb-4">
@@ -186,27 +182,29 @@
                     </div>
                     <input type="hidden" value="${data.id}" id="quoteComparisonId"/>
                 <div class="row">
-                    <button class="btn btn-lg btn-success editGLFormButton">Save</button>
+                    <button class="btn btn-lg btn-success editExcessLiabilityFormButton">Save</button>
                 </div>
                 </div>
             </div>
            `;
-           $('#GLCardContainer').append(cardContent);
+           $('#ExcessLiabilityContainer').append(cardContent);
           });
+
         }
         };
 
-        $(document).on('click', '.addGLPriceComparison', function(){
+
+        $(document).on('click', '.addExcessLiabilityPriceComparison', function(){
+
          let cardContent = `
             <div class="card border border-primary">
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-8">
-                            <input class="form-check-input" type="checkbox" id="reccommendedCheckBox">
-                          <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
+
                         </div>
                         <div class="col-4 text-right">
-                            <button class="btn btn-success addGLPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
+                            <button class="btn btn-success addExcessLiabilityPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
                             <button class="btn btn-danger removeCardButton"><i class="mdi mdi-minus-circle"></i></button>
                         </div>
                     </div>
@@ -254,22 +252,22 @@
                         </div>
                     </div>
                 <div class="row">
-                    <button class="btn btn-lg btn-success saveGLFormButton">Save</button>
+                    <button class="btn btn-lg btn-success saveFormButton">Save</button>
                 </div>
                 </div>
             </div>
         `;
 
-        $('#GLCardContainer').append(cardContent);
+        $('#ExcessLiabilityContainer').append(cardContent);
         });
 
-        $('#GLCardContainer').on('click', '.removeCardButton', function(){
+        $('#ExcessLiabilityContainer').on('click', '.removeCardButton', function(){
             $(this).closest('.card').remove();
 
         });
         $(".input-mask").inputmask();
 
-        $('#GLCardContainer').on('click', '.removeSavedGLDataButton', function(){
+        $('#ExcessLiabilityContainer').on('click', '.removeSavedDataButton', function(){
             var $card = $(this).closest('.card');
 
             Swal.fire({
@@ -313,7 +311,7 @@
             var id = $card.find('#quoteComparisonId').val();
         });
 
-        $(document).on('click', '.saveGLFormButton', function(){
+        $(document).on('click', '.saveFormButton', function(){
             var $card = $(this).closest('.card');
 
             //form
@@ -322,9 +320,8 @@
             var downPayment = $card.find('#downPayment').val();
             var monthlyPayment = $card.find('#monthlyPayment').val();
             var brokerFee = $card.find('#brokerFee').val();
-            var reccomended = $card.find('#reccommendedCheckBox').is(':checked');
             var id = {{$quoteProduct->id}};
-
+            var reccomended = $card.find('#reccommendedCheckBox').is(':checked');
 
             var formData = {
                 market: market,
@@ -362,9 +359,8 @@
             })
         });
 
-        $(document).on('click', '.editGLFormButton', function(){
+        $(document).on('click', '.editExcessLiabilityFormButton', function(){
             var $card = $(this).closest('.card');
-
 
             //form
             var market = $card.find('.form-select').val();
@@ -373,8 +369,8 @@
             var monthlyPayment = $card.find('#monthlyPayment').val();
             var brokerFee = $card.find('#brokerFee').val();
             var productId = {{$quoteProduct->id}};
-            var reccomended = $card.find('#reccommendedCheckBox').is(':checked');
             var id = $card.find('#quoteComparisonId').val();
+            var reccomended = $card.find('#reccommendedCheckBox').is(':checked');
 
             var formData = {
                 market: market,

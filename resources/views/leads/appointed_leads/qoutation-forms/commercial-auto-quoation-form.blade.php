@@ -1,14 +1,15 @@
-<h6>Excess Liabilities Quoation Form<i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
+<h6>Commercial Auto Quoation Form<i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
 <div class="card ">
     <div class="card-body">
-        <div class="card border border-primary excessLiabilityFirsCardForm">
+        <div class="card border border-primary commercialAutoFirsCardForm">
             <div class="card-body">
                 <div class="row mb-4">
                     <div class="col-10">
-
+                        <input class="form-check-input" type="checkbox" id="reccommendedCommercialAutoCheckBox">
+                        <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                     </div>
                     <div class="col-2">
-                        <button class="btn btn-success addExcessLiabilityPriceComparison" id="addExcessLiabilityPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
+                        <button class="btn btn-success addCommercialAutoPriceComparison" id="addCommercialAutoPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
                     </div>
                 </div>
                 <div class="row mb-4">
@@ -54,19 +55,56 @@
                     </div>
                 </div>
                 <div class="row">
-                    <button class="btn btn-primary saveFormButton">Save</button>
+                    <button class="btn btn-primary saveCommercialFormButton">Save</button>
                 </div>
                 <input class="form-control" value={{ $generalInformation->lead->id }} id="leadId" type="hidden">
             </div>
         </div>
 
-        <div id="ExcessLiabilityContainer"></div>
+        <div id="CommercialAutoContainer"></div>
+
+        <div class="col-12">
+            <div class="d-grid mb-3">
+                @if ($quoteProduct->status === 2)
+                    <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveCommercialAutoQuoationProduct">Save Quotation</button>
+                @else
+                <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveCommercialAutoQuoationProduct" disabled>Save Quotation</button>
+                @endif
+            </div>
+        </div>
 
     </div>
 
 </div>
 <script>
     $(document).ready(function (){
+        $('#saveCommercialAutoQuoationProduct').on('click', function(){
+            var id = {{ $quoteProduct->id }};
+            $.ajax({
+                url: "{{ route('send-quotation-product') }}",
+                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                method: "POST",
+                data: {id: id},
+                success: function(){
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'has been saved',
+                        icon: 'success'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Something went wrong',
+                        icon: 'error'
+                    });
+                }
+            });
+        });
         let quoteComparison;
         $.ajax({
             url: "{{ route('get-comparison-data') }}",
@@ -76,16 +114,16 @@
             success: function(data){
                 quoteComparison = data.quoteComparison;
                 market = data.market;
-                doSomethingWithQuoteComparison();
+                doSomethingWithQuoteComparisonCommercialAuto();
             },
             error: function(){
-                console.log('error');
+
             }
         });
 
-      function  doSomethingWithQuoteComparison() {
+      function  doSomethingWithQuoteComparisonCommercialAuto() {
         if(quoteComparison.length > 0){
-            $('.excessLiabilityFirsCardForm').hide();
+            $('.commercialAutoFirsCardForm').hide();
            quoteComparison.forEach(function(data) {
            let selectOptions = `<option value="">Select Market</option>`;
            market.forEach(function(market) {
@@ -96,10 +134,11 @@
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-8">
-
+                            <input class="form-check-input" type="checkbox" id="reccommendedCheckBox" ${data.recommended === 1 ? 'checked' : '' }>
+                            <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                         </div>
                         <div class="col-4 text-right">
-                            <button class="btn btn-success addExcessLiabilityPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
+                            <button class="btn btn-success addCommercialAutoPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
                             <button class="btn btn-danger removeSavedDataButton"><i class="mdi mdi-minus-circle"></i></button>
                         </div>
                     </div>
@@ -145,29 +184,30 @@
                     </div>
                     <input type="hidden" value="${data.id}" id="quoteComparisonId"/>
                 <div class="row">
-                    <button class="btn btn-lg btn-success editFormButton">Save</button>
+                    <button class="btn btn-lg btn-success editCommercialAutoButton">Save</button>
                 </div>
                 </div>
             </div>
            `;
-           $('#ExcessLiabilityContainer').append(cardContent);
+           $('#CommercialAutoContainer').append(cardContent);
           });
 
         }
         };
 
 
-        $(document).on('click', '.addExcessLiabilityPriceComparison', function(){
+        $(document).on('click', '.addCommercialAutoPriceComparison', function(){
 
          let cardContent = `
             <div class="card border border-primary">
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-8">
-
+                            <input class="form-check-input" type="checkbox" id="reccommendedCommercialAutoCheckBox">
+                        <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                         </div>
                         <div class="col-4 text-right">
-                            <button class="btn btn-success addExcessLiabilityPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
+                            <button class="btn btn-success addCommercialAutoPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
                             <button class="btn btn-danger removeCardButton"><i class="mdi mdi-minus-circle"></i></button>
                         </div>
                     </div>
@@ -215,22 +255,22 @@
                         </div>
                     </div>
                 <div class="row">
-                    <button class="btn btn-lg btn-success saveFormButton">Save</button>
+                    <button class="btn btn-lg btn-success saveCommercialFormButton">Save</button>
                 </div>
                 </div>
             </div>
         `;
 
-        $('#ExcessLiabilityContainer').append(cardContent);
+        $('#CommercialAutoContainer').append(cardContent);
         });
 
-        $('#ExcessLiabilityContainer').on('click', '.removeCardButton', function(){
+        $('#CommercialAutoContainer').on('click', '.removeCardButton', function(){
             $(this).closest('.card').remove();
 
         });
         $(".input-mask").inputmask();
 
-        $('#ExcessLiabilityContainer').on('click', '.removeSavedDataButton', function(){
+        $('#CommercialAutoContainer').on('click', '.removeSavedDataButton', function(){
             var $card = $(this).closest('.card');
 
             Swal.fire({
@@ -274,7 +314,7 @@
             var id = $card.find('#quoteComparisonId').val();
         });
 
-        $(document).on('click', '.saveFormButton', function(){
+        $(document).on('click', '.saveCommercialFormButton', function(){
             var $card = $(this).closest('.card');
 
             //form
@@ -284,7 +324,7 @@
             var monthlyPayment = $card.find('#monthlyPayment').val();
             var brokerFee = $card.find('#brokerFee').val();
             var id = {{$quoteProduct->id}};
-
+            var reccomended = $card.find('#reccommendedCheckBox').is(':checked');
 
             var formData = {
                 market: market,
@@ -292,6 +332,7 @@
                 downPayment: downPayment,
                 monthlyPayment: monthlyPayment,
                 brokerFee: brokerFee,
+                reccomended: reccomended,
                 id: id
             };
 
@@ -321,7 +362,7 @@
             })
         });
 
-        $(document).on('click', '.editFormButton', function(){
+        $(document).on('click', '.editCommercialAutoButton', function(){
             var $card = $(this).closest('.card');
 
             //form
@@ -332,6 +373,7 @@
             var brokerFee = $card.find('#brokerFee').val();
             var productId = {{$quoteProduct->id}};
             var id = $card.find('#quoteComparisonId').val();
+            var reccomended = $card.find('#reccommendedCheckBox').is(':checked');
 
             var formData = {
                 market: market,
@@ -340,6 +382,7 @@
                 monthlyPayment: monthlyPayment,
                 brokerFee: brokerFee,
                 productId: productId,
+                reccomended: reccomended,
                 id: id
             };
 
@@ -367,7 +410,6 @@
                     });
                 }
             })
-
         });
 
 

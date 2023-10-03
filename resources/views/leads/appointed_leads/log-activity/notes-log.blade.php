@@ -2,13 +2,16 @@
     <div class="row">
         @foreach ($generalInformation->lead->notes as $index => $note)
             <div class="col-6">
-                <div class="card card-body">
-                    <h6 class="note-title text-truncate w-75 mb-0">{{ $note->title }}</h6>
-                    <p class="note-date font-2 text-muted" style="font-size: 12px">{{ date('M d, Y', strtotime($note->created_at)) }}</p>
-                    <div class="note-content">
-                        <p class="note-inner-content text-muted" style="font-size: 12px">{{ $note->description }}</p>
+                <div class="card border border-primary">
+
+                    <div class="card-body">
+                        <h6 class="note-title text-truncate w-75 mb-0">{{ $note->title }}</h6>
+                        <p class="note-date font-2 text-muted" style="font-size: 12px">{{ date('M d, Y', strtotime($note->created_at)) }}</p>
+                        <div class="note-content">
+                            <p class="note-inner-content text-muted" style="font-size: 12px">{{ $note->description }}</p>
+                        </div>
+                        <footer class="blockquote-footer m-0">Noted by <cite title="Source Title">{{ $note->userProfile->fullAmericanName()}}</cite><button type="button" class="btn btn-link waves-effect seeMore" value={{ $note->id }} >...</button></footer>
                     </div>
-                    <footer class="blockquote-footer m-0">Noted by <cite title="Source Title">{{ $note->userProfile->fullAmericanName()}}</cite><button type="button" class="btn btn-link waves-effect seeMore" value={{ $note->id }} >...</button></footer>
                 </div>
             </div>
             @if (($index + 1) % 2 == 0) <!-- If the note is even-numbered, close the row and start a new one. -->
@@ -55,6 +58,4 @@
             })
         });
     });
-
-
 </script>

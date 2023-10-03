@@ -78,6 +78,34 @@
 </div>
 <script>
     $(document).ready(function (){
+        $('#saveWorkersCompQuoationProduct').on('click', function(){
+            var id = {{ $quoteProduct->id }};
+            $.ajax({
+                url: "{{ route('send-quotation-product') }}",
+                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                method: "POST",
+                data: {id: id},
+                success: function(){
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'has been saved',
+                        icon: 'success'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Something went wrong',
+                        icon: 'error'
+                    });
+                    console.log(errorThrown);
+                }
+            });
+        });
         let quoteComparison;
         $.ajax({
             url: "{{ route('get-comparison-data') }}",
@@ -90,7 +118,7 @@
                 doSomethingWithQuoteComparison();
             },
             error: function(){
-                console.log('error');
+
             }
         });
 
@@ -107,7 +135,7 @@
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-8">
-                            <input class="form-check-input" type="checkbox" id="workerscompReccommendedCheckBox">
+                            <input class="form-check-input" type="checkbox" id="reccommendedCheckBox" ${data.recommended === 1 ? 'checked' : '' }>
                             <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                         </div>
                         <div class="col-4 text-right">
@@ -157,7 +185,7 @@
                     </div>
                     <input type="hidden" value="${data.id}" id="quoteComparisonId"/>
                 <div class="row">
-                    <button class="btn btn-lg btn-success editFormButton">Save</button>
+                    <button class="btn btn-lg btn-success editWorkersCompFormButton">Save</button>
                 </div>
                 </div>
             </div>
@@ -336,7 +364,7 @@
             })
         });
 
-        $(document).on('click', '.editFormButton', function(){
+        $(document).on('click', '.editWorkersCompFormButton', function(){
             var $card = $(this).closest('.card');
 
             //form
@@ -347,6 +375,7 @@
             var brokerFee = $card.find('#brokerFee').val();
             var productId = {{$quoteProduct->id}};
             var id = $card.find('#quoteComparisonId').val();
+            var reccomended = $card.find('#reccommendedCheckBox').is(':checked');
 
             var formData = {
                 market: market,
@@ -355,6 +384,7 @@
                 monthlyPayment: monthlyPayment,
                 brokerFee: brokerFee,
                 productId: productId,
+                reccomended: reccomended,
                 id: id
             };
 
