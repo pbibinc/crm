@@ -33,8 +33,6 @@ class BuildersRiskController extends BaseController
             }elseif($data['porjectStarted'] == "no"){
                 $buildersRisk->has_project_started = false;
                 $buildersRisk->project_started_date = Carbon::parse($data['dateProjectStarted'])->toDateString();
-
-
             }
             $statusConstruction = $buildersRisk->construction_status = $data['newConstructionRenovation'];
             if($statusConstruction == "New Construction"){

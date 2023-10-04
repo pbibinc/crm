@@ -194,8 +194,8 @@ class QuotationController extends Controller
             $brokerFee = $request->input('brokerFee');
             $reccomended = $request->input('reccomended');
             $productId = $request->input('productId');
-
             $quoteComparison = QuoteComparison::find($id);
+            if($fullPayment && $downPayment && $monthlyPayment && $reccomended){
             $quoteComparison->quotation_product_id = $productId;
             $quoteComparison->quotation_market_id = $marketId;
             $quoteComparison->full_payment = $fullPayment;
@@ -203,6 +203,9 @@ class QuotationController extends Controller
             $quoteComparison->monthly_payment = $monthlyPayment;
             $quoteComparison->broker_fee = $brokerFee;
             $quoteComparison->recommended = $reccomended == 'true' ? 1  : 0;
+            }else{
+                $quoteComparison->broker_fee = $brokerFee;
+            }
             $quoteComparison->save();
         }
     }

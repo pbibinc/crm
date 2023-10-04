@@ -5,7 +5,8 @@
             <div class="card-body">
                 <div class="row mb-4">
                     <div class="col-10">
-
+                        <input class="form-check-input" type="checkbox" id="reccommendedCommercialAutoCheckBox">
+                        <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                     </div>
                     <div class="col-2">
                         <button class="btn btn-success addExcessLiabilityPriceComparison" id="addExcessLiabilityPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
@@ -54,7 +55,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <button class="btn btn-primary saveFormButton">Save</button>
+                    <button class="btn btn-primary saveExcessLiabilityFormButton">Save</button>
                 </div>
                 <input class="form-control" value={{ $generalInformation->lead->id }} id="leadId" type="hidden">
             </div>
@@ -133,7 +134,8 @@
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-8">
-
+                            <input class="form-check-input" type="checkbox" id="reccommendedCheckBox" ${data.recommended === 1 ? 'checked' : '' }>
+                            <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                         </div>
                         <div class="col-4 text-right">
                             <button class="btn btn-success addExcessLiabilityPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
@@ -201,7 +203,8 @@
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-8">
-
+                            <input class="form-check-input" type="checkbox" id="reccommendedCommercialAutoCheckBox">
+                            <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                         </div>
                         <div class="col-4 text-right">
                             <button class="btn btn-success addExcessLiabilityPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
@@ -252,7 +255,7 @@
                         </div>
                     </div>
                 <div class="row">
-                    <button class="btn btn-lg btn-success saveFormButton">Save</button>
+                    <button class="btn btn-lg btn-success saveExcessLiabilityFormButton">Save</button>
                 </div>
                 </div>
             </div>
@@ -311,7 +314,7 @@
             var id = $card.find('#quoteComparisonId').val();
         });
 
-        $(document).on('click', '.saveFormButton', function(){
+        $(document).on('click', '.saveExcessLiabilityFormButton', function(){
             var $card = $(this).closest('.card');
 
             //form

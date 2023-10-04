@@ -1,11 +1,12 @@
-<h6>Builders Risk Quoation Form<i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
+<h6>Builders Risk Quoation Form {{ $quoteProduct->id }}<i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
 <div class="card ">
     <div class="card-body">
         <div class="card border border-primary buildersRiskFirsCardForm">
             <div class="card-body">
                 <div class="row mb-4">
                     <div class="col-10">
-
+                        <input class="form-check-input" type="checkbox" id="reccommendedCommercialAutoCheckBox">
+                        <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                     </div>
                     <div class="col-2">
                         <button class="btn btn-success addBuildersRiskPriceComparison" id="addBuildersRiskPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
@@ -54,7 +55,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <button class="btn btn-primary saveFormButton">Save</button>
+                    <button class="btn btn-success saveBuildersRiskFormButton">Save</button>
                 </div>
                 <input class="form-control" value={{ $generalInformation->lead->id }} id="leadId" type="hidden">
             </div>
@@ -62,11 +63,48 @@
 
         <div id="BuildersRiskContainer"></div>
 
+        <div class="col-12">
+            <div class="d-grid mb-3">
+                @if ($quoteProduct->status === 2)
+                    <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveBuildersRiskQuoationProduct">Save Quotation</button>
+                @else
+                <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveBuildersRiskQuoationProduct" disabled>Save Quotation</button>
+                @endif
+            </div>
+        </div>
+
     </div>
 
 </div>
 <script>
     $(document).ready(function (){
+        $('#saveBuildersRiskQuoationProduct').on('click', function(){
+            var id = {{ $quoteProduct->id }};
+            $.ajax({
+                url: "{{ route('send-quotation-product') }}",
+                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                method: "POST",
+                data: {id: id},
+                success: function(){
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'has been saved',
+                        icon: 'success'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Something went wrong',
+                        icon: 'error'
+                    });
+                }
+            });
+        });
         let quoteComparison;
         $.ajax({
             url: "{{ route('get-comparison-data') }}",
@@ -96,7 +134,8 @@
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-8">
-
+                            <input class="form-check-input" type="checkbox" id="reccommendedCheckBox" ${data.recommended === 1 ? 'checked' : '' }>
+                            <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                         </div>
                         <div class="col-4 text-right">
                             <button class="btn btn-success addBuildersRiskPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
@@ -145,7 +184,7 @@
                     </div>
                     <input type="hidden" value="${data.id}" id="quoteComparisonId"/>
                 <div class="row">
-                    <button class="btn btn-lg btn-success editFormButton">Save</button>
+                    <button class="btn btn-lg btn-success editBuildersRiskFormButton">Save</button>
                 </div>
                 </div>
             </div>
@@ -164,7 +203,8 @@
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-8">
-
+                            <input class="form-check-input" type="checkbox" id="reccommendedCommercialAutoCheckBox">
+                        <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                         </div>
                         <div class="col-4 text-right">
                             <button class="btn btn-success addBuildersRiskPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
@@ -215,7 +255,7 @@
                         </div>
                     </div>
                 <div class="row">
-                    <button class="btn btn-lg btn-success saveFormButton">Save</button>
+                    <button class="btn btn-lg btn-success saveBuildersRiskFormButton">Save</button>
                 </div>
                 </div>
             </div>
@@ -274,7 +314,7 @@
             var id = $card.find('#quoteComparisonId').val();
         });
 
-        $(document).on('click', '.saveFormButton', function(){
+        $(document).on('click', '.saveBuildersRiskFormButton', function(){
             var $card = $(this).closest('.card');
 
             //form
@@ -284,6 +324,7 @@
             var monthlyPayment = $card.find('#monthlyPayment').val();
             var brokerFee = $card.find('#brokerFee').val();
             var id = {{$quoteProduct->id}};
+            var reccomended = $card.find('#reccommendedCheckBox').is(':checked');
 
 
             var formData = {
@@ -292,7 +333,9 @@
                 downPayment: downPayment,
                 monthlyPayment: monthlyPayment,
                 brokerFee: brokerFee,
-                id: id
+                reccomended: reccomended,
+                id: id,
+
             };
 
             $.ajax({
@@ -321,7 +364,7 @@
             })
         });
 
-        $(document).on('click', '.editFormButton', function(){
+        $(document).on('click', '.editBuildersRiskFormButton', function(){
             var $card = $(this).closest('.card');
 
             //form
@@ -332,6 +375,7 @@
             var brokerFee = $card.find('#brokerFee').val();
             var productId = {{$quoteProduct->id}};
             var id = $card.find('#quoteComparisonId').val();
+            var reccomended = $card.find('#reccommendedCheckBox').is(':checked');
 
             var formData = {
                 market: market,
@@ -340,6 +384,7 @@
                 monthlyPayment: monthlyPayment,
                 brokerFee: brokerFee,
                 productId: productId,
+                reccomended: reccomended,
                 id: id
             };
 

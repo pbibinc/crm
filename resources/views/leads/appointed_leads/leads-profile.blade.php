@@ -217,16 +217,18 @@
                         @endif
                     </div>
                     <div class="quotation-form" id="toolsEquipmentForm" role="tabpanel">
-                        @if ($generalInformation->buildersRisk)
+                        @if ($generalInformation->toolsEquipment)
                           @include('leads.appointed_leads.qoutation-forms.tools-equipment-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Tools Equipment', $lead->quoteLead->QuoteInformation->id)])
                         @endif
                     </div>
-                    {{-- <div class="quotation-form" id="buildersRiskForm" role="tabpanel">
-                        @include('leads.appointed_leads.builders-risk-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Builders Risk', $lead->quoteLead->QuoteInformation->id)])
-                    </div> --}}
-                    {{-- <div class="quotation-form" id="businessOwnersPolicyForm" role="tabpanel">
-                        @include('leads.appointed_leads.business-owners-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Business Owners', $lead->quoteLead->QuoteInformation->id)])
-                    </div> --}}
+                    <div class="quotation-form" id="buildersRiskForm" role="tabpanel">
+                        @if ($generalInformation->buildersRisk)
+                        @include('leads.appointed_leads.qoutation-forms.builders-risk-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $generalInformation->lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Builders Risk', $generalInformation->lead->quoteLead->QuoteInformation->id)])
+                        @endif
+                    </div>
+                    <div class="quotation-form" id="businessOwnersPolicyForm" role="tabpanel">
+                        @include('leads.appointed_leads.qoutation-forms.business-owners-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Business Owners', $lead->quoteLead->QuoteInformation->id)])
+                    </div>
                 </div>
             </div>
         </div>

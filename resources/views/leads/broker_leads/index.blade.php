@@ -34,9 +34,10 @@
             columns:[
                 {data: 'product', name: 'product'},
                 {data: 'company_name', name: 'company_name'},
-                {data: 'sent_out_date', name: 'sent_out_date'},
+                {data: 'sent_out_date', name: 'sent_out_date', },
                 {data: 'viewButton', name: 'viewButton'}
-            ]
+            ],
+            order: [[2, 'desc']]
         });
 
         $('#assignPendingLeadsTable').on('click', '.viewButton', function(){

@@ -55,7 +55,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <button class="btn btn-primary saveFormButton">Save</button>
+                    <button class="btn btn-primary saveWorkersCompFormButton">Save</button>
                 </div>
                 <input class="form-control" value={{ $generalInformation->lead->id }} id="leadId" type="hidden">
             </div>
@@ -256,7 +256,7 @@
                         </div>
                     </div>
                 <div class="row">
-                    <button class="btn btn-lg btn-success saveFormButton">Save</button>
+                    <button class="btn btn-lg btn-success saveWorkersCompFormButton">Save</button>
                 </div>
                 </div>
             </div>
@@ -315,7 +315,7 @@
             var id = $card.find('#quoteComparisonId').val();
         });
 
-        $(document).on('click', '.saveFormButton', function(){
+        $(document).on('click', '.saveWorkersCompFormButton', function(){
             var $card = $(this).closest('.card');
 
             //form

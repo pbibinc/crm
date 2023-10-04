@@ -90,7 +90,7 @@
                                 <ul class="nav nav-pills nav-justified" role="tablist">
                                     @if ($product->product == 'General Liabilities')
                                     <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link active" data-bs-toggle="tab" href="#generalLiabilites" role="tab" id="generalLiabilitiesButton">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#generalLiabilites" role="tab" id="generalLiabilitiesButton">
                                             <span class="d-block d-sm-none"><i class="ri-umbrella-fill"></i></span>
                                             <span class="d-none d-sm-block">General Liabilities<i class="ri-umbrella-fill"  style="vertical-align: middle;"></i></span>
                                         </a>
@@ -112,11 +112,11 @@
                                         </a>
                                     </li>
                                     @endif
-                                    @if ($product->product == 'Excess Liabilities')
+                                    @if ($product->product == 'Excess Liability')
                                     <li class="nav-item waves-effect waves-light">
                                         <a class="nav-link" data-bs-toggle="tab" href="#excessLiabiliy" role="tab">
                                             <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
-                                            <span class="d-none d-sm-block">Commercial Auto<i class=" ri-hand-coin-fill" style="vertical-align: middle;"></i></span>
+                                            <span class="d-none d-sm-block">Excess Liability<i class=" ri-hand-coin-fill" style="vertical-align: middle;"></i></span>
                                         </a>
                                     </li>
                                     @endif
@@ -154,38 +154,38 @@
                 <div class="row">
                     <div class="tab-content p-3 text-muted">
                         @if ($product->product == 'General Liabilities')
-                         <div class="tab-pane active" id="brokerGeneralLiabilites" role="tabpanel">
-                            @include('leads.appointed_leads.general-liability-profile', ['generalLiabilities' => $generalLiabilities])
+                         <div id="brokerGeneralLiabilites" role="tabpanel">
+                            @include('leads.appointed_leads.product-view.general-liability-profile', ['generalLiabilities' => $generalLiabilities])
                          </div>
                         @endif
                         @if ($product->product == 'Workers Compensation')
                          <div class="tab-pane" id="brokerWorkersCompensation" role="tabpanel">
-                            @include('leads.appointed_leads.workers-comp-profile', ['generalInformation' => $generalInformation])
+                            @include('leads.appointed_leads.product-view.workers-comp-profile', ['generalInformation' => $generalInformation])
                          </div>
                         @endif
                         @if ($product->product == 'Commercial Auto')
                           <div class="tab-pane" id="brokerCommercialAuto" role="tabpanel">
-                            @include('leads.appointed_leads.commercial-auto-profile', ['generalInformation' => $generalInformation])
+                            @include('leads.appointed_leads.product-view.commercial-auto-profile', ['generalInformation' => $generalInformation])
                           </div>
                         @endif
-                        @if ($product->product == 'Excess Liabilities')
+                        @if ($product->product == 'Excess Liability')
                         <div class="tab-pane" id="brokerExcessLiabiliy" role="tabpanel">
-                            @include('leads.appointed_leads.excess-liability-profile', ['generalInformation' => $generalInformation])
+                            @include('leads.appointed_leads.product-view.excess-liability-profile', ['generalInformation' => $generalInformation])
                         </div>
                         @endif
                         @if ($product->product == 'Tools Equipment')
                          <div class="tab-pane" id="brokerToolsEquipment" role="tabpanel">
-                            @include('leads.appointed_leads.tools-equipment-profile', ['generalInformation' => $generalInformation])
+                            @include('leads.appointed_leads.product-view.tools-equipment-profile', ['generalInformation' => $generalInformation])
                          </div>
                         @endif
                         @if ($product->product == 'Builders Risk')
                           <div class="tab-pane" id="brokerBuildersRisk" role="tabpanel">
-                            @include('leads.appointed_leads.builders-risk-profile', ['generalInformation' => $generalInformation])
+                            @include('leads.appointed_leads.product-view.builders-risk-profile', ['generalInformation' => $generalInformation])
                            </div>
                         @endif
                         @if ($product->product == 'Business Owners')
                         <div class="tab-pane" id="brokerBop" role="tabpanel">
-                            @include('leads.appointed_leads.business-owners-profile', ['generalInformation' => $generalInformation])
+                            @include('leads.appointed_leads.product-view.business-owners-profile', ['generalInformation' => $generalInformation])
                         </div>
                         @endif
                     </div>
@@ -200,38 +200,42 @@
 
                     <div class="quotation-form" id="generalLiabilitiesQuoationForm" role="tabpanel">
                         @if ($product->product == 'General Liabilities' )
-                         @include('leads.appointed_leads.quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('General Liabilities', $lead->quoteLead->QuoteInformation->id)])
+                         @include('leads.appointed_leads.broker-quotation-forms.quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('General Liabilities', $lead->quoteLead->QuoteInformation->id)])
                          @endif
                     </div>
 
                     <div class="quotation-form" id="workersCompensationForm" role="tabpanel">
                         @if ($product->product == 'Workers Compensation')
-                           @include('leads.appointed_leads.workers-compensation-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Workers Compensation', $lead->quoteLead->QuoteInformation->id)])
+                           @include('leads.appointed_leads.broker-quotation-forms.workers-compensation-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Workers Compensation', $lead->quoteLead->QuoteInformation->id)])
                         @endif
                     </div>
 
                     <div class="quotation-form" id="commercialAutoForm" role="tabpanel">
                         @if ($product->product == 'Commercial Auto')
-                         @include('leads.appointed_leads.commercial-auto-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Commercial Auto', $lead->quoteLead->QuoteInformation->id)])
+                         @include('leads.appointed_leads.broker-quotation-forms.commercial-auto-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Commercial Auto', $lead->quoteLead->QuoteInformation->id)])
                         @endif
                     </div>
 
-                    {{-- <div class="quotation-form" id="excessLiabilityForm" role="tabpanel">
-                        @if ($generalInformation->excessLiability)
-                         @include('leads.appointed_leads.excess-liability-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Excess Liability', $lead->quoteLead->QuoteInformation->id)])
+                    <div class="quotation-form" id="excessLiabilityForm" role="tabpanel">
+                        @if ($product->product == 'Excess Liability')
+                         @include('leads.appointed_leads.broker-quotation-forms.excess-liability-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Excess Liability', $lead->quoteLead->QuoteInformation->id)])
                         @endif
-                    </div> --}}
-                    {{-- <div class="quotation-form" id="toolsEquipmentForm" role="tabpanel">
-                        @if ($generalInformation->buildersRisk)
-                          @include('leads.appointed_leads.tools-equipment-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Tools Equipment', $lead->quoteLead->QuoteInformation->id)])
+                    </div>
+                    <div class="quotation-form" id="toolsEquipmentForm" role="tabpanel">
+                        @if ($product->product == 'Tools Equipment')
+                          @include('leads.appointed_leads.broker-quotation-forms.tools-equipment-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Tools Equipment', $lead->quoteLead->QuoteInformation->id)])
                         @endif
-                    </div> --}}
-                    {{-- <div class="quotation-form" id="buildersRiskForm" role="tabpanel">
-                        @include('leads.appointed_leads.builders-risk-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Builders Risk', $lead->quoteLead->QuoteInformation->id)])
-                    </div> --}}
-                    {{-- <div class="quotation-form" id="businessOwnersPolicyForm" role="tabpanel">
+                    </div>
+                    <div class="quotation-form" id="buildersRiskForm" role="tabpanel">
+                        @if ($product->product == 'Builders Risk')
+                        @include('leads.appointed_leads.broker-quotation-forms.builders-risk-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Builders Risk', $lead->quoteLead->QuoteInformation->id)])
+                        @endif
+                    </div>
+                    <div class="quotation-form" id="businessOwnersPolicyForm" role="tabpanel">
+                        @if ($product->product == 'Business Owners')
                         @include('leads.appointed_leads.business-owners-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Business Owners', $lead->quoteLead->QuoteInformation->id)])
-                    </div> --}}
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
@@ -246,6 +250,14 @@
             $('#brokerWorkersCompensation').show();
         }else if(product == 'Commercial Auto'){
             $('#brokerCommercialAuto').show();
+        }else if(product == 'Tools Equipment'){
+            $('#brokerToolsEquipment').show();
+        }else if(product == 'Excess Liability'){
+            $('#brokerExcessLiabiliy').show();
+        }else if(product == 'Builders Risk'){
+            $('#brokerBuildersRisk').show();
+        }else if(product == 'Business Owners'){
+            $('#brokerBop').show();
         }
     });
 </script>

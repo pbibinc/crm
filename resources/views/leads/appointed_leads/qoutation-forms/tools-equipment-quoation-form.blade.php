@@ -55,7 +55,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <button class="btn btn-success saveFormButton">Save</button>
+                    <button class="btn btn-success saveToolsEquipmentFormButton">Save</button>
                 </div>
                 <input class="form-control" value={{ $generalInformation->lead->id }} id="leadId" type="hidden">
             </div>
@@ -253,7 +253,7 @@
                         </div>
                     </div>
                 <div class="row">
-                    <button class="btn btn-lg btn-success saveFormButton">Save</button>
+                    <button class="btn btn-lg btn-success saveToolsEquipmentFormButton">Save</button>
                 </div>
                 </div>
             </div>
@@ -312,7 +312,7 @@
             var id = $card.find('#quoteComparisonId').val();
         });
 
-        $(document).on('click', '.saveFormButton', function(){
+        $(document).on('click', '.saveToolsEquipmentFormButton', function(){
             var $card = $(this).closest('.card');
 
             //form
@@ -323,7 +323,6 @@
             var brokerFee = $card.find('#brokerFee').val();
             var id = {{$quoteProduct->id}};
             var reccomended = $card.find('#reccommendedCheckBox').is(':checked');
-
 
             var formData = {
                 market: market,
