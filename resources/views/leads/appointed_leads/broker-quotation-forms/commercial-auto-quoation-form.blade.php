@@ -40,7 +40,7 @@
                     <div class="row mb-4">
                         <div class="col-12">
                             <div style="display: flex; align-items: center;">
-                              <h4 class="card-title">Insurance Provider: ${marketName}</h4>
+                              <h4 class="card-title">${marketName}</h4>
                               ${data.recommended === 1 ?  `<i class="mdi mdi-star" style="margin-left: 8px; margin-bottom: 6px;"></i>` : `` }
                             </div>
                         </div>

@@ -63,11 +63,48 @@
 
         <div id="BopCompContainer"></div>
 
+        <div class="col-12">
+            <div class="d-grid mb-3">
+                @if ($quoteProduct->status === 2)
+                    <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveBusinessOwnersQuoationProduct">Save Quotation</button>
+                @else
+                <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveBusinessOwnersQuoationProduct" disabled>Save Quotation</button>
+                @endif
+            </div>
+        </div>
+
     </div>
 
 </div>
 <script>
     $(document).ready(function (){
+        $('#saveBusinessOwnersQuoationProduct').on('click', function(){
+            var id = {{ $quoteProduct->id }};
+            $.ajax({
+                url: "{{ route('send-quotation-product') }}",
+                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                method: "POST",
+                data: {id: id},
+                success: function(){
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'has been saved',
+                        icon: 'success'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Something went wrong',
+                        icon: 'error'
+                    });
+                }
+            });
+        });
         let quoteComparison;
         $.ajax({
             url: "{{ route('get-comparison-data') }}",

@@ -6,14 +6,31 @@
     margin-bottom: 5px; /* adjust as needed */
 }
 </style>
+
+
 <div class="page-content pt-6">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-8">
+            <div class="col-6">
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-8" >
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3 class="card-title mb-4" style="display: flex; align-items: center;">  <i class="ri-file-list-3-line font-size-24"></i> LIST OF APPOINTED LEADS</h3>
+                    <div>
+                        <button type="button" id="assignAppointedLead" class="btn btn-primary btn-rounded waves-effect waves-light mb-4" data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign checked Leads to a selected user">   <i class="ri-user-received-2-line"></i> Assign Lead</button>
+                        <button type="button" id="assignAppointedLead" class="btn btn-light btn-rounded waves-effect waves-light mb-4" data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign checked Leads to a selected user" style="background-color: white"> <i class="ri-user-shared-2-line"></i> Reasign Lead</button>
+                        <button type="button" id="assignAppointedLead" class="btn btn-outline-danger btn-rounded waves-effect waves-light mb-4" data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign checked Leads to a selected user" style="background-color: white"><i class="ri-user-unfollow-line"></i> Void Lead</button>
+                    </div>
+
+                </div>
+
                 <div class="card">
                     <div class="card-body">
                         <div class="row mb-2">
-                            <h4 class="card-title mb-4"> LIST OF APPOINTED LEADS</h4>
+
                         </div>
 
                         <div class="row">
@@ -37,8 +54,46 @@
                         </table>
                     </div>
                 </div>
+
             </div>
+
             <div class="col-4">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div class="flex-grow-1">
+                                        <p class="text-truncate font-size-14 mb-2">Appointed Leads</p>
+                                        <h4 class="mb-2">1452</h4>
+                                    </div>
+                                    <div class="avatar-sm">
+                                        <span class="avatar-title bg-light text-primary rounded-3">
+                                            <i class="ri-file-edit-line font-size-24"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div><!-- end cardbody -->
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="card bg-info text-white-50">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div class="flex-grow-1">
+                                        <p class="text-truncate font-size-14 mb-2" style="color: white">Appointed Product</p>
+                                        <h4 class="mb-2" style="color: white">1452</h4>
+                                    </div>
+                                    <div class="avatar-sm">
+                                        <span class="avatar-title bg-light text-primary rounded-3">
+                                            <i class="ri-umbrella-line font-size-24" style="color: #17a2b8;"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div><!-- end cardbody -->
+                        </div>
+                    </div>
+                </div>
                 <div class="card">
                     <div class="card-body">
                         <div class="row mb-4">
@@ -61,14 +116,11 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="row mb-4">
-                            <div class="col-6">
-                                <button type="button" id="assignAppointedLead" class="btn btn-primary waves-effect waves-light " data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign checked Leads to a selected user">Assign Lead</button>
-                            </div>
-                            <div class="col-6">
-                                <button type="button" id="assignLead" class="btn btn-primary waves-effect waves-light " data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign checked Leads to a selected user">Assign Lead</button>
-                            </div>
-                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
                         <div class="row mb-4">
                             <table id="datatableLeads" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead>
@@ -82,10 +134,12 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
 </div>
+
 <script>
     $(document).ready(function (){
         $('#assignAppointedLeadsTable').DataTable({

@@ -54,7 +54,6 @@
                     <div class="col-6">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h6>Contact Details<i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
-                        <h6> <a href="" style="font-size:15px; color: #0f9cf3; font-weight:500" data-bs-toggle="modal" data-bs-target="#addLeadsModal" id="create_record"><i class="mdi mdi-plus"></i> Edit Contact Details</a></h6>
                         </div>
                         <div class="card">
                             <div class="card-body">
@@ -233,7 +232,7 @@
                     </div>
                     <div class="quotation-form" id="businessOwnersPolicyForm" role="tabpanel">
                         @if ($product->product == 'Business Owners')
-                        @include('leads.appointed_leads.business-owners-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Business Owners', $lead->quoteLead->QuoteInformation->id)])
+                        @include('leads.appointed_leads.broker-quotation-forms.business-owners-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Business Owners', $lead->quoteLead->QuoteInformation->id)])
                         @endif
                     </div>
                 </div>

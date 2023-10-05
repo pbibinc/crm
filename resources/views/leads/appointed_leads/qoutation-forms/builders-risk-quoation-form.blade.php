@@ -1,4 +1,4 @@
-<h6>Builders Risk Quoation Form {{ $quoteProduct->id }}<i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
+<h6>Builders Risk Quoation Form<i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
 <div class="card ">
     <div class="card-body">
         <div class="card border border-primary buildersRiskFirsCardForm">
@@ -72,9 +72,7 @@
                 @endif
             </div>
         </div>
-
     </div>
-
 </div>
 <script>
     $(document).ready(function (){

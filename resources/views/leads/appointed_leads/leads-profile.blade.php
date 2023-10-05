@@ -1,236 +1,279 @@
 @extends('admin.admin_master')
 @section('admin')
+<style>
+    .nav-tabs .nav-link.active {
+    color: var(--bs-primary);
+    border-top: 3px solid var(--bs-primary); /* adds a top border */
+    border-bottom-color: transparent; /* to remove the default bottom border */
+}
 
+/* Adjust the hover effects if desired */
+.nav-tabs .nav-link.active:hover {
+    color: darken(var(--bs-primary), 10%); /* darkens the color a bit on hover */
+}
+
+/* Add a right border to each nav item */
+.nav-separated .nav-item {
+    border-right: 1px solid #dee2e6; /* Adjust the color as needed */
+}
+
+/* Remove the right border from the last nav item */
+.nav-separated .nav-item:last-child {
+    border-right: none;
+}
+
+
+</style>
 <div class="page-content pt-6">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-1">
-
-            </div>
-            <div class="col-7">
-
-                <div class="row">
-                    <div>
-                        <h6>Contact <i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="col-6">
-                                    <h5>{{ $generalInformation->firstname. ' ' .$generalInformation->lastname}}</h5>
-                                    <em>{{ $generalInformation->job_position }} at {{ $lead->company_name }}</em>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-6">
-                        <h6>Contact Info<i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row mb-3">
-                                    <div class="col-6">
-                                        <strong>Location</strong>
-                                        <br>
-                                        <strong>{{ $usAddress->city. ', ' .$usAddress->state }}</strong>
-                                    </div>
-
-                                    <div class="col-6">
-                                       <strong>Local Time</strong>
-                                       <br>
-                                       <strong>{{ $localTime->format('M-d-Y g:iA') }}</strong>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <strong>Address</strong>
-                                        <br>
-                                        <strong>{{ $generalInformation->address}}</strong>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <h6>Contact Details<i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
-                        <h6> <a href="" style="font-size:15px; color: #0f9cf3; font-weight:500" data-bs-toggle="modal" data-bs-target="#addLeadsModal" id="create_record"><i class="mdi mdi-plus"></i> Edit Contact Details</a></h6>
-                        </div>
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row mb-3">
-                                    <div class="col-6">
-                                        <strong>Email</strong>
-                                        <br>
-                                        <strong>{{ $generalInformation->email_address }}</strong>
-                                    </div>
-                                    <div class="col-6">
-                                        <strong>Phone</strong>
-                                        <br>
-                                        <strong>{{ $lead->tel_num }}</strong>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <strong class="text-muted">Alternative Number</strong>
-                                        <br>
-                                        <strong>{{ $generalInformation->alt_num ? $generalInformation->alt_num : $lead->tel_num }}</strong>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div>
-                        <h6>Products<i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
-                        <div class="card">
-                            <div class="card-body">
-                                <ul class="nav nav-pills nav-justified" role="tablist">
-                                    @if ($generalInformation->generalLiabilities)
-                                    <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link navProfile active" data-bs-toggle="tab" href="#generalLiabilites" role="tab" id="generalLiabilitiesButton">
-                                            <span class="d-block d-sm-none"><i class="ri-umbrella-fill"></i></span>
-                                            <span class="d-none d-sm-block">GL<i class="ri-umbrella-fill"  style="vertical-align: middle;"></i></span>
-                                        </a>
-                                    </li>
-                                    @endif
-                                    @if ($generalInformation->workersCompensation)
-                                    <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link navProfile" data-bs-toggle="tab" href="#workersCompensation" role="tab">
-                                            <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
-                                            <span class="d-none d-sm-block">WC<i class="ri-admin-fill" style="vertical-align: middle;"></i></span>
-                                        </a>
-                                    </li>
-                                    @endif
-                                    @if ($generalInformation->commercialAuto)
-                                    <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link navProfile" data-bs-toggle="tab" href="#commercialAuto" role="tab">
-                                            <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
-                                            <span class="d-none d-sm-block">CA<i class="ri-car-fill" style="vertical-align: middle;"></i></span>
-                                        </a>
-                                    </li>
-                                    @endif
-                                    @if ($generalInformation->excessLiability)
-                                    <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link navProfile" data-bs-toggle="tab" href="#excessLiabiliy" role="tab">
-                                            <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
-                                            <span class="d-none d-sm-block">EL<i class=" ri-hand-coin-fill" style="vertical-align: middle;"></i></span>
-                                        </a>
-                                    </li>
-                                    @endif
-                                    @if ($generalInformation->toolsEquipment)
-                                    <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link navProfile" data-bs-toggle="tab" href="#toolsEquipment" role="tab">
-                                            {{-- <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span> --}}
-                                            <span class="d-none d-sm-block">TE<i class="ri-tools-fill" style="vertical-align: middle;"></i></span>
-
-                                        </a>
-                                    </li>
-                                    @endif
-                                    @if ($generalInformation->buildersRisk)
-                                    <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link navProfile" data-bs-toggle="tab" href="#buildersRisk" role="tab">
-                                            <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
-                                            <span class="d-none d-sm-block">BR<i class="ri-building-fill" style="vertical-align: middle;"></i></span>
-                                        </a>
-                                    </li>
-                                    @endif
-                                    @if ($generalInformation->businessOwnersPolicy)
-                                    <li class="nav-item waves-effect waves-light">
-                                        <a class="nav-link navProfile" data-bs-toggle="tab" href="#bop" role="tab">
-                                            <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
-                                            <span class="d-none d-sm-block">BOP<i class="ri-suitcase-fill" style="vertical-align: middle;"></i></span>
-                                        </a>
-                                    </li>
-                                    @endif
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="tab-content p-3 text-muted">
-                        @if ($generalInformation->generalLiabilities)
-                         <div class="tab-pane active" id="generalLiabilites" role="tabpanel">
-                            @include('leads.appointed_leads.product-view.general-liability-profile', ['generalLiabilities' => $generalLiabilities])
-                         </div>
-                        @endif
-                        @if ($generalInformation->workersCompensation)
-                         <div class="tab-pane" id="workersCompensation" role="tabpanel">
-                            @include('leads.appointed_leads.product-view.workers-comp-profile', ['generalInformation' => $generalInformation])
-                         </div>
-                        @endif
-                        @if ($generalInformation->commercialAuto)
-                          <div class="tab-pane" id="commercialAuto" role="tabpanel">
-                            @include('leads.appointed_leads.product-view.commercial-auto-profile', ['generalInformation' => $generalInformation])
-                          </div>
-                        @endif
-                        @if ($generalInformation->excessLiability)
-                        <div class="tab-pane" id="excessLiabiliy" role="tabpanel">
-                            @include('leads.appointed_leads.product-view.excess-liability-profile', ['generalInformation' => $generalInformation])
-                        </div>
-                        @endif
-                        @if ($generalInformation->toolsEquipment)
-                         <div class="tab-pane" id="toolsEquipment" role="tabpanel">
-                            @include('leads.appointed_leads.product-view.tools-equipment-profile', ['generalInformation' => $generalInformation])
-                         </div>
-                        @endif
-                        @if ($generalInformation->buildersRisk)
-                          <div class="tab-pane" id="buildersRisk" role="tabpanel">
-                            @include('leads.appointed_leads.product-view.builders-risk-profile', ['generalInformation' => $generalInformation])
-                           </div>
-                        @endif
-                        @if ($generalInformation->businessOwnersPolicy)
-                        <div class="tab-pane" id="bop" role="tabpanel">
-                            @include('leads.appointed_leads.product-view.business-owners-profile', ['generalInformation' => $generalInformation])
-                        </div>
-                        @endif
-                    </div>
-                </div>
-
-            </div>
             <div class="col-4">
-                @include('leads.appointed_leads.history-log', ['generalInformation' => $generalInformation])
-                <div class="tab-content p-3 text-muted">
-                    <div class="quotation-form" id="generalLiabilitiesQuoationForm" role="tabpanel">
-                        @if ($generalInformation->generalLiabilities )
-                         @include('leads.appointed_leads.qoutation-forms.quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('General Liabilities', $lead->quoteLead->QuoteInformation->id)])
-                         @endif
-                    </div>
+                <div class="card bg-info">
+                    <div class="card-body"><h5 style="color:white"><i class="mdi mdi-account-hard-hat me-2"></i>{{ $lead->company_name }}</h5></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row d-flex text-center">
+                            <div>
+                                <h4>{{ $generalInformation->firstname. ' ' .$generalInformation->lastname}}</h4>
+                                 {{ $generalInformation->job_position }}
+                            </div>
+                        </div>
+                        <div class="row"><hr></div>
 
-                    <div class="quotation-form" id="workersCompensationForm" role="tabpanel">
-                        @if ($generalInformation->workersCompensation)
-                           @include('leads.appointed_leads.qoutation-forms.workers-compensation-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Workers Compensation', $lead->quoteLead->QuoteInformation->id)])
-                        @endif
-                    </div>
-                    <div class="quotation-form" id="commercialAutoForm" role="tabpanel">
-                        @if ($generalInformation->commercialAuto)
-                         @include('leads.appointed_leads.qoutation-forms.commercial-auto-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Commercial Auto', $lead->quoteLead->QuoteInformation->id)])
-                        @endif
-                    </div>
-                    <div class="quotation-form" id="excessLiabilityForm" role="tabpanel">
-                        @if ($generalInformation->excessLiability)
-                         @include('leads.appointed_leads.qoutation-forms.excess-liability-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Excess Liability', $lead->quoteLead->QuoteInformation->id)])
-                        @endif
-                    </div>
-                    <div class="quotation-form" id="toolsEquipmentForm" role="tabpanel">
-                        @if ($generalInformation->toolsEquipment)
-                          @include('leads.appointed_leads.qoutation-forms.tools-equipment-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Tools Equipment', $lead->quoteLead->QuoteInformation->id)])
-                        @endif
-                    </div>
-                    <div class="quotation-form" id="buildersRiskForm" role="tabpanel">
-                        @if ($generalInformation->buildersRisk)
-                        @include('leads.appointed_leads.qoutation-forms.builders-risk-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $generalInformation->lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Builders Risk', $generalInformation->lead->quoteLead->QuoteInformation->id)])
-                        @endif
-                    </div>
-                    <div class="quotation-form" id="businessOwnersPolicyForm" role="tabpanel">
-                        @include('leads.appointed_leads.qoutation-forms.business-owners-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Business Owners', $lead->quoteLead->QuoteInformation->id)])
+                        <div class="row mb-3">
+                            <h5>Contact Information</h5>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <strong>Email Address:</strong>
+                                <br>
+                                <strong>{{ $generalInformation->email_address }}</strong>
+                            </div>
+                            <div class="col-6">
+                                <strong>Tel Num:</strong>
+                                <br>
+                                <strong> {{ $lead->tel_num }}</strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <strong>Alt Num:</strong>
+                            <br>
+                            <strong>{{ $generalInformation->alt_num ? $generalInformation->alt_num : $lead->tel_num }}</strong>
+                        </div>
+
+                        <div class="row"><hr></div>
+                        <div class="row mb-3">
+                            <h5>Location Details</h5>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <strong>Location:</strong>
+                                <br>
+                                <strong>{{ $usAddress->city. ', ' .$usAddress->state }}</strong>
+                            </div>
+
+                            <div class="col-6">
+                               <strong>Local Time:</strong>
+                               <br>
+                               <strong>{{ $localTime->format('M-d-Y g:iA') }}</strong>
+                            </div>
+                        </div>
+                        <div class="row mb-1">
+                            <div class="col-6">
+                                <strong>Address:</strong>
+                                <br>
+                                <strong>{{ $generalInformation->address}}</strong>
+                            </div>
+                        </div>
+                        <div class="row"><hr></div>
+                        <div class="row mb-3">
+                            <h5>Company Information</h5>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <strong>Full Time Employee:</strong>
+                                <br>
+                                <strong>{{ $generalInformation->full_time_employee}}</strong>
+                            </div>
+                            <div class="col-6">
+                                <strong>Part Time Employee:</strong>
+                                <br>
+                                <strong>{{ $generalInformation->part_time_employee}}</strong>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <strong>Owners Payroll:</strong>
+                                <br>
+                                <strong>${{ number_format($generalInformation->owners_payroll, 2, '.', ',') }}</strong>
+                            </div>
+                            <div class="col-6">
+                                <strong>Employee Payroll:</strong>
+                                <br>
+                                <strong>${{ number_format($generalInformation->employee_payroll, 2, '.', ',') }}</strong>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <strong>Gross Receipt:</strong>
+                                <br>
+                                <strong>${{ number_format($generalInformation->gross_receipt, 2, '.', ',') }}</strong>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="col-8">
+                <div class="card">
+
+                     <!-- Nav tabs -->
+                    <ul class="nav nav-tabs nav-justified nav-separated" role="tablist" style="margin-top: 0px">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#product" role="tab">
+                                <span class="d-none d-sm-block d-flex align-items-center justify-content-center"><i class=" ri-shopping-cart-2-line"></i> Product</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#activityLog" role="tab">
+                                <span class="d-none d-sm-block d-flex align-items-center justify-content-center"><i class=" ri-git-merge-line"></i> History Log</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#messages" role="tab">
+                                <span class="d-none d-sm-block"><i class="ri-file-edit-line"></i> Notes</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#quotation" role="tab">
+                                <span class="d-none d-sm-block"><i class="fas fa-cog"></i> Quotation</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="card-body">
+                        <!-- Tab panes -->
+                        <div class="tab-content p-3 text-muted">
+
+                            <div class="tab-pane fade show active" id="product" role="tabpanel">
+                                <div class="row mb-4">
+                                    <ul class="nav nav-pills nav-justified" role="tablist">
+                                        @if ($generalInformation->generalLiabilities)
+                                        <li class="nav-item waves-effect waves-light">
+                                            <a class="nav-link navProfile active" data-bs-toggle="tab" href="#generalLiabilites" role="tab" id="generalLiabilitiesButton" style="white-space: nowrap;">
+                                               General Liabilities
+                                            </a>
+                                        </li>
+                                        @endif
+                                        @if ($generalInformation->workersCompensation)
+                                        <li class="nav-item waves-effect waves-light">
+                                            <a class="nav-link navProfile" data-bs-toggle="tab" href="#workersCompensation" role="tab" style="white-space: nowrap;">
+                                                Workers Comp
+                                            </a>
+                                        </li>
+                                        @endif
+                                        @if ($generalInformation->commercialAuto)
+                                        <li class="nav-item waves-effect waves-light">
+                                            <a class="nav-link navProfile" data-bs-toggle="tab" href="#commercialAuto" role="tab" style="white-space: nowrap;">
+                                                Commercial Auto
+                                            </a>
+                                        </li>
+                                        @endif
+                                        @if ($generalInformation->excessLiability)
+                                        <li class="nav-item waves-effect waves-light">
+                                            <a class="nav-link navProfile" data-bs-toggle="tab" href="#excessLiabiliy" role="tab" style="white-space: nowrap;">
+                                                Excess Liability
+                                            </a>
+                                        </li>
+                                        @endif
+                                        @if ($generalInformation->toolsEquipment)
+                                        <li class="nav-item waves-effect waves-light">
+                                            <a class="nav-link navProfile" data-bs-toggle="tab" href="#toolsEquipment" role="tab" style="white-space: nowrap;">
+                                                Tools Equipment
+
+                                            </a>
+                                        </li>
+                                        @endif
+                                        @if ($generalInformation->buildersRisk)
+                                        <li class="nav-item waves-effect waves-light">
+                                            <a class="nav-link navProfile" data-bs-toggle="tab" href="#buildersRisk" role="tab" style="white-space: nowrap;">
+                                               Builders Risk
+                                            </a>
+                                        </li>
+                                        @endif
+                                        @if ($generalInformation->businessOwners)
+                                        <li class="nav-item waves-effect waves-light">
+                                            <a class="nav-link navProfile" data-bs-toggle="tab" href="#bop" role="tab" style="white-space: nowrap;">
+                                             Business Owners
+                                            </a>
+                                        </li>
+                                        @endif
+                                    </ul>
+                                </div>
+
+                                <div class="row">
+                                    <div class="tab-content p-3 text-muted">
+                                        @if ($generalInformation->generalLiabilities)
+                                         <div class="tab-pane active" id="generalLiabilites" role="tabpanel">
+                                            @include('leads.appointed_leads.product-view.general-liability-profile', ['generalLiabilities' => $generalLiabilities])
+                                         </div>
+                                        @endif
+                                        @if ($generalInformation->workersCompensation)
+                                         <div class="tab-pane" id="workersCompensation" role="tabpanel">
+                                            @include('leads.appointed_leads.product-view.workers-comp-profile', ['generalInformation' => $generalInformation])
+                                         </div>
+                                        @endif
+                                        @if ($generalInformation->commercialAuto)
+                                          <div class="tab-pane" id="commercialAuto" role="tabpanel">
+                                            @include('leads.appointed_leads.product-view.commercial-auto-profile', ['generalInformation' => $generalInformation])
+                                          </div>
+                                        @endif
+                                        @if ($generalInformation->excessLiability)
+                                        <div class="tab-pane" id="excessLiabiliy" role="tabpanel">
+                                            @include('leads.appointed_leads.product-view.excess-liability-profile', ['generalInformation' => $generalInformation])
+                                        </div>
+                                        @endif
+                                        @if ($generalInformation->toolsEquipment)
+                                         <div class="tab-pane" id="toolsEquipment" role="tabpanel">
+                                            @include('leads.appointed_leads.product-view.tools-equipment-profile', ['generalInformation' => $generalInformation])
+                                         </div>
+                                        @endif
+                                        @if ($generalInformation->buildersRisk)
+                                          <div class="tab-pane" id="buildersRisk" role="tabpanel">
+                                            @include('leads.appointed_leads.product-view.builders-risk-profile', ['generalInformation' => $generalInformation])
+                                           </div>
+                                        @endif
+                                        @if ($generalInformation->businessOwners)
+                                        <div class="tab-pane" id="bop" role="tabpanel">
+                                            @include('leads.appointed_leads.product-view.business-owners-profile', ['generalInformation' => $generalInformation])
+                                        </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="activityLog" role="tabpanel">
+                                @include('leads.appointed_leads.log-activity.activity-log', ['generalInformation' => $generalInformation])
+                            </div>
+
+                            <div class="tab-pane" id="messages" role="tabpanel">
+                                @include('leads.appointed_leads.log-activity.notes-log', ['generalInformation' => $generalInformation])
+                            </div>
+
+                            <div class="tab-pane" id="quotation" role="tabpanel">
+                                test
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
