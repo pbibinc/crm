@@ -21,8 +21,6 @@
 .nav-separated .nav-item:last-child {
     border-right: none;
 }
-
-
 </style>
 <div class="page-content pt-6">
     <div class="container-fluid">
@@ -35,7 +33,7 @@
         </div>
         <div class="row">
             <div class="col-4">
-                <div class="card">
+                <div class="card rounded shadow-lg">
                     <div class="card-body">
                         <div class="row d-flex text-center">
                             <div>
@@ -129,7 +127,7 @@
                 </div>
             </div>
             <div class="col-8">
-                <div class="card">
+                <div class="card rounded shadow-lg" >
 
                      <!-- Nav tabs -->
                     <ul class="nav nav-tabs nav-justified nav-separated" role="tablist" style="margin-top: 0px">
@@ -158,61 +156,64 @@
                     <div class="card-body">
                         <!-- Tab panes -->
                         <div class="tab-content p-3 text-muted">
-
                             <div class="tab-pane fade show active" id="product" role="tabpanel">
                                 <div class="row mb-4">
-                                    <ul class="nav nav-pills nav-justified" role="tablist">
-                                        @if ($generalInformation->generalLiabilities)
-                                        <li class="nav-item waves-effect waves-light">
-                                            <a class="nav-link navProfile active" data-bs-toggle="tab" href="#generalLiabilites" role="tab" id="generalLiabilitiesButton" style="white-space: nowrap;">
-                                               General Liabilities
-                                            </a>
-                                        </li>
-                                        @endif
-                                        @if ($generalInformation->workersCompensation)
-                                        <li class="nav-item waves-effect waves-light">
-                                            <a class="nav-link navProfile" data-bs-toggle="tab" href="#workersCompensation" role="tab" style="white-space: nowrap;">
-                                                Workers Comp
-                                            </a>
-                                        </li>
-                                        @endif
-                                        @if ($generalInformation->commercialAuto)
-                                        <li class="nav-item waves-effect waves-light">
-                                            <a class="nav-link navProfile" data-bs-toggle="tab" href="#commercialAuto" role="tab" style="white-space: nowrap;">
-                                                Commercial Auto
-                                            </a>
-                                        </li>
-                                        @endif
-                                        @if ($generalInformation->excessLiability)
-                                        <li class="nav-item waves-effect waves-light">
-                                            <a class="nav-link navProfile" data-bs-toggle="tab" href="#excessLiabiliy" role="tab" style="white-space: nowrap;">
-                                                Excess Liability
-                                            </a>
-                                        </li>
-                                        @endif
-                                        @if ($generalInformation->toolsEquipment)
-                                        <li class="nav-item waves-effect waves-light">
-                                            <a class="nav-link navProfile" data-bs-toggle="tab" href="#toolsEquipment" role="tab" style="white-space: nowrap;">
-                                                Tools Equipment
+                                    <div class="card mb-4 shadow-lg">
+                                        <div class="card-body">
+                                            <ul class="nav nav-pills nav-justified" role="tablist">
+                                                @if ($generalInformation->generalLiabilities)
+                                                <li class="nav-item waves-effect waves-light">
+                                                    <a class="nav-link navProfile active" data-bs-toggle="tab" href="#generalLiabilites" role="tab" id="generalLiabilitiesButton" style="white-space: nowrap;">
+                                                       General Liabilities
+                                                    </a>
+                                                </li>
+                                                @endif
+                                                @if ($generalInformation->workersCompensation)
+                                                <li class="nav-item waves-effect waves-light">
+                                                    <a class="nav-link navProfile" data-bs-toggle="tab" href="#workersCompensation" role="tab" style="white-space: nowrap;">
+                                                        Workers Comp
+                                                    </a>
+                                                </li>
+                                                @endif
+                                                @if ($generalInformation->commercialAuto)
+                                                <li class="nav-item waves-effect waves-light">
+                                                    <a class="nav-link navProfile" data-bs-toggle="tab" href="#commercialAuto" role="tab" style="white-space: nowrap;">
+                                                        Commercial Auto
+                                                    </a>
+                                                </li>
+                                                @endif
+                                                @if ($generalInformation->excessLiability)
+                                                <li class="nav-item waves-effect waves-light">
+                                                    <a class="nav-link navProfile" data-bs-toggle="tab" href="#excessLiabiliy" role="tab" style="white-space: nowrap;">
+                                                        Excess Liability
+                                                    </a>
+                                                </li>
+                                                @endif
+                                                @if ($generalInformation->toolsEquipment)
+                                                <li class="nav-item waves-effect waves-light">
+                                                    <a class="nav-link navProfile" data-bs-toggle="tab" href="#toolsEquipment" role="tab" style="white-space: nowrap;">
+                                                        Tools Equipment
 
-                                            </a>
-                                        </li>
-                                        @endif
-                                        @if ($generalInformation->buildersRisk)
-                                        <li class="nav-item waves-effect waves-light">
-                                            <a class="nav-link navProfile" data-bs-toggle="tab" href="#buildersRisk" role="tab" style="white-space: nowrap;">
-                                               Builders Risk
-                                            </a>
-                                        </li>
-                                        @endif
-                                        @if ($generalInformation->businessOwners)
-                                        <li class="nav-item waves-effect waves-light">
-                                            <a class="nav-link navProfile" data-bs-toggle="tab" href="#bop" role="tab" style="white-space: nowrap;">
-                                             Business Owners
-                                            </a>
-                                        </li>
-                                        @endif
-                                    </ul>
+                                                    </a>
+                                                </li>
+                                                @endif
+                                                @if ($generalInformation->buildersRisk)
+                                                <li class="nav-item waves-effect waves-light">
+                                                    <a class="nav-link navProfile" data-bs-toggle="tab" href="#buildersRisk" role="tab" style="white-space: nowrap;">
+                                                       Builders Risk
+                                                    </a>
+                                                </li>
+                                                @endif
+                                                @if ($generalInformation->businessOwners)
+                                                <li class="nav-item waves-effect waves-light">
+                                                    <a class="nav-link navProfile" data-bs-toggle="tab" href="#bop" role="tab" style="white-space: nowrap;">
+                                                     Business Owners
+                                                    </a>
+                                                </li>
+                                                @endif
+                                            </ul>
+                                        </div>
+                                   </div>
                                 </div>
 
                                 <div class="row">
@@ -265,7 +266,7 @@
                             </div>
 
                             <div class="tab-pane" id="quotation" role="tabpanel">
-                                test
+                                @include('leads.appointed_leads.qoutation-forms/forms', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket])
                             </div>
 
                         </div>

@@ -76,7 +76,6 @@
                         <div class="message-info" style="margin-left: 10px">
                             <p class="note-date font-2 text-muted">sent by: {{ $note->userProfile->fullAmericanName()}} {{ date('M d, Y', strtotime($note->created_at)) }}
                         </div>
-
                         @endif
                         @endforeach
                     </div>

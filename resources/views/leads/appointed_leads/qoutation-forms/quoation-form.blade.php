@@ -1,19 +1,22 @@
-<h6>General Liabilities Quoation Form <i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
-<div class="card ">
-    <div class="card-body">
+<div class="col-6 title-card">
+        <h4 class="card-title mb-0" style="color: #ffffff">General Liabilities Quoation Form</h4>
+</div>
+<div class="row">
+    <div class="col-6">
         <div class="card border border-primary generalLiabilitiesFirsCardForm">
             <div class="card-body">
-                <div class="row mb-4">
-                    <div class="col-10">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="form-check">
                         <div class="form-check form-switch mb-3" dir="ltr">
                           <input class="form-check-input" type="checkbox" id="reccommendedCheckBox">
                           <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                         </div>
                     </div>
-                    <div class="col-2">
-                        <button class="btn btn-success" id="addGLPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
+                    <div>
+                        <button class="btn rounded-circle btn-success" id="addGLPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
                     </div>
                 </div>
+                <hr>
                 <div class="row mb-4">
                     <div>
                         <select name="" id="" class="form-select">
@@ -24,59 +27,48 @@
                         </select>
                     </div>
                 </div>
-                <div class="row mb-4">
-                    <div class="col-4">
+                <div class="form-group row mb-4">
+                    <div class="col-6">
                         <label for="filterBy" class="form-label mt-2" >Full Payment:</label>
-                    </div>
-                    <div class="col-8">
                         <input id="fullPayment" class="form-control">
                     </div>
-                </div>
-                <div class="row mb-4">
-                    <div class="col-4">
+                    <div class="col-6">
                         <label for="filterBy" class="form-label mt-2">Down Payment:</label>
-                    </div>
-                    <div class="col-8">
                         <input class="form-control" id="downPayment" type="text">
                     </div>
                 </div>
                 <div class="row mb-4">
-                    <div class="col-4">
+                    <div class="col-6">
                         <label for="filterBy" class="form-label mt-2">Montly Payment:</label>
-                    </div>
-                    <div class="col-8">
                         <input class="form-control mt-2"  id="monthlyPayment" type="text">
                     </div>
-                </div>
-                <div class="row mb-4">
-                    <div class="col-4">
+                    <div class="col-6">
                         <label for="filterBy" class="form-label">Broker Fee:</label>
-                    </div>
-                    <div class="col-8">
                         <input class="form-control" id="brokerFee" type="text">
                     </div>
                 </div>
-                <div class="row">
+                <hr>
+                <div class="text-center">
                     <button class="btn btn-primary saveGLFormButton">Save</button>
                 </div>
                 <input class="form-control" value={{ $generalInformation->lead->id }} id="leadId" type="hidden">
             </div>
         </div>
-
-        <div id="GLCardContainer"></div>
-
-        <div class="col-12">
-            <div class="d-grid mb-3">
-                @if ($quoteProduct->status === 2)
-                    <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveQuoationProduct">Save Quotation</button>
-                @else
-                <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveQuoationProduct" disabled>Save Quotation</button>
-                @endif
-            </div>
-        </div>
-
     </div>
 </div>
+
+<div id="GLCardContainer"></div>
+
+<div class="col-12">
+    <div class="d-grid mb-3">
+        @if ($quoteProduct->status === 2)
+            <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveQuoationProduct">Save Quotation</button>
+        @else
+        <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveQuoationProduct" disabled>Save Quotation</button>
+        @endif
+    </div>
+</div>
+
 <script>
     $(document).ready(function (){
         $('#saveQuoationProduct').on('click', function(){
@@ -132,86 +124,88 @@
               selectOptions += `<option value="${market.id}" ${market.id === data.quotation_market_id ? 'selected' : ''}>${market.name}</option>`;
            });
            let cardContent = `
-            <div class="card border border-primary">
+           <div class="col-6">
+            <div class="card border border-primary rounded shadow-sm">
                 <div class="card-body">
-                    <div class="row mb-4">
-                        <div class="col-8">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="reccommendedCheckBox" ${data.recommended === 1 ? 'checked' : '' }>
                             <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                         </div>
-                        <div class="col-4 text-right">
-                            <button class="btn btn-success addGLPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
-                            <button class="btn btn-danger removeSavedGLDataButton"><i class="mdi mdi-minus-circle"></i></button>
-                        </div>
-                    </div>
-                    <div class="row mb-4">
                         <div>
-                            <select name="" id="" class="form-select">
-                               ${selectOptions}
-                            </select>
+                            <button class="btn btn-success rounded-circle addGLPriceComparison" id="addPriceComparisonButton" title"Add""><i class="mdi mdi-plus-circle"></i></button>
+                            <button class="btn btn-danger rounded-circle removeSavedGLDataButton" title="Remove"><i class="mdi mdi-minus-circle"></i></button>
                         </div>
-
                     </div>
-                    <div class="row mb-4">
-                        <div class="col-4">
+                    <hr>
+                    <div class="mb-4">
+                        <label for="filterBy" class="form-label mt-2" >Select Market:</label>
+                        <select name="" id="" class="form-select">
+                            ${selectOptions}
+                        </select>
+                    </div>
+                    <div class="form-group row mb-4">
+                        <div class="col-6">
                             <label for="filterBy" class="form-label mt-2" >Full Payment:</label>
-                        </div>
-                        <div class="col-8">
                             <input id="fullPayment"  class="form-control  type="text" value="${data.full_payment}">
                         </div>
-                    </div>
-                    <div class="row mb-4">
-                        <div class="col-4">
+                        <div class="col-6">
                             <label for="filterBy" class="form-label mt-2">Down Payment:</label>
-                        </div>
-                        <div class="col-8">
                             <input class="form-control" id="downPayment" type="text" value="${data.down_payment}">
                         </div>
                     </div>
-                    <div class="row mb-4">
-                        <div class="col-4">
+                    <div class="form-group row mb-4">
+                        <div class="col-6">
                             <label for="filterBy" class="form-label mt-2">Montly Payment:</label>
-                        </div>
-                        <div class="col-8">
                             <input class="form-control mt-2" id="monthlyPayment" type="text" value="${data.monthly_payment}">
                         </div>
-                    </div>
-                    <div class="row mb-4">
-                        <div class="col-4">
+                        <div class="col-6">
                             <label for="filterBy" class="form-label">Broker Fee:</label>
-                        </div>
-                        <div class="col-8">
                             <input class="form-control" id="brokerFee" type="text" value="${data.broker_fee}">
                         </div>
                     </div>
                     <input type="hidden" value="${data.id}" id="quoteComparisonId"/>
-                <div class="row">
+                    <hr>
+                <div class="text-center">
                     <button class="btn btn-lg btn-success editGLFormButton">Save</button>
                 </div>
                 </div>
             </div>
+            </div>
            `;
-           $('#GLCardContainer').append(cardContent);
+
+            let lastRow = $('#GLCardContainer > .row:last-child');
+            if (lastRow.length == 0 || lastRow.children().length == 2) {
+                // Either no rows or the last row already has 2 cards, so create a new row
+             $('#GLCardContainer').append('<div class="row">' + cardContent + '</div>');
+            }else {
+               // Last row exists and only has 1 card, so append the new card there
+              lastRow.append(cardContent);
+            }
+            // $('#GLCardContainer').append(cardContent);
           });
         }
         };
 
         $(document).on('click', '.addGLPriceComparison', function(){
          let cardContent = `
+         <div class="col-6">
             <div class="card border border-primary">
                 <div class="card-body">
-                    <div class="row mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
                         <div class="col-8">
                             <input class="form-check-input" type="checkbox" id="reccommendedCheckBox">
                           <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                         </div>
                         <div class="col-4 text-right">
-                            <button class="btn btn-success addGLPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
-                            <button class="btn btn-danger removeCardButton"><i class="mdi mdi-minus-circle"></i></button>
+                            <button class="btn btn-success rounded-circle addGLPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
+                            <button class="btn btn-danger rounded-circle removeCardButton"><i class="mdi mdi-minus-circle"></i></button>
                         </div>
                     </div>
+                    <div class="row"><hr></div>
                     <div class="row mb-4">
                         <div>
+                            <label for="filterBy" class="form-label mt-2" >Select Market:</label>
                             <select name="" id="" class="form-select">
                                 <option value="">Select Market</option>
                                 @foreach ($quationMarket as $market)
@@ -221,46 +215,43 @@
                         </div>
 
                     </div>
-                    <div class="row mb-4">
-                        <div class="col-4">
-                            <label for="filterBy" class="form-label mt-2" >Full Payment:</label>
-                        </div>
-                        <div class="col-8">
+                    <div class="form-group row mb-4">
+                        <div class="col-6">
+                            <label for="filterBy" class="form-label" >Full Payment:</label>
                             <input id="fullPayment" class="form-control">
                         </div>
-                    </div>
-                    <div class="row mb-4">
-                        <div class="col-4">
-                            <label for="filterBy" class="form-label mt-2">Down Payment:</label>
-                        </div>
-                        <div class="col-8">
+                        <div class="col-6">
+                            <label for="filterBy" class="form-label">Down Payment:</label>
                             <input class="form-control" id="downPayment" type="text">
                         </div>
                     </div>
-                    <div class="row mb-4">
-                        <div class="col-4">
-                            <label for="filterBy" class="form-label mt-2">Montly Payment:</label>
+                    <div class="form-group row mb-4">
+                        <div class="col-6">
+                            <label for="filterBy" class="form-label">Montly Payment:</label>
+                            <input class="form-control" id="monthlyPayment" type="text">
                         </div>
-                        <div class="col-8">
-                            <input class="form-control mt-2" id="monthlyPayment" type="text">
-                        </div>
-                    </div>
-                    <div class="row mb-4">
-                        <div class="col-4">
+                        <div class="col-6">
                             <label for="filterBy" class="form-label">Broker Fee:</label>
-                        </div>
-                        <div class="col-8">
                             <input class="form-control" id="brokerFee" type="text">
                         </div>
                     </div>
-                <div class="row">
+                    <hr>
+                <div class="text-center">
                     <button class="btn btn-lg btn-success saveGLFormButton">Save</button>
                 </div>
                 </div>
             </div>
+        </div>
         `;
-
-        $('#GLCardContainer').append(cardContent);
+        let lastRow = $('#GLCardContainer > .row:last-child');
+            if (lastRow.length == 0 || lastRow.children().length == 2) {
+                // Either no rows or the last row already has 2 cards, so create a new row
+             $('#GLCardContainer').append('<div class="row">' + cardContent + '</div>');
+            }else {
+               // Last row exists and only has 1 card, so append the new card there
+              lastRow.append(cardContent);
+            }
+        // $('#GLCardContainer').append(cardContent);
         });
 
         $('#GLCardContainer').on('click', '.removeCardButton', function(){
@@ -297,7 +288,7 @@
                                     location.reload();
                                     $card.remove();
                                 }
-                            });
+                            })
                         },
                         error: function(){
                             Swal.fire({
