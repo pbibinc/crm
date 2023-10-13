@@ -24,6 +24,8 @@ class AssignAppointedLeadController extends Controller
         $apptaker = $userProfile->apptaker();
         $quoters = $userProfile->qouter();
         $userProfiles = $userProfile->userProfiles();
+        $appointedLeadCount = Lead::getAppointedLeads()->count();
+        $qoutingCount = QuotationProduct::quotingProduct()->count();
         if($request->ajax())
         {
             $leads = new Lead();
@@ -73,7 +75,7 @@ class AssignAppointedLeadController extends Controller
                    ->rawColumns(['products', 'checkbox'])
                    ->make(true);
         }
-        return view('leads.quotation_leads.assign-appointed-leads', compact('quoters', 'userProfiles'));
+        return view('leads.quotation_leads.assign-appointed-leads', compact('quoters', 'userProfiles', 'appointedLeadCount', 'qoutingCount'));
     }
     public function assignAppointedLead(Request $request)
     {
@@ -92,30 +94,35 @@ class AssignAppointedLeadController extends Controller
             if($userProfileId || $combinedIds){
                 foreach($combinedData as $value){
                     list($leadsId, $userId) = explode('_', $value['id']);
-
-                    $quoteLead = new QuoteLead();
-                    $quoteLead->user_profiles_id = $userProfileId;
-                    $quoteLead->leads_id = $leadsId;
-                    $quoteLead->save();
-
-                    $quoteInformation = new QuoteInformation();
-                    $quoteInformation->telemarket_id = $userId;
-                    $quoteInformation->quoting_lead_id = $quoteLead->id;
-                    $quoteInformation->status = 2;
-                    $quoteInformation->remarks = ' ';
-                    $quoteInformation->save();
-
-                    foreach($value['product'] as $product){
-                        $quotationProduct = new QuotationProduct();
-                        $quotationProduct->quote_information_id = $quoteInformation->id;
-                        $quotationProduct->product = $product;
-                        $quotationProduct->status = 2;
-                        $quotationProduct->save();
-                    }
-
                     $lead = Lead::find($leadsId);
                     $lead->status = 4;
                     $lead->save();
+                    $qouteLead = $lead->quoteLead()->first();
+                    if($qouteLead == null)
+                    {
+                        $qouteLead = new QuoteLead();
+                        $qouteLead->user_profiles_id = $userProfileId;
+                        $qouteLead->leads_id = $leadsId;
+                        $qouteLead->save();
+
+                        $quoteInformation = new QuoteInformation();
+                        $quoteInformation->telemarket_id = $userId;
+                        $quoteInformation->quoting_lead_id = $qouteLead->id;
+                        $quoteInformation->status = 2;
+                        $quoteInformation->remarks = ' ';
+                        $quoteInformation->save();
+
+                        foreach($value['product'] as $product){
+                            $quotationProduct = new QuotationProduct();
+                            $quotationProduct->quote_information_id = $quoteInformation->id;
+                            $quotationProduct->product = $product;
+                            $quotationProduct->status = 2;
+                            $quotationProduct->save();
+                        }
+                    }else{
+                        $qouteLead->user_profiles_id = $userProfileId;
+                        $qouteLead->save();
+                    }
 
                 }
             }else{
@@ -149,7 +156,54 @@ class AssignAppointedLeadController extends Controller
             }
 
             return DataTables::of($data)
+                   ->addIndexColumn()
+                   ->addColumn('checkbox', function($leads){
+                        return '<input type="checkbox" name="leads_checkbox[]" class="leads_checkbox" value="' . $leads->id . '" />';
+                    })
+                   ->rawColumns(['checkbox'])
                    ->make(true);
+        }
+    }
+
+    public function voidLeads(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+            $leadsIds = $request->input('leadsId');
+            foreach($leadsIds as $leadsId){
+                $lead = Lead::find($leadsId);
+                $lead->status = 3;
+                $lead->save();
+
+                $qouteLead = $lead->quoteLead()->first();
+                $qouteLead->user_profiles_id = null;
+                $qouteLead->save();
+            }
+            DB::commit();
+        }catch(\Exception $e){
+            DB::rollBack();
+            Log::info("Error for Voiding", [$e->getMessage()]);
+            return response()->json(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function redeployLeads(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+            $leadsIds = $request->input('leadsId');
+            $userProfileId = $request->input('userProfileId');
+            foreach($leadsIds as $leadsId){
+                $lead = Lead::find($leadsId);
+                $qouteLead = $lead->quoteLead()->first();
+                $qouteLead->user_profiles_id = $userProfileId;
+                $qouteLead->save();
+            }
+            DB::commit();
+        }catch(\Exception $e){
+            DB::rollBack();
+            Log::info("Error for Redeploying", [$e->getMessage()]);
+            return response()->json(['error' => $e->getMessage()]);
         }
     }
 }

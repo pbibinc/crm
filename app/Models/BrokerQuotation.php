@@ -33,7 +33,7 @@ class BrokerQuotation extends Model
     // Collect the related QuotationProduct models
        $quotationProducts = collect();
        foreach ($brokerQuotations as $brokerQuotation) {
-          if ($brokerQuotation->QuotationProduct && $brokerQuotation->QuotationProduct->status === 3) {
+          if ($brokerQuotation->QuotationProduct) {
               $quotationProducts->push($brokerQuotation->QuotationProduct);
             }
         }

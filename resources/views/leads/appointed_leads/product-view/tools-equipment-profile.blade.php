@@ -1,3 +1,18 @@
+<style>
+    .title-card {
+    background-color: #656565; /* Bootstrap primary color */
+    padding: 10px 15px;
+    border-radius: 5px;
+    color: #ffffff;;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.title-icon {
+    margin-right: 10px;
+}
+</style>
 <div class="row mb-4">
     <div class="col-5 title-card">
         <i class="ri-tools-line title-icon"></i>

@@ -60,11 +60,12 @@
 <div id="GLCardContainer"></div>
 
 <div class="col-12">
-    <div class="d-grid mb-3">
+    <div class="d-grid mb-3 text-center">
         @if ($quoteProduct->status === 2)
             <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveQuoationProduct">Save Quotation</button>
         @else
-        <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveQuoationProduct" disabled>Save Quotation</button>
+        {{-- <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveQuoationProduct" disabled>Save Quotation</button> --}}
+        <span>Already Sent</span>
         @endif
     </div>
 </div>

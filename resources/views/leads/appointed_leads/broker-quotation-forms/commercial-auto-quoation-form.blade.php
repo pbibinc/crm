@@ -1,14 +1,50 @@
+
+<style>
+    /* Additional styling for buttons and other elements */
+    .btn-enhanced {
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-right: 10px;
+    }
+
+    .btn-enhanced:hover {
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .btn-enhanced:last-child {
+        margin-right: 0;
+    }
+
+    .title-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .star-icon {
+        margin-left: 8px;
+        margin-bottom: 6px;
+    }
+
+    .fee-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .fee-input {
+        margin-left: 10px;
+    }
+
+    .text-center {
+        margin-top: 20px;
+    }
+</style>
 <h6>Commercial Auto Quoation Form<i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
-<div class="card ">
-    <div class="card-body">
 
+<div id="CommercialAutoContainer" class="mt-2"></div>
 
-        <div id="CommercialAutoContainer"></div>
-
-
-    </div>
-
-</div>
 <script>
     $(document).ready(function (){
 
@@ -35,7 +71,8 @@
             const marketObj = market.find(market => market.id === data.quotation_market_id);
             const marketName = marketObj ? marketObj.name : 'Market Not Found';
             let cardContent = `
-            <div class="card border border-primary">
+            <div class="col-6">
+                <div class="card border border-primary">
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-12">
@@ -64,22 +101,24 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-4">
-                        <div class="col-4">
 
-                        </div>
-                        <div class="col-8">
-
-                        </div>
-                    </div>
                     <input type="hidden" value="${data.id}" id="quoteComparisonId"/>
-                <div class="row">
-                    <button class="btn btn-lg btn-success editCommercialAutoButton">Save</button>
-                </div>
+                    <div class="text-center">
+                      <button class="btn btn-lg btn-primary btn-enhanced sendEmail">Send Email</button>
+                      <button class="btn btn-lg btn-success btn-enhanced editCommercialAutoButton">Save</button>
+                    </div>
                 </div>
             </div>
            `;
-           $('#CommercialAutoContainer').append(cardContent);
+           let lastRow = $('#CommercialAutoContainer > .row:last-child');
+            if (lastRow.length == 0 || lastRow.children().length == 2) {
+                // Either no rows or the last row already has 2 cards, so create a new row
+             $('#CommercialAutoContainer').append('<div class="row">' + cardContent + '</div>');
+            }else {
+               // Last row exists and only has 1 card, so append the new card there
+              lastRow.append(cardContent);
+            }
+        //    $('#CommercialAutoContainer').append(cardContent);
           });
 
         }
@@ -111,6 +150,8 @@
                 id: id
             };
 
+
+
              $.ajax({
                 url: "{{ route('update-quotation-comparison') }}",
                 headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
@@ -137,6 +178,105 @@
             })
         });
 
+        // $(document).on('click', '.sendEmail', function(){
+        //  var $card = $(this).closest('.card');
+        //   //form
+        //   var id = $card.find('#quoteComparisonId').val();
+        //   Swal.fire({
+        //     title: 'Are you sure?',
+        //     text: "You are about to send the quotation.",
+        //     icon: 'warning',
+        //     showCancelButton: true,
+        //     confirmButtonColor: '#3085d6',
+        //     cancelButtonColor: '#d33',
+        //     confirmButtonText: 'Yes, send it!'
+        //   }).then((result) => {
+        //     if(result.isConfirmed){
+        //            // Show the loading spinner
+        //            Swal.showLoading();
+        //         $.ajax({
+        //         url: "{{ route('send-quotation') }}",
+        //         headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        //         method: "POST",
+        //         data:{
+        //             id: id,
+        //         },
+        //         success: function(){
+        //             Swal.fire({
+        //                 title: 'Success',
+        //                 text: 'Email Has been sent',
+        //                 icon: 'success',
+        //             }).then((result) => {
+        //                 if (result.isConfirmed) {
+        //                     location.reload();
+        //                 }
+        //             });
+        //         },
+        //         error: function(){
+        //             Swal.fire({
+        //                 title: 'Error',
+        //                 text: 'Something went wrong',
+        //                 icon: 'error'
+        //             });
+        //         }
+        //     })
+        //     }
+        //   });
 
+
+        // });
+
+        $(document).on('click', '.sendEmail', function() {
+         var $card = $(this).closest('.card');
+         var id = $card.find('#quoteComparisonId').val();
+
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You are about to send the quotation.",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, send it!',
+          preConfirm: () => {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: "{{ route('send-quotation') }}",
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    method: "POST",
+                    data: { id: id },
+                    success: function() {
+                        resolve('Email has been sent successfully.');
+                    },
+                    error: function() {
+                        reject('Something went wrong. Please try again.');
+                    }
+                });
+            });
+          }
+            }).then((result) => {
+        if (result.value) {
+            Swal.fire({
+                title: 'Success',
+                text: result.value,
+                icon: 'success'
+            }).then(() => {
+                location.reload();
+            });
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire({
+                title: 'Cancelled',
+                text: 'Email was not sent.',
+                icon: 'error'
+            });
+        } else if (result.dismiss === 'error') {
+            Swal.fire({
+                title: 'Error',
+                text: result.value,
+                icon: 'error'
+            });
+        }
     });
+   });
+});
 </script>

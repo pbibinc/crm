@@ -41,4 +41,20 @@ class QuotationProduct extends Model
     {
         return self::where('status', 1)->get();
     }
+
+    public function pendingProduct()
+    {
+        return self::where('status', 3)->get();
+    }
+
+    public static function quotingProduct()
+    {
+        return self::where('status', 2)->get();
+    }
+
+    public function brokerQuotation()
+    {
+        return $this->belongsTo(BrokerQuotation::class, 'quote_product_id');
+    }
+
 }

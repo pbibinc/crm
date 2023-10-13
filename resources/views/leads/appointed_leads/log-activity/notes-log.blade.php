@@ -126,8 +126,7 @@
     //     });
     // });
     $(document).ready(function(){
-        $('#createNotes').on('click', '#logNote', function(){
-            event.preventDefault();
+        $('#logNote').on('click', function(){
             var noteTitle = $('#noteTitle').val();
             var noteDescription = $('#noteDescription').val();
             var leadId = {!! json_encode($generalInformation->lead->id) !!};

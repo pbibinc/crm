@@ -32,7 +32,8 @@
             const marketObj = market.find(market => market.id === data.quotation_market_id);
             const marketName = marketObj ? marketObj.name : 'Market Not Found';
             let cardContent = `
-            <div class="card border border-primary">
+            <div class="col-6">
+                <div class="card border border-primary">
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-12">
@@ -75,8 +76,19 @@
                 </div>
                 </div>
             </div>
+            </div>
+
            `;
-           $('#ToolsEquipmentContainer').append(cardContent);
+
+           let lastRow = $('#ToolsEquipmentContainer > .row:last-child');
+            if (lastRow.length == 0 || lastRow.children().length == 2) {
+                // Either no rows or the last row already has 2 cards, so create a new row
+             $('#ToolsEquipmentContainer').append('<div class="row">' + cardContent + '</div>');
+            }else {
+               // Last row exists and only has 1 card, so append the new card there
+              lastRow.append(cardContent);
+            }
+        //    $('#ToolsEquipmentContainer').append(cardContent);
           });
 
         }

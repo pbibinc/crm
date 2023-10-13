@@ -54,15 +54,15 @@
     </div>
 </div>
 
-
         <div id="BopCompContainer"></div>
 
         <div class="col-12">
-            <div class="d-grid mb-3">
+            <div class="d-grid mb-3 text-center">
                 @if ($quoteProduct->status === 2)
                     <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveBusinessOwnersQuoationProduct">Save Quotation</button>
                 @else
-                <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveBusinessOwnersQuoationProduct" disabled>Save Quotation</button>
+                {{-- <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveBusinessOwnersQuoationProduct" disabled>Save Quotation</button> --}}
+                <span>Already Sent</span>
                 @endif
             </div>
         </div>
@@ -120,9 +120,10 @@
               selectOptions += `<option value="${market.id}" ${market.id === data.quotation_market_id ? 'selected' : ''}>${market.name}</option>`;
            });
            let cardContent = `
+           <div class="col-6">
             <div class="card border border-primary">
                 <div class="card-body">
-                    <div class=""d-flex justify-content-between align-items-center mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="reccommendedCheckBox" ${data.recommended === 1 ? 'checked' : '' }>
                             <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
@@ -132,6 +133,7 @@
                             <button class="btn btn-danger rounded-circle  removeSavedDataButton"><i class="mdi mdi-minus-circle"></i></button>
                         </div>
                     </div>
+                    <hr>
                     <div class="row mb-4">
                         <div>
                             <label for="filterBy" class="form-label mt-2" >Select Market:</label>
@@ -141,7 +143,7 @@
                         </div>
 
                     </div>
-                    <div class="row mb-4">
+                    <div class="form-group row mb-4">
                         <div class="col-6">
                             <label for="filterBy" class="form-label" >Full Payment:</label>
                             <input id="fullPayment"  class="form-control  type="text" value="${data.full_payment}">
@@ -154,28 +156,34 @@
 
                     <div class="row mb-4">
                         <div class="col-6">
-                            <label for="filterBy" class="form-label mt-2">Montly Payment:</label>
+                            <label for="filterBy" class="form-label">Montly Payment:</label>
+                            <input class="form-control" id="monthlyPayment" type="text" value="${data.monthly_payment}">
                         </div>
                         <div class="col-6">
-                            <input class="form-control mt-2" id="monthlyPayment" type="text" value="${data.monthly_payment}">
-                        </div>
-                    </div>
-                    <div class="row mb-4">
-                        <div class="col-4">
                             <label for="filterBy" class="form-label">Broker Fee:</label>
-                        </div>
-                        <div class="col-8">
                             <input class="form-control" id="brokerFee" type="text" value="${data.broker_fee}">
                         </div>
                     </div>
+                    <hr>
                     <input type="hidden" value="${data.id}" id="quoteComparisonId"/>
-                <div class="row">
+                <div class="text-center">
                     <button class="btn btn-lg btn-success editBusinessOwnersFormButton">Save</button>
                 </div>
                 </div>
             </div>
+            </div>
+
            `;
-           $('#BopCompContainer').append(cardContent);
+
+           let lastRow = $('#BopCompContainer > .row:last-child');
+            if (lastRow.length == 0 || lastRow.children().length == 2) {
+                // Either no rows or the last row already has 2 cards, so create a new row
+             $('#BopCompContainer').append('<div class="row">' + cardContent + '</div>');
+            }else {
+               // Last row exists and only has 1 card, so append the new card there
+              lastRow.append(cardContent);
+            }
+        //    $('#BopCompContainer').append(cardContent);
           });
 
         }
@@ -185,20 +193,23 @@
         $(document).on('click', '.addBopPriceComparison', function(){
 
          let cardContent = `
+         <div class="col-6">
             <div class="card border border-primary">
                 <div class="card-body">
-                    <div class="row mb-4">
-                        <div class="col-8">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="reccommendedCommercialAutoCheckBox">
-                        <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
+                           <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                         </div>
-                        <div class="col-4 text-right">
-                            <button class="btn btn-success addBopPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
-                            <button class="btn btn-danger removeCardButton"><i class="mdi mdi-minus-circle"></i></button>
+                        <div>
+                            <button class="btn btn-success rounded-circle addBopPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
+                            <button class="btn btn-danger rounded-circle removeCardButton"><i class="mdi mdi-minus-circle"></i></button>
                         </div>
                     </div>
+                    <hr>
                     <div class="row mb-4">
                         <div>
+                            <label for="filterBy" class="form-label" >Select Market:</label>
                             <select name="" id="" class="form-select">
                                 <option value="">Select Market</option>
                                 @foreach ($quationMarket as $market)
@@ -208,46 +219,47 @@
                         </div>
 
                     </div>
-                    <div class="row mb-4">
-                        <div class="col-4">
-                            <label for="filterBy" class="form-label mt-2" >Full Payment:</label>
-                        </div>
-                        <div class="col-8">
+                    <div class="form-group row mb-4">
+                        <div class="col-6">
+                            <label for="filterBy" class="form-label" >Full Payment:</label>
                             <input id="fullPayment" class="form-control">
                         </div>
-                    </div>
-                    <div class="row mb-4">
-                        <div class="col-4">
-                            <label for="filterBy" class="form-label mt-2">Down Payment:</label>
-                        </div>
-                        <div class="col-8">
+                        <div class="col-6">
+                            <label for="filterBy" class="form-label">Down Payment:</label>
                             <input class="form-control" id="downPayment" type="text">
                         </div>
                     </div>
-                    <div class="row mb-4">
-                        <div class="col-4">
-                            <label for="filterBy" class="form-label mt-2">Montly Payment:</label>
+
+                    <div class="form-group row mb-4">
+                        <div class="col-6">
+                            <label for="filterBy" class="form-label">Montly Payment:</label>
+                            <input class="form-control" id="monthlyPayment" type="text">
                         </div>
-                        <div class="col-8">
-                            <input class="form-control mt-2" id="monthlyPayment" type="text">
-                        </div>
-                    </div>
-                    <div class="row mb-4">
-                        <div class="col-4">
+                        <div class="col-6">
                             <label for="filterBy" class="form-label">Broker Fee:</label>
-                        </div>
-                        <div class="col-8">
                             <input class="form-control" id="brokerFee" type="text">
                         </div>
                     </div>
-                <div class="row">
+                    <hr>
+                <div class="text-center">
                     <button class="btn btn-lg btn-success saveBusinessOwnersFormButton">Save</button>
                 </div>
                 </div>
             </div>
+         </div>
+
         `;
 
-        $('#BopCompContainer').append(cardContent);
+        let lastRow = $('#BopCompContainer > .row:last-child');
+            if (lastRow.length == 0 || lastRow.children().length == 2) {
+                // Either no rows or the last row already has 2 cards, so create a new row
+             $('#BopCompContainer').append('<div class="row">' + cardContent + '</div>');
+            }else {
+               // Last row exists and only has 1 card, so append the new card there
+              lastRow.append(cardContent);
+            }
+
+        // $('#BopCompContainer').append(cardContent);
         });
 
         $('#BopCompContainer').on('click', '.removeCardButton', function(){

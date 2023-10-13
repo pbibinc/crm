@@ -58,11 +58,12 @@
         <div id="CommercialAutoContainer"></div>
 
         <div class="col-12">
-            <div class="d-grid mb-3">
+            <div class="d-grid mb-3 text-center">
                 @if ($quoteProduct->status === 2)
                     <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveCommercialAutoQuoationProduct">Save Quotation</button>
                 @else
-                <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveCommercialAutoQuoationProduct" disabled>Save Quotation</button>
+                {{-- <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveCommercialAutoQuoationProduct" disabled>Save Quotation</button> --}}
+                <span>Already Sent</span>
                 @endif
             </div>
         </div>
@@ -274,9 +275,7 @@
                  title: 'Are you sure?',
                  text: 'You will not be able to recover this!',
                  icon: 'warning',
-                 showCancelButton: true,
-                 confirmButtonText: 'Yes, delete it!',
-                 cancelButtonText: 'No, keep it'
+
             }).then((result) => {
                 if (result.isConfirmed) {
                     var id = $card.find('#quoteComparisonId').val();

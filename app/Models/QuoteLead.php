@@ -31,4 +31,9 @@ class QuoteLead extends Model
         return $this->belongsTo(UserProfile::class, 'user_profiles_id');
     }
 
+    // public function ()
+    // {
+
+    // }
+
 }

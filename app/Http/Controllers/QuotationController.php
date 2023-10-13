@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Mail\SendQoute;
 use App\Models\BrokerQuotation;
 use App\Models\GeneralInformation;
 use App\Models\GeneralLiabilities;
@@ -19,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\Facades\DataTables;
 
 class QuotationController extends Controller
@@ -277,7 +279,7 @@ class QuotationController extends Controller
         //     ->rawColumns(['checkBox'])
         //     ->make(true);
         // }
-        return view('leads.broker_leads.assign-quoted-leads', compact('userProfile', 'groupedProducts'));
+        return view('leads.broker_leads.assign-quoted-leads', compact('userProfile', 'groupedProducts', 'quoationProduct'));
     }
 
     public function assignBrokerAssistant(Request $request)
@@ -303,7 +305,25 @@ class QuotationController extends Controller
 
                    $quotationProduct = QuotationProduct::find($productId);
                    $quotationProduct->status = 3;
-                   $quotationProduct->save();
+                   $borkerQuotationSaving = $quotationProduct->save();
+
+                   $qouteComparison = QuoteComparison::where('quotation_product_id', 1)->where('recommended', 1)->first();
+
+                   if($borkerQuotationSaving){
+                    $qoutedMailData = [
+                        'title' => 'Qoutation For ' . $quotationProduct->QuoteInformation->QuoteLead->leads->company_name,
+                        'customer_name' => $quotationProduct->QuoteInformation->QuoteLead->leads->GeneralInformation->customerFullName(),
+                        'footer' => UserProfile::find($userProfileId)->fullAmericanName(),
+                        'product' => $quotationProduct->product,
+                        'prices' =>$qouteComparison
+                    ];
+                   $sendingMail =  Mail::to('maechael108@gmail.com')->send(new SendQoute($qoutedMailData));
+                   if($sendingMail){
+                    return response()->json(['success' => 'Mail sent successfully']);
+                   }else{
+                    return response()->json(['error' => 'Error in sending mail']);
+                   }
+                   }
                 }
                 DB::commit();
             }catch(\Exception $e){
@@ -316,11 +336,13 @@ class QuotationController extends Controller
 
     public function getPendingProduct(Request $request)
     {
+        $quotationProduct = new BrokerQuotation();
+        $userProfileId = Auth::user()->userProfile->id;
+        $pendingProduct = $quotationProduct->getAssignQoutedLead($userProfileId);
+        $pendingProductCount = $pendingProduct->where('status', 3)->count();
+        $followupProductCount = $pendingProduct->where('status', 4)->count();
         if($request->ajax())
         {
-            $quotationProduct = new BrokerQuotation();
-            $userProfileId = Auth::user()->userProfile->id;
-            $pendingProduct = $quotationProduct->getAssignQoutedLead($userProfileId);
             return DataTables::of($pendingProduct)
             ->addIndexColumn()
             ->addColumn('company_name', function($pendingProduct){
@@ -328,14 +350,23 @@ class QuotationController extends Controller
                 return $lead;
             })
             ->addColumn('viewButton', function($pendingProduct){
-                $viewButton = '<button class="edit btn btn-info btn-sm viewButton" id="' . $pendingProduct->id . '"><i class="ri-eye-line"></i></button>';
+                $viewButton = '<button class="edit btn btn-outline-info btn-sm viewButton" id="' . $pendingProduct->id . '"><i class="ri-eye-line"></i></button>';
                 return $viewButton;
             })
-            ->rawColumns(['viewButton'])
+            ->addColumn('statusColor', function($pendingProduct){
+                if ($pendingProduct->status == 3) {
+                    return '<span class="badge bg-info">Pending</span>';
+                } elseif ($pendingProduct->status == 4) {
+                    return '<span class="badge bg-warning">Follow up</span>';
+                } else {
+                    return '<span class="badge bg-default">Unknown</span>'; // Add an "Unknown" case or another default
+                }
+            })
+            ->rawColumns(['viewButton', 'statusColor'])
             ->make(true);
         }
 
-        return view('leads.broker_leads.index');
+        return view('leads.broker_leads.index', compact('pendingProductCount', 'followupProductCount'));
     }
 
     public function quotedProductProfile(Request $request)
@@ -345,6 +376,106 @@ class QuotationController extends Controller
         $generalInformationId = QuotationProduct::find($productId)->QuoteInformation->QuoteLead->leads->generalInformation->id;
 
         return response()->json(['leadId' => $leadId, 'generalInformationId' => $generalInformationId, 'productId' => $productId]);
+    }
+
+    public function getAssignQoutedLead(Request $request)
+    {
+        $quotationProduct = new BrokerQuotation();
+        $brokerId = $request->input('brokerAssistantId');
+        $agentUserProfileId = $request->input('agentUserProfileId');
+        $userProfileId = $brokerId ? $brokerId : $agentUserProfileId;
+        if($userProfileId){
+            $pendingProduct = $quotationProduct->getAssignQoutedLead($userProfileId);
+        }else{
+            $pendingProduct = null;
+        }
+
+        if($request->ajax())
+        {
+            if($pendingProduct !== null){
+                $data = $pendingProduct;
+            }else{
+                $data = [];
+            }
+            return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('company_name', function($data){
+                $lead = $data->QuoteInformation->QuoteLead->leads->company_name;
+                return $lead;
+            })
+            ->addColumn('checkbox', function($data){
+                return '<input type="checkbox" name="leads_checkbox[]" class="leads_checkbox" value="' . $data->id . '" />';
+            })
+            ->rawColumns(['checkbox'])
+            ->make(true);
+        }
+    }
+
+    public function voidQoutedLead(Request $request)
+    {
+        $productIds = $request->input('ids');
+        $userProfileId = $request->input('userProfileId');
+        try{
+            DB::beginTransaction();
+            foreach($productIds as $productId){
+                $quotationProduct = QuotationProduct::find($productId);
+                $quotationProduct->status = 1;
+                $quotationProduct->save();
+                $brokerQuotation = BrokerQuotation::where('quote_product_id', $productId)->where('user_profile_id', $userProfileId)->first();
+                $brokerQuotation->user_profile_id = null;
+                $borkerQuotationSaving = $brokerQuotation->save();
+
+            }
+            DB::commit();
+        }catch(\Exception $e){
+            DB::rollback();
+            Log::error('Error in voiding qouted lead', [$e->getMessage()]);
+            return response()->json(['error' => $e->getMessage()]);
+        }
+    }
+    public function redeployQoutedLead(Request $request)
+    {
+        $productIds = $request->input('ids');
+        $userProfileId = $request->input('userProfileId');
+        $oldUserProfileId = $request->input('oldUserProfileId');
+        try{
+            DB::beginTransaction();
+            foreach($productIds as $productId){
+                $brokerQuotation = BrokerQuotation::where('quote_product_id', $productId)->where('user_profile_id', $oldUserProfileId)->first();
+                $brokerQuotation->user_profile_id = $userProfileId;
+                $brokerQuotation->save();
+            }
+            DB::commit();
+        }catch(\Exception $e){
+            DB::rollback();
+            Log::error('Error in redeploying qouted lead', [$e->getMessage()]);
+            return response()->json(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function changeStatus(Request $request)
+    {
+
+        if($request->ajax())
+        {
+            $status = $request->input('status');
+            $productId = $request->input('id');
+            $qoutationProduct = QuotationProduct::find($productId);
+            $qoutationProduct->status = $status;
+            $quotationProductSaving = $qoutationProduct->save();
+            if($quotationProductSaving){
+                return response()->json(['success' => 'Status changed successfully']);
+            }else{
+                return response()->json(['error' => 'Error in changing status']);
+            }
+        }else{
+            return response()->json(['error' => 'Error in changing status']);
+        }
+    }
+
+    public function setCallBackDate(Request $request)
+    {
+
     }
 
 }

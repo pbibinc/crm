@@ -29,6 +29,7 @@ use App\Http\Controllers\DepartmentListController;
 use App\Http\Controllers\DashboardControllerNew;
 use App\Http\Controllers\TecnickcomPdfController;
 use App\Http\Controllers\CompanyHandbookController;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\EmbeddedSignatureController;
 use App\Http\Controllers\NotesController;
 use App\Http\Controllers\QuotationController;
@@ -119,12 +120,15 @@ Route::prefix('list-leads')->group(function  () {
     Route::get('/product/pdf', [AppTakerLeadsController::class, 'productPdf'])->name('product.pdf');
     Route::get('/product/forms', [AppTakerLeadsController::class, 'productForms'])->name('product.forms');
     Route::post('/list-lead-id', [AppTakerLeadsController::class, 'listLeadId'])->name('list-lead-id');
+
     Route::get('/assign-appointed-lead', [AssignAppointedLeadController::class, 'index'])->name('assign-appointed-lead');
     Route::post('/assign-appointed-lead/assign-lead', [AssignAppointedLeadController::class, 'assignAppointedLead'])->name('assign-leads-market-specialist');
     Route::get('/assign-appointed-lead/get-data-table', [AssignAppointedLeadController::class, 'getDataTable'])->name('get-data-table');
 });
 
 Route::prefix('quoatation')->group(function (){
+
+    //routes for qoutation module
     Route::get('/appointed-leads', [QuotationController::class, 'appointedLeadsView'])->name('appointed-leads');
     Route::post('/lead-profile', [QuotationController::class, 'leadProfile'])->name('lead-profile');
     Route::get('/lead-profile-view/{leadId}/{generalInformationId}', [QuotationController::class, 'leadProfileView'])->name('lead-profile-view');
@@ -139,9 +143,27 @@ Route::prefix('quoatation')->group(function (){
     Route::get('/get-pending-product', [QuotationController::class, 'getPendingProduct'])->name('get-pending-product');
     Route::post('/quoted-product-profile', [QuotationController::class, 'quotedProductProfile'])->name('quoted-product-profile');
     Route::get('/broker-profile-view/{leadId}/{generalInformationId}/{productId}', [QuotationController::class, 'brokerProfileView'])->name('broker-profile-view');
+    Route::get('/get-assign-qouted-lead', [QuotationController::class, 'getAssignQoutedLead'])->name('get-assign-qouted-lead');
+    Route::post('/void-qouted-lead', [QuotationController::class, 'voidQoutedLead'])->name('void-qouted-lead');
+    Route::post('/redeploy-qouted-lead', [QuotationController::class, 'redeployQoutedLead'])->name('redeploy-qouted-lead');
+    Route::post('/change-status', [QuotationController::class, 'changeStatus'])->name('change-quotation-status');
+    Route::post('/set-callback-date', [QuotationController::class, 'setCallBackDate'])->name('set-callback-date');
+
+    //route for notes
     Route::post('/create-notes', [NotesController::class, 'createNotes'])->name('create-notes');
     Route::get('/{note}/get-notes', [NotesController::class, 'getNotes'])->name('get-notes');
+
+    //route for Assigning Appointed Lead Controller
+    Route::post('/void-leads', [AssignAppointedLeadController::class, 'voidLeads'])->name('void-appointed-leads');
+    Route::post('/redeploy-leads', [AssignAppointedLeadController::class, 'redeployLeads'])->name('redeploy-appointed-leads');
+
 });
+
+Route::prefix('email')->group(function (){
+    Route::post('/send-email', [EmailController::class, 'sendQuotation'])->name('send-quotation');
+    Route::post('/send-follow-up-email', [EmailController::class, 'sendFollowUpEmail'])->name('send-follow-up-email');
+});
+
 
 Route::prefix('call-back')->group(function (){
     Route::post('/store', [CallBackController::class, 'store'])->name('call-back.store');

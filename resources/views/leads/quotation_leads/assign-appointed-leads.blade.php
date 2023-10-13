@@ -10,34 +10,23 @@
 
 <div class="page-content pt-6">
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-6">
 
-            </div>
-        </div>
         <div class="row">
             <div class="col-8" >
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h3 class="card-title mb-4" style="display: flex; align-items: center;">  <i class="ri-file-list-3-line font-size-24"></i> LIST OF APPOINTED LEADS</h3>
+                    <h3 class="card-title mb-4" style="display: flex; align-items: center; background-color: #2c3e50; color: #ecf0f1; padding: 10px 20px; border-radius: 5px;">
+                        <i class="ri-file-list-3-line" style="font-size: 26px; margin-right: 15px;"></i>
+                        <span style="font-weight: 600; letter-spacing: 1px;">LIST OF APPOINTED LEADS</span>
+                    </h3>
                     <div>
-                        <button type="button" id="assignAppointedLead" class="btn btn-primary btn-rounded waves-effect waves-light mb-4" data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign checked Leads to a selected user">   <i class="ri-user-received-2-line"></i> Assign Lead</button>
-                        <button type="button" id="assignAppointedLead" class="btn btn-light btn-rounded waves-effect waves-light mb-4" data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign checked Leads to a selected user" style="background-color: white"> <i class="ri-user-shared-2-line"></i> Reasign Lead</button>
-                        <button type="button" id="assignAppointedLead" class="btn btn-outline-danger btn-rounded waves-effect waves-light mb-4" data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign checked Leads to a selected user" style="background-color: white"><i class="ri-user-unfollow-line"></i> Void Lead</button>
+                        <button type="button" id="assignAppointedLead" class="btn btn-primary btn-rounded waves-effect waves-light mb-4" data-bs-toggle="tooltip" data-bs-placement="top" title="Button to assign checked Leads to a selected user" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);">   <i class="ri-user-received-2-line"></i> Assign Lead</button>
+                        <button type="button" id="reassignAppointedLead" class="btn btn-light btn-rounded waves-effect waves-light mb-4" data-bs-toggle="tooltip" data-bs-placement="top" title="Button to reassign checked Leads to a selected user" style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);"> <i class="ri-user-shared-2-line"></i> Reasign Lead</button>
+                        <button type="button" id="voidAppointedLeads" class="btn btn-outline-danger btn-rounded waves-effect waves-light mb-4" data-bs-toggle="tooltip" data-bs-placement="top" title="Button To Void Leads to a user" style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);"><i class="ri-user-unfollow-line"></i> Void Lead</button>
                     </div>
 
                 </div>
-
-                <div class="card">
+                <div class="card" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                     <div class="card-body">
-                        <div class="row mb-2">
-
-                        </div>
-
-                        <div class="row">
-                            <div class="col-6">
-
-                            </div>
-                        </div>
                         <table id="assignAppointedLeadsTable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead>
                                 <tr>
@@ -60,12 +49,12 @@
             <div class="col-4">
                 <div class="row">
                     <div class="col-6">
-                        <div class="card">
+                        <div class="card" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                             <div class="card-body">
                                 <div class="d-flex">
                                     <div class="flex-grow-1">
                                         <p class="text-truncate font-size-14 mb-2">Appointed Leads</p>
-                                        <h4 class="mb-2">1452</h4>
+                                        <h4 class="mb-2">{{ $appointedLeadCount }}</h4>
                                     </div>
                                     <div class="avatar-sm">
                                         <span class="avatar-title bg-light text-primary rounded-3">
@@ -77,12 +66,12 @@
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="card bg-info text-white-50">
+                        <div class="card bg-info text-white-50" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                             <div class="card-body">
                                 <div class="d-flex">
                                     <div class="flex-grow-1">
-                                        <p class="text-truncate font-size-14 mb-2" style="color: white">Appointed Product</p>
-                                        <h4 class="mb-2" style="color: white">1452</h4>
+                                        <p class="text-truncate font-size-14 mb-2" style="color: white">Quoting Product</p>
+                                        <h4 class="mb-2" style="color: white">{{ $qoutingCount }}</h4>
                                     </div>
                                     <div class="avatar-sm">
                                         <span class="avatar-title bg-light text-primary rounded-3">
@@ -94,7 +83,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                     <div class="card-body">
                         <div class="row mb-4">
                             <div class="col-6">
@@ -119,12 +108,13 @@
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                     <div class="card-body">
                         <div class="row mb-4">
                             <table id="datatableLeads" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead>
                                     <tr>
+                                        <th></th>
                                         <th>Company Name</th>
                                         <th>Tel Num</th>
                                         {{-- <th>Action</th> --}}
@@ -135,6 +125,43 @@
                     </div>
                 </div>
 
+            </div>
+        </div>
+
+        <div class="modal fade bs-example-modal-center" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="userDropdownModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Center modal</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <label for="filterBy" class="form-label">Market Specialist:</label>
+                                <select id="marketSpecialistDropDownReassign" class="form-select">
+                                    <option value="">Select Market Specialist</option>
+                                    @foreach ($quoters as $quoter)
+                                    <option value="{{ $quoter->id }}">{{ $quoter->fullAmericanName() }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label for="filterBy" class="form-label">Agents:</label>
+                                <select id="agentDropDownReassign" class="form-select">
+                                    <option value="">Select Agent</option>
+                                    @foreach ($userProfiles as $userProfile)
+                                    <option value="{{ $userProfile->id }}">{{ $userProfile->fullAmericanName() }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary waves-effect waves-light" id="submitReassign">Save</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -150,7 +177,6 @@
                 {data: 'checkbox', name: 'checkbox'},
                 {data: 'id', name: 'id'},
                 {data: 'company_name', name: 'company_name'},
-                // {data: 'state_abbr', name: 'state_abbr'},
                 {data: 'products', name: 'products'},
                 {data: 'current_user', name: 'current_user'},
             ]
@@ -166,15 +192,9 @@
                     }
                 },
                 columns: [
-                    // {data: 'checkbox', name: 'checkbox',  searchable: false},
-                    // {data: 'id', name: 'id'},
+                    {data: 'checkbox', name: 'checkbox'},
                     {data: 'company_name', name: 'company_name'},
                     {data: 'tel_num', name: 'tel_num'},
-                    // {data: 'state_abbr', name: 'state_abbr'},
-                    // {data: 'website_originated', name: 'website_originated'},
-                    // {data: 'created_at_formatted', name: 'created_at', searchable:false},
-                    // {data: 'updated_at_formatted', name: 'updated_at', searchable:false},
-                    // {data: 'action', name: 'action', orderable: false, searchable: false}
                 ]
             });
         $('#marketSpecialistDropDown').on('change', function(){
@@ -215,7 +235,8 @@
             if(id.length > 0){
                 if(marketSpecialistUserProfileId || agentUserProfileId)
                 {
-                    $.ajax({
+                    if(confirm("Are you sure you want to assign this leads?")){
+                        $.ajax({
                         url: "{{ route('assign-leads-market-specialist') }}",
                         headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                         method: "POST",
@@ -241,6 +262,8 @@
                             });
                         }
                     });
+                    }
+
                 }else{
                     Swal.fire({
                             title: 'Error',
@@ -256,7 +279,128 @@
                         icon: 'error'
                     });
                 }
+
         });
+        var leadsId = [];
+        $('#voidAppointedLeads').on('click', function(){
+
+            $('.leads_checkbox:checked').each(function(){
+                leadsId.push($(this).val());
+            });
+
+            if(leadsId.length > 0){
+                if(confirm("Are you sure you want to void this leads?"))
+                {
+                    $.ajax({
+                    url: "{{ route('void-appointed-leads') }}",
+                    headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    method: "POST",
+                    data: {
+                        leadsId:leadsId
+                    },
+                    success: function(data){
+                        Swal.fire({
+                            title: 'Success',
+                            text: 'Leads has been voided',
+                            icon: 'success'
+                        });
+                        $('#assignAppointedLeadsTable').DataTable().ajax.reload();
+                        $('#datatableLeads').DataTable().ajax.reload();
+
+                    },
+                    error: function(data){
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Ther is a error while voiding leads',
+                            icon: 'error'
+                        });
+                    }
+                });
+                }
+            }else{
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Please select atleast one checkbox',
+                    icon: 'error'
+                });
+            }
+        });
+
+        $('#reassignAppointedLead').on('click', function() {
+
+            $('.leads_checkbox:checked').each(function(){
+                leadsId.push($(this).val());
+            });
+            if(leadsId.length > 0){
+                $('#userDropdownModal').modal('show');
+            }else{
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Please select atleast one checkbox',
+                    icon: 'error'
+                });
+            }
+        })
+
+        $('#marketSpecialistDropDownReassign').on('change', function(){
+            let marketSpecialistUserProfileId = $(this).val();
+            if(marketSpecialistUserProfileId != ""){
+                $('#agentDropDownReassign').prop('disabled', true);
+            }else{
+                $('#agentDropDownReassign').prop('disabled', false);
+            }
+        });
+        $('#agentDropDownReassign').on('change', function(){
+            let agentDropDownId = $(this).val();
+            if(agentDropDownId != ""){
+                $('#marketSpecialistDropDownReassign').prop('disabled', true);
+            }else{
+                $('#marketSpecialistDropDownReassign').prop('disabled', false);
+            }
+        });
+
+        $('#submitReassign').on('click', function(){
+            var marketSpecialistUserProfileDropdownId = $('#marketSpecialistDropDownReassign').val();
+            var agentUserProfileDropdownId = $('#agentDropDownReassign').val();
+            var userProfileId = marketSpecialistUserProfileDropdownId ? marketSpecialistUserProfileDropdownId : agentUserProfileDropdownId;
+
+            if(userProfileId > 0){
+                $.ajax({
+                    url: "{{ route('redeploy-appointed-leads') }}",
+                    headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                    method: "POST",
+                    data: {
+                        leadsId:leadsId,
+                        userProfileId:userProfileId
+                    },
+                    success: function(data){
+                        Swal.fire({
+                            title: 'Success',
+                            text: 'Leads has been voided',
+                            icon: 'success'
+                        }).then(() => {
+                            $('#datatableLeads').DataTable().ajax.reload();
+                            $('#userDropdownModal').modal('hide');
+                        });
+                    },
+                    error: function(data){
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Ther is a error while voiding leads',
+                            icon: 'error'
+                        });
+                    }
+                });
+            }else{
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Please select agent or market specialist',
+                    icon: 'error'
+                });
+            }
+        });
+
+
     })
 </script>
 @endsection

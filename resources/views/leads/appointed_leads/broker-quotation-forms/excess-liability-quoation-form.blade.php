@@ -30,7 +30,8 @@
             const marketObj = market.find(market => market.id === data.quotation_market_id);
             const marketName = marketObj ? marketObj.name : 'Market Not Found';
             let cardContent = `
-            <div class="card border border-primary">
+            <div class="col-6">
+                <div class="card border border-primary">
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-12">
@@ -68,13 +69,23 @@
                         </div>
                     </div>
                     <input type="hidden" value="${data.id}" id="quoteComparisonId"/>
-                <div class="row">
-                    <button class="btn btn-lg btn-success editExcessLiabilityFormButton">Save</button>
-                </div>
+                    <div class="row">
+                      <button class="btn btn-lg btn-success editExcessLiabilityFormButton">Save</button>
+                    </div>
                 </div>
             </div>
+            </div>
+
            `;
-           $('#ExcessLiabilityContainer').append(cardContent);
+           let lastRow = $('#ExcessLiabilityContainer > .row:last-child');
+            if (lastRow.length == 0 || lastRow.children().length == 2) {
+                // Either no rows or the last row already has 2 cards, so create a new row
+             $('#ExcessLiabilityContainer').append('<div class="row">' + cardContent + '</div>');
+            }else {
+               // Last row exists and only has 1 card, so append the new card there
+              lastRow.append(cardContent);
+            }
+        //    $('#ExcessLiabilityContainer').append(cardContent);
           });
 
         }

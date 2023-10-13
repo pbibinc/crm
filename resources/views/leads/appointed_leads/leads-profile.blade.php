@@ -26,14 +26,26 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-4">
-                <div class="card bg-info">
+                <div class="card bg-info" style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                     <div class="card-body"><h5 style="color:white"><i class="mdi mdi-account-hard-hat me-2"></i>{{ $lead->company_name }}</h5></div>
                 </div>
             </div>
+            <div class="col-4"></div>
+            <div class="col-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-lg btn-success btn-rounded waves-effect waves-light mt-2 d-flex align-items-center justify-content-center" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);"><i class="ri-add-circle-fill"></i> Add Product</button>
+                    </div>
+                </div>
+            </div>
         </div>
+
         <div class="row">
             <div class="col-4">
-                <div class="card rounded shadow-lg">
+                <div class="card" style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;" >
                     <div class="card-body">
                         <div class="row d-flex text-center">
                             <div>
@@ -127,7 +139,7 @@
                 </div>
             </div>
             <div class="col-8">
-                <div class="card rounded shadow-lg" >
+                <div class="card" style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
 
                      <!-- Nav tabs -->
                     <ul class="nav nav-tabs nav-justified nav-separated" role="tablist" style="margin-top: 0px">

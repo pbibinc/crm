@@ -43,6 +43,11 @@ class GeneralInformation extends Model
         return null;
     }
 
+    public function customerFullName()
+    {
+        return $this->firstname . ' ' . $this->lastname;
+    }
+
     public function generalLiabilities()
     {
         return $this->hasOne(GeneralLiabilities::class);
