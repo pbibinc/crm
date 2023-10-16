@@ -44,7 +44,7 @@
                 {data: 'action', name: 'action', orderable: false, searchable: false}
                 // {data: 'disposition', name: 'disposition'},
             ]
-      })
+        })
 
       $('#appointedLeadsTable').on('click', '.edit', function() {
         var leadId = $(this).attr('id');

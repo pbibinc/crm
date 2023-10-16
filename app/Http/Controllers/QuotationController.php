@@ -475,7 +475,37 @@ class QuotationController extends Controller
 
     public function setCallBackDate(Request $request)
     {
+        if($request->ajax())
+        {
+            $id = $request->input('id');
+            $callbackDate = $request->input('callbackDateTime');
+            $quotationProduct = QuotationProduct::find($id);
+            $quotationProduct->callback_date = $callbackDate;
+            $quotationProductSaving = $quotationProduct->save();
+            if($quotationProductSaving){
+                return response()->json(['success' => 'Callback date set successfully', 'callbackDate' => $quotationProduct->callback_date]);
+            }else{
+                return response()->json(['error' => 'Error in setting callback date']);
+            }
+        }
+    }
 
+    public function getConfirmedProduct(Request $request)
+    {
+        $quotationProduct = new BrokerQuotation();
+        $userProfileId = Auth::user()->userProfile->id;
+        $confirmedProduct = $quotationProduct->getApprovedProduct($userProfileId);
+        if($request->ajax())
+        {
+            return DataTables::of($confirmedProduct)
+            ->addIndexColumn()
+            ->addColumn('company_name', function($confirmedProduct){
+                $lead = $confirmedProduct->QuoteInformation->QuoteLead->leads->company_name;
+                return $lead;
+            })
+            ->make(true);
+        }
+        return view('leads.broker_leads.confirmed-product-list');
     }
 
 }

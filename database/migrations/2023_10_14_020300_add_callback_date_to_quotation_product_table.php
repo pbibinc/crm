@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::table('quotation_product_table', function (Blueprint $table) {
             //
-            $table->date('callback_date')->nullable()->after('sent_out_date');
+            $table->dateTime('callback_date')->nullable()->after('sent_out_date');
         });
     }
 

@@ -150,18 +150,17 @@
                 </a>
                 <ul class="sub-menu" aria-expanded="false">
                     <li><a href="{{route('get-pending-product')}}">Broker Assistant View</a></li>
+                    {{-- <li><a href="{{route('get-confirmed-product')}}">Confirmed Product</a></li> --}}
                 </ul>
             </li>
 
+            @can('view', App\Models\Lead::find(1))
                <li class="menu-title">Leads</li>
                <li>
-                @can('view', App\Models\Lead::find(1))
-                    <a href="javascript: void(0);" class="has-arrow waves-effect" >
-                        <i class="ri-spy-line"></i>
-                        <span>LEADS FUNNEL</span>
-                    </a>
-                @endcan
-
+                <a href="javascript: void(0);" class="has-arrow waves-effect" >
+                    <i class="ri-spy-line"></i>
+                    <span>LEADS FUNNEL</span>
+                </a>
             <ul class="sub-menu" aria-expanded="false">
                 @can('viewImport', App\Models\Lead::find(1))
                     <li><a href="{{route('leads')}}" >Import Leads</a></li>
@@ -170,8 +169,20 @@
                 <li><a href="{{route('assign')}}" >Assign Leads</a></li>
                     @endcan
                 <li><a href="pages-directory.html">Leads Profile</a></li>
-
             </ul>
+            @endcan
+
+            <li class="menu-title">Customer Service</li>
+            <li>
+                <a href="javascript: void(0);" class="has-arrow waves-effect" >
+                    <i class="ri-spy-line"></i>
+                    <span>Binding</span>
+                </a>
+                <ul class="sub-menu" aria-expanded="false">
+                    <li><a href="{{route('get-confirmed-product')}}">Confirmed Product</a></li>
+                </ul>
+            </li>
+
 
         </li>
 

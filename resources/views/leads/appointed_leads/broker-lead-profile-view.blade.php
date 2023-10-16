@@ -110,7 +110,7 @@
                         <div class="card" style="background-color: white; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 10px;" id="callbackDateTimeDate">
                             <div class="card-body" style="text-align: center;">
                                 <h6 style="margin-bottom: 10px;">Callback Date Time:</h6>
-                                <input class="form-control" type="datetime-local" value="{{ $localTime }}" id="callBackDateTime"  style="margin-bottom: 10px;" >
+                                <input class="form-control" type="datetime-local" value="{{ old('callBackDateTime', $product->callback_date ?? $localTime) }}" id="callBackDateTime" style="margin-bottom: 10px;">
                                 <div class="text-center">
                                     <button type="button" class="btn btn-primary waves-effect waves-light" style="padding: 6px 12px; font-size: 14px;" id="saveCallbackDate" >Save</button>
                                 </div>
@@ -397,8 +397,8 @@
                     });
                 }
             })
-            })
-        })
+        });
+
     });
 </script>
 @endsection

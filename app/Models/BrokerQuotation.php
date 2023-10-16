@@ -37,6 +37,29 @@ class BrokerQuotation extends Model
               $quotationProducts->push($brokerQuotation->QuotationProduct);
             }
         }
-      return $quotationProducts->isEmpty() ? null : $quotationProducts;
+        $filteredQuotationProducts = $quotationProducts->filter(function ($quotationProduct) {
+            return $quotationProduct->status == 3 || $quotationProduct->status == 4;
+        });
+
+        return $filteredQuotationProducts->isEmpty() ? null : $filteredQuotationProducts;
+    }
+
+    public function getApprovedProduct($userProfileId)
+    {
+    // Get the broker quotations with the given user profile ID
+      $brokerQuotations = self::where('user_profile_id', $userProfileId)->get();
+
+    // Collect the related QuotationProduct models
+       $quotationProducts = collect();
+       foreach ($brokerQuotations as $brokerQuotation) {
+          if ($brokerQuotation->QuotationProduct) {
+              $quotationProducts->push($brokerQuotation->QuotationProduct);
+            }
+        }
+        $filteredQuotationProducts = $quotationProducts->filter(function ($quotationProduct) {
+            return $quotationProduct->status == 6;
+        });
+
+        return $filteredQuotationProducts->isEmpty() ? null : $filteredQuotationProducts;
     }
 }

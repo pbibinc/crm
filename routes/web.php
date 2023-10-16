@@ -148,6 +148,7 @@ Route::prefix('quoatation')->group(function (){
     Route::post('/redeploy-qouted-lead', [QuotationController::class, 'redeployQoutedLead'])->name('redeploy-qouted-lead');
     Route::post('/change-status', [QuotationController::class, 'changeStatus'])->name('change-quotation-status');
     Route::post('/set-callback-date', [QuotationController::class, 'setCallBackDate'])->name('set-callback-date');
+    Route::get('/get-confirmed-product', [QuotationController::class, 'getConfirmedProduct'])->name('get-confirmed-product');
 
     //route for notes
     Route::post('/create-notes', [NotesController::class, 'createNotes'])->name('create-notes');
