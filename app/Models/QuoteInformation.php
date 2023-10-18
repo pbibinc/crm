@@ -27,4 +27,13 @@ class QuoteInformation extends Model
     {
         return $this->hasOne(QuotationProduct::class, 'quote_information_id');
     }
+
+    public static function getInformationByLeadId($leadId)
+    {
+        $quoteLeadId = QuoteLead::where('leads_id', $leadId)->first();
+        if($quoteLeadId){
+            return self::where('quoting_lead_id', $quoteLeadId->id)->first();
+        }
+        return null;
+    }
 }

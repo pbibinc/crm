@@ -12,7 +12,7 @@
     <div class="container-fluid">
 
         <div class="row">
-            <div class="col-8" >
+            <div class="col-7" >
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <h3 class="card-title mb-4" style="display: flex; align-items: center; background-color: #2c3e50; color: #ecf0f1; padding: 10px 20px; border-radius: 5px;">
                         <i class="ri-file-list-3-line" style="font-size: 26px; margin-right: 15px;"></i>
@@ -30,15 +30,32 @@
                         <table id="assignAppointedLeadsTable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead>
                                 <tr>
-                                    <th></th>
-                                    <th>ID</th>
+                                    {{-- <th></th> --}}
                                     <th>Company Name</th>
                                     {{-- <th>State</th> --}}
-                                    <th>Products</th>
-                                    <th>Telemarketer</th>
+                                    {{-- <th>Products</th>
+                                    <th>Telemarketer</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach($groupedProducts as $companyName =>  $groupedProduct)
+                                <tr>
+                                    <td><strong><b>{{ $companyName }}</b></strong></td>
+                                    <td><input type="checkbox" class="companyCheckBox" data-company="{{ $companyName }}" name="company[]"></td>
+                                    <td><strong><b>Product</b></strong></td>
+                                    <td><strong><b>Telemarketer</b></strong></td>
+                                    {{-- <td><strong><b>Sent Out Date</b></strong></td> --}}
+                                </tr>
+                                @foreach($groupedProduct as $product)
+                                <tr class="productRow {{ $companyName }}">
+                                    <td></td>
+                                    <td><input type="checkbox" class="companyCheckBox" value="{{ $product['product']->id }}" data-company="{{ $companyName }}" name="company[]"></td>
+                                    <td>{{ $product['product']->product }}</td>
+                                    <td>{{ $product['telemarketer'] }}</td>
+                                </tr>
+                                @endforeach
+                                @endforeach
+
                             </tbody>
                         </table>
                     </div>
@@ -46,7 +63,7 @@
 
             </div>
 
-            <div class="col-4">
+            <div class="col-5">
                 <div class="row">
                     <div class="col-6">
                         <div class="card" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
@@ -115,8 +132,8 @@
                                 <thead>
                                     <tr>
                                         <th></th>
+                                        <th>Product</th>
                                         <th>Company Name</th>
-                                        <th>Tel Num</th>
                                         {{-- <th>Action</th> --}}
                                     </tr>
                                 </thead>
@@ -169,18 +186,18 @@
 
 <script>
     $(document).ready(function (){
-        $('#assignAppointedLeadsTable').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route('assign-appointed-lead') }}",
-            columns: [
-                {data: 'checkbox', name: 'checkbox'},
-                {data: 'id', name: 'id'},
-                {data: 'company_name', name: 'company_name'},
-                {data: 'products', name: 'products'},
-                {data: 'current_user', name: 'current_user'},
-            ]
-        })
+        // $('#assignAppointedLeadsTable').DataTable({
+        //     processing: true,
+        //     serverSide: true,
+        //     ajax: "{{ route('assign-appointed-lead') }}",
+        //     columns: [
+        //         {data: 'checkbox', name: 'checkbox'},
+        //         {data: 'id', name: 'id'},
+        //         {data: 'company_name', name: 'company_name'},
+        //         {data: 'products', name: 'products'},
+        //         {data: 'current_user', name: 'current_user'},
+        //     ]
+        // })
         $('#datatableLeads').DataTable({
                 processing: true,
                 serverSide: true,
@@ -193,8 +210,8 @@
                 },
                 columns: [
                     {data: 'checkbox', name: 'checkbox'},
-                    {data: 'company_name', name: 'company_name'},
-                    {data: 'tel_num', name: 'tel_num'},
+                    {data: 'product', name: 'product'},
+                    {data: 'company', name: 'company'},
                 ]
             });
         $('#marketSpecialistDropDown').on('change', function(){
@@ -218,21 +235,24 @@
         $('#assignAppointedLead').on('click', function(){
             var id = [];
             var productsArray = [];
-            $('.users_checkbox:checked').each(function(){
-                id.push($(this).val());
-                var row = $(this).closest('tr');
-                var productDiv = row.find('.product-column');
-                var products = [];
-                productDiv.find('h6').each(function(){
-                    products.push($(this).text());
-                });
-                productsArray.push(products);
+            // $('.users_checkbox:checked').each(function(){
+            //     id.push($(this).val());
+            //     var row = $(this).closest('tr');
+            //     var productDiv = row.find('.product-column');
+            //     var products = [];
+            //     productDiv.find('h6').each(function(){
+            //         products.push($(this).text());
+            //     });
+            //     productsArray.push(products);
 
+            // });
+
+            $('.companyCheckBox:checked').each(function(){
+                productsArray.push($(this).val());
             });
-
             var marketSpecialistUserProfileId = $('#marketSpecialistDropDown').val();
             var agentUserProfileId = $('#agentDropDown').val();
-            if(id.length > 0){
+            if(productsArray.length > 0){
                 if(marketSpecialistUserProfileId || agentUserProfileId)
                 {
                     if(confirm("Are you sure you want to assign this leads?")){
@@ -241,7 +261,7 @@
                         headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                         method: "POST",
                         data: {
-                            id:id,
+                            // id:id,
                             product:productsArray,
                             marketSpecialistUserProfileId:marketSpecialistUserProfileId, agentUserProfileId:agentUserProfileId
                         },

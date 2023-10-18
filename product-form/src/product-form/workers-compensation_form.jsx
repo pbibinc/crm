@@ -450,7 +450,7 @@ const WorkersCompensationForm = () => {
                     />,
                 ]}
             />
-            <Row
+            {/* <Row
                 classValue="mb-3"
                 rowContent={
                     <Column
@@ -474,7 +474,7 @@ const WorkersCompensationForm = () => {
                         }
                     />
                 }
-            />
+            /> */}
             <Row
                 classValue="mb-3"
                 rowContent={[

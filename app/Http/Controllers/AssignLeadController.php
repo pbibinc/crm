@@ -46,6 +46,7 @@ class AssignLeadController extends Controller
             'Pacific' => ['CA', 'OR', 'WA'],
             'Alaska' => ['AK'],
             'Hawaii-Aleutian' => ['HI']
+
         ];
 
         $states = [

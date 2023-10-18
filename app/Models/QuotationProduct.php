@@ -57,4 +57,35 @@ class QuotationProduct extends Model
         return $this->belongsTo(BrokerQuotation::class, 'quote_product_id');
     }
 
+    public static function getAssignedProductByUserProfileId($userProfileId)
+    {
+        $query = self::where('user_profile_id', $userProfileId)->get();
+        $products = [];
+        if($query){
+            foreach($query as $product)
+            {
+                $products[] = [
+                    'company' => $product->QuoteInformation->QuoteLead->leads->company_name,
+                    'product' => $product,
+                    'sent_out_date' => $product->sent_out_date,
+                    'status' => $product->status,
+                    'telemarketer' => UserProfile::where('id', $product->QuoteInformation->telemarket_id)->first()->fullAmericanName(),
+                ];
+            }
+            return $products;
+        }
+        return null;
+    }
+
+    public static function getProductByUserProfileId($userProfileId)
+    {
+        $query = self::where('user_profile_id', $userProfileId)->where('status', 2)->get();
+        if($query){
+            return $query;
+        }
+        return null;
+    }
+
+
+
 }

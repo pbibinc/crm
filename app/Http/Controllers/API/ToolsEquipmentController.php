@@ -8,6 +8,8 @@ use App\Models\EquipmentInformation;
 use App\Models\ExpirationProduct;
 use App\Models\GeneralInformation;
 use App\Models\HaveLoss;
+use App\Models\QuotationProduct;
+use App\Models\QuoteInformation;
 use App\Models\ToolsEquipment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -43,6 +45,16 @@ class ToolsEquipmentController extends Controller
                 $equipmentInformationModel->year_acquired = $equipmentInformation['yearAcquired'];
                 $equipmentInformationModel->save();
             }
+            //code for saving the quote information
+            $quoteProduct = new QuotationProduct();
+            $leadId = $data['leadId'];
+            $quoteInformation = QuoteInformation::getInformationByLeadId($leadId);
+            if($quoteInformation){
+                $quoteProduct->quote_information_id = $quoteInformation->id;
+            }
+            $quoteProduct->product = 'Tools Equipment';
+            $quoteProduct->status = 2;
+            $quoteProduct->save();
 
             $expirationAuto = new ExpirationProduct();
             $expirationAuto->lead_id = $data['leadId'];
@@ -50,6 +62,7 @@ class ToolsEquipmentController extends Controller
             $expirationAuto->expiration_date = Carbon::parse($data['expirationOfIM'])->toDateString();
             $expirationAuto->prior_carrier = $data['priorCarrier'];
             $expirationAuto->save();
+
 
             if($data['isHaveLossChecked'] == true){
                 $HaveLosstable = new HaveLoss();
@@ -60,15 +73,13 @@ class ToolsEquipmentController extends Controller
                 $HaveLosstable->save();
             }
 
-            if($data['crossSell']){
-                $crossSell = new CrossSell();
-                $crossSell->lead_id = $data['leadId'];
-                $crossSell->product = 5;
-                $crossSell->cross_sell = $data['crossSell']['value'];
-                $crossSell->save();
-            }
-
-
+            // if($data['crossSell']){
+            //     $crossSell = new CrossSell();
+            //     $crossSell->lead_id = $data['leadId'];
+            //     $crossSell->product = 5;
+            //     $crossSell->cross_sell = $data['crossSell']['value'];
+            //     $crossSell->save();
+            // }
 
             DB::commit();
         }catch(\Exception $e){

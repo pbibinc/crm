@@ -8,6 +8,8 @@ use App\Models\Callback;
 use App\Models\CrossSell;
 use App\Models\ExcessLiability;
 use App\Models\GeneralInformation;
+use App\Models\QuotationProduct;
+use App\Models\QuoteInformation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -33,11 +35,22 @@ class ExcessLiabilityController extends BaseController
             $ExcessLiability->general_liability_expiration_date = Carbon::parse($data['generalLiabilityExpirationDate'])->toDateTimeString();
             $ExcessLiability->save();
 
-            $crossSell = new CrossSell();
-            $crossSell->lead_id = $data['leadId'];
-            $crossSell->product = 4;
-            $crossSell->cross_sell = $data['crossSell'];
-            $crossSell->save();
+             //code for saving the quote information
+             $quoteProduct = new QuotationProduct();
+             $leadId = $data['leadId'];
+             $quoteInformation = QuoteInformation::getInformationByLeadId($leadId);
+             if($quoteInformation){
+                $quoteProduct->quote_information_id = $quoteInformation->id;
+             }
+             $quoteProduct->product = 'Excess Liability';
+             $quoteProduct->status = 2;
+             $quoteProduct->save();
+
+            // $crossSell = new CrossSell();
+            // $crossSell->lead_id = $data['leadId'];
+            // $crossSell->product = 4;
+            // $crossSell->cross_sell = $data['crossSell'];
+            // $crossSell->save();
 
             $callBackDate = new Callback();
             $callBackDate->lead_id = $data['leadId'];

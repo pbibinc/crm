@@ -7,6 +7,8 @@ use App\Models\ExpirationProduct;
 use App\Models\GeneralInformation;
 use App\Models\HaveLoss;
 use App\Models\NewContruction;
+use App\Models\QuotationProduct;
+use App\Models\QuoteInformation;
 use App\Models\Rennovation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -49,6 +51,17 @@ class BuildersRiskController extends BaseController
             $buildersRisk->firehydrant_distance = $data['distanceToNearestFireHydrant'];
             $buildersRisk->firestation_distance = $data['distanceToNearestFireStation'];
             $buildersRisk->save();
+
+              //code for saving the quote information
+              $quoteProduct = new QuotationProduct();
+              $leadId = $data['leadId'];
+              $quoteInformation = QuoteInformation::getInformationByLeadId($leadId);
+              if($quoteInformation){
+                  $quoteProduct->quote_information_id = $quoteInformation->id;
+              }
+              $quoteProduct->product = 'Builders Risk';
+              $quoteProduct->status = 2;
+              $quoteProduct->save();
 
             if($statusConstruction == "New Construction")
             {

@@ -12,6 +12,8 @@ use App\Models\GeneralInformation;
 use App\Models\GeneralLiabilities;
 use App\Models\GeneralLiabilitiesRecreationalFacilities;
 use App\Models\MultipleState;
+use App\Models\QuotationProduct;
+use App\Models\QuoteInformation;
 use App\Models\Subcontractor;
 use Carbon\Carbon;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
@@ -25,6 +27,8 @@ class GeneralLiabilitiesDataController extends BaseController
     {
         $data = $request->all();
         try{
+
+
               //Saving general liabilities coverage limit
               $coverageLimit = new CoverageLimit();
               $coverageLimit->limit = $data['limit'];
@@ -35,7 +39,9 @@ class GeneralLiabilitiesDataController extends BaseController
 
               $coverageLimitId = $coverageLimit->id;
 
+
               //
+
                $generalInformationId = GeneralInformation::where('leads_id', $data['leadId'])->value('id');
                $expirationOfGeneralLiabilitiesRaw =  Carbon::parse($data['expiration_general_liability'])->toDateString();
 
@@ -69,7 +75,15 @@ class GeneralLiabilitiesDataController extends BaseController
 
                $generalLiabilitiId = $generalLiabilities->id;
 
-
+               $quoteProduct = new QuotationProduct();
+               $leadId = $data['leadId'];
+               $quoteInformation = QuoteInformation::getInformationByLeadId($leadId);
+               if($quoteInformation){
+                   $quoteProduct->quote_information_id = $quoteInformation->id;
+               }
+               $quoteProduct->product = 'General Liabilities';
+               $quoteProduct->status = 2;
+               $quoteProduct->save();
 
                //saving general liabilities subcontract
                $subcontractor = new Subcontractor();
@@ -80,8 +94,6 @@ class GeneralLiabilitiesDataController extends BaseController
                $subcontractor->three_stories_height = $data['tall_building'];
                $subcontractor->save();
 
-
-
             //saving general liabilities recreational facilities
             foreach($data['recreational_facilities'] as $recreationalFacility){
                 $recreationalFacilitiesGeneralLiabilities = new GeneralLiabilitiesRecreationalFacilities();
@@ -89,7 +101,6 @@ class GeneralLiabilitiesDataController extends BaseController
                 $recreationalFacilitiesGeneralLiabilities->recreational_facilities_id = $recreationalFacility;
                 $recreationalFacilitiesGeneralLiabilities->save();
             }
-
             //saving multiple ClassCode
             $mergedMultipleClassCode = array_map(function ($classCode, $percentage) {
                 return['classCode' => $classCode, 'percentage' => $percentage];
@@ -136,6 +147,7 @@ class GeneralLiabilitiesDataController extends BaseController
              $multipleState->percentage = (int)$data['percentage'];
              $multipleState->save();
             }
+
 
 
         }catch(\Exception $e){

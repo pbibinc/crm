@@ -7,6 +7,8 @@ use App\Models\BusinessOwnersPolicy;
 use App\Models\ExpirationProduct;
 use App\Models\GeneralInformation;
 use App\Models\HaveLoss;
+use App\Models\QuotationProduct;
+use App\Models\QuoteInformation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -46,6 +48,18 @@ class BusinessOwnersPolicyController extends BaseController
             $BusinessOwnersPolicy->last_update_electrical = $data['lastUpdateElectricalYear'];
             $BusinessOwnersPolicy->amount_policy = $data['amountOfBusinessOwnersPolicy'];
             $BusinessOwnersPolicy->save();
+
+             //code for saving the quote information
+             $quoteProduct = new QuotationProduct();
+             $leadId = $data['leadId'];
+             $quoteInformation = QuoteInformation::getInformationByLeadId($leadId);
+             if($quoteInformation){
+                 $quoteProduct->quote_information_id = $quoteInformation->id;
+             }
+             $quoteProduct->product = 'Business Owners';
+             $quoteProduct->status = 2;
+             $quoteProduct->save();
+
 
             $expiration = new ExpirationProduct();
             $expiration->lead_id = $data['leadId'];

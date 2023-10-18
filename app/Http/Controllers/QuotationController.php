@@ -30,36 +30,24 @@ class QuotationController extends Controller
     public function appointedLeadsView(Request $request)
     {
 
-
-        if($request->ajax()){
-            $leads = Lead::getAssignQuoteLeadsByUserProfileId(Auth::user()->userProfile->id);
-            return DataTables::of($leads)
-            ->addColumn('current_user', function($lead){
-                $userProfile = $lead->userProfile->first();
-                $currentUserName = $userProfile ? $userProfile->fullName(): 'N/A';
-                return $currentUserName;
-            })
-            ->addColumn('action', function($lead){
-                 $viewButton = '<button class="edit btn btn-info btn-sm" id="' . $lead->id . '"><i class="ri-eye-line"></i></button>';
-                 return $viewButton;
-            })
-            ->make(true);
-        }
-        return view('leads.appointed_leads.index');
+        $products = QuotationProduct::getAssignedProductByUserProfileId(Auth::user()->userProfile->id);
+        $groupedProducts = collect($products)->groupBy('company')->toArray();
+        return view('leads.appointed_leads.index', compact('products', 'groupedProducts'));
     }
 
     public function leadProfile(Request $request)
     {
-        $lead = Lead::getLeads($request->leadId);
-        $generalInformation = $lead->generalInformation;
+        $productId = QuotationProduct::find($request->input('productId'))->id;
+        // $generalInformation = $lead->generalInformation;
 
-        return response()->json(['lead' => $lead->id, 'generalInformation' => $generalInformation->id]);
+        return response()->json(['productId' => $productId]);
 
     }
-    public function leadProfileView($leadId, $generalInformationId)
+    public function leadProfileView($productId)
     {
-        $lead = Lead::find($leadId);
-        $generalInformation = GeneralInformation::find($generalInformationId);
+        $product = QuotationProduct::find($productId);
+        $lead = Lead::find($product->QuoteInformation->QuoteLead->leads->id);
+        $generalInformation = GeneralInformation::find($lead->generalInformation->id);
         $timezones = [
             'Eastern' => ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV'],
             'Central' => ['AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI'],
@@ -92,7 +80,7 @@ class QuotationController extends Controller
         $localTime = Carbon::now($timezoneForState);
         $generalLiabilities = $generalInformation->generalLiabilities;
         // dd($generalInformation->id);
-        return view('leads.appointed_leads.leads-profile', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket'));
+        return view('leads.appointed_leads.leads-profile', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product'));
     }
 
     public function brokerProfileView($leadId, $generalInformationId, $productId)
@@ -129,7 +117,6 @@ class QuotationController extends Controller
                 $timezoneForState =  $timezoneStrings[$timezone];
             }
         }
-
         $localTime = Carbon::now($timezoneForState);
         $generalLiabilities = $generalInformation->generalLiabilities;
         return view('leads.appointed_leads.broker-lead-profile-view', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product'));

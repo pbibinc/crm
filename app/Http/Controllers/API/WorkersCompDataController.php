@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\ClasscodePerEmployee;
 use App\Models\GeneralInformation;
+use App\Models\QuotationProduct;
+use App\Models\QuoteInformation;
 use App\Models\WorkersCompensation;
 use App\Models\WorkersCompensationHaveLoss;
 use Carbon\Carbon;
@@ -22,7 +24,6 @@ class WorkersCompDataController extends BaseController
         $workersCompensation = new WorkersCompensation();
         $generalInformationId = GeneralInformation::where('leads_id', $data['lead_id'])->first()->id;
         $workersCompensation->general_information_id = $generalInformationId;
-        $workersCompensation->specific_employee_description = $data['specific_employee_description'];
         $workersCompensation->is_owners_payroll_included = $data['is_owner_payroll_included'];
         $workersCompensation->payroll_amount = $data['total_payroll'];
         $workersCompensation->fein_number = $data['fein'];
@@ -36,6 +37,18 @@ class WorkersCompDataController extends BaseController
         $workersCompensation->remarks = $data['remarks'];
         $workersCompensation->save();
 
+        //code for saving the quote information
+        $quoteProduct = new QuotationProduct();
+        $leadId = $data['lead_id'];
+        $quoteInformation = QuoteInformation::getInformationByLeadId($leadId);
+        if($quoteInformation){
+            $quoteProduct->quote_information_id = $quoteInformation->id;
+        }
+        $quoteProduct->product = 'Workers Compensation';
+        $quoteProduct->status = 2;
+        $quoteProduct->save();
+
+
         //save have loss
         if($data['have_loss'] == true){
             $workersCompensationHaveLoss = new WorkersCompensationHaveLoss();
@@ -44,8 +57,6 @@ class WorkersCompDataController extends BaseController
             $workersCompensationHaveLoss->loss_amount = $data['loss_amount'];
             $workersCompensationHaveLoss->save();
         }
-
-
 
         $mergedClassCodePerEmployee = array_map(function($employeeDescription, $numberOfEmployee) {
             return [
@@ -74,7 +85,6 @@ class WorkersCompDataController extends BaseController
             $workersCompenSationId = WorkersCompensation::where('general_information_id', $generalInformationId)->first()->id;
             Log::info("Workers Compensation ID", [$workersCompenSationId]);
             $workersCompensation = WorkersCompensation::where('id', $workersCompenSationId)->first();
-            $workersCompensation->specific_employee_description = $data['specific_employee_description'];
             $workersCompensation->is_owners_payroll_included = $data['is_owner_payroll_included'];
             $workersCompensation->payroll_amount = $data['total_payroll'];
             $workersCompensation->fein_number = $data['fein'];

@@ -131,7 +131,7 @@ Route::prefix('quoatation')->group(function (){
     //routes for qoutation module
     Route::get('/appointed-leads', [QuotationController::class, 'appointedLeadsView'])->name('appointed-leads');
     Route::post('/lead-profile', [QuotationController::class, 'leadProfile'])->name('lead-profile');
-    Route::get('/lead-profile-view/{leadId}/{generalInformationId}', [QuotationController::class, 'leadProfileView'])->name('lead-profile-view');
+    Route::get('/lead-profile-view/{productId}', [QuotationController::class, 'leadProfileView'])->name('lead-profile-view');
     Route::post('/save-quotation-comparison', [QuotationController::class, 'saveQuoteComparison'])->name('save-quotation-comparison');
     Route::post('/save-quotation-product', [QuotationController::class, 'saveQuotationProduct'])->name('save-quotation-product');
     Route::get('/get-comparison-data', [QuotationController::class, 'getComparisonData'])->name('get-comparison-data');

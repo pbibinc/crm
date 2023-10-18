@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\GeneralInformation;
 use App\Models\Lead;
+use App\Models\QuoteInformation;
+use App\Models\QuoteLead;
+use App\Models\UserProfile;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -22,6 +26,8 @@ class GeneralInformationDataController extends BaseController
             $data = $request->all();
             Cache::put('general_information_data', $data);
 
+            //saving gneral information data
+            // Log::info("user id", [Auth::user()->id]);
             $generalInformation = new GeneralInformation();
             $generalInformation->firstname = $data['firstname'];
             $generalInformation->lastname = $data['lastname'];
@@ -41,10 +47,22 @@ class GeneralInformationDataController extends BaseController
             $generalInformation->owners_payroll = $data['owners_payroll'];
             $generalInformation->sub_out = $data['sub_out'];
             $generalInformation->material_cost = $data['material_cost'];
+            $generalInformationSaving =  $generalInformation->save();
+            if($generalInformationSaving){
+                //saving of quotelead
+                $quoteLeadTable = new QuoteLead();
+                $quoteLeadTable->leads_id = $data['lead_id'];
+                $quoteLeadTable->save();
 
-            $generalInformation->save();
+                //saving of quote information
+                $quoteInformation = new QuoteInformation();
 
-
+                $quoteInformation->telemarket_id = 1;
+                $quoteInformation->quoting_lead_id = $quoteLeadTable->id;
+                $quoteInformation->status = 2;
+                $quoteInformation->remarks = ' ';
+                $quoteInformation->save();
+            }
             $Lead = Lead::getLeads($data['lead_id']);
             $Lead->disposition_id = 1;
             $Lead->status= 3;

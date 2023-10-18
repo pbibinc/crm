@@ -12,6 +12,9 @@ use App\Models\DriverSpouse;
 use App\Models\ExpirationProduct;
 use App\Models\GeneralInformation;
 use App\Models\HaveLoss;
+use App\Models\QuotationProduct;
+use App\Models\QuoteInformation;
+use App\Models\QuoteLead;
 use App\Models\VehicleInformation;
 use Barryvdh\Debugbar\LaravelDebugbar;
 use Carbon\Carbon;
@@ -99,13 +102,24 @@ class CommercialAutoController extends BaseController
             $expirationAuto->prior_carrier = $data['prior_carrier'];
             $expirationAuto->save();
 
-            if($data['cross_sell']){
-                $crossSell = new CrossSell();
-                $crossSell->lead_id = $data['leadId'];
-                $crossSell->product = 3;
-                $crossSell->cross_sell = $data['cross_sell']['value'];
-                $crossSell->save();
+            //code for saving the quote information
+            $quoteProduct = new QuotationProduct();
+            $leadId = $data['leadId'];
+            $quoteInformation = QuoteInformation::getInformationByLeadId($leadId);
+            if($quoteInformation){
+               $quoteProduct->quote_information_id = $quoteInformation->id;
             }
+            $quoteProduct->product = 'Commercial Auto';
+            $quoteProduct->status = 2;
+            $quoteProduct->save();
+
+            // if($data['cross_sell']){
+            //     $crossSell = new CrossSell();
+            //     $crossSell->lead_id = $data['leadId'];
+            //     $crossSell->product = 3;
+            //     $crossSell->cross_sell = $data['cross_sell']['value'];
+            //     $crossSell->save();
+            // }
 
             if($data['have_loss'] == true){
                 $HaveLosstable = new HaveLoss();

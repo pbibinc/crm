@@ -127,6 +127,7 @@ class Lead extends Model
         return null;
     }
 
+
     public function quoteLead()
     {
         return $this->hasOne(QuoteLead::class, 'leads_id');
