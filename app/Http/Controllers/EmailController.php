@@ -47,8 +47,6 @@ class EmailController extends Controller
                 }
             }
         }
-
-
     }
 
     public function sendFollowUpEmail(Request $request)

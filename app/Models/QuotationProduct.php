@@ -86,6 +86,9 @@ class QuotationProduct extends Model
         return null;
     }
 
-
+    public function userProfile()
+    {
+        return $this->belongsTo(UserProfile::class, 'user_profile_id');
+    }
 
 }

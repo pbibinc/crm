@@ -184,7 +184,7 @@ class QuotationController extends Controller
             $reccomended = $request->input('reccomended');
             $productId = $request->input('productId');
             $quoteComparison = QuoteComparison::find($id);
-            if($fullPayment && $downPayment && $monthlyPayment && $reccomended){
+            if($fullPayment && $downPayment && $monthlyPayment && $brokerFee && $reccomended){
             $quoteComparison->quotation_product_id = $productId;
             $quoteComparison->quotation_market_id = $marketId;
             $quoteComparison->full_payment = $fullPayment;
@@ -193,6 +193,9 @@ class QuotationController extends Controller
             $quoteComparison->broker_fee = $brokerFee;
             $quoteComparison->recommended = $reccomended == 'true' ? 1  : 0;
             }else{
+                $quoteComparison->full_payment = $fullPayment;
+                $quoteComparison->down_payment = $downPayment;
+                $quoteComparison->monthly_payment = $monthlyPayment;
                 $quoteComparison->broker_fee = $brokerFee;
             }
             $quoteComparison->save();
@@ -224,7 +227,6 @@ class QuotationController extends Controller
     public function getQuotedProduct(Request $request)
     {
 
-
         $userProfile = new UserProfile();
         $quoationProduct = new QuotationProduct();
         $quoatedProduct = $quoationProduct->quotedProduct();
@@ -233,14 +235,13 @@ class QuotationController extends Controller
             $products[] = [
                 'company_name'=> $product->QuoteInformation->QuoteLead->leads->company_name,
                 'product' => $product,
-                'quoted_by' => $product->QuoteInformation->QuoteLead->userProfile->fullAmericanName(),
+                'quoted_by' => $product->userProfile ? $product->userProfile->fullAmericanName() : 'N/A',
                 'leadId' => $product->QuoteInformation->QuoteLead->leads->id,
             ];
         }
         $groupedProducts = collect($products)->groupBy('company_name')->toArray();
 
         // dd($groupedProducts);
-
         // if($request->ajax())
         // {
         //     $quotationProduct = new QuotationProduct();
@@ -294,23 +295,23 @@ class QuotationController extends Controller
                    $quotationProduct->status = 3;
                    $borkerQuotationSaving = $quotationProduct->save();
 
-                   $qouteComparison = QuoteComparison::where('quotation_product_id', 1)->where('recommended', 1)->first();
+                //    $qouteComparison = QuoteComparison::where('quotation_product_id', 1)->where('recommended', 1)->first();
 
-                   if($borkerQuotationSaving){
-                    $qoutedMailData = [
-                        'title' => 'Qoutation For ' . $quotationProduct->QuoteInformation->QuoteLead->leads->company_name,
-                        'customer_name' => $quotationProduct->QuoteInformation->QuoteLead->leads->GeneralInformation->customerFullName(),
-                        'footer' => UserProfile::find($userProfileId)->fullAmericanName(),
-                        'product' => $quotationProduct->product,
-                        'prices' =>$qouteComparison
-                    ];
-                   $sendingMail =  Mail::to('maechael108@gmail.com')->send(new SendQoute($qoutedMailData));
-                   if($sendingMail){
-                    return response()->json(['success' => 'Mail sent successfully']);
-                   }else{
-                    return response()->json(['error' => 'Error in sending mail']);
-                   }
-                   }
+                //    if($borkerQuotationSaving){
+                //     $qoutedMailData = [
+                //         'title' => 'Qoutation For ' . $quotationProduct->QuoteInformation->QuoteLead->leads->company_name,
+                //         'customer_name' => $quotationProduct->QuoteInformation->QuoteLead->leads->GeneralInformation->customerFullName(),
+                //         'footer' => UserProfile::find($userProfileId)->fullAmericanName(),
+                //         'product' => $quotationProduct->product,
+                //         'prices' =>$qouteComparison
+                //     ];
+                //    $sendingMail =  Mail::to('maechael108@gmail.com')->send(new SendQoute($qoutedMailData));
+                //    if($sendingMail){
+                //     return response()->json(['success' => 'Mail sent successfully']);
+                //    }else{
+                //     return response()->json(['error' => 'Error in sending mail']);
+                //    }
+                //    }
                 }
                 DB::commit();
             }catch(\Exception $e){

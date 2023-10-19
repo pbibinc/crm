@@ -60,7 +60,7 @@ class BuildersRiskController extends BaseController
                   $quoteProduct->quote_information_id = $quoteInformation->id;
               }
               $quoteProduct->product = 'Builders Risk';
-              $quoteProduct->status = 2;
+              $quoteProduct->status = 7;
               $quoteProduct->save();
 
             if($statusConstruction == "New Construction")

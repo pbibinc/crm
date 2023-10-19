@@ -169,7 +169,7 @@
                         <!-- Tab panes -->
                         <div class="tab-content p-3 text-muted">
                             <div class="tab-pane fade show active" id="product" role="tabpanel">
-                                <div class="row mb-4">
+                                {{-- <div class="row mb-4"> --}}
                                     {{-- <div class="card mb-4 shadow-lg">
                                         <div class="card-body">
                                             <ul class="nav nav-pills nav-justified" role="tablist">
@@ -226,46 +226,46 @@
                                             </ul>
                                         </div>
                                    </div> --}}
-                                </div>
+                                {{-- </div> --}}
 
                                 <div class="row">
-                                    <div class="tab-content p-3 text-muted">
-                                        @if ($product->product = "General Liabilities")
+
+                                        @if ($product->product == "General Liabilities")
                                          {{-- <div class="tab-pane active" id="generalLiabilites" role="tabpanel"> --}}
                                             @include('leads.appointed_leads.product-view.general-liability-profile', ['generalLiabilities' => $generalLiabilities])
                                          {{-- </div> --}}
                                         @endif
-                                        @if ($product->product = "Workers Compensation")
+                                        @if ($product->product == "Workers Compensation")
                                          {{-- <div class="tab-pane" id="workersCompensation" role="tabpanel"> --}}
                                             @include('leads.appointed_leads.product-view.workers-comp-profile', ['generalInformation' => $generalInformation])
                                          {{-- </div> --}}
                                         @endif
-                                        @if ($product->product = "Commercial Auto")
+                                        @if ($product->product == "Commercial Auto")
                                           {{-- <div class="tab-pane" id="commercialAuto" role="tabpanel"> --}}
                                             @include('leads.appointed_leads.product-view.commercial-auto-profile', ['generalInformation' => $generalInformation])
                                           {{-- </div> --}}
                                         @endif
-                                        @if ($product->product = "Excess Liability")
+                                        @if ($product->product == "Excess Liability")
                                         {{-- <div class="tab-pane" id="excessLiabiliy" role="tabpanel"> --}}
                                             @include('leads.appointed_leads.product-view.excess-liability-profile', ['generalInformation' => $generalInformation])
                                         {{-- </div> --}}
                                         @endif
-                                        @if ($product->product = "Tools Equipment")
+                                        @if ($product->product == "Tools Equipment")
                                          {{-- <div class="tab-pane" id="toolsEquipment" role="tabpanel"> --}}
                                             @include('leads.appointed_leads.product-view.tools-equipment-profile', ['generalInformation' => $generalInformation])
                                          {{-- </div> --}}
                                         @endif
-                                        @if ($product->product = "Builders Risk")
+                                        @if ($product->product == "Builders Risk")
                                           {{-- <div class="tab-pane" id="buildersRisk" role="tabpanel"> --}}
                                             @include('leads.appointed_leads.product-view.builders-risk-profile', ['generalInformation' => $generalInformation])
                                            {{-- </div> --}}
                                         @endif
-                                        @if ($product->product = "Business Owners")
+                                        @if ($product->product == "Business Owners")
                                         {{-- <div class="tab-pane" id="bop" role="tabpanel"> --}}
                                             @include('leads.appointed_leads.product-view.business-owners-profile', ['generalInformation' => $generalInformation])
                                         {{-- </div> --}}
                                         @endif
-                                    </div>
+
                                 </div>
                             </div>
 

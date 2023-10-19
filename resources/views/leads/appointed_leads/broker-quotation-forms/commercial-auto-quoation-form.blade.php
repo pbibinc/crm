@@ -1,4 +1,3 @@
-
 <style>
     /* Additional styling for buttons and other elements */
     .btn-enhanced {
@@ -46,31 +45,35 @@
 <div id="CommercialAutoContainer" class="mt-2"></div>
 
 <script>
-    $(document).ready(function (){
+    $(document).ready(function() {
 
         let quoteComparison;
         $.ajax({
             url: "{{ route('get-comparison-data') }}",
-            headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
             method: "GET",
-            data: {id: {{$quoteProduct->id}}},
-            success: function(data){
+            data: {
+                id: {{ $quoteProduct->id }}
+            },
+            success: function(data) {
                 quoteComparison = data.quoteComparison;
                 market = data.market;
                 doSomethingWithQuoteComparisonCommercialAuto();
             },
-            error: function(){
+            error: function() {
 
             }
         });
 
-      function  doSomethingWithQuoteComparisonCommercialAuto() {
-        if(quoteComparison.length > 0){
-            $('.commercialAutoFirsCardForm').hide();
-           quoteComparison.forEach(function(data) {
-            const marketObj = market.find(market => market.id === data.quotation_market_id);
-            const marketName = marketObj ? marketObj.name : 'Market Not Found';
-            let cardContent = `
+        function doSomethingWithQuoteComparisonCommercialAuto() {
+            if (quoteComparison.length > 0) {
+                $('.commercialAutoFirsCardForm').hide();
+                quoteComparison.forEach(function(data) {
+                    const marketObj = market.find(market => market.id === data.quotation_market_id);
+                    const marketName = marketObj ? marketObj.name : 'Market Not Found';
+                    let cardContent = `
             <div class="col-6">
                 <div class="card border border-primary">
                 <div class="card-body">
@@ -110,23 +113,24 @@
                 </div>
             </div>
            `;
-           let lastRow = $('#CommercialAutoContainer > .row:last-child');
-            if (lastRow.length == 0 || lastRow.children().length == 2) {
-                // Either no rows or the last row already has 2 cards, so create a new row
-             $('#CommercialAutoContainer').append('<div class="row">' + cardContent + '</div>');
-            }else {
-               // Last row exists and only has 1 card, so append the new card there
-              lastRow.append(cardContent);
-            }
-        //    $('#CommercialAutoContainer').append(cardContent);
-          });
+                    let lastRow = $('#CommercialAutoContainer > .row:last-child');
+                    if (lastRow.length == 0 || lastRow.children().length == 2) {
+                        // Either no rows or the last row already has 2 cards, so create a new row
+                        $('#CommercialAutoContainer').append('<div class="row">' + cardContent +
+                            '</div>');
+                    } else {
+                        // Last row exists and only has 1 card, so append the new card there
+                        lastRow.append(cardContent);
+                    }
+                    //    $('#CommercialAutoContainer').append(cardContent);
+                });
 
-        }
+            }
         };
 
 
 
-        $(document).on('click', '.editCommercialAutoButton', function(){
+        $(document).on('click', '.editCommercialAutoButton', function() {
             var $card = $(this).closest('.card');
 
             //form
@@ -135,7 +139,7 @@
             var downPayment = $card.find('#downPayment').val();
             var monthlyPayment = $card.find('#monthlyPayment').val();
             var brokerFee = $card.find('#brokerFee').val();
-            var productId = {{$quoteProduct->id}};
+            var productId = {{ $quoteProduct->id }};
             var id = $card.find('#quoteComparisonId').val();
             var reccomended = $card.find('#reccommendedCheckBox').is(':checked');
 
@@ -152,12 +156,14 @@
 
 
 
-             $.ajax({
+            $.ajax({
                 url: "{{ route('update-quotation-comparison') }}",
-                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 method: "POST",
                 data: formData,
-                success: function(){
+                success: function() {
                     Swal.fire({
                         title: 'Success',
                         text: 'has been saved',
@@ -168,7 +174,7 @@
                         }
                     });
                 },
-                error: function(){
+                error: function() {
                     Swal.fire({
                         title: 'Error',
                         text: 'Something went wrong',
@@ -227,56 +233,63 @@
         // });
 
         $(document).on('click', '.sendEmail', function() {
-         var $card = $(this).closest('.card');
-         var id = $card.find('#quoteComparisonId').val();
+            var $card = $(this).closest('.card');
+            var id = $card.find('#quoteComparisonId').val();
 
-        Swal.fire({
-          title: 'Are you sure?',
-          text: "You are about to send the quotation.",
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, send it!',
-          preConfirm: () => {
-            return new Promise((resolve, reject) => {
-                $.ajax({
-                    url: "{{ route('send-quotation') }}",
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    method: "POST",
-                    data: { id: id },
-                    success: function() {
-                        resolve('Email has been sent successfully.');
-                    },
-                    error: function() {
-                        reject('Something went wrong. Please try again.');
-                    }
-                });
-            });
-          }
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You are about to send the quotation.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, send it!',
+                preConfirm: () => {
+                    return new Promise((resolve, reject) => {
+                        $.ajax({
+                            url: "{{ route('send-quotation') }}",
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                                    .attr('content')
+                            },
+                            method: "POST",
+                            data: {
+                                id: id
+                            },
+                            success: function() {
+                                resolve(
+                                    'Email has been sent successfully.');
+                            },
+                            error: function() {
+                                reject(
+                                    'Something went wrong. Please try again.');
+                            }
+                        });
+                    });
+                }
             }).then((result) => {
-        if (result.value) {
-            Swal.fire({
-                title: 'Success',
-                text: result.value,
-                icon: 'success'
-            }).then(() => {
-                location.reload();
+                if (result.value) {
+                    Swal.fire({
+                        title: 'Success',
+                        text: result.value,
+                        icon: 'success'
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    Swal.fire({
+                        title: 'Cancelled',
+                        text: 'Email was not sent.',
+                        icon: 'error'
+                    });
+                } else if (result.dismiss === 'error') {
+                    Swal.fire({
+                        title: 'Error',
+                        text: result.value,
+                        icon: 'error'
+                    });
+                }
             });
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-            Swal.fire({
-                title: 'Cancelled',
-                text: 'Email was not sent.',
-                icon: 'error'
-            });
-        } else if (result.dismiss === 'error') {
-            Swal.fire({
-                title: 'Error',
-                text: result.value,
-                icon: 'error'
-            });
-        }
+        });
     });
-   });
-});
 </script>

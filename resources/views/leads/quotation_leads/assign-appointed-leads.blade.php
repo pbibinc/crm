@@ -41,7 +41,7 @@
                                 @foreach($groupedProducts as $companyName =>  $groupedProduct)
                                 <tr>
                                     <td><strong><b>{{ $companyName }}</b></strong></td>
-                                    <td><input type="checkbox" class="companyCheckBox" data-company="{{ $companyName }}" name="company[]"></td>
+                                    <td><input type="checkbox" class="companyCheckAllBox" data-company="{{ $companyName }}" name="company[]"></td>
                                     <td><strong><b>Product</b></strong></td>
                                     <td><strong><b>Telemarketer</b></strong></td>
                                     {{-- <td><strong><b>Sent Out Date</b></strong></td> --}}
@@ -198,6 +198,18 @@
         //         {data: 'current_user', name: 'current_user'},
         //     ]
         // })
+
+        $('.companyCheckAllBox').on('change', function() {
+          // Get the company name from the clicked checkbox
+          var companyName = $(this).data('company');
+
+          // Find all checkboxes related to this company
+          var relatedCheckboxes = $('.companyCheckBox[data-company="' + companyName + '"]');
+
+          // Check or uncheck all related checkboxes based on the clicked checkbox state
+          relatedCheckboxes.prop('checked', $(this).is(':checked'));
+        });
+
         $('#datatableLeads').DataTable({
                 processing: true,
                 serverSide: true,
@@ -235,21 +247,13 @@
         $('#assignAppointedLead').on('click', function(){
             var id = [];
             var productsArray = [];
-            // $('.users_checkbox:checked').each(function(){
-            //     id.push($(this).val());
-            //     var row = $(this).closest('tr');
-            //     var productDiv = row.find('.product-column');
-            //     var products = [];
-            //     productDiv.find('h6').each(function(){
-            //         products.push($(this).text());
-            //     });
-            //     productsArray.push(products);
 
-            // });
 
             $('.companyCheckBox:checked').each(function(){
                 productsArray.push($(this).val());
             });
+
+            console.log(productsArray);
             var marketSpecialistUserProfileId = $('#marketSpecialistDropDown').val();
             var agentUserProfileId = $('#agentDropDown').val();
             if(productsArray.length > 0){
@@ -271,8 +275,9 @@
                                 text: 'Leads has been assigned',
                                 icon: 'success'
                             });
-                            $('#assignAppointedLeadsTable').DataTable().ajax.reload();
-                            $('#datatableLeads').DataTable().ajax.reload();
+                            // $('#assignAppointedLeadsTable').DataTable().ajax.reload();
+                            // $('#datatableLeads').DataTable().ajax.reload();
+                            location.reload();
                         },
                         error: function(data){
                             Swal.fire({
@@ -301,14 +306,18 @@
                 }
 
         });
-        var leadsId = [];
+        var productId = [];
         $('#voidAppointedLeads').on('click', function(){
+            // var productsArray = [];
+            // $('.companyCheckBox:checked').each(function(){
+            //     productsArray.push($(this).val());
+            // });
 
             $('.leads_checkbox:checked').each(function(){
-                leadsId.push($(this).val());
+                productId.push($(this).val());
             });
 
-            if(leadsId.length > 0){
+            if(productId.length > 0){
                 if(confirm("Are you sure you want to void this leads?"))
                 {
                     $.ajax({
@@ -316,7 +325,7 @@
                     headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                     method: "POST",
                     data: {
-                        leadsId:leadsId
+                        productId:productId
                     },
                     success: function(data){
                         Swal.fire({
@@ -324,9 +333,9 @@
                             text: 'Leads has been voided',
                             icon: 'success'
                         });
-                        $('#assignAppointedLeadsTable').DataTable().ajax.reload();
-                        $('#datatableLeads').DataTable().ajax.reload();
-
+                        // $('#assignAppointedLeadsTable').DataTable().ajax.reload();
+                        // $('#datatableLeads').DataTable().ajax.reload();
+                        location.reload();
                     },
                     error: function(data){
                         Swal.fire({
@@ -349,9 +358,9 @@
         $('#reassignAppointedLead').on('click', function() {
 
             $('.leads_checkbox:checked').each(function(){
-                leadsId.push($(this).val());
+                productId.push($(this).val());
             });
-            if(leadsId.length > 0){
+            if(productId.length > 0){
                 $('#userDropdownModal').modal('show');
             }else{
                 Swal.fire({
@@ -390,7 +399,7 @@
                     headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                     method: "POST",
                     data: {
-                        leadsId:leadsId,
+                        productId:productId,
                         userProfileId:userProfileId
                     },
                     success: function(data){

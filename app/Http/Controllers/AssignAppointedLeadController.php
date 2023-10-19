@@ -148,15 +148,12 @@ class AssignAppointedLeadController extends Controller
     {
         try{
             DB::beginTransaction();
-            $leadsIds = $request->input('leadsId');
-            foreach($leadsIds as $leadsId){
-                $lead = Lead::find($leadsId);
-                $lead->status = 3;
-                $lead->save();
-
-                $qouteLead = $lead->quoteLead()->first();
-                $qouteLead->user_profiles_id = null;
-                $qouteLead->save();
+            $productsArray = $request->input('productId');
+            foreach($productsArray as $product){
+                $QuotationProduct = QuotationProduct::find($product);
+                $QuotationProduct->status = 7;
+                $QuotationProduct->user_profile_id = null;
+                $QuotationProduct->save();
             }
             DB::commit();
         }catch(\Exception $e){
@@ -170,13 +167,12 @@ class AssignAppointedLeadController extends Controller
     {
         try{
             DB::beginTransaction();
-            $leadsIds = $request->input('leadsId');
+            $productId = $request->input('productId');
             $userProfileId = $request->input('userProfileId');
-            foreach($leadsIds as $leadsId){
-                $lead = Lead::find($leadsId);
-                $qouteLead = $lead->quoteLead()->first();
-                $qouteLead->user_profiles_id = $userProfileId;
-                $qouteLead->save();
+            foreach($productId as $id){
+                $QuotationProduct = QuotationProduct::find($id);
+                $QuotationProduct->user_profile_id = $userProfileId;
+                $QuotationProduct->save();
             }
             DB::commit();
         }catch(\Exception $e){

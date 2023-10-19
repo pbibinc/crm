@@ -53,7 +53,7 @@ class ToolsEquipmentController extends Controller
                 $quoteProduct->quote_information_id = $quoteInformation->id;
             }
             $quoteProduct->product = 'Tools Equipment';
-            $quoteProduct->status = 2;
+            $quoteProduct->status = 7;
             $quoteProduct->save();
 
             $expirationAuto = new ExpirationProduct();
@@ -62,7 +62,6 @@ class ToolsEquipmentController extends Controller
             $expirationAuto->expiration_date = Carbon::parse($data['expirationOfIM'])->toDateString();
             $expirationAuto->prior_carrier = $data['priorCarrier'];
             $expirationAuto->save();
-
 
             if($data['isHaveLossChecked'] == true){
                 $HaveLosstable = new HaveLoss();

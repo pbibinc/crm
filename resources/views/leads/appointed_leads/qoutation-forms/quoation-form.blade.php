@@ -1,5 +1,5 @@
 <div class="col-6 title-card">
-        <h4 class="card-title mb-0" style="color: #ffffff">General Liabilities Quoation Form</h4>
+    <h4 class="card-title mb-0" style="color: #ffffff">General Liabilities Quoation Form</h4>
 </div>
 <div class="row">
     <div class="col-6">
@@ -8,12 +8,13 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div class="form-check">
                         <div class="form-check form-switch mb-3" dir="ltr">
-                          <input class="form-check-input" type="checkbox" id="reccommendedCheckBox">
-                          <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
+                            <input class="form-check-input" type="checkbox" id="reccommendedCheckBox">
+                            <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                         </div>
                     </div>
                     <div>
-                        <button class="btn rounded-circle btn-success" id="addGLPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
+                        <button class="btn rounded-circle btn-success" id="addGLPriceComparisonButton"><i
+                                class="mdi mdi-plus-circle"></i></button>
                     </div>
                 </div>
                 <hr>
@@ -22,29 +23,29 @@
                         <select name="" id="" class="form-select">
                             <option value="">Select Market</option>
                             @foreach ($quationMarket as $market)
-                            <option value={{ $market->id }}>{{ $market->name }}</option>
-                        @endforeach
+                                <option value={{ $market->id }}>{{ $market->name }}</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
                 <div class="form-group row mb-4">
                     <div class="col-6">
-                        <label for="filterBy" class="form-label mt-2" >Full Payment:</label>
-                        <input id="fullPayment" class="form-control">
+                        <label for="filterBy" class="form-label mt-2">Full Payment:</label>
+                        <input id="fullPayment" class="form-control fullPayment">
                     </div>
                     <div class="col-6">
                         <label for="filterBy" class="form-label mt-2">Down Payment:</label>
-                        <input class="form-control" id="downPayment" type="text">
+                        <input class="form-control" id="downPayment downPayment" type="text">
                     </div>
                 </div>
                 <div class="row mb-4">
                     <div class="col-6">
                         <label for="filterBy" class="form-label mt-2">Montly Payment:</label>
-                        <input class="form-control mt-2"  id="monthlyPayment" type="text">
+                        <input class="form-control mt-2" id="monthlyPayment" type="text">
                     </div>
                     <div class="col-6">
                         <label for="filterBy" class="form-label">Broker Fee:</label>
-                        <input class="form-control" id="brokerFee" type="text">
+                        <input class="form-control brokerFee" id="brokerFee" type="text">
                     </div>
                 </div>
                 <hr>
@@ -62,24 +63,29 @@
 <div class="col-12">
     <div class="d-grid mb-3 text-center">
         @if ($quoteProduct->status === 2)
-            <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveQuoationProduct">Save Quotation</button>
+            <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light"
+                id="saveQuoationProduct">Save Quotation</button>
         @else
-        {{-- <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveQuoationProduct" disabled>Save Quotation</button> --}}
-        <span>Already Sent</span>
+            {{-- <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveQuoationProduct" disabled>Save Quotation</button> --}}
+            <span>Already Sent</span>
         @endif
     </div>
 </div>
 
 <script>
-    $(document).ready(function (){
-        $('#saveQuoationProduct').on('click', function(){
+    $(document).ready(function() {
+        $('#saveQuoationProduct').on('click', function() {
             var id = {{ $quoteProduct->id }};
             $.ajax({
                 url: "{{ route('send-quotation-product') }}",
-                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 method: "POST",
-                data: {id: id},
-                success: function(){
+                data: {
+                    id: id
+                },
+                success: function() {
                     Swal.fire({
                         title: 'Success',
                         text: 'has been saved',
@@ -90,7 +96,7 @@
                         }
                     });
                 },
-                error: function(jqXHR, textStatus, errorThrown){
+                error: function(jqXHR, textStatus, errorThrown) {
                     Swal.fire({
                         title: 'Error',
                         text: 'Something went wrong',
@@ -103,28 +109,33 @@
         let quoteComparison;
         $.ajax({
             url: "{{ route('get-comparison-data') }}",
-            headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
             method: "GET",
-            data: {id: {{$quoteProduct->id}}},
-            success: function(data){
+            data: {
+                id: {{ $quoteProduct->id }}
+            },
+            success: function(data) {
                 quoteComparison = data.quoteComparison;
                 market = data.market;
                 doSomethingWithQuoteComparison();
             },
-            error: function(){
+            error: function() {
 
             }
         });
 
-      function  doSomethingWithQuoteComparison() {
-        if(quoteComparison.length > 0){
-            $('.generalLiabilitiesFirsCardForm').hide();
-           quoteComparison.forEach(function(data) {
-           let selectOptions = `<option value="">Select Market</option>`;
-           market.forEach(function(market) {
-              selectOptions += `<option value="${market.id}" ${market.id === data.quotation_market_id ? 'selected' : ''}>${market.name}</option>`;
-           });
-           let cardContent = `
+        function doSomethingWithQuoteComparison() {
+            if (quoteComparison.length > 0) {
+                $('.generalLiabilitiesFirsCardForm').hide();
+                quoteComparison.forEach(function(data) {
+                    let selectOptions = `<option value="">Select Market</option>`;
+                    market.forEach(function(market) {
+                        selectOptions +=
+                            `<option value="${market.id}" ${market.id === data.quotation_market_id ? 'selected' : ''}>${market.name}</option>`;
+                    });
+                    let cardContent = `
            <div class="col-6">
             <div class="card border border-primary rounded shadow-sm">
                 <div class="card-body">
@@ -148,21 +159,21 @@
                     <div class="form-group row mb-4">
                         <div class="col-6">
                             <label for="filterBy" class="form-label mt-2" >Full Payment:</label>
-                            <input id="fullPayment"  class="form-control  type="text" value="${data.full_payment}">
+                            <input id="fullPayment"  class="form-control fullPayment"  type="text" value="${data.full_payment}">
                         </div>
                         <div class="col-6">
                             <label for="filterBy" class="form-label mt-2">Down Payment:</label>
-                            <input class="form-control" id="downPayment" type="text" value="${data.down_payment}">
+                            <input class="form-control downPayment" id="downPayment" type="text" value="${data.down_payment}">
                         </div>
                     </div>
                     <div class="form-group row mb-4">
                         <div class="col-6">
                             <label for="filterBy" class="form-label mt-2">Montly Payment:</label>
-                            <input class="form-control mt-2" id="monthlyPayment" type="text" value="${data.monthly_payment}">
+                            <input class="form-control" id="monthlyPayment" type="text" value="${data.monthly_payment}">
                         </div>
                         <div class="col-6">
-                            <label for="filterBy" class="form-label">Broker Fee:</label>
-                            <input class="form-control" id="brokerFee" type="text" value="${data.broker_fee}">
+                            <label for="filterBy" class="form-label mt-2">Broker Fee:</label>
+                            <input class="form-control brokerFee" id="brokerFee" type="text" value="${data.broker_fee}">
                         </div>
                     </div>
                     <input type="hidden" value="${data.id}" id="quoteComparisonId"/>
@@ -175,21 +186,55 @@
             </div>
            `;
 
-            let lastRow = $('#GLCardContainer > .row:last-child');
-            if (lastRow.length == 0 || lastRow.children().length == 2) {
-                // Either no rows or the last row already has 2 cards, so create a new row
-             $('#GLCardContainer').append('<div class="row">' + cardContent + '</div>');
-            }else {
-               // Last row exists and only has 1 card, so append the new card there
-              lastRow.append(cardContent);
+                    let lastRow = $('#GLCardContainer > .row:last-child');
+                    if (lastRow.length == 0 || lastRow.children().length == 2) {
+                        // Either no rows or the last row already has 2 cards, so create a new row
+                        $('#GLCardContainer').append('<div class="row">' + cardContent + '</div>');
+                    } else {
+                        // Last row exists and only has 1 card, so append the new card there
+                        lastRow.append(cardContent);
+                    }
+                    // $('#GLCardContainer').append(cardContent);
+                });
             }
-            // $('#GLCardContainer').append(cardContent);
-          });
-        }
         };
 
-        $(document).on('click', '.addGLPriceComparison', function(){
-         let cardContent = `
+        $(document).on('focus', '.brokerFee', function() {
+            // When the input gains focus, store its current value to data attribute
+            let currentBrokerFee = parseFloat($(this).val()) || 0;
+            $(this).data('lastBrokerFee', currentBrokerFee);
+        });
+
+        $(document).on('input', '.brokerFee', function() {
+            // Get the parent card
+            const card = $(this).closest('.card');
+
+            // Get the current broker fee
+            const currentBrokerFee = parseFloat($(this).val()) || 0;
+            const lastBrokerFee = $(this).data('lastBrokerFee') || 0;
+
+            // Find the related fullPayment and downPayment input fields within this card
+            const fullPaymentInput = card.find('.fullPayment');
+            const downPaymentInput = card.find('.downPayment');
+
+            // Get their current values
+            let fullPayment = parseFloat(fullPaymentInput.val()) || 0;
+            let downPayment = parseFloat(downPaymentInput.val()) || 0;
+
+            // Subtract last broker fee and add new broker fee
+            fullPayment = fullPayment - lastBrokerFee + currentBrokerFee;
+            downPayment = downPayment - lastBrokerFee + currentBrokerFee;
+
+            // Update their values
+            fullPaymentInput.val(fullPayment);
+            downPaymentInput.val(downPayment);
+
+            // Update the last broker fee for the next change
+            $(this).data('lastBrokerFee', currentBrokerFee);
+        });
+
+        $(document).on('click', '.addGLPriceComparison', function() {
+            let cardContent = `
          <div class="col-6">
             <div class="card border border-primary">
                 <div class="card-body">
@@ -219,11 +264,11 @@
                     <div class="form-group row mb-4">
                         <div class="col-6">
                             <label for="filterBy" class="form-label" >Full Payment:</label>
-                            <input id="fullPayment" class="form-control">
+                            <input id="fullPayment" class="form-control fullPayment">
                         </div>
                         <div class="col-6">
                             <label for="filterBy" class="form-label">Down Payment:</label>
-                            <input class="form-control" id="downPayment" type="text">
+                            <input class="form-control downPayment" id="downPayment" type="text">
                         </div>
                     </div>
                     <div class="form-group row mb-4">
@@ -233,7 +278,7 @@
                         </div>
                         <div class="col-6">
                             <label for="filterBy" class="form-label">Broker Fee:</label>
-                            <input class="form-control" id="brokerFee" type="text">
+                            <input class="form-control brokerFee" id="brokerFee" type="text">
                         </div>
                     </div>
                     <hr>
@@ -244,42 +289,48 @@
             </div>
         </div>
         `;
-        let lastRow = $('#GLCardContainer > .row:last-child');
+            let lastRow = $('#GLCardContainer > .row:last-child');
             if (lastRow.length == 0 || lastRow.children().length == 2) {
                 // Either no rows or the last row already has 2 cards, so create a new row
-             $('#GLCardContainer').append('<div class="row">' + cardContent + '</div>');
-            }else {
-               // Last row exists and only has 1 card, so append the new card there
-              lastRow.append(cardContent);
+                $('#GLCardContainer').append('<div class="row">' + cardContent + '</div>');
+            } else {
+                // Last row exists and only has 1 card, so append the new card there
+                lastRow.append(cardContent);
             }
-        // $('#GLCardContainer').append(cardContent);
+            // $('#GLCardContainer').append(cardContent);
         });
 
-        $('#GLCardContainer').on('click', '.removeCardButton', function(){
+        $('#GLCardContainer').on('click', '.removeCardButton', function() {
             $(this).closest('.card').remove();
 
         });
         $(".input-mask").inputmask();
 
-        $('#GLCardContainer').on('click', '.removeSavedGLDataButton', function(){
+
+
+        $('#GLCardContainer').on('click', '.removeSavedGLDataButton', function() {
             var $card = $(this).closest('.card');
 
             Swal.fire({
-                 title: 'Are you sure?',
-                 text: 'You will not be able to recover this!',
-                 icon: 'warning',
-                 showCancelButton: true,
-                 confirmButtonText: 'Yes, delete it!',
-                 cancelButtonText: 'No, keep it'
+                title: 'Are you sure?',
+                text: 'You will not be able to recover this!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, keep it'
             }).then((result) => {
                 if (result.isConfirmed) {
                     var id = $card.find('#quoteComparisonId').val();
                     $.ajax({
                         url: "{{ route('delete-quotation-comparison') }}",
-                        headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
                         method: "POST",
-                        data: {id: id},
-                        success: function(){
+                        data: {
+                            id: id
+                        },
+                        success: function() {
                             Swal.fire({
                                 title: 'Success',
                                 text: 'has been deleted',
@@ -291,7 +342,7 @@
                                 }
                             })
                         },
-                        error: function(){
+                        error: function() {
                             Swal.fire({
                                 title: 'Error',
                                 text: 'Something went wrong',
@@ -305,7 +356,7 @@
             var id = $card.find('#quoteComparisonId').val();
         });
 
-        $(document).on('click', '.saveGLFormButton', function(){
+        $(document).on('click', '.saveGLFormButton', function() {
             var $card = $(this).closest('.card');
 
             //form
@@ -315,7 +366,7 @@
             var monthlyPayment = $card.find('#monthlyPayment').val();
             var brokerFee = $card.find('#brokerFee').val();
             var reccomended = $card.find('#reccommendedCheckBox').is(':checked');
-            var id = {{$quoteProduct->id}};
+            var id = {{ $quoteProduct->id }};
 
 
             var formData = {
@@ -330,10 +381,12 @@
 
             $.ajax({
                 url: "{{ route('save-quotation-comparison') }}",
-                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 method: "POST",
                 data: formData,
-                success: function(){
+                success: function() {
                     Swal.fire({
                         title: 'Success',
                         text: 'has been saved',
@@ -344,7 +397,7 @@
                         }
                     });
                 },
-                error: function(){
+                error: function() {
                     Swal.fire({
                         title: 'Error',
                         text: 'Something went wrong',
@@ -354,7 +407,7 @@
             })
         });
 
-        $(document).on('click', '.editGLFormButton', function(){
+        $(document).on('click', '.editGLFormButton', function() {
             var $card = $(this).closest('.card');
 
 
@@ -364,7 +417,7 @@
             var downPayment = $card.find('#downPayment').val();
             var monthlyPayment = $card.find('#monthlyPayment').val();
             var brokerFee = $card.find('#brokerFee').val();
-            var productId = {{$quoteProduct->id}};
+            var productId = {{ $quoteProduct->id }};
             var reccomended = $card.find('#reccommendedCheckBox').is(':checked');
             var id = $card.find('#quoteComparisonId').val();
 
@@ -379,12 +432,14 @@
                 id: id
             };
 
-             $.ajax({
+            $.ajax({
                 url: "{{ route('update-quotation-comparison') }}",
-                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 method: "POST",
                 data: formData,
-                success: function(){
+                success: function() {
                     Swal.fire({
                         title: 'Success',
                         text: 'has been saved',
@@ -395,7 +450,7 @@
                         }
                     });
                 },
-                error: function(){
+                error: function() {
                     Swal.fire({
                         title: 'Error',
                         text: 'Something went wrong',
@@ -405,6 +460,8 @@
             })
 
         });
+
+
 
 
     });

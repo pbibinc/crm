@@ -104,5 +104,10 @@ class UserProfile extends Model
         return $this->hasMany(quoationLeads::class);
     }
 
+    public function quoteInformation()
+    {
+        return $this->hasMany(QuotationProduct::class);
+    }
+
 
 }

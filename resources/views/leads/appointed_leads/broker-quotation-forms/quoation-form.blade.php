@@ -1,4 +1,5 @@
-<h6>General Liabilities Quoation Form <i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i></h6>
+<h6>General Liabilities Quoation Form <i class="ri-information-fill" style="vertical-align: middle; color: #6c757d;"></i>
+</h6>
 <div class="card ">
     <div class="card-body">
 
@@ -8,31 +9,34 @@
     </div>
 </div>
 <script>
-    $(document).ready(function (){
-
+    $(document).ready(function() {
         let quoteComparison;
         $.ajax({
             url: "{{ route('get-comparison-data') }}",
-            headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
             method: "GET",
-            data: {id: {{$quoteProduct->id}}},
-            success: function(data){
+            data: {
+                id: {{ $quoteProduct->id }}
+            },
+            success: function(data) {
                 quoteComparison = data.quoteComparison;
                 market = data.market;
                 doSomethingWithQuoteComparison();
             },
-            error: function(){
+            error: function() {
 
             }
         });
 
-      function  doSomethingWithQuoteComparison() {
-        if(quoteComparison.length > 0){
-            $('.generalLiabilitiesFirsCardForm').hide();
-           quoteComparison.forEach(function(data) {
-            const marketObj = market.find(market => market.id === data.quotation_market_id);
-            const marketName = marketObj ? marketObj.name : 'Market Not Found';
-           let cardContent = `
+        function doSomethingWithQuoteComparison() {
+            if (quoteComparison.length > 0) {
+                $('.generalLiabilitiesFirsCardForm').hide();
+                quoteComparison.forEach(function(data) {
+                    const marketObj = market.find(market => market.id === data.quotation_market_id);
+                    const marketName = marketObj ? marketObj.name : 'Market Not Found';
+                    let cardContent = `
            <div class="col-6">
             <div class="card border border-primary">
                 <div class="card-body">
@@ -46,20 +50,20 @@
                     </div>
                     <div class="row mb-4">
                         <div class="col-6">
-                            <label for="filterBy" class="form-label mt-2" >Full Payment: $${data.full_payment}</label>
+                            <label for="filterBy" class="form-label mt-2 fullPayment" id="fullPayment">Full Payment: $${data.full_payment}</label>
                         </div>
                         <div class="col-6">
-                            <label for="filterBy" class="form-label mt-2">Down Payment: $${data.down_payment}</label>
+                            <label for="filterBy" class="form-label mt-2 downPayment" id="downPayment">Down Payment: $${data.down_payment}</label>
                         </div>
                     </div>
                     <div class="row mb-4">
                         <div class="col-6">
-                            <label for="filterBy" class="form-label mt-2">Montly Payment: $${data.monthly_payment}</label>
+                            <label for="filterBy" class="form-label mt-2 monthlyPayment">Montly Payment: $${data.monthly_payment}</label>
                         </div>
                         <div class="col-6">
                             <div style="display: flex; align-items: center;">
                                <label for="filterBy" class="form-label mt-2">Fee:</label>
-                               <input class="form-control" id="brokerFee" style="margin-left: 10px;" type="text" value="${data.broker_fee}">
+                               <input class="form-control brokerFee" id="brokerFee" style="margin-left: 10px;" type="text" value="${data.broker_fee}">
                             </div>
                         </div>
                     </div>
@@ -72,56 +76,106 @@
                         </div>
                     </div>
                     <input type="hidden" value="${data.id}" id="quoteComparisonId"/>
-                <div class="row">
-                    <button class="btn btn-lg btn-success editGLFormButton">Save</button>
-                </div>
+                    <div class="row d-flex text-center">
+                      <div class="col-12">
+                        <div class="button-container">
+                        <!-- Send Quotation Email Button -->
+                                 <button type="button" class="btn btn-lg btn-primary waves-effect waves-light sendQuotationEmail" data-toggle="tooltip" title="Send Quotation Email">
+                                 <i class="ri-mail-send-line"></i> Send
+                                 </button>
+
+                                 <!-- Save Button -->
+                                 <button type="button" class="btn btn-lg btn-success editGLFormButton" data-toggle="tooltip" title="Save Form">
+                                 <i class="ri-save-line"></i> Save
+                                 </button>
+                        </div>
+                     </div>
+                    </div>
+
                 </div>
             </div>
            </div>
-
            `;
-           let lastRow = $('#GLCardContainer > .row:last-child');
-            if (lastRow.length == 0 || lastRow.children().length == 2) {
-                // Either no rows or the last row already has 2 cards, so create a new row
-             $('#GLCardContainer').append('<div class="row">' + cardContent + '</div>');
-            }else {
-               // Last row exists and only has 1 card, so append the new card there
-              lastRow.append(cardContent);
+                    let lastRow = $('#GLCardContainer > .row:last-child');
+                    if (lastRow.length == 0 || lastRow.children().length == 2) {
+                        // Either no rows or the last row already has 2 cards, so create a new row
+                        $('#GLCardContainer').append('<div class="row">' + cardContent + '</div>');
+                    } else {
+                        // Last row exists and only has 1 card, so append the new card there
+                        lastRow.append(cardContent);
+                    }
+                    //    $('#GLCardContainer').append(cardContent);
+                });
             }
-        //    $('#GLCardContainer').append(cardContent);
-          });
-        }
         };
 
-        $(document).on('click', '.editGLFormButton', function(){
-            var $card = $(this).closest('.card');
+        $(document).on('focus', '.brokerFee', function() {
+            // When the input gains focus, store its current value to data attribute
+            let currentBrokerFee = parseFloat($(this).val()) || 0;
+            $(this).data('lastBrokerFee', currentBrokerFee);
+        });
 
-            //form
-            var fullPayment = $card.find('#fullPayment').val();
-            var downPayment = $card.find('#downPayment').val();
-            var monthlyPayment = $card.find('#monthlyPayment').val();
-            var brokerFee = $card.find('#brokerFee').val();
-            var productId = {{$quoteProduct->id}};
-            var reccomended = $card.find('#reccommendedCheckBox').is(':checked');
-            var id = $card.find('#quoteComparisonId').val();
 
+        $(document).on('input', '.brokerFee', function() {
+            // Get the parent card
+            const card = $(this).closest('.card');
+
+            // Get the current broker fee
+            const currentBrokerFee = parseFloat($(this).val()) || 0;
+            const lastBrokerFee = $(this).data('lastBrokerFee') || 0;
+
+            // Find the related fullPayment and downPayment input fields within this card
+            const fullPaymentLabel = card.find('.fullPayment');
+            const downPaymentLabel = card.find('.downPayment');
+
+            // Get their current values
+            let fullPayment = parseFloat(fullPaymentLabel.text().split('$')[1]) || 0;
+            let downPayment = parseFloat(downPaymentLabel.text().split('$')[1]) || 0;
+
+
+            // Subtract last broker fee and add new broker fee
+            fullPayment = fullPayment - lastBrokerFee + currentBrokerFee;
+            downPayment = downPayment - lastBrokerFee + currentBrokerFee;
+
+
+
+            // Update their values
+            fullPaymentLabel.text(`$${fullPayment.toFixed(2)}`);
+            downPaymentLabel.text(`$${downPayment.toFixed(2)}`);
+
+            // Update the last broker fee for the next change
+            $(this).data('lastBrokerFee', currentBrokerFee);
+
+        });
+
+        $(document).on('click', '.editGLFormButton', function() {
+            var card = $(this).closest('.card');
+            let fullPayment = parseFloat(card.find('.fullPayment').text().split('$')[1]) || 0;
+            let downPayment = parseFloat(card.find('.downPayment').text().split('$')[1]) || 0;
+            let monthlyPayment = parseFloat(card.find('.monthlyPayment').text().split('$')[1]) || 0;
+            var brokerFee = card.find('#brokerFee').val();
+            // var reccomended = card.find('#reccommendedCheckBox').is(':checked');
+            // var productId = {{ $quoteProduct->id }};
+            var id = card.find('#quoteComparisonId').val();
             var formData = {
                 market: market,
                 fullPayment: fullPayment,
                 downPayment: downPayment,
                 monthlyPayment: monthlyPayment,
                 brokerFee: brokerFee,
-                productId: productId,
-                reccomended: reccomended,
+                // productId: productId,
+                // reccomended: reccomended,
                 id: id
             };
 
-             $.ajax({
+            $.ajax({
                 url: "{{ route('update-quotation-comparison') }}",
-                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 method: "POST",
                 data: formData,
-                success: function(){
+                success: function() {
                     Swal.fire({
                         title: 'Success',
                         text: 'has been saved',
@@ -132,7 +186,42 @@
                         }
                     });
                 },
-                error: function(){
+                error: function() {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Something went wrong',
+                        icon: 'error'
+                    });
+                }
+            })
+
+        });
+
+        $(document).on('click', '.sendQuotationEmail', function() {
+            var card = $(this).closest('.card');
+            var id = card.find('#quoteComparisonId').val();
+            console.log(id);
+            $.ajax({
+                url: "{{ route('send-quotation') }}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                method: "POST",
+                data: {
+                    id: id
+                },
+                success: function() {
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'Email Has Been Sent',
+                        icon: 'success'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                },
+                error: function() {
                     Swal.fire({
                         title: 'Error',
                         text: 'Something went wrong',

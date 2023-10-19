@@ -1,55 +1,57 @@
 <div class="col-6 title-card">
     <h4 class="card-title mb-0" style="color: #ffffff">Workers Compensation Quoation Form</h4>
 </div>
-
-        <div class="card border border-primary workersCompFirsCardForm">
-            <div class="card-body">
-                <div class="row mb-4">
-                    <div class="col-10">
-                        <input class="form-check-input" type="checkbox" id="workerscompReccommendedCheckBox">
-                        <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
-                    </div>
-                    <div class="col-2">
-                        <button class="btn btn-success" id="addWorkCompPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
-                    </div>
+<div class="col-6">
+    <div class="card border border-primary workersCompFirsCardForm">
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-10">
+                    <input class="form-check-input" type="checkbox" id="workerscompReccommendedCheckBox">
+                    <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                 </div>
-                <div class="row mb-4">
-                    <div>
-                        <select name="" id="" class="form-select">
-                            <option value="">Select Market</option>
-                            @foreach ($quationMarket as $market)
-                            <option value={{ $market->id }}>{{ $market->name }}</option>
-                        @endforeach
-                        </select>
-                    </div>
+                <div class="col-2">
+                    <button class="btn btn-success" id="addWorkCompPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
                 </div>
-                <div class="form-group row mb-4">
-                    <div class="col-6">
-                        <label for="filterBy" class="form-label mt-2" >Full Payment:</label>
-                        <input id="fullPayment" class="form-control">
-                    </div>
-                    <div class="col-6">
-                        <label for="filterBy" class="form-label mt-2">Down Payment:</label>
-                        <input class="form-control" id="downPayment" type="text">
-                    </div>
-                </div>
-                <div class="form-group row mb-4">
-                    <div class="col-6">
-                        <label for="filterBy" class="form-label mt-2">Montly Payment:</label>
-                        <input class="form-control mt-2"  id="monthlyPayment" type="text">
-                    </div>
-                    <div class="col-6">
-                        <label for="filterBy" class="form-label">Broker Fee:</label>
-                        <input class="form-control" id="brokerFee" type="text">
-                    </div>
-                </div>
-                <hr>
-                <div class="text-center">
-                    <button class="btn btn-primary saveWorkersCompFormButton">Save</button>
-                </div>
-                <input class="form-control" value={{ $generalInformation->lead->id }} id="leadId" type="hidden">
             </div>
+            <div class="row mb-4">
+                <div>
+                    <select name="" id="" class="form-select">
+                        <option value="">Select Market</option>
+                        @foreach ($quationMarket as $market)
+                        <option value={{ $market->id }}>{{ $market->name }}</option>
+                    @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row mb-4">
+                <div class="col-6">
+                    <label for="filterBy" class="form-label mt-2" >Full Payment:</label>
+                    <input id="fullPayment" class="form-control fullPayment">
+                </div>
+                <div class="col-6">
+                    <label for="filterBy" class="form-label mt-2">Down Payment:</label>
+                    <input class="form-control downPayment" id="downPayment" type="text">
+                </div>
+            </div>
+            <div class="form-group row mb-4">
+                <div class="col-6">
+                    <label for="filterBy" class="form-label mt-2">Montly Payment:</label>
+                    <input class="form-control"  id="monthlyPayment" type="text">
+                </div>
+                <div class="col-6">
+                    <label for="filterBy" class="form-label mt-2">Broker Fee:</label>
+                    <input class="form-control brokerFee" id="brokerFee" type="text">
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <button class="btn btn-primary saveWorkersCompFormButton">Save</button>
+            </div>
+            <input class="form-control" value={{ $generalInformation->lead->id }} id="leadId" type="hidden">
         </div>
+    </div>
+</div>
+
 
         <div id="workerCompContainer"></div>
 
@@ -143,21 +145,21 @@
                     <div class="form-group row mb-4">
                         <div class="col-6">
                             <label for="filterBy" class="form-label" >Full Payment:</label>
-                            <input id="fullPayment"  class="form-control  type="text" value="${data.full_payment}">
+                            <input id="fullPayment"  class="form-control fullPayment"  type="text" value="${data.full_payment}">
                         </div>
                         <div class="col-6">
                             <label for="filterBy" class="form-label">Down Payment:</label>
-                            <input class="form-control" id="downPayment" type="text" value="${data.down_payment}">
+                            <input class="form-control downPayment" id="downPayment" type="text" value="${data.down_payment}">
                         </div>
                     </div>
                     <div class="form-group row mb-4">
                         <div class="col-6">
                             <label for="filterBy" class="form-label">Montly Payment:</label>
-                            <input class="form-control" id="monthlyPayment" type="text" value="${data.monthly_payment}">
+                            <input class="form-control " id="monthlyPayment" type="text" value="${data.monthly_payment}">
                         </div>
                         <div class="col-6">
                             <label for="filterBy" class="form-label">Broker Fee:</label>
-                            <input class="form-control" id="brokerFee" type="text" value="${data.broker_fee}">
+                            <input class="form-control brokerFee" id="brokerFee" type="text" value="${data.broker_fee}">
                         </div>
                     </div>
                     <input type="hidden" value="${data.id}" id="quoteComparisonId"/>
@@ -215,11 +217,11 @@
                     <div class="form-group row mb-4">
                         <div class="col-6">
                             <label for="filterBy" class="form-label" >Full Payment:</label>
-                            <input id="fullPayment" class="form-control">
+                            <input id="fullPayment" class="form-control fullPayment">
                         </div>
                         <div class="col-6">
                             <label for="filterBy" class="form-label">Down Payment:</label>
-                            <input class="form-control" id="downPayment" type="text">
+                            <input class="form-control downPayment" id="downPayment" type="text">
                         </div>
                     </div>
                     <div class="form-group row mb-4">
@@ -229,7 +231,7 @@
                         </div>
                         <div class="col-6">
                             <label for="filterBy" class="form-label">Broker Fee:</label>
-                            <input class="form-control" id="brokerFee" type="text">
+                            <input class="form-control brokerFee" id="brokerFee" type="text">
                         </div>
                     </div>
                     <hr>
@@ -240,7 +242,7 @@
             </div>
           </div>
         `;
-        let lastRow = $('#workerCompContainer > .row:last-child');
+            let lastRow = $('#workerCompContainer > .row:last-child');
             if (lastRow.length == 0 || lastRow.children().length == 2) {
                 // Either no rows or the last row already has 2 cards, so create a new row
              $('#workerCompContainer').append('<div class="row">' + cardContent + '</div>');
@@ -249,6 +251,40 @@
               lastRow.append(cardContent);
             }
         // $('#workerCompContainer').append(cardContent);
+        });
+
+        $(document).on('focus', '.brokerFee', function () {
+         // When the input gains focus, store its current value to data attribute
+         let currentBrokerFee = parseFloat($(this).val()) || 0;
+         $(this).data('lastBrokerFee', currentBrokerFee);
+        });
+
+        $(document).on('input', '.brokerFee', function () {
+         // Get the parent card
+         const card = $(this).closest('.card');
+
+         // Get the current broker fee
+         const currentBrokerFee = parseFloat($(this).val()) || 0;
+         const lastBrokerFee = $(this).data('lastBrokerFee') || 0;
+
+         // Find the related fullPayment and downPayment input fields within this card
+         const fullPaymentInput = card.find('.fullPayment');
+         const downPaymentInput = card.find('.downPayment');
+
+         // Get their current values
+         let fullPayment = parseFloat(fullPaymentInput.val()) || 0;
+         let downPayment = parseFloat(downPaymentInput.val()) || 0;
+
+         // Subtract last broker fee and add new broker fee
+         fullPayment = fullPayment - lastBrokerFee + currentBrokerFee;
+         downPayment = downPayment - lastBrokerFee + currentBrokerFee;
+
+         // Update their values
+         fullPaymentInput.val(fullPayment);
+         downPaymentInput.val(downPayment);
+
+         // Update the last broker fee for the next change
+         $(this).data('lastBrokerFee', currentBrokerFee);
         });
 
         $('#workerCompContainer').on('click', '.removeCardButton', function(){
@@ -312,7 +348,6 @@
             var brokerFee = $card.find('#brokerFee').val();
             var reccomended = $card.find('#workerscompReccommendedCheckBox').is(':checked');
             var id = {{$quoteProduct->id}};
-
 
             var formData = {
                 market: market,
