@@ -106,9 +106,21 @@
                     </div>
 
                     <input type="hidden" value="${data.id}" id="quoteComparisonId"/>
-                    <div class="text-center">
-                      <button class="btn btn-lg btn-primary btn-enhanced sendEmail">Send Email</button>
-                      <button class="btn btn-lg btn-success btn-enhanced editCommercialAutoButton">Save</button>
+
+                    <div class="row d-flex text-center">
+                      <div class="col-12">
+                        <div class="button-container">
+                        <!-- Send Quotation Email Button -->
+                                 <button type="button" class="btn btn-lg btn-primary waves-effect waves-light sendEmail ladda-button" data-style="expand-right" data-toggle="tooltip" title="Send Quotation Email">
+                                 <i class="ri-mail-send-line"></i> Send
+                                 </button>
+
+                                 <!-- Save Button -->
+                                 <button type="button" class="btn btn-lg btn-success editCommercialAutoButton" data-toggle="tooltip" title="Save Form">
+                                 <i class="ri-save-line"></i> Save
+                                 </button>
+                        </div>
+                     </div>
                     </div>
                 </div>
             </div>
@@ -124,24 +136,21 @@
                     }
                     //    $('#CommercialAutoContainer').append(cardContent);
                 });
-
             }
         };
 
-
-
         $(document).on('click', '.editCommercialAutoButton', function() {
-            var $card = $(this).closest('.card');
+            var card = $(this).closest('.card');
 
             //form
-            var market = $card.find('.form-select').val();
-            var fullPayment = $card.find('#fullPayment').val();
-            var downPayment = $card.find('#downPayment').val();
-            var monthlyPayment = $card.find('#monthlyPayment').val();
-            var brokerFee = $card.find('#brokerFee').val();
+            var market = card.find('.form-select').val();
+            var fullPayment = card.find('#fullPayment').val();
+            var downPayment = card.find('#downPayment').val();
+            var monthlyPayment = card.find('#monthlyPayment').val();
+            var brokerFee = card.find('#brokerFee').val();
             var productId = {{ $quoteProduct->id }};
-            var id = $card.find('#quoteComparisonId').val();
-            var reccomended = $card.find('#reccommendedCheckBox').is(':checked');
+            var id = card.find('#quoteComparisonId').val();
+            var reccomended = card.find('#reccommendedCheckBox').is(':checked');
 
             var formData = {
                 market: market,
@@ -153,8 +162,6 @@
                 reccomended: reccomended,
                 id: id
             };
-
-
 
             $.ajax({
                 url: "{{ route('update-quotation-comparison') }}",
@@ -185,9 +192,9 @@
         });
 
         // $(document).on('click', '.sendEmail', function(){
-        //  var $card = $(this).closest('.card');
+        //  var card = $(this).closest('.card');
         //   //form
-        //   var id = $card.find('#quoteComparisonId').val();
+        //   var id = card.find('#quoteComparisonId').val();
         //   Swal.fire({
         //     title: 'Are you sure?',
         //     text: "You are about to send the quotation.",
@@ -233,60 +240,50 @@
         // });
 
         $(document).on('click', '.sendEmail', function() {
-            var $card = $(this).closest('.card');
-            var id = $card.find('#quoteComparisonId').val();
-
+            var card = $(this).closest('.card');
+            var id = card.find('#quoteComparisonId').val();
+            var button = card.find('.ladda-button');
+            var laddaButton = Ladda.create(button[0]);
             Swal.fire({
                 title: 'Are you sure?',
-                text: "You are about to send the quotation.",
+                text: "Do you want to send the quotation email?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, send it!',
-                preConfirm: () => {
-                    return new Promise((resolve, reject) => {
-                        $.ajax({
-                            url: "{{ route('send-quotation') }}",
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
-                                    .attr('content')
-                            },
-                            method: "POST",
-                            data: {
-                                id: id
-                            },
-                            success: function() {
-                                resolve(
-                                    'Email has been sent successfully.');
-                            },
-                            error: function() {
-                                reject(
-                                    'Something went wrong. Please try again.');
-                            }
-                        });
-                    });
-                }
+                confirmButtonText: 'Yes, send it!'
             }).then((result) => {
-                if (result.value) {
-                    Swal.fire({
-                        title: 'Success',
-                        text: result.value,
-                        icon: 'success'
-                    }).then(() => {
-                        location.reload();
-                    });
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    Swal.fire({
-                        title: 'Cancelled',
-                        text: 'Email was not sent.',
-                        icon: 'error'
-                    });
-                } else if (result.dismiss === 'error') {
-                    Swal.fire({
-                        title: 'Error',
-                        text: result.value,
-                        icon: 'error'
+                if (result.isConfirmed) {
+                    laddaButton.start();
+                    $.ajax({
+                        url: "{{ route('send-quotation') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                                .attr('content')
+                        },
+                        method: "POST",
+                        data: {
+                            id: id
+                        },
+                        success: function() {
+                            laddaButton.stop();
+                            Swal.fire({
+                                title: 'Success',
+                                text: 'Email Has Been Sent',
+                                icon: 'success'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload();
+                                }
+                            });
+                        },
+                        error: function() {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Something went wrong',
+                                icon: 'error'
+                            });
+                        }
                     });
                 }
             });

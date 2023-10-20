@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class BrokerQuotation extends Model
 {
@@ -28,21 +29,20 @@ class BrokerQuotation extends Model
     public function getAssignQoutedLead($userProfileId)
     {
     // Get the broker quotations with the given user profile ID
-      $brokerQuotations = self::where('user_profile_id', $userProfileId)->get();
+    $brokerQuotations = self::where('user_profile_id', $userProfileId)->get();
 
     // Collect the related QuotationProduct models
-       $quotationProducts = collect();
-       foreach ($brokerQuotations as $brokerQuotation) {
-          if ($brokerQuotation->QuotationProduct) {
-              $quotationProducts->push($brokerQuotation->QuotationProduct);
-            }
+    $quotationProducts = collect();
+    foreach ($brokerQuotations as $brokerQuotation) {
+        if($brokerQuotation->quotationProduct->status == 3 || $brokerQuotation->quotationProduct->status == 4) {
+            $quotationProducts->push($brokerQuotation->quotationProduct);
         }
-        $filteredQuotationProducts = $quotationProducts->filter(function ($quotationProduct) {
-            return $quotationProduct->status == 3 || $quotationProduct->status == 4;
-        });
-
-        return $filteredQuotationProducts->isEmpty() ? null : $filteredQuotationProducts;
     }
+    return $quotationProducts->isEmpty() ? null : $quotationProducts;
+    }
+
+
+
 
     public function getApprovedProduct($userProfileId)
     {

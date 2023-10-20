@@ -58,7 +58,7 @@
                     </div>
                     <div class="row mb-4">
                         <div class="col-6">
-                            <label for="filterBy" class="form-label mt-2">Montly Payment: $${data.monthly_payment}</label>
+                            <label for="filterBy" class="form-label mt-2 monthlyPayment">Montly Payment: $${data.monthly_payment}</label>
                         </div>
                         <div class="col-6">
                             <div style="display: flex; align-items: center;">
@@ -234,8 +234,6 @@
         //     })
 
         // });
-
-
 
         $(document).on('click', '.sendQuotationEmail', function() {
             var card = $(this).closest('.card');

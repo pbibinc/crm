@@ -15,6 +15,7 @@ use App\Models\UnitedState;
 use App\Models\UserProfile;
 use Carbon\Carbon;
 use Demo\Product;
+use Dflydev\DotAccessData\Data;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,17 +30,18 @@ class QuotationController extends Controller
 
     public function appointedLeadsView(Request $request)
     {
-
-        $products = QuotationProduct::getAssignedProductByUserProfileId(Auth::user()->userProfile->id);
+        $quotatationProduct = new QuotationProduct();
+        $products = $quotatationProduct->getAssignedProductByUserProfileId(Auth::user()->userProfile->id);
         $groupedProducts = collect($products)->groupBy('company')->toArray();
-        return view('leads.appointed_leads.index', compact('products', 'groupedProducts'));
+        $quotedProductCount = $quotatationProduct->getQuotedProductByUserProfile(Auth::user()->userProfile->id)->count();
+        $quotationdProductCount = $quotatationProduct->getQuotingProductByUserProfile(Auth::user()->userProfile->id)->count();
+        return view('leads.appointed_leads.index', compact('products', 'groupedProducts', 'quotedProductCount', 'quotationdProductCount'));
     }
 
     public function leadProfile(Request $request)
     {
         $productId = QuotationProduct::find($request->input('productId'))->id;
         // $generalInformation = $lead->generalInformation;
-
         return response()->json(['productId' => $productId]);
 
     }
@@ -224,12 +226,15 @@ class QuotationController extends Controller
         }
     }
 
+
+    //this use for geting quoted product
     public function getQuotedProduct(Request $request)
     {
 
         $userProfile = new UserProfile();
         $quoationProduct = new QuotationProduct();
         $quoatedProduct = $quoationProduct->quotedProduct();
+
         $products = [];
         foreach($quoatedProduct as $product){
             $products[] = [
@@ -270,6 +275,8 @@ class QuotationController extends Controller
         return view('leads.broker_leads.assign-quoted-leads', compact('userProfile', 'groupedProducts', 'quoationProduct'));
     }
 
+
+    //assigning of product into broker assistant
     public function assignBrokerAssistant(Request $request)
     {
         if($request->ajax())
@@ -322,6 +329,8 @@ class QuotationController extends Controller
         }
     }
 
+
+    //getting pending product for broker assistant view
     public function getPendingProduct(Request $request)
     {
         $quotationProduct = new BrokerQuotation();
@@ -399,6 +408,7 @@ class QuotationController extends Controller
         }
     }
 
+
     public function voidQoutedLead(Request $request)
     {
         $productIds = $request->input('ids');
@@ -410,9 +420,8 @@ class QuotationController extends Controller
                 $quotationProduct->status = 1;
                 $quotationProduct->save();
                 $brokerQuotation = BrokerQuotation::where('quote_product_id', $productId)->where('user_profile_id', $userProfileId)->first();
-                $brokerQuotation->user_profile_id = null;
-                $borkerQuotationSaving = $brokerQuotation->save();
-
+                $brokerQuotation->delete();
+                // $borkerQuotationSaving = $brokerQuotation->save();
             }
             DB::commit();
         }catch(\Exception $e){
@@ -494,6 +503,43 @@ class QuotationController extends Controller
             ->make(true);
         }
         return view('leads.broker_leads.confirmed-product-list');
+    }
+
+    public function getBrokerProduct(Request $request)
+    {
+        $quotationProduct = new QuotationProduct();
+        $userProfileId = Auth::user()->userProfile->id;
+        $pendingProduct = $quotationProduct->getQuotedProductFromQuoteProductByUserProfileId($userProfileId);
+
+        if($request->ajax())
+        {
+            return DataTables::of($pendingProduct)
+            ->addIndexColumn()
+            ->addColumn('company_name', function($pendingProduct){
+                $lead = $pendingProduct->QuoteInformation->QuoteLead->leads->company_name;
+                return $lead;
+            })
+            ->addColumn('viewButton', function($pendingProduct){
+                $viewButton = '<button class="btn btn-outline-info btn-sm viewButton" id="' . $pendingProduct->id . '"><i class="ri-eye-line"></i></button>';
+                return $viewButton;
+            })
+            // ->addColumn('statusColor', function($pendingProduct){
+            //     if ($pendingProduct->status == 3) {
+            //         return '<span class="badge bg-info">Pending</span>';
+            //     } elseif ($pendingProduct->status == 4) {
+            //         return '<span class="badge bg-warning">Follow up</span>';
+            //     } else {
+            //         return '<span class="badge bg-default">Unknown</span>'; // Add an "Unknown" case or another default
+            //     }
+            // })
+            // ->addColumn('brokerAssistant', function($pendingProduct){
+            //     $brokerAssistant = BrokerQuotation::where('quote_product_id', $pendingProduct->id)->first();
+            //     // $brokerAssistanteName = UserProfile::find($brokerAssistant->first()->user_profile_id)->fullAmericanName() ? UserProfile::find($brokerAssistant->first()->user_profile_id)->fullAmericanName() : 'N/A';
+            //     return $brokerAssistant->user_profile_id ? $brokerAssistant->user_profile_id : 'N/A';
+            // })
+            ->rawColumns(['viewButton', 'statusColor'])
+            ->make(true);
+        }
     }
 
 }

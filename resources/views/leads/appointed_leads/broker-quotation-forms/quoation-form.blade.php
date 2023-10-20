@@ -80,7 +80,7 @@
                       <div class="col-12">
                         <div class="button-container">
                         <!-- Send Quotation Email Button -->
-                                 <button type="button" class="btn btn-lg btn-primary waves-effect waves-light sendQuotationEmail" data-toggle="tooltip" title="Send Quotation Email">
+                                 <button type="button" class="btn btn-lg btn-primary waves-effect waves-light sendQuotationEmail ladda-button" data-style="expand-right" data-toggle="tooltip" title="Send Quotation Email">
                                  <i class="ri-mail-send-line"></i> Send
                                  </button>
 
@@ -91,7 +91,6 @@
                         </div>
                      </div>
                     </div>
-
                 </div>
             </div>
            </div>
@@ -200,35 +199,51 @@
         $(document).on('click', '.sendQuotationEmail', function() {
             var card = $(this).closest('.card');
             var id = card.find('#quoteComparisonId').val();
-            console.log(id);
-            $.ajax({
-                url: "{{ route('send-quotation') }}",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                method: "POST",
-                data: {
-                    id: id
-                },
-                success: function() {
-                    Swal.fire({
-                        title: 'Success',
-                        text: 'Email Has Been Sent',
-                        icon: 'success'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            location.reload();
+            var button = card.find('.ladda-button');
+            var laddaButton = Ladda.create(button[0]);
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you want to send the quotation email?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, send it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    laddaButton.start();
+                    $.ajax({
+                        url: "{{ route('send-quotation') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        method: "POST",
+                        data: {
+                            id: id
+                        },
+                        success: function() {
+                            laddaButton.stop();
+                            Swal.fire({
+                                title: 'Success',
+                                text: 'Email Has Been Sent',
+                                icon: 'success'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload();
+                                }
+                            });
+                        },
+                        error: function() {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Something went wrong',
+                                icon: 'error'
+                            });
                         }
-                    });
-                },
-                error: function() {
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'Something went wrong',
-                        icon: 'error'
-                    });
+                    })
                 }
-            })
+            });
+
 
         });
 

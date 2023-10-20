@@ -41,7 +41,6 @@ class GeneralLiabilitiesDataController extends BaseController
 
 
               //
-
                $generalInformationId = GeneralInformation::where('leads_id', $data['leadId'])->value('id');
                $expirationOfGeneralLiabilitiesRaw =  Carbon::parse($data['expiration_general_liability'])->toDateString();
 

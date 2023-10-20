@@ -54,12 +54,12 @@ class QuotationProduct extends Model
 
     public function brokerQuotation()
     {
-        return $this->belongsTo(BrokerQuotation::class, 'quote_product_id');
+        return $this->belongsTo(BrokerQuotation::class);
     }
 
     public static function getAssignedProductByUserProfileId($userProfileId)
     {
-        $query = self::where('user_profile_id', $userProfileId)->get();
+        $query = self::where('user_profile_id', $userProfileId)->whereIn('status', [1, 2])->get();
         $products = [];
         if($query){
             foreach($query as $product)
@@ -77,6 +77,17 @@ class QuotationProduct extends Model
         return null;
     }
 
+    public function getQuotedProductFromQuoteProductByUserProfileId($userProfileId)
+    {
+        $query = self::where('user_profile_id', $userProfileId)->whereIn('status', [3, 4])->get();
+
+        $quotationProducts = collect();
+        foreach ($query as $quotationProduct) {
+            $quotationProducts->push($quotationProduct);
+        }
+        return $quotationProducts->isEmpty() ? null : $quotationProducts;
+    }
+
     public static function getProductByUserProfileId($userProfileId)
     {
         $query = self::where('user_profile_id', $userProfileId)->where('status', 2)->get();
@@ -89,6 +100,24 @@ class QuotationProduct extends Model
     public function userProfile()
     {
         return $this->belongsTo(UserProfile::class, 'user_profile_id');
+    }
+
+    public static function getQuotedProductByUserProfile($userProfileId)
+    {
+        $query = self::where('user_profile_id', $userProfileId)->where('status', 1)->get();
+        if($query){
+            return $query;
+        }
+        return null;
+    }
+
+    public static function getQuotingProductByUserProfile($userProfileId)
+    {
+        $query = self::where('user_profile_id', $userProfileId)->where('status', 2)->get();
+        if($query){
+            return $query;
+        }
+        return null;
     }
 
 }
