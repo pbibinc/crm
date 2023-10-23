@@ -55,7 +55,6 @@
                 <div class="col-7">
                     <div class="card"
                         style=" box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
-
                         <div class="card-body">
                             <table id="assignPendingLeadsTable" class="table table-bordered dt-responsive nowrap"
                                 style="border-collapse: collapse; border-spacing: 0; width: 100%;">

@@ -336,8 +336,17 @@ class QuotationController extends Controller
         $quotationProduct = new BrokerQuotation();
         $userProfileId = Auth::user()->userProfile->id;
         $pendingProduct = $quotationProduct->getAssignQoutedLead($userProfileId);
-        $pendingProductCount = $pendingProduct->where('status', 3)->count();
-        $followupProductCount = $pendingProduct->where('status', 4)->count();
+        $pendingProductCount = 0;
+        if ($pendingProduct) {
+            $count = $pendingProduct->where('status', 3)->count();
+            $pendingProductCount = $count > 0 ? $count : 0;
+        }
+        $followupProductCount = 0;
+
+        if ($pendingProduct) {
+            $count = $pendingProduct->where('status', 4)->count();
+            $followupProductCount = $count > 0 ? $count : 0;
+        }
         if($request->ajax())
         {
             return DataTables::of($pendingProduct)

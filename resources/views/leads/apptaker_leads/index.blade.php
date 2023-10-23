@@ -1,7 +1,7 @@
 @extends('admin.admin_master')
 @section('admin')
     <div class="page-content pt-6">
-        <link rel="stylesheet" href="{{asset('backend/assets/libs/twitter-bootstrap-wizard/prettify.css')}}">
+        <link rel="stylesheet" href="{{ asset('backend/assets/libs/twitter-bootstrap-wizard/prettify.css') }}">
         <div class="container-fluid">
             <div class="row">
                 <div class="row">
@@ -11,12 +11,14 @@
                                 <div class="d-flex">
                                     <div class="flex-grow-1">
                                         <p class="text-truncate font-size-14 mb-2">Total Appointed Leads</p>
-                                        <h4 class="mb-2">{{ count($dataCount) }}</h4>
-                                        <p class="text-muted mb-0"><span class="text-success fw-bold font-size-12 me-2"><i class="ri-arrow-right-up-line me-1 align-middle"></i>9.23%</span>from previous period</p>
+                                        <h4 class="mb-2">{{ count($dataCount) ?? 0 }}</h4>
+                                        <p class="text-muted mb-0"><span class="text-success fw-bold font-size-12 me-2"><i
+                                                    class="ri-arrow-right-up-line me-1 align-middle"></i>9.23%</span>from
+                                            previous period</p>
                                     </div>
                                     <div class="avatar-sm">
                                         <span class="avatar-title bg-light text-primary rounded-3">
-                                            <i class="mdi mdi-account-check font-size-24 " ></i>
+                                            <i class="mdi mdi-account-check font-size-24 "></i>
                                         </span>
                                     </div>
                                 </div>
@@ -32,8 +34,8 @@
                                         <p class="text-truncate font-size-14 mb-2 text-white">Total Assigned Lead</p>
                                         <h4 class="mb-2 text-white"><span id="dataCount"></span></h4>
                                         <p class="text-white mb-0">
-                                            <span class="text-light fw-bold font-size-12 me-2" >
-                                                <i class="mdi mdi-account-arrow-left" ></i>9.23%
+                                            <span class="text-light fw-bold font-size-12 me-2">
+                                                <i class="mdi mdi-account-arrow-left"></i>9.23%
 
                                             </span>
                                             from previous period
@@ -41,7 +43,8 @@
                                     </div>
                                     <div class="avatar-sm">
                                         <span class="avatar-title bg-light text-primary rounded-3">
-                                            <i class="mdi mdi mdi-account-arrow-left font-size-24" style="color: #28a745;"></i>
+                                            <i class="mdi mdi mdi-account-arrow-left font-size-24"
+                                                style="color: #28a745;"></i>
                                         </span>
                                     </div>
                                 </div>
@@ -56,7 +59,9 @@
                                     <div class="flex-grow-1">
                                         <p class="text-truncate font-size-14 mb-2">Call Back</p>
                                         <h4 class="mb-2">21</h4>
-                                        <p class="text-muted mb-0"><span class="text-success fw-bold font-size-12 me-2"><i class="ri-arrow-right-up-line me-1 align-middle"></i>9.23%</span>from previous period</p>
+                                        <p class="text-muted mb-0"><span class="text-success fw-bold font-size-12 me-2"><i
+                                                    class="ri-arrow-right-up-line me-1 align-middle"></i>9.23%</span>from
+                                            previous period</p>
                                     </div>
                                     <div class="avatar-sm">
                                         <span class="avatar-title bg-light text-primary rounded-3">
@@ -75,7 +80,9 @@
                                     <div class="flex-grow-1">
                                         <p class="text-truncate font-size-14 mb-2">Total Sales Per Month</p>
                                         <h4 class="mb-2">200</h4>
-                                        <p class="text-muted mb-0"><span class="text-success fw-bold font-size-12 me-2"><i class="ri-arrow-right-up-line me-1 align-middle"></i>9.23%</span>from previous period</p>
+                                        <p class="text-muted mb-0"><span class="text-success fw-bold font-size-12 me-2"><i
+                                                    class="ri-arrow-right-up-line me-1 align-middle"></i>9.23%</span>from
+                                            previous period</p>
                                     </div>
                                     <div class="avatar-sm">
                                         <span class="avatar-title bg-light text-primary rounded-3">
@@ -91,14 +98,15 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <table id="leadsApptakerDataTable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            <table id="leadsApptakerDataTable" class="table table-bordered dt-responsive nowrap"
+                                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <div class="row">
 
                                     <div class="col-3">
                                         <div class="mb-3">
                                             <div class="form-group">
                                                 <label class="form-label">Time Zone</label>
-                                                <select name="timezone" id="timezoneDropdown" class="form-control select2" >
+                                                <select name="timezone" id="timezoneDropdown" class="form-control select2">
                                                     <option value="">Select a timezone</option>
                                                     <option value="">ALL</option>
                                                     @foreach ($timezones as $timezone => $identifier)
@@ -176,11 +184,13 @@
                                         <div class="mb-3">
                                             <div class="form-group">
                                                 <label class="form-label">Class Code</label>
-                                                <select name="classCode" id="classCodeLeadDropdown" class="form-control select2" >
+                                                <select name="classCode" id="classCodeLeadDropdown"
+                                                    class="form-control select2">
                                                     <option value="">Select Classcode</option>
                                                     <option value="">ALL</option>
-                                                    @foreach($classCodeLeads as $classCodeLead)
-                                                        <option value="{{ $classCodeLead->name }}">{{ $classCodeLead->name }}</option>
+                                                    @foreach ($classCodeLeads as $classCodeLead)
+                                                        <option value="{{ $classCodeLead->name }}">
+                                                            {{ $classCodeLead->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -191,7 +201,8 @@
                                         <div class="mb-3">
                                             <div class="form-group">
                                                 <label for="leadTypeDropdown" class="form-label">Leads Type</label>
-                                                <select name="lead_type" id="leadTypeDropdown" class="form-control select2">
+                                                <select name="lead_type" id="leadTypeDropdown"
+                                                    class="form-control select2">
                                                     <option value="">Select a Leads Type</option>
                                                     <option value="">ALL</option>
                                                     <option value="2">Prime Lead</option>
@@ -226,7 +237,8 @@
         @include('leads.apptaker_leads.assign-questionare')
 
         <!--Modal for Call Back Disposition-->
-        <div class="modal fade bs-example-modal-center" id="callbackModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal fade bs-example-modal-center" id="callbackModal" tabindex="-1" role="dialog"
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -241,20 +253,22 @@
                                     <label for="example-datetime-local-input" class="col-form-label">Date and time</label>
                                 </div>
                                 <div class="col-9">
-                                    <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00" id="callBackDateTime" name="callBackDateTime">
+                                    <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00"
+                                        id="callBackDateTime" name="callBackDateTime">
                                 </div>
                             </div>
                             <div class="row mt-3">
                                 <label>Remarks</label>
-                                    <div>
-                                        <textarea required class="form-control" rows="5" id="callBackRemarks"></textarea>
-                                    </div>
+                                <div>
+                                    <textarea required class="form-control" rows="5" id="callBackRemarks"></textarea>
+                                </div>
                             </div>
                         </form>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success waves-effect waves-light" id="callbackDispoSubmitButton">Submit</button>
+                        <button type="button" class="btn btn-success waves-effect waves-light"
+                            id="callbackDispoSubmitButton">Submit</button>
                         <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
                     </div>
 
@@ -263,7 +277,8 @@
         </div><!-- /.modal -->
 
         <!--Modal for GateKeeper Disposition-->
-        <div class="modal fade bs-example-modal-center" id="gateKeeperModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal fade bs-example-modal-center" id="gateKeeperModal" tabindex="-1" role="dialog"
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -276,14 +291,15 @@
                                 <label for="example-datetime-local-input" class="col-form-label">Date and time</label>
                             </div>
                             <div class="col-9">
-                                <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00" id="example-datetime-local-input">
+                                <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00"
+                                    id="example-datetime-local-input">
                             </div>
                         </div>
                         <div class="row mt-3">
                             <label>Remarks</label>
-                                <div>
-                                    <textarea required class="form-control" rows="5"></textarea>
-                                </div>
+                            <div>
+                                <textarea required class="form-control" rows="5"></textarea>
+                            </div>
                         </div>
                     </div>
 
@@ -295,8 +311,9 @@
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
 
-       <!--Modal for No Answer Disposition-->
-        <div class="modal fade bs-example-modal-center" id="transactionLogModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <!--Modal for No Answer Disposition-->
+        <div class="modal fade bs-example-modal-center" id="transactionLogModal" tabindex="-1" role="dialog"
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -306,26 +323,26 @@
                     <div class="modal-body">
                         <div class="row">
 
-                                <div class="mb-3">
-                                    <div class="form-group">
-                                        <label class="form-label">Disposition</label>
-                                        <select name="timezone" id="dispositionDropDown" class="form-control" >
-                                            <option value="">Select Disposition</option>
-                                            <option value="">ALL</option>
-                                            @foreach ($dispositions as $disposition)
-                                                <option value="{{ $disposition->id }}">{{ $disposition->name }}</option>
-                                            @endforeach
+                            <div class="mb-3">
+                                <div class="form-group">
+                                    <label class="form-label">Disposition</label>
+                                    <select name="timezone" id="dispositionDropDown" class="form-control">
+                                        <option value="">Select Disposition</option>
+                                        <option value="">ALL</option>
+                                        @foreach ($dispositions as $disposition)
+                                            <option value="{{ $disposition->id }}">{{ $disposition->name }}</option>
+                                        @endforeach
 
-                                        </select>
-                                    </div>
+                                    </select>
                                 </div>
+                            </div>
 
                         </div>
                         <div class="row mt-3">
                             <label>Remarks</label>
-                                <div>
-                                    <textarea required class="form-control" rows="5"></textarea>
-                                </div>
+                            <div>
+                                <textarea required class="form-control" rows="5"></textarea>
+                            </div>
                         </div>
                     </div>
 
@@ -338,8 +355,9 @@
         </div><!-- /.modal -->
 
 
-           <!--Modal for No Answer Disposition-->
-           <div class="modal fade bs-example-modal-center" id="noAnswerModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <!--Modal for No Answer Disposition-->
+        <div class="modal fade bs-example-modal-center" id="noAnswerModal" tabindex="-1" role="dialog"
+            aria-labelledby="mySmallModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -352,7 +370,8 @@
                                 <label for="example-datetime-local-input" class="col-form-label">Date and time</label>
                             </div>
                             <div class="col-9">
-                                <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00" id="example-datetime-local-input">
+                                <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00"
+                                    id="example-datetime-local-input">
                             </div>
                         </div>
                     </div>
@@ -369,181 +388,195 @@
 
 
 
-{{-- //scripts for forms etc--}}
-<script src="{{asset('backend/assets/libs/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js')}}"></script>
-<script src="{{asset('backend/assets/libs/twitter-bootstrap-wizard/prettify.js')}}"></script>
-<script src="{{asset('backend/assets/js/pages/form-wizard.init.js')}}"></script>
-<script src="{{asset('backend/assets/js/pages/form-mask.init.js')}}"></script>
-<script src="{{asset('backend/assets/libs/inputmask/jquery.inputmask.min.js')}}"></script>
+    {{-- //scripts for forms etc --}}
+    <script src="{{ asset('backend/assets/libs/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js') }}"></script>
+    <script src="{{ asset('backend/assets/libs/twitter-bootstrap-wizard/prettify.js') }}"></script>
+    <script src="{{ asset('backend/assets/js/pages/form-wizard.init.js') }}"></script>
+    <script src="{{ asset('backend/assets/js/pages/form-mask.init.js') }}"></script>
+    <script src="{{ asset('backend/assets/libs/inputmask/jquery.inputmask.min.js') }}"></script>
 
 
 
 
-<script>
+    <script>
+        $(document).ready(function() {
 
-    $(document).ready(function (){
-
-        $('#leadsApptakerDataTable').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: "{{ route('apptaker-leads') }}",
-                data:function (d) {
-                    d.website_originated = $('#websiteOriginatedDropdown').val(),
-                    d.classCodeLead = $('#classCodeLeadDropdown').val(),
-                    d.states = $('#statesDropdown').val(),
-                    d.leadType = $('#leadTypeDropdown').val()
+            $('#leadsApptakerDataTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('apptaker-leads') }}",
+                    data: function(d) {
+                        d.website_originated = $('#websiteOriginatedDropdown').val(),
+                            d.classCodeLead = $('#classCodeLeadDropdown').val(),
+                            d.states = $('#statesDropdown').val(),
+                            d.leadType = $('#leadTypeDropdown').val()
+                    },
+                    dataSrc: function(json) {
+                        $('#dataCount').html(json.totalDataCount);
+                        return json.data;
+                    }
                 },
-                dataSrc: function(json){
-                    $('#dataCount').html(json.totalDataCount);
-                    return json.data;
-                }
-            },
-            columns: [
-                {
-                    data: 'company_name_action',
-                    name: 'company_name_action',
-                    render: function(data, type, row){
-                            if(row.prime_lead == 2){
-                                return '<div class="d-flex justify-content-between">' + data + '<i class="far fa-gem"></i></div>'
-                            }else{
+                columns: [{
+                        data: 'company_name_action',
+                        name: 'company_name_action',
+                        render: function(data, type, row) {
+                            if (row.prime_lead == 2) {
+                                return '<div class="d-flex justify-content-between">' + data +
+                                    '<i class="far fa-gem"></i></div>'
+                            } else {
                                 return data;
                             }
                         }
-                },
-                {data: 'tel_num', name: 'tel_num'},
-                {data: 'class_code', name: 'class_code'},
-                {data: 'state_abbr', name: 'state_abbr'},
-                // {data: 'dispositions', name:'dispositions'},
-                // {data: 'website_originated', name: 'website_originated', searchable:false},
+                    },
+                    {
+                        data: 'tel_num',
+                        name: 'tel_num'
+                    },
+                    {
+                        data: 'class_code',
+                        name: 'class_code'
+                    },
+                    {
+                        data: 'state_abbr',
+                        name: 'state_abbr'
+                    },
+                    // {data: 'dispositions', name:'dispositions'},
+                    // {data: 'website_originated', name: 'website_originated', searchable:false},
 
-            ]
-        });
+                ]
+            });
 
-        //submmit functionalities for call back disposition
-        $('#callbackDispoSubmitButton').on('click', function(e){
+            //submmit functionalities for call back disposition
+            $('#callbackDispoSubmitButton').on('click', function(e) {
 
-        });
+            });
 
-        $('#openFormLinkButton').on('click', function(e){
-            window.open("http://localhost:3000/appoinnted-lead-questionare", "_blank", "width=400,height=800");
-        });
+            $('#openFormLinkButton').on('click', function(e) {
+                window.open("http://localhost:3000/appoinnted-lead-questionare", "_blank",
+                    "width=400,height=800");
+            });
 
-        // scripts for reloading and configuring the dropdowns filters
-        $('#websiteOriginatedDropdown').on('change', function () {
-            $('#leadsApptakerDataTable').DataTable().ajax.reload();
-        });
+            // scripts for reloading and configuring the dropdowns filters
+            $('#websiteOriginatedDropdown').on('change', function() {
+                $('#leadsApptakerDataTable').DataTable().ajax.reload();
+            });
 
-        $('#timezoneDropdown').on('change', function() {
-            var timezone = $(this).val();
-            $('#leadsApptakerDataTable').DataTable().ajax.url("{{ route('apptaker-leads') }}?timezone=" + timezone).load();
-        });
-        $('#companyLink').on('click', function(){
-            console.log('test')
-        });
+            $('#timezoneDropdown').on('change', function() {
+                var timezone = $(this).val();
+                $('#leadsApptakerDataTable').DataTable().ajax.url(
+                    "{{ route('apptaker-leads') }}?timezone=" + timezone).load();
+            });
+            $('#companyLink').on('click', function() {
+                console.log('test')
+            });
 
-        $('#classCodeLeadDropdown').on('change', function () {
-             var classCodeLead = $(this).val();
-             $('#leadsApptakerDataTable').DataTable().ajax.reload();
-        });
+            $('#classCodeLeadDropdown').on('change', function() {
+                var classCodeLead = $(this).val();
+                $('#leadsApptakerDataTable').DataTable().ajax.reload();
+            });
 
-        $('#statesDropdown').on('change', function (){
-            $('#leadsApptakerDataTable').DataTable().ajax.reload();
-        });
+            $('#statesDropdown').on('change', function() {
+                $('#leadsApptakerDataTable').DataTable().ajax.reload();
+            });
 
-        $('#dataModal').on('submit', function (e) {
-            e.preventDefault();
-        });
+            $('#dataModal').on('submit', function(e) {
+                e.preventDefault();
+            });
 
-        $('#leadTypeDropdown').on('change', function() {
-            $('#leadsApptakerDataTable').DataTable().ajax.reload();
-        });
+            $('#leadTypeDropdown').on('change', function() {
+                $('#leadsApptakerDataTable').DataTable().ajax.reload();
+            });
 
-        $(document).on('change', '#dispositionDropDown', function(e){
-            var dropdownId = $(this).attr('id')
-            var rowId = dropdownId.replace('dispositionDropDown', '');
-            var selectedDisposition = $(this).val();
-            if(selectedDisposition == '1'){
+            $(document).on('change', '#dispositionDropDown', function(e) {
+                var dropdownId = $(this).attr('id')
+                var rowId = dropdownId.replace('dispositionDropDown', '');
+                var selectedDisposition = $(this).val();
+                if (selectedDisposition == '1') {
+                    $.ajax({
+                        url: "{{ route('list-lead-id') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        dataType: 'json',
+                        method: 'POST',
+                        data: {
+                            leadId: leadsId
+                        },
+                        success: function(response) {
+
+                        }
+
+                    });
+                    window.open("http://localhost:3000/appoinnted-lead-questionare", "_blank",
+                        "width=1000,height=849");
+                    $('#transactionLogModal').modal('hide');
+                }
+                if (selectedDisposition == '2') {
+                    $('#callbackModal').modal('show');
+                    $('#transactionLogModal').modal('hide');
+                }
+                if (selectedDisposition == '3') {
+                    $('#leadsDataModal').modal('show');
+                    $('#transactionLogModal').modal('hide');
+                }
+
+                if (selectedDisposition == '6') {
+                    $('#noAnswerModal').modal('show');
+                    $('#transactionLogModal').modal('hide');
+                }
+
+                if (selectedDisposition == '11') {
+                    $('#callbackModal').modal('show');
+                    $('#transactionLogModal').modal('hide');
+                }
+
+                if (selectedDisposition == '12') {
+                    $('#gateKeeperModal').modal('show');
+                    $('#transactionLogModal').modal('hide');
+                }
+
+                if (selectedDisposition == '13') {
+                    $('#transactionLogModal').modal('hide');
+                }
+            });
+
+
+            // $(document).on('click', '[id^="companyLink"]', function(e){
+            //     var rowId = $(this).data('id');
+            //     var dropDown = $('select[data-row="'+rowId+'"]');
+            //     var selectedDisposition = dropDown.val();
+            //         e.preventDefault();
+            //         $('#transactionLogModal').modal('show');
+            // });
+
+            $('#callbackDispoSubmitButton').on('click', function(e) {
+                e.preventDefault();
+                var dateTime = $('#callBackDateTime').val();
+                var callBackRemarks = $('#callBackRemarks').val();
                 $.ajax({
-                url: "{{ route('list-lead-id') }}",
-                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                dataType: 'json',
-                method: 'POST',
-                data: {
-                    leadId: leadsId
-                },
-                success: function(response){
-
-                }
-
-            });
-            window.open("http://localhost:3000/appoinnted-lead-questionare", "_blank", "width=1000,height=849");
-                $('#transactionLogModal').modal('hide');
-            }
-            if(selectedDisposition == '2'){
-                $('#callbackModal').modal('show');
-                $('#transactionLogModal').modal('hide');
-            }
-            if(selectedDisposition == '3'){
-                $('#leadsDataModal').modal('show');
-                $('#transactionLogModal').modal('hide');
-            }
-
-            if(selectedDisposition == '6'){
-                $('#noAnswerModal').modal('show');
-                $('#transactionLogModal').modal('hide');
-            }
-
-            if(selectedDisposition == '11'){
-                $('#callbackModal').modal('show');
-                $('#transactionLogModal').modal('hide');
-            }
-
-            if(selectedDisposition == '12'){
-                $('#gateKeeperModal').modal('show');
-                $('#transactionLogModal').modal('hide');
-            }
-
-            if(selectedDisposition == '13'){
-                $('#transactionLogModal').modal('hide');
-            }
-        });
-
-
-        // $(document).on('click', '[id^="companyLink"]', function(e){
-        //     var rowId = $(this).data('id');
-        //     var dropDown = $('select[data-row="'+rowId+'"]');
-        //     var selectedDisposition = dropDown.val();
-        //         e.preventDefault();
-        //         $('#transactionLogModal').modal('show');
-        // });
-
-        $('#callbackDispoSubmitButton').on('click', function(e){
-            e.preventDefault();
-            var dateTime = $('#callBackDateTime').val();
-            var callBackRemarks = $('#callBackRemarks').val();
-            $.ajax({
-                url: "{{ route('call-back.store') }}",
-                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                dataType: 'json',
-                method: 'POST',
-                data: {
-                    dateTime: dateTime,
-                    callBackRemarks: callBackRemarks
-                },
-                success: function(response){
-                    Swal.fire({
-                      title: 'Success',
-                      text: 'Leads assigned successfully.',
-                      icon: 'success'
-                      }).then(function() {
-                         location.reload();
+                    url: "{{ route('call-back.store') }}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    dataType: 'json',
+                    method: 'POST',
+                    data: {
+                        dateTime: dateTime,
+                        callBackRemarks: callBackRemarks
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: 'Leads assigned successfully.',
+                            icon: 'success'
+                        }).then(function() {
+                            location.reload();
                         });
-                }
+                    }
+                });
             });
+
         });
-
-    });
-</script>
-
+    </script>
 @endsection
