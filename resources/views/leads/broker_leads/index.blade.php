@@ -34,7 +34,9 @@
                                                 <div class="flex-grow-1">
                                                     <p class="text-truncate font-size-14 mb-2" style="color: white">Pending
                                                         Product</p>
-                                                    <h4 class="mb-2" style="color: white">{{ $pendingProductCount }}</h4>
+                                                    <h4 class="mb-2" style="color: white">
+                                                        {{ isset($pendingProductCount) ? $pendingProductCount : 0 }}
+                                                    </h4>
                                                 </div>
                                                 <div class="avatar-sm">
                                                     <span class="avatar-title bg-light text-primary rounded-3">
