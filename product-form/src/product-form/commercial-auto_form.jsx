@@ -285,7 +285,7 @@ const CommercialAutoForm = () => {
 
     function submitCommercialAutoForm(){
         const leadId = storedLeads?.data?.id;
-        const url = isUpdate ? `http://insuraprime_crm.test/api/commercial-auto-data/update/${leadId}` : `http://insuraprime_crm.test/api/commercial-auto-data/store`;
+        const url = isUpdate ? `http://crm.pbibinc.com/api/commercial-auto-data/update/${leadId}` : `http://crm.pbibinc.com/api/commercial-auto-data/store`;
         const method = isUpdate ? "put" : "post";
         axios[method](url, commercialAutoFormData)
              .then((response) => {

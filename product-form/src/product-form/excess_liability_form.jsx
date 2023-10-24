@@ -145,7 +145,7 @@ useEffect(() => {
 
   function submitExcessliabilityForm(){
     const leadId = getLeadData()?.data?.id;
-    const url = isUpdate ? `http://insuraprime_crm.test/api/excess-liability-data/update/${leadId} ` : `http://insuraprime_crm.test/api/excess-liability-data/store`
+    const url = isUpdate ? `http://crm.pbibinc.com/api/excess-liability-data/update/${leadId} ` : `http://crm.pbibinc.com/api/excess-liability-data/store`
     const method = isUpdate ? "put" : "post";
     axios[method](url, excessLiabilityFormData)
           .then(response => {

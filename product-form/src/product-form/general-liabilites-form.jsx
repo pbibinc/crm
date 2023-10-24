@@ -647,8 +647,8 @@ const GeneralLiabilitiesForm = () => {
         const leadIdTobeUpdates = getLeadStoredData()?.data?.id;
 
         const url = isUpdate
-            ? `http://insuraprime_crm.test/api/general-liabilities-data/${leadIdTobeUpdates}`
-            : "http://insuraprime_crm.test/api/general-liabilities-data";
+            ? `http://crm.pbibinc.com/api/general-liabilities-data/${leadIdTobeUpdates}`
+            : "http://crm.pbibinc.com/api/general-liabilities-data";
 
         const method = isUpdate ? "put" : "post";
         axios[method](url, generalLiabilitiesFormData)

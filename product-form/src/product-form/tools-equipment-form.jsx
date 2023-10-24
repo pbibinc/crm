@@ -223,7 +223,7 @@ const ToolsEquipmentForm = () => {
     function submitToolsEquipmentForm(){
         const leadId = storedLeads?.data?.id
         const method = isUpdate ? "put" : "post";
-        const url = isUpdate ? `http://insuraprime_crm.test/api/tools-equipment/update/${leadId}` : `http://insuraprime_crm.test/api/tools-equipment/store`;
+        const url = isUpdate ? `http://crm.pbibinc.com/api/tools-equipment/update/${leadId}` : `http://crm.pbibinc.com/api/tools-equipment/store`;
         axios[method](url, toolsEquipmentFormData)
              .then((response) => {
                 setIsEditing(false);

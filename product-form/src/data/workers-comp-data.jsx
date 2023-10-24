@@ -15,7 +15,7 @@ const WorkersCompData = () => {
         ) {
             axios
                 .get(
-                    `http://insuraprime_crm.test/api/workers-comp-data/get/${generalInformationInstance[0].id}`
+                    `http://crm.pbibinc.com/api/workers-comp-data/get/${generalInformationInstance[0].id}`
                 )
                 .then((response) => {
                     setWorkersComp(response.data);

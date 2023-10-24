@@ -6,7 +6,7 @@ const RecreationalFacilities = () => {
         const fetchRecreationalFactilies = async () => {
             try {
                 const response = await fetch(
-                    `http://insuraprime_crm.test/api/recreational`
+                    `http://crm.pbibinc.com/api/recreational`
                 );
                 const data = await response.json();
                 setRecreationalFactilies(data);

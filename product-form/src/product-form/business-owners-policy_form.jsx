@@ -205,7 +205,7 @@ const [isUpdate, setIsUpdate] = useState(() => storedBusinessOwnersPolicyData().
     function submitBusinessOwnersPolicy() {
         const leadId = storedLeads?.data?.id;
         const method = isUpdate ? "put" : "post";
-        const url = isUpdate ? `http://insuraprime_crm.test/api/business-owners-policy/update/${leadId}` : `http://insuraprime_crm.test/api/business-owners-policy/store`;
+        const url = isUpdate ? `http://crm.pbibinc.com/api/business-owners-policy/update/${leadId}` : `http://crm.pbibinc.com/api/business-owners-policy/store`;
         axios[method](url, BusinessOwnersPolicyFormData)
              .then((response) => {
                 setIsEditing(false);

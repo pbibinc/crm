@@ -8,7 +8,7 @@ const LeadZipCodeCities = () => {
         const fetchLeadZipCodeCities = async () => {
             try {
                 const response = await axios.get(
-                    `http://insuraprime_crm.test/api/leads/lead-details/lead-address`
+                    `http://crm.pbibinc.com/api/leads/lead-details/lead-address`
                 );
                 setLeadZipCodeCities(response.data);
             } catch (error) {

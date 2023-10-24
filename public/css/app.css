@@ -707,14 +707,8 @@ select {
 .float-right {
   float: right;
 }
-.float-left {
-  float: left;
-}
 .m-0 {
   margin: 0px;
-}
-.m-1 {
-  margin: 0.25rem;
 }
 .mx-3 {
   margin-left: 0.75rem;
@@ -787,15 +781,6 @@ select {
 }
 .ml-4 {
   margin-left: 1rem;
-}
-.ml-auto {
-  margin-left: auto;
-}
-.mr-0 {
-  margin-right: 0px;
-}
-.mr-1 {
-  margin-right: 0.25rem;
 }
 .mr-2 {
   margin-right: 0.5rem;
@@ -1036,9 +1021,6 @@ select {
 }
 .border {
   border-width: 1px;
-}
-.border-0 {
-  border-width: 0px;
 }
 .border-b {
   border-bottom-width: 1px;

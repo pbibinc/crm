@@ -7,7 +7,7 @@ const LeadZipcode = () => {
         const fetchLeadZipcode = async () => {
             try {
                 const response = await fetch(
-                    `http://insuraprime_crm.test/api/leads/lead-details/lead-address`
+                    `http://crm.pbibinc.com/api/leads/lead-details/lead-address`
                 );
                 const data = await response.json();
                 setLeadZipcode(data);

@@ -8,7 +8,7 @@ const GeneralInformationData = () => {
         const fetchGenerealInformation = async () => {
             try {
                 const respons = await fetch(
-                    `http://insuraprime_crm.test/api/general_information`
+                    `http://crm.pbibinc.com//api/general_information`
                 );
                 const data = await respons.json();
                 setGeneralInformation(data);

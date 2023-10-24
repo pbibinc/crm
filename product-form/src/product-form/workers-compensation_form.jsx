@@ -290,8 +290,8 @@ const WorkersCompensationForm = () => {
     function submitWorkersCompensationForm() {
         const generalInformationId = leadInstance?.data.id || null;
         const url = isUpdate
-            ? `http://insuraprime_crm.test/api/workers-comp-data/${generalInformationId}`
-            : `http://insuraprime_crm.test/api/workers-comp-data/store`;
+            ? `http://crm.pbibinc.com/api/workers-comp-data/${generalInformationId}`
+            : `http://crm.pbibinc.com/api/workers-comp-data/store`;
 
         const method = isUpdate ? "put" : "post";
 

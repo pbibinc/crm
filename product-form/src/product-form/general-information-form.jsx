@@ -154,8 +154,8 @@ const GeneralInformationForm = () => {
     function submitGeneralInformationForm() {
         const leadIdTobeUpdates = lead?.data?.id;
         const url = isUpdate
-            ? `http://insuraprime_crm.test/api/general-information-data/${leadIdTobeUpdates}`
-            : "http://insuraprime_crm.test/api/general-information-data";
+            ? `http://crm.pbibinc.com/api/general-information-data/${leadIdTobeUpdates}`
+            : "http://crm.pbibinc.com/api/general-information-data";
 
         const method = isUpdate ? "put" : "post";
 

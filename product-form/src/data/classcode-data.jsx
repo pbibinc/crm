@@ -7,7 +7,7 @@ const ClassCodeData = () => {
         const fetchClassCodeData = async () => {
             try {
                 const response = await axios.get(
-                    "   http://insuraprime_crm.test/api/classcode/data"
+                    "http://crm.pbibinc.com/api/classcode/data"
                 );
                 setClassCodeData(response.data);
             } catch (error) {

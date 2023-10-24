@@ -9,7 +9,7 @@ const LeadDetails = () => {
         const fetchLead = async () => {
             try {
                 const response = await axios.get(
-                    `http://insuraprime_crm.test/api/leads/lead-details`
+                    `http://crm.pbibinc.com/api/leads/lead-details`
                 );
                 setLead(response.data);
                 setLoading(false);

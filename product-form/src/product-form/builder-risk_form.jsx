@@ -149,8 +149,7 @@ const BuilderRiskForm = () => {
 
         leadId:storedLeads?.data?.id,
     };
-    console.log(builderRiskFormData);
-
+  
     useEffect(() => {
         const buildersRiskData = {
             propertyAddress: propertyAddress,
@@ -225,7 +224,7 @@ const BuilderRiskForm = () => {
 
     function submitBuilderRiskForm() {
         const leadId = storedLeads?.data?.id;
-        const url = isUpdate ? `http://insuraprime_crm.test/api/builders-risk/update/${leadId}` : `http://insuraprime_crm.test/api/builders-risk/store`;
+        const url = isUpdate ? `http://crm.pbibinc.com/api/builders-risk/update/${leadId}` : `http://crm.pbibinc.com/api/builders-risk/store`;
         const method = isUpdate ? "put" : "post";
         axios[method](url, builderRiskFormData)
               .then((response) =>{

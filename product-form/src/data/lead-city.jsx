@@ -10,7 +10,7 @@ const LeadCity = () => {
         const fetchLeadCity = async () => {
             try {
                 const response = await axios.get(
-                    `http://insuraprime_crm.test/api/leads/lead-details/lead-address`
+                    `http://crm.pbibinc.com/api/leads/lead-details/lead-address`
                 );
                 setLeadCity(response.data);
                 setCityLoading(false);
