@@ -64,7 +64,9 @@ class LeadController extends Controller
                 });
                 Cache::put('leads_data', $data, 60 * 60);
             }
-            return DataTables::of($data)->make(true);
+            return DataTables::of($data)
+            ->addIndexColumn()
+            ->make(true);
         }
         return view('leads.generate_leads.index', compact('leads', 'newLeadsCount', 'assignLeadsCount', 'classCodeLeads', 'assignData'));
 
