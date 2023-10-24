@@ -12,6 +12,7 @@ use App\Models\ClassCodeLead;
 use App\Models\Lead;
 use App\Models\User;
 use Carbon\Carbon;
+use EllGreen\LaravelLoadFile\Laravel\Facades\LoadFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -71,9 +72,32 @@ class LeadController extends Controller
     /**
      * @return \Illuminate\Support\Collection
      */
-    public function import()
+    public function import(Request $request)
     {
-        Excel::import(new LeadsImport,request()->file('file'));
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+        $path = $request->file('file')->storeAs(
+            'temp', 'temp_file.csv'
+        );
+
+        $fullpath = str_replace('\\', '/', storage_path("app/{$path}"));
+        // dd($fullpath);
+        LoadFile::file($fullpath, $local = true)
+        ->into('leads')
+        ->columns([
+            'company_name',
+            'tel_num',
+            'state_abbr',
+            'class_code',
+            'website_originated',
+        ])
+        ->load();
+
+        unlink($fullpath);
+
+        // Excel::import(new LeadsImport,request()->file('file'));
         Cache::forget('leads_data');
         Cache::forget('leads_funnel');
         Cache::forget('apptaker_leads');

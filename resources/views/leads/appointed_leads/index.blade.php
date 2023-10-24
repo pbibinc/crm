@@ -15,7 +15,8 @@
                                             <div class="d-flex">
                                                 <div class="flex-grow-1">
                                                     <p class="text-truncate font-size-14 mb-2">Quoted Products</p>
-                                                    <h4 class="mb-2">{{ $quotedProductCount }}</h4>
+                                                    <h4 class="mb-2">
+                                                        {{ isset($quotedProductCount) ? $quotedProductCount : 0 }}</h4>
                                                 </div>
                                                 <div class="avatar-sm">
                                                     <span class="avatar-title bg-light text-success rounded-3">
@@ -35,7 +36,8 @@
                                                     <p class="text-truncate font-size-14 mb-2" style="color: white">Quoting
                                                         Product
                                                     </p>
-                                                    <h4 class="mb-2" style="color: white">{{ $quotationdProductCount }}
+                                                    <h4 class="mb-2" style="color: white">
+                                                        {{ isset($quotationdProductCount) ? $quotationdProductCount : 0 }}
                                                     </h4>
                                                 </div>
                                                 <div class="avatar-sm">
@@ -114,7 +116,7 @@
                                 <thead>
                                     <th>Company Name</th>
                                     <th>Product</th>
-                                    {{-- <th>Broker Assistant</th> --}}
+                                    <th>Broker Assistant</th>
                                     <th>Action</th>
                                 </thead>
                                 <tbody>
@@ -146,10 +148,10 @@
                         data: 'product',
                         name: 'product'
                     },
-                    // {
-                    //     data: 'brokerAssistant',
-                    //     name: 'brokerAssistant'
-                    // },
+                    {
+                        data: 'brokerAssistant',
+                        name: 'brokerAssistant'
+                    },
                     {
                         data: 'viewButton',
                         name: 'viewButton'
