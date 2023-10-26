@@ -51,53 +51,11 @@ class LeadController extends Controller
             'textClass' => $textClass
         ];
         $classCodeLeads = ClassCodeLead::all();
-        // if($request->ajax()){
-        //     if(Cache::has('leads_data')){
-        //         $data = Cache::get('leads_data');
-        //     }else{
-        //         $data = Lead::with('userProfile')
-        //             ->select('id', 'company_name', 'tel_num', 'state_abbr',
-        //                 'website_originated', 'created_at', 'status', 'class_code');
-        //         $data->map(function ($item){
-        //             $item->created_at_formatted = Carbon::parse($item->created_at)->format('Y-m-d');
-        //             return $item;
-        //         });
-        //         Cache::put('leads_data', $data, 60 * 60);
-        //     }
-        //     return DataTables::eloquent($data)
-        //     ->addIndexColumn()
-        //     ->make(true);
-        // }
-        // if ($request->ajax()) {
-        //     if (Cache::has('leads_data')) {
-        //         $query = Cache::get('leads_data');
-        //     } else {
-        //         $query = Lead::with('userProfile')
-        //                      ->select('id', 'company_name', 'tel_num', 'state_abbr',
-        //                               'website_originated', 'created_at', 'status', 'class_code');
-        //         Cache::put('leads_data', $query, 60 * 60);
-        //     }
-
-        //     return DataTables::eloquent($query)
-        //              ->addColumn('created_at_formatted', function ($row) {
-        //                  return Carbon::parse($row->created_at)->format('Y-m-d');
-        //              })
-        //              ->addIndexColumn()
-        //              ->make(true);
-        // }
         if ($request->ajax()) {
-            $query = Lead::with('userProfile')
-                    ->select('id', 'company_name', 'tel_num', 'state_abbr',
-                             'website_originated', 'created_at', 'status', 'class_code');
-            return DataTables::eloquent($query)
-                    ->addColumn('created_at_formatted', function ($row) {
-                        return Carbon::parse($row->created_at)->format('Y-m-d');
-                    })
-                    ->addIndexColumn()
-                    ->make(true);
+           $leads = DB::table('leads')->select('company_name', 'tel_num', 'state_abbr');
+           return DataTables::of($leads)->addIndexColumn()->toJson();
         }
         return view('leads.generate_leads.index', compact('leads', 'newLeadsCount', 'assignLeadsCount', 'classCodeLeads', 'assignData'));
-
     }
     /**
      * @return \Illuminate\Support\Collection
