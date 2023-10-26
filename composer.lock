@@ -1946,16 +1946,16 @@
         },
         {
             "name": "inspector-apm/inspector-php",
-            "version": "3.7.18",
+            "version": "3.7.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/inspector-apm/inspector-php.git",
-                "reference": "c79ca8b6a3c83df2dcd292240ce220ebcfe6f83c"
+                "reference": "455d7caabf97ab5f6b50f9e8ad71a25f7f02cc56"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/inspector-apm/inspector-php/zipball/c79ca8b6a3c83df2dcd292240ce220ebcfe6f83c",
-                "reference": "c79ca8b6a3c83df2dcd292240ce220ebcfe6f83c",
+                "url": "https://api.github.com/repos/inspector-apm/inspector-php/zipball/455d7caabf97ab5f6b50f9e8ad71a25f7f02cc56",
+                "reference": "455d7caabf97ab5f6b50f9e8ad71a25f7f02cc56",
                 "shasum": ""
             },
             "require": {
@@ -1988,9 +1988,9 @@
             ],
             "support": {
                 "issues": "https://github.com/inspector-apm/inspector-php/issues",
-                "source": "https://github.com/inspector-apm/inspector-php/tree/3.7.18"
+                "source": "https://github.com/inspector-apm/inspector-php/tree/3.7.19"
             },
-            "time": "2022-12-19T09:35:42+00:00"
+            "time": "2023-10-26T09:23:00+00:00"
         },
         {
             "name": "intervention/image",
@@ -3007,16 +3007,16 @@
         },
         {
             "name": "maatwebsite/excel",
-            "version": "3.1.48",
+            "version": "3.1.49",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SpartnerNL/Laravel-Excel.git",
-                "reference": "6d0fe2a1d195960c7af7bf0de760582da02a34b9"
+                "reference": "769209f49ebe3419017114f98bd61e2a7d9af259"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SpartnerNL/Laravel-Excel/zipball/6d0fe2a1d195960c7af7bf0de760582da02a34b9",
-                "reference": "6d0fe2a1d195960c7af7bf0de760582da02a34b9",
+                "url": "https://api.github.com/repos/SpartnerNL/Laravel-Excel/zipball/769209f49ebe3419017114f98bd61e2a7d9af259",
+                "reference": "769209f49ebe3419017114f98bd61e2a7d9af259",
                 "shasum": ""
             },
             "require": {
@@ -3071,7 +3071,7 @@
             ],
             "support": {
                 "issues": "https://github.com/SpartnerNL/Laravel-Excel/issues",
-                "source": "https://github.com/SpartnerNL/Laravel-Excel/tree/3.1.48"
+                "source": "https://github.com/SpartnerNL/Laravel-Excel/tree/3.1.49"
             },
             "funding": [
                 {
@@ -3083,7 +3083,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-02-22T21:01:38+00:00"
+            "time": "2023-10-26T09:01:33+00:00"
         },
         {
             "name": "maennchen/zipstream-php",

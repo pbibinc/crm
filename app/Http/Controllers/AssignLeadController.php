@@ -33,11 +33,10 @@ class AssignLeadController extends Controller
             $query->where('name', 'Application Taker');
             })->get();
 
-
         $accounts = UserProfile::all();
 //        dd($userProfiles);
         $sites = Site::all();
-        $leads = Lead::all();
+        // $leads = Lead::all();
         $classCodeLeads = ClassCodeLead::all();
         $timezones = [
             'Eastern' => ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV'],
@@ -46,7 +45,6 @@ class AssignLeadController extends Controller
             'Pacific' => ['CA', 'OR', 'WA'],
             'Alaska' => ['AK'],
             'Hawaii-Aleutian' => ['HI']
-
         ];
 
         $states = [
@@ -74,51 +72,57 @@ class AssignLeadController extends Controller
 
         if($request->ajax()){
 
-            if(Cache::has('leads_funnel'))
-            {
-                $data = Cache::get('leads_funnel');
+//             if(Cache::has('leads_funnel'))
+//             {
+//                 $data = Cache::get('leads_funnel');
 
-                if (!empty($request->get('timezone'))){
-                    $timezoneStates = $timezones[$request->get('timezone')];
-                    $data = $data->whereIn('state_abbr', $timezoneStates);
-                }
-//                 Apply filters to the cached data
-                if (!empty($request->get('website_originated'))) {
-                    $data = $data->filter(function ($row) use ($request) {
-                        return $row['website_originated'] == $request->get('website_originated');
+//                 if (!empty($request->get('timezone'))){
+//                     $timezoneStates = $timezones[$request->get('timezone')];
+//                     $data = $data->whereIn('state_abbr', $timezoneStates);
+//                 }
+// //                 Apply filters to the cached data
+//                 if (!empty($request->get('website_originated'))) {
+//                     $data = $data->filter(function ($row) use ($request) {
+//                         return $row['website_originated'] == $request->get('website_originated');
 
-                    });
+//                     });
 
-                }
+//                 }
 
-                if (!empty($request->get('states'))){
-                    $data = $data->filter(function ($row) use ($request){
-                        return $row['state_abbr'] == $request->get('states');
-                    });
-                }
+//                 if (!empty($request->get('states'))){
+//                     $data = $data->filter(function ($row) use ($request){
+//                         return $row['state_abbr'] == $request->get('states');
+//                     });
+//                 }
 
-                if (!empty($request->get('classCodeLead'))){
-                    $data = $data->filter(function ($row) use ($request){
-                        return strtolower($row['class_code']) == strtolower($request->get('classCodeLead'));
-                    });
-                }
+//                 if (!empty($request->get('classCodeLead'))){
+//                     $data = $data->filter(function ($row) use ($request){
+//                         return strtolower($row['class_code']) == strtolower($request->get('classCodeLead'));
+//                     });
+//                 }
 
-                if (!empty($request->get('leadType'))){
-                    $data = $data->filter(function ($row) use ($request){
-                        return $row['prime_lead'] == $request->get('leadType');
-                    });
-                }
+//                 if (!empty($request->get('leadType'))){
+//                     $data = $data->filter(function ($row) use ($request){
+//                         return $row['prime_lead'] == $request->get('leadType');
+//                     });
+//                 }
 
-            }else{
+//             }else{
                 $query = Lead::where('status', 1);
 
                 if (!empty($request->get('website_originated'))) {
                     $query->where('website_originated', $request->get('website_originated'));
                 }
 
-                if (!empty($request->get('states'))){
-                    $query->where('state_abbr', $request->get('states'));
+                // dd($request->get('states'));
+                if (!empty($request->get('timezone'))){
+                    $timezoneStates = $timezones[$request->get('timezone')];
+                    $data = $query->whereIn('state_abbr', $timezoneStates);
                 }
+
+                // if (!empty($request->get('states'))){
+                //     $query->where('state_abbr', $request->get('states'));
+                // }
 
                 if (!empty($request->get('classCodeLead'))){
                     $query->where('class_code', $request->get('classCodeLead'));
@@ -129,10 +133,10 @@ class AssignLeadController extends Controller
                 }
 
                 $data = $query->select('id', 'company_name', 'tel_num', 'state_abbr',
-                    'class_code', 'website_originated', 'created_at', 'updated_at', 'prime_lead')->get();
+                    'class_code', 'website_originated', 'created_at')->orderBy('id');
 
-                Cache::put('leads_funnel', $data, 60 * 60);
-            }
+                // Cache::put('leads_funnel', $data, 60 * 60);
+            // }
 
             if (!empty($request->get('website'))) {
                 $data = $data->filter(function ($row) use ($request) {
@@ -166,7 +170,7 @@ class AssignLeadController extends Controller
             $leads = $userProfile ? $userProfile->leads()->where('current_user_id', '!=', 0) : collect();
         }elseif ($accountProfileValue){
             $accounts = UserProfile::find($accountProfileValue);
-            $leads = $accounts ? $accounts->leads()->where('status', 2)->where('current_user_id', '!=', 0)->get() : collect();
+            $leads = $accounts ? $accounts->leads()->where('status', 2)->where('current_user_id', '!=', 0): collect();
         }else{
             $leads = collect();
         }
@@ -423,4 +427,3 @@ class AssignLeadController extends Controller
         return response()->json($stateArray);
     }
 }
-

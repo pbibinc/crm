@@ -30,32 +30,31 @@ class LeadController extends Controller
     public function index(Request $request)
     {
         $this->authorize('viewImport', Lead::find(1));
-        $leads = Lead::get();
-        $newLeadsCount = $leads->where('status', 1)->count();
-        $assignLeadsCount = $leads->where('status', 2)->count();
-        $totalLeads = $newLeadsCount + $assignLeadsCount;
-        $unassignedPercentage = round(($newLeadsCount / $totalLeads) * 100);
-        if ($unassignedPercentage >= 50) {
-           $arrowClass = 'ri-arrow-right-up-line';
-           $message = "of leads haven't been assigned";
-           $textClass = 'text-success';
-        } else {
-           $message = "Leads that haven't been assigned";
-           $arrowClass ='ri-arrow-right-down-line';
-           $textClass = 'text-danger';
-         }
-         $assignData = [
-            'unassignedPercentage' => $unassignedPercentage,
-            'arrowClass' => $arrowClass,
-            'message' => $message,
-            'textClass' => $textClass
-        ];
+        $newLeadsCount = Lead::where('status', 1)->count();
+        $assignLeadsCount = Lead::where('status', 2)->count();
+        // $totalLeads = $newLeadsCount + $assignLeadsCount;
+        // $unassignedPercentage = round(($newLeadsCount / $totalLeads) * 100);
+        // if ($unassignedPercentage >= 50) {
+        //    $arrowClass = 'ri-arrow-right-up-line';
+        //    $message = "of leads haven't been assigned";
+        //    $textClass = 'text-success';
+        // } else {
+        //    $message = "Leads that haven't been assigned";
+        //    $arrowClass ='ri-arrow-right-down-line';
+        //    $textClass = 'text-danger';
+        //  }
+        //  $assignData = [
+        //     'unassignedPercentage' => $unassignedPercentage,
+        //     'arrowClass' => $arrowClass,
+        //     'message' => $message,
+        //     'textClass' => $textClass
+        // ];
         $classCodeLeads = ClassCodeLead::all();
         if ($request->ajax()) {
-           $leads = DB::table('leads')->select('company_name', 'tel_num', 'state_abbr');
-           return DataTables::of($leads)->addIndexColumn()->toJson();
+        $query = Lead::select('company_name', 'tel_num', 'state_abbr')->orderBy('id');
+        return DataTables::of($query)->toJson();
         }
-        return view('leads.generate_leads.index', compact('leads', 'newLeadsCount', 'assignLeadsCount', 'classCodeLeads', 'assignData'));
+        return view('leads.generate_leads.index', compact('newLeadsCount', 'assignLeadsCount', 'classCodeLeads'));
     }
     /**
      * @return \Illuminate\Support\Collection
@@ -91,7 +90,6 @@ class LeadController extends Controller
         unlink($fullpath);
 
         // Excel::import(new LeadsImport,request()->file('file'));
-        Cache::forget('leads_data');
         Cache::forget('leads_funnel');
         Cache::forget('apptaker_leads');
         return back();
