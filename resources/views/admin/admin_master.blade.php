@@ -19,12 +19,14 @@
     <script src="https://msurguy.github.io/ladda-bootstrap/dist/spin.min.js"></script>
     <script src="https://msurguy.github.io/ladda-bootstrap/dist/ladda.min.js"></script>
     <!--Jquery extension -->
-    {{-- <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script> --}}
+    <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script>
 
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ asset('backend/assets/images/favicon.ico') }}">
     <script src="{{ asset('backend/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
+    <!-- jquery.vectormap css -->
+    {{-- <link href="{{asset('backend/assets/libs/admin-resources/jquery.vecto rmap/jquery-jvectormap-1.2.2.css')}}" rel="stylesheet" type="text/css" /> --}}
 
     <!-- Add the evo-calendar.css for styling -->
     <link href="{{ asset('backend/assets/libs/evo-calendar/css/evo-calendar.min.css') }}" rel="stylesheet"
@@ -65,15 +67,13 @@
     @include('partials.head')
 
     <!-- JAVASCRIPT -->
-    {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> --}}
-    {{-- <script src="{{ mix('js/all.js') }}"></script> --}}
     <script src="{{ mix('js/app.js') }}"></script>
     <script src="{{ asset('js/bootstrap.js') }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
+    {{-- <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script> --}}
 
-    <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script>
-
-    <script src="{{ asset('backend/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    {{-- <script src="{{ asset('backend/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script> --}}
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     <script src="{{ asset('backend/assets/libs/select2/js/select2.min.js') }}"></script>
@@ -164,12 +164,13 @@
 
 
 <!-- jquery.vectormap map -->
-{{-- <script src="{{ asset('backend/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js') }}">
-</script> --}}
-{{-- <script src="{{ asset('backend/assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-us-merc-en.js') }}">
-</script> --}}
+<script src="{{ asset('backend/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js') }}">
+</script>
+<script src="{{ asset('backend/assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-us-merc-en.js') }}">
+</script>
 
 <!-- Required datatable js -->
+{{-- <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script> --}}
 <script src="{{ asset('backend/assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('backend/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
 
@@ -188,17 +189,6 @@
 <script src="{{ asset('backend/assets/libs/datatables.net-keytable/js/dataTables.keyTable.min.js') }}"></script>
 <script src="{{ asset('backend/assets/libs/datatables.net-select/js/dataTables.select.min.js') }}"></script>
 
-<!-- plugin js -->
-{{-- <script src="{{ asset('backend/assets/libs/moment/min/moment.min.js') }}"></script>
-<script src="{{ asset('backend/assets/libs/jquery-ui-dist/jquery-ui.min.js') }}"></script>
-<script src="{{ asset('backend/assets/libs/@fullcalendar/core/main.min.js') }}"></script>
-<script src="{{ asset('backend/assets/libs/@fullcalendar/bootstrap/main.min.js') }}"></script>
-<script src="{{ asset('backend/assets/libs/@fullcalendar/daygrid/main.min.js') }}"></script>
-<script src="{{ asset('backend/assets/libs/@fullcalendar/timegrid/main.min.js') }}"></script>
-<script src="{{ asset('backend/assets/libs/@fullcalendar/interaction/main.min.js') }}"></script> --}}
-
-<!-- Calendar init -->
-{{-- <script src="{{ asset('backend/assets/js/pages/calendar.init.js') }}"></script> --}}
 
 <!-- Responsive examples -->
 <script src="{{ asset('backend/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
@@ -208,10 +198,6 @@
 <script src="{{ asset('backend/assets/libs/tinymce/tinymce.min.js') }}"></script>
 <script src="{{ asset('backend/assets/js/pages/form-editor.init.js') }}"></script>
 
-<!-- JAVASCRIPT -->
-<script src="{{ asset('backend/assets/libs/metismenu/metisMenu.min.js') }}"></script>
-<script src="{{ asset('backend/assets/libs/simplebar/simplebar.min.js') }}"></script>
-<script src="{{ asset('backend/assets/libs/node-waves/waves.min.js') }}"></script>
 
 <!-- Responsive Table js -->
 <script src="{{ asset('backend/assets/libs/admin-resources/rwd-table/rwd-table.min.js') }}"></script>
