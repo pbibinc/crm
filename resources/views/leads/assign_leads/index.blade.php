@@ -263,7 +263,8 @@
                             </div>
 
                             <br>
-                            <table id="datatableLeads" class="table table-bordered dt-responsive nowrap" width="100%">
+                            <table id="datatableLeads" class="table table-bordered dt-responsive nowrap"
+                                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead>
                                     <tr>
                                         <th>Company Name</th>
@@ -438,6 +439,9 @@
             $('#dataTable').DataTable({
                 processing: true,
                 serverSide: true,
+                searching: true,
+                scrollY: 500,
+                scrollX: true,
                 ajax: {
                     url: "{{ route('assign') }}",
                     data: function(d) {

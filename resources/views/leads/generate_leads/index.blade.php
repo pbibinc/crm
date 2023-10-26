@@ -58,7 +58,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -135,30 +134,26 @@
                     </div>
                     <div class="card">
                         <div class="card-body">
-                            <div>
-                                <table class="table table-bordered dt-responsive nowrap" id="dataTable" width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th>Company Name</th>
-                                            <th>Tel Number</th>
-                                            <th>State abbr</th>
-                                            {{-- <th>Class Code</th>
-                                            <th>Website Originated</th> --}}
-                                            {{-- <th>Status</th> --}}
-                                            {{-- <th>Imported at</th> --}}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                            <table class="table table-bordered dt-responsive nowrap" id="dataTable"
+                                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <thead>
+                                    <th>Company Name</th>
+                                    <th>Tel Number</th>
+                                    <th>State abbr</th>
+                                    {{-- <th>Class Code</th>
+                                    <th>Website Originated</th> --}}
+                                    {{-- <th>Status</th> --}}
+                                    {{-- <th>Imported at</th> --}}
+                                </thead>
+                                <tbody>
 
-                                    </tbody>
-                                </table>
-                            </div>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-4">
-
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span style="font-weight:1000; font-size:16px;">
                             Do Not Call Uploading <i class="mdi mdi-headset-off"></i>

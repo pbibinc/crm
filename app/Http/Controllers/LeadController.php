@@ -90,7 +90,7 @@ class LeadController extends Controller
         unlink($fullpath);
 
         // Excel::import(new LeadsImport,request()->file('file'));
-        Cache::forget('leads_funnel');
+        // Cache::forget('leads_funnel');
         Cache::forget('apptaker_leads');
         return back();
     }
