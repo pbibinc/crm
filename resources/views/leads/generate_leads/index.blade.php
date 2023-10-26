@@ -21,10 +21,10 @@
                                                     <p class="text-truncate font-size-14 mb-2" style="color:white">Assign
                                                         Lead</p>
                                                     <h4 class="mb-2" style="color:white">{{ $assignLeadsCount }}</h4>
-                                                    <p class="text-muted mb-0"><span
+                                                    {{-- <p class="text-muted mb-0"><span
                                                             class="{{ $assignData['textClass'] }} fw-bold font-size-12 me-2"><i
                                                                 class="{{ $assignData['arrowClass'] }} me-1 align-middle"></i>{{ $assignData['unassignedPercentage'] }}%</span><span
-                                                            style="color: white;">{{ $assignData['message'] }}</span></p>
+                                                            style="color: white;">{{ $assignData['message'] }}</span></p> --}}
                                                 </div>
                                                 <div class="avatar-sm">
                                                     <span class="avatar-title bg-light text-primary rounded-3">
@@ -136,7 +136,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div>
-                                <table class="table" id="dataTable" width="100%">
+                                <table class="table table-bordered dt-responsive nowrap" id="dataTable" width="100%">
                                     <thead>
                                         <tr>
                                             <th>Company Name</th>
@@ -189,9 +189,9 @@
                                 </form>
                             </div>
                             <br>
-                            {{-- <div class="row">
+                            <div class="row">
                                 <table class="table table-bordered dt-responsive nowrap" id="dncDataTable"
-                                    style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                    width="100%">
                                     <thead>
                                         <tr>
                                             <th></th>
@@ -203,7 +203,7 @@
 
                                     </tbody>
                                 </table>
-                            </div> --}}
+                            </div>
 
                         </div>
                     </div>
@@ -332,13 +332,13 @@
         // DATA TABLE
         $(document).ready(function() {
             $('.select2').select2();
+
             $('#dataTable').DataTable({
                 processing: true,
                 serverSide: true,
                 searching: true,
                 scrollY: 500,
                 scrollX: true,
-                scrollCollapse: true,
                 ajax: "{{ route('leads') }}",
                 columns: [{
                         data: 'company_name',
@@ -352,43 +352,7 @@
                         data: 'state_abbr',
                         name: 'state_abbr'
                     }
-                    // {
-                    //     data: 'class_code',
-                    //     name: 'class_code'
-                    // },
-                    // {
-                    //     data: 'website_originated',
-                    //     name: 'website_originated'
-                    // },
-                    // {
-                    //     data: 'status',
-                    //     name: 'status',
-                    //     render: function (data, type, row) {
-                    //         switch (data){
-                    //             case 1: return 'New Leads';
-                    //             case 2:
-                    //                 // console.log(row);
-                    //                 if(row.user_profile){
-                    //                     let firstProfile = row.user_profile[0];
-                    //                     if(firstProfile.firstname){
-                    //                         let firstName = firstProfile.firstname;
-                    //                         return 'Assign to' + ' ' + firstName + ' ' + firstProfile.american_surname;
-                    //                     }
-                    //                 }
-                    //                 else{
-                    //                     return 'Not Assigned';
-                    //                 }
-                    //             case 3: return ''
-                    //         }
-                    //     }
-                    // },
-                    // {
-                    //     data: 'created_at_formatted',
-                    //     name: 'created_at',
-                    //     searchable: false
-                    // }
-                    // {data: 'updated_at_formatted', name: 'updated_at', searchable:false},
-                    // {data: 'action', name: 'action', orderable: false, searchable: false}
+
                 ]
             });
 

@@ -3,6 +3,7 @@ require("./bootstrap");
 import Alpine from "alpinejs";
 
 import * as Ladda from "ladda";
+
 // import $ from "jquery";
 // import Swal from "sweetalert2";
 // import "sweetalert2/src/sweetalert2.scss";

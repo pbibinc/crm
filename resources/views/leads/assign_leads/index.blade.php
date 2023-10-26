@@ -8,8 +8,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div>
-                                <table class="table table-bordered dt-responsive nowrap" id="dataTable"
-                                    style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <table class="table table-bordered dt-responsive nowrap" id="dataTable" width="100%">
                                     <div class="row">
                                         <div class="col-4">
                                             <label class="form-label">Time Zone</label>
@@ -164,7 +163,7 @@
                                         <tr>
                                             <th></th>
                                             <th>Company Name</th>
-                                            <th>Tel Number</th>
+                                            {{-- <th>Tel Number</th> --}}
                                             <th>State abbr</th>
                                             <th>Class Code</th>
                                             <th>Website Originated</th>
@@ -264,8 +263,7 @@
                             </div>
 
                             <br>
-                            <table id="datatableLeads" class="table table-bordered dt-responsive nowrap"
-                                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            <table id="datatableLeads" class="table table-bordered dt-responsive nowrap" width="100%">
                                 <thead>
                                     <tr>
                                         <th>Company Name</th>
@@ -473,10 +471,10 @@
                             }
                         }
                     },
-                    {
-                        data: 'tel_num',
-                        name: 'tel_num'
-                    },
+                    // {
+                    //     data: 'tel_num',
+                    //     name: 'tel_num'
+                    // },
                     {
                         data: 'state_abbr',
                         name: 'state_abbr'
