@@ -165,7 +165,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
         Yajra\DataTables\HtmlServiceProvider::class,
-        Yajra\DataTables\DataTablesServiceProvider::class,
+        // Yajra\DataTables\DataTablesServiceProvider::class,
         Yajra\DataTables\ButtonsServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
 
@@ -197,6 +197,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
+        'DatatTables' => Yajra\DataTables\Facades\DataTables::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
     ])->toArray(),

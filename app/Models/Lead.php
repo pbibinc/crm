@@ -28,6 +28,12 @@ class Lead extends Model
     //     return $this->belongsTo(UserProfile::class);
     // }
 
+    // public  static function  fetchLeads($paginate = 50)
+    // {
+    //     return self::select('company_name', 'tel_num', 'state_abbr', 'website_originated', 'class_code')
+    //     ->paginate($paginate);
+    // }
+
     public function dispositions()
     {
         return $this->belongsTo(Disposition::class);

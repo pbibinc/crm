@@ -136,17 +136,16 @@
                     <div class="card">
                         <div class="card-body">
                             <div>
-                                <table class="table table-bordered yajra-datatable dt-responsive nowrap dataTable"
-                                    id="dataTable" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <table class="table" id="dataTable" width="100%">
                                     <thead>
                                         <tr>
                                             <th>Company Name</th>
                                             <th>Tel Number</th>
                                             <th>State abbr</th>
-                                            <th>Class Code</th>
-                                            <th>Website Originated</th>
+                                            {{-- <th>Class Code</th>
+                                            <th>Website Originated</th> --}}
                                             {{-- <th>Status</th> --}}
-                                            <th>Imported at</th>
+                                            {{-- <th>Imported at</th> --}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -190,7 +189,7 @@
                                 </form>
                             </div>
                             <br>
-                            <div class="row">
+                            {{-- <div class="row">
                                 <table class="table table-bordered dt-responsive nowrap" id="dncDataTable"
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead>
@@ -204,7 +203,7 @@
 
                                     </tbody>
                                 </table>
-                            </div>
+                            </div> --}}
 
                         </div>
                     </div>
@@ -333,11 +332,13 @@
         // DATA TABLE
         $(document).ready(function() {
             $('.select2').select2();
-            $('.yajra-datatable').DataTable({
-                paging: true,
-                deferRender: true,
+            $('#dataTable').DataTable({
                 processing: true,
                 serverSide: true,
+                searching: true,
+                scrollY: 500,
+                scrollX: true,
+                scrollCollapse: true,
                 ajax: "{{ route('leads') }}",
                 columns: [{
                         data: 'company_name',
@@ -350,15 +351,15 @@
                     {
                         data: 'state_abbr',
                         name: 'state_abbr'
-                    },
-                    {
-                        data: 'class_code',
-                        name: 'class_code'
-                    },
-                    {
-                        data: 'website_originated',
-                        name: 'website_originated'
-                    },
+                    }
+                    // {
+                    //     data: 'class_code',
+                    //     name: 'class_code'
+                    // },
+                    // {
+                    //     data: 'website_originated',
+                    //     name: 'website_originated'
+                    // },
                     // {
                     //     data: 'status',
                     //     name: 'status',
@@ -381,11 +382,11 @@
                     //         }
                     //     }
                     // },
-                    {
-                        data: 'created_at_formatted',
-                        name: 'created_at',
-                        searchable: false
-                    },
+                    // {
+                    //     data: 'created_at_formatted',
+                    //     name: 'created_at',
+                    //     searchable: false
+                    // }
                     // {data: 'updated_at_formatted', name: 'updated_at', searchable:false},
                     // {data: 'action', name: 'action', orderable: false, searchable: false}
                 ]
