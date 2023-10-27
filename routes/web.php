@@ -81,22 +81,22 @@ Route::middleware(['auth', 'role:admin'])->name('admin.')->prefix('/admin')->gro
 
 
 //Routes for Leads Modules
+Route::middleware(['auth', 'role:admin'])->group(function (){
+    //route for leads module
+    Route::get('leads', [LeadController::class, 'index'])->name('leads');
+    Route::get('leads-export', [LeadController::class, 'export'])->name('leads.export');
+    Route::post('leads-import', [LeadController::class, 'import'])->name('leads.import');
+    Route::post('add-leads', [LeadController::class, 'store'])->name('leads.store');
+    Route::get('get-data-dnc', [LeadController::class, 'getDncData'])->name('get.data.dnc');
+    Route::post('dnc-leads-import', [LeadController::class, 'importDnc'])->name('dnc.lead.import');
+    Route::get('leads-dnc', [LeadController::class, 'leadsDnc'])->name('leads.dnc');
+    Route::delete('leads/{leads}/delete', [LeadController::class, 'destroy'])->name('leads.destroy');
+    Route::post('leads/{leads}/restore', [LeadController::class, 'restore'])->name('leads.restore');
+    Route::get('leads/archive', [LeadController::class, 'archive'])->name('leads.archive');
+    Route::post('leads/{leads}/restore', [LeadController::class, 'restore'])->name('leads.restore');
+    Route::post('leads/add/dnc', [LeadController::class, 'addDnc'])->name('leads.add.dnc');
 
-Route::get('leads', [LeadController::class, 'index'])->name('leads');
-Route::get('leads-export', [LeadController::class, 'export'])->name('leads.export');
-Route::post('leads-import', [LeadController::class, 'import'])->name('leads.import');
-Route::post('add-leads', [LeadController::class, 'store'])->name('leads.store');
-Route::get('get-data-dnc', [LeadController::class, 'getDncData'])->name('get.data.dnc');
-Route::post('dnc-leads-import', [LeadController::class, 'importDnc'])->name('dnc.lead.import');
-Route::get('leads-dnc', [LeadController::class, 'leadsDnc'])->name('leads.dnc');
-Route::delete('leads/{leads}/delete', [LeadController::class, 'destroy'])->name('leads.destroy');
-Route::post('leads/{leads}/restore', [LeadController::class, 'restore'])->name('leads.restore');
-Route::get('leads/archive', [LeadController::class, 'archive'])->name('leads.archive');
-Route::post('leads/{leads}/restore', [LeadController::class, 'restore'])->name('leads.restore');
-Route::post('leads/add/dnc', [LeadController::class, 'addDnc'])->name('leads.add.dnc');
-
-
-Route::prefix('assign')->group(function () {
+    //route for assigning leads
     Route::get('/', [AssignLeadController::class, 'index'])->name('assign');
     Route::get('/getDataTableLeads', [AssignLeadController::class, 'getDataTableLeads'])->name('getDataTableLeads');
     Route::post('/assign-leads', [AssignLeadController::class, 'assign'])->name('assign-leads');
@@ -109,9 +109,9 @@ Route::prefix('assign')->group(function () {
     Route::post('/assign-premium-leads',[AssignLeadController::class, 'assignPremiumLead'])->name('assign-premium-leads');
     Route::post('/delete-selected-leads', [AssignLeadController::class, 'deleteSelectedLeads'])->name('delete-selected-leads');
     Route::get('getStates', [AssignLeadController::class, 'getStates'])->name('get-states');
-});
 
 
+    //routes for apptaker leads
 Route::prefix('list-leads')->group(function  () {
     Route::get('/', [AppTakerLeadsController::class, 'index'])->name('apptaker-leads');
     Route::post('/multi-state-work', [AppTakerLeadsController::class, 'multiStateWork'])->name('mutli.state.work');
@@ -125,6 +125,8 @@ Route::prefix('list-leads')->group(function  () {
     Route::get('/assign-appointed-lead/get-data-table', [AssignAppointedLeadController::class, 'getDataTable'])->name('get-data-table');
 });
 
+
+//route for quotation leads
 Route::prefix('quoatation')->group(function (){
 
     //routes for qoutation module
@@ -160,12 +162,13 @@ Route::prefix('quoatation')->group(function (){
 
 });
 
+//email for quotation leads
 Route::prefix('email')->group(function (){
     Route::post('/send-email', [EmailController::class, 'sendQuotation'])->name('send-quotation');
     Route::post('/send-follow-up-email', [EmailController::class, 'sendFollowUpEmail'])->name('send-follow-up-email');
 });
 
-
+//storiing for callback
 Route::prefix('call-back')->group(function (){
     Route::post('/store', [CallBackController::class, 'store'])->name('call-back.store');
 });
@@ -223,8 +226,6 @@ Route::prefix('hrforms')->name('hrforms.')->group(function () {
 });
 
 
-//Ending Routes for leads modules
-
 Route::get('/hellosign', [HelloSignController::class, 'initiateSigning']);
 Route::post('/hellosign/callback', [HelloSignController::class, 'handleCallback']);
 
@@ -240,7 +241,28 @@ Route::prefix('departments')->group(function(){
     Route::get('/it-department', [DepartmentListController::class, 'getItEmployeeList'])->name('it-department');
     Route::get('/csr-department', [DepartmentListController::class, 'getCsrEmployeeList'])->name('csr-department');
 });
+
 //end Routes for departments
+
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Ending Routes for leads modules
+
 
 //Route for sending css file into front end
 Route::get('/assets/css/{file}', function ($file) {
