@@ -5,7 +5,7 @@
     "type": "module",
     "scripts": {
         "dev": "vite --port=3000",
-        "build": "vite --base https://crm.pbibinc.com/",
+        "build": "vite --base https://crm.pbibinc.com/ --host crm.pbibinc.com",
         "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
         "preview": "vite preview"
     },
