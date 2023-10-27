@@ -2,10 +2,7 @@
 </h6>
 <div class="card ">
     <div class="card-body">
-
-
         <div id="GLCardContainer"></div>
-
     </div>
 </div>
 <script>

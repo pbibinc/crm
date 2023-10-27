@@ -62,8 +62,6 @@
     <link rel="stylesheet" href="{{ asset('backend/assets/libs/@fullcalendar/timegrid/main.min.css') }}"
         type="text/css">
 
-
-
     @include('partials.head')
 
     <!-- JAVASCRIPT -->

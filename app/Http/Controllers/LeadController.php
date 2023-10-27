@@ -153,7 +153,6 @@ class LeadController extends Controller
                    ->rawColumns(['restore'])
             ->make(true);
         }
-
         return view('leads.generate_leads.archive');
     }
 
