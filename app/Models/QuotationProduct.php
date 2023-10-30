@@ -79,7 +79,10 @@ class QuotationProduct extends Model
 
     public function getQuotedProductFromQuoteProductByUserProfileId($userProfileId)
     {
-        $query = self::where('user_profile_id', $userProfileId)->whereIn('status', [3, 4])->get();
+        if($userProfileId == null){
+            return null;
+        }
+        $query = self::where('user_profile_id', $userProfileId)->whereIn('status', [3, 4])->select('id', 'quote_information_id', 'product', 'sent_out_date', 'status', 'user_profile_id')->orderBy('id')->get();
 
         $quotationProducts = collect();
         foreach ($query as $quotationProduct) {

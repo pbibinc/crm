@@ -7,12 +7,13 @@
                     <div class="card"
                         style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                         <div class="card-body">
+                            <h4 class="card-title mb-4">Products For Binding</h4>
                             <table id="getConfimedProductTable" class="table table-bordered dt-responsive nowrap"
                                 style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead>
                                     <th>Product</th>
                                     <th>Company Name</th>
-                                    {{-- <th>Status</th> --}}
+                                    <th>Actions</th>
                                     {{-- <th>Sent Out Date</th>
                                 <th></th> --}}
                                 </thead>
@@ -32,7 +33,7 @@
             $('#getConfimedProductTable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('get-confirmed-product') }}",
+                ajax: "{{ route('binding') }}",
                 columns: [{
                         data: 'product',
                         name: 'product'
@@ -41,10 +42,18 @@
                         data: 'company_name',
                         name: 'company_name'
                     },
+                    {
+                        data: 'action',
+                        name: 'action'
+                    }
                     // {data: 'status', name: 'status'},
                     // {data: 'sent_out_date', name: 'sent_out_date'},
                     // {data: 'action', name: 'action', orderable: false, searchable: false}
                 ]
+            })
+            $('.viewBindingButton').on('click', function() {
+                preventDefault();
+                console.log('test this code');
             })
         })
     </script>

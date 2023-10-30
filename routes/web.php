@@ -24,6 +24,7 @@ use App\Http\Controllers\GeneralInformationController;
 use App\Http\Controllers\AssignLeadController;
 use App\Http\Controllers\AppTakerLeadsController;
 use App\Http\Controllers\AssignAppointedLeadController;
+use App\Http\Controllers\BindingController;
 use App\Http\Controllers\CallBackController;
 use App\Http\Controllers\DepartmentListController;
 use App\Http\Controllers\DashboardControllerNew;
@@ -160,6 +161,10 @@ Route::prefix('quoatation')->group(function (){
     Route::post('/void-leads', [AssignAppointedLeadController::class, 'voidLeads'])->name('void-appointed-leads');
     Route::post('/redeploy-leads', [AssignAppointedLeadController::class, 'redeployLeads'])->name('redeploy-appointed-leads');
 
+});
+
+Route::prefix('customer-service')->group(function(){
+    Route::get('/binding', [BindingController::class, 'index'])->name('binding');
 });
 
 //email for quotation leads

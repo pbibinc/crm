@@ -60,7 +60,7 @@
                     <div class="card"
                         style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                         <div class="card-body">
-                            <h4 class="card-title mb-4">List of Appointed Leads</h4>
+                            <h4 class="card-title mb-4">Request for Quotation (RFQ) Products</h4>
                             <table id="appointedLeadsTable" class="table table-bordered dt-responsive nowrap"
                                 style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead>
@@ -111,6 +111,7 @@
                     <div class="card"
                         style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                         <div class="card-body">
+                            <h4 class="card-title mb-4">Broker's Product List</h4>
                             <table id="productQuotedView" class="table table-bordered dt-responsive nowrap"
                                 style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead>

@@ -181,7 +181,7 @@
                         <span>Binding</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ route('get-confirmed-product') }}">Confirmed Product</a></li>
+                        <li><a href="{{ route('binding') }}">Products</a></li>
                     </ul>
                 </li>
 

@@ -509,6 +509,7 @@ class QuotationController extends Controller
                 $lead = $confirmedProduct->QuoteInformation->QuoteLead->leads->company_name;
                 return $lead;
             })
+
             ->make(true);
         }
         return view('leads.broker_leads.confirmed-product-list');
@@ -541,11 +542,10 @@ class QuotationController extends Controller
             //         return '<span class="badge bg-default">Unknown</span>'; // Add an "Unknown" case or another default
             //     }
             // })
-            // ->addColumn('brokerAssistant', function($pendingProduct){
-            //     $brokerAssistant = BrokerQuotation::where('quote_product_id', $pendingProduct->id)->first();
-            //     // $brokerAssistanteName = UserProfile::find($brokerAssistant->first()->user_profile_id)->fullAmericanName() ? UserProfile::find($brokerAssistant->first()->user_profile_id)->fullAmericanName() : 'N/A';
-            //     return $brokerAssistant->user_profile_id ? $brokerAssistant->user_profile_id : 'N/A';
-            // })
+            ->addColumn('brokerAssistant', function($pendingProduct){
+                $brokerAssistant = BrokerQuotation::where('quote_product_id', $pendingProduct->id)->first();
+                return $brokerAssistant->user_profile_id ? UserProfile::find($brokerAssistant->user_profile_id)->fullAmericanName() : 'N/A';
+            })
             ->rawColumns(['viewButton', 'statusColor'])
             ->make(true);
         }

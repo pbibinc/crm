@@ -41,13 +41,10 @@ class BrokerQuotation extends Model
     return $quotationProducts->isEmpty() ? null : $quotationProducts;
     }
 
-
-
-
     public function getApprovedProduct($userProfileId)
     {
     // Get the broker quotations with the given user profile ID
-      $brokerQuotations = self::where('user_profile_id', $userProfileId)->get();
+      $brokerQuotations = self::where('user_profile_id', $userProfileId)->orderBy('id')->get();
 
     // Collect the related QuotationProduct models
        $quotationProducts = collect();
