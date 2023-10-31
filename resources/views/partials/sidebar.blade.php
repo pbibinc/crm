@@ -85,12 +85,12 @@
                     </ul>
                 </li>
 
-                <li>
+                {{-- <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-profile-line"></i>
                         <span>HR</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="false">
+                    </a> --}}
+                {{-- <ul class="sub-menu" aria-expanded="false">
                         <li class=""><a href="javascript: void(0);" class="has-arrow" aria-expanded="true">Leave
                                 Forms</a>
                             <ul class="sub-menu mm-collapse mm-show" aria-expanded="true" style="">
@@ -99,9 +99,9 @@
                                 <li><a href="javascript: void(0);">Emergency Leave</a></li>
                                 <li><a href="javascript: void(0);">Birthday Leave</a></li>
                             </ul>
-                        </li>
-                        {{-- <li><a href="{{ route('hrforms.') }}">Memos</a></li> --}}
-                        <li><a href="{{ route('hrforms.attendance-records-index') }}">Attendance Records</a></li>
+                        </li> --}}
+                {{-- <li><a href="{{ route('hrforms.') }}">Memos</a></li> --}}
+                {{-- <li><a href="{{ route('hrforms.attendance-records-index') }}">Attendance Records</a></li>
                         <li><a href="javascript: void(0);">Online Monitoring</a></li>
                         <li><a href="{{ route('hrforms.birthday-calendar-index') }}">Birthday Calendar</a></li>
                         <li><a href="{{ route('hrforms.company-handbook') }}">Company Handbook</a></li>
@@ -114,9 +114,9 @@
                                 <li><a href="javascript: void(0);">Disposal Form</a></li>
                                 <li><a href="javascript: void(0);">MoM (Minutes of Meeting) Form</a></li>
                             </ul>
-                        </li>
-                    </ul>
-
+                        </li> --}}
+                {{-- </ul>
+                </li> --}}
 
                 <li class="menu-title">Sales</li>
                 <li>
@@ -129,8 +129,8 @@
 
                     <ul class="sub-menu" aria-expanded="false">
                         <li><a href="{{ route('apptaker-leads') }}">Lead List</a></li>
-                        <li><a href="{{ route('apptaker-leads') }}">Call Back</a></li>
-                        <li><a href="{{ route('apptaker-leads') }}">Lead List</a></li>
+                        {{-- <li><a href="{{ route('apptaker-leads') }}">Call Back</a></li> --}}
+                        {{-- <li><a href="{{ route('apptaker-leads') }}">Lead List</a></li> --}}
                     </ul>
                 </li>
 

@@ -30,18 +30,18 @@
                 </div>
                 <div class="form-group row mb-4">
                     <div class="col-6">
-                        <label for="filterBy" class="form-label mt-2">Full Payment:</label>
+                        <label for="filterBy" class="form-label">Full Payment:</label>
                         <input id="fullPayment" class="form-control fullPayment">
                     </div>
                     <div class="col-6">
-                        <label for="filterBy" class="form-label mt-2">Down Payment:</label>
-                        <input class="form-control" id="downPayment downPayment" type="text">
+                        <label for="filterBy" class="form-label">Down Payment:</label>
+                        <input class="form-control downPayment" id="downPayment" type="text">
                     </div>
                 </div>
                 <div class="row mb-4">
                     <div class="col-6">
-                        <label for="filterBy" class="form-label mt-2">Montly Payment:</label>
-                        <input class="form-control mt-2" id="monthlyPayment" type="text">
+                        <label for="filterBy" class="form-label">Montly Payment:</label>
+                        <input class="form-control" id="monthlyPayment" type="text">
                     </div>
                     <div class="col-6">
                         <label for="filterBy" class="form-label">Broker Fee:</label>
