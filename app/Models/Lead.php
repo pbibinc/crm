@@ -105,7 +105,6 @@ class Lead extends Model
 
     public static function getLeadsAppointed($userProfileId)
     {
-
         $leads = self::where('disposition_id', 1)
         ->where('status', 3)
         ->whereHas('userProfile', function ($query) use ($userProfileId) {
