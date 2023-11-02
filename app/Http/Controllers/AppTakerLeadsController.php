@@ -43,9 +43,13 @@ class AppTakerLeadsController extends Controller
         $dispositions = Disposition::all();
         $recreationalFacilities = RecreationalFacilities::all();
         $dataCount = Lead::getLeadsAppointed($user->id);
+
         // $cityAddress = Lead::select('city')->distinct()->get();
         if($request->ajax()){
-            $query = Lead::select('company_name', 'tel_num', 'class_code','state_abbr')->orderBy('id');
+            $query = Lead::select('company_name', 'tel_num', 'class_code','state_abbr')->where('status', 2)->whereHas('userProfile', function($q) use ($user){
+                $q->where('user_id', $user->id);
+            })
+            ->orderBy('id');
             return DataTables::of($query)
             ->addColumn('company_name_action', function ($query){
                            return '<a href="#" data-toggle="modal" id="companyLink" name="companyLinkButtonData" data-target="#leadsDataModal" data-id="'.$query->id.'" data-name="'.$query->company_name.'">'.$query->company_name.'</a>';
@@ -53,7 +57,6 @@ class AppTakerLeadsController extends Controller
             ->rawColumns(['company_name_action'])
             ->toJson();
         }
-
         // if($request->ajax()){
         //     if(Cache::has('apptaker_leads')){
         //         $data = Cache::get('apptaker_leads');
@@ -139,8 +142,6 @@ class AppTakerLeadsController extends Controller
         //         ->with(['totalDataCount' => $data->count()])
         //         ->make(true);
         // }
-
-
         return view('leads.apptaker_leads.index', compact('timezones', 'sites', 'states', 'sortedClassCodeLeads', 'classCodeLeads', 'dispositions', 'recreationalFacilities', 'dataCount'));
 
     }

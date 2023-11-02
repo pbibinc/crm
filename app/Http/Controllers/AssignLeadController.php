@@ -31,12 +31,10 @@ class AssignLeadController extends Controller
         $this->authorize('viewLeadsFunnel', Lead::find(1));
         $userProfiles = UserProfile::whereHas('position', function ($query){
             $query->where('name', 'Application Taker');
-            })->get();
+            })->orderBy('id')->get();
 
         $accounts = UserProfile::all();
-//        dd($userProfiles);
         $sites = Site::all();
-        // $leads = Lead::all();
         $classCodeLeads = ClassCodeLead::all();
         $timezones = [
             'Eastern' => ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV'],
@@ -71,44 +69,8 @@ class AssignLeadController extends Controller
         }
 
         if($request->ajax()){
+                $query = Lead::select('company_name', 'state_abbr', 'class_code', 'website_originated', 'created_at')->where('status', 1)->orderBy('id');
 
-//             if(Cache::has('leads_funnel'))
-//             {
-//                 $data = Cache::get('leads_funnel');
-
-//                 if (!empty($request->get('timezone'))){
-//                     $timezoneStates = $timezones[$request->get('timezone')];
-//                     $data = $data->whereIn('state_abbr', $timezoneStates);
-//                 }
-// //                 Apply filters to the cached data
-//                 if (!empty($request->get('website_originated'))) {
-//                     $data = $data->filter(function ($row) use ($request) {
-//                         return $row['website_originated'] == $request->get('website_originated');
-
-//                     });
-
-//                 }
-
-//                 if (!empty($request->get('states'))){
-//                     $data = $data->filter(function ($row) use ($request){
-//                         return $row['state_abbr'] == $request->get('states');
-//                     });
-//                 }
-
-//                 if (!empty($request->get('classCodeLead'))){
-//                     $data = $data->filter(function ($row) use ($request){
-//                         return strtolower($row['class_code']) == strtolower($request->get('classCodeLead'));
-//                     });
-//                 }
-
-//                 if (!empty($request->get('leadType'))){
-//                     $data = $data->filter(function ($row) use ($request){
-//                         return $row['prime_lead'] == $request->get('leadType');
-//                     });
-//                 }
-
-//             }else{
-                $query = Lead::where('status', 1);
 
                 if (!empty($request->get('website_originated'))) {
                     $query->where('website_originated', $request->get('website_originated'));
@@ -181,7 +143,6 @@ class AssignLeadController extends Controller
                   $data = [];
               }
               return DataTables::of($data)->addIndexColumn()
-//                  ->addColumn('checkbox', '<input type="checkbox" name="users_checkbox[]"  class="users_checkbox" value="{{$id}}" />')
                   ->addColumn('action', function ($row) {
                     $leadId = $row->lead_id;
                       $voidButton = '<button class="btn btn-outline-danger waves-effect waves-light btn-sm" id="' . $leadId . '" name="void"  type="button"  ><i class="ri-user-unfollow-line" ></i></button>';
