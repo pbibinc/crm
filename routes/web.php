@@ -165,6 +165,7 @@ Route::prefix('quoatation')->group(function (){
 
 Route::prefix('customer-service')->group(function(){
     Route::get('/binding', [BindingController::class, 'index'])->name('binding');
+    Route::post('binding/save-general-liabilities-policy', [BindingController::class, 'saveGeneralLiabilitiesPolicy'])->name('binding.save-general-liabilities-policy');
 });
 
 //email for quotation leads

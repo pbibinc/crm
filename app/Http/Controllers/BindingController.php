@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\BrokerQuotation;
+use App\Models\PolicyDetail;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Validation\ValidationException;
 
 class BindingController extends Controller
 {
@@ -18,6 +20,7 @@ class BindingController extends Controller
         $quotationProduct = new BrokerQuotation();
         $userProfileId = Auth::user()->userProfile->id;
         $confirmedProduct = $quotationProduct->getApprovedProduct($userProfileId);
+        // dd($confirmedProduct);
         if($request->ajax())
         {
         return DataTables::of($confirmedProduct)
@@ -40,5 +43,36 @@ class BindingController extends Controller
             ->make(true);
         }
         return view('customer-service.binding.index');
+    }
+
+    public function saveGeneralLiabilitiesPolicy(Request $request)
+    {
+        try{
+            if($request->ajax())
+            {
+                $data = $request->all();
+                $validateData = $request->validate([
+                    'policyNumber' => 'required',
+                    'insuredInput' => 'required',
+                    'carriersInput' => 'required',
+                    'insurerInput' => 'required',
+                ]);
+
+                $policyDetails = new PolicyDetail();
+                $policyDetails->quotation_product_id = $data['quotationProductId'];
+                $policyDetails->policy_number = $data['policyNumber'];
+                $policyDetails->insured = $data['insuredInput'];
+                $policyDetails->carrier = $data['carriersInput'];
+                $policyDetails->insurer = $data['insurerInput'];
+                $policyDetails->payment_mode = $data['paymentModeInput'];
+                $policyDetails->save();
+            }
+        }catch(ValidationException $e){
+            return response()->json([
+                'errors' => $e->validator->errors(),
+                'message' => 'Validation failed'
+            ], 422);
+        }
+
     }
 }

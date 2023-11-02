@@ -65,6 +65,8 @@
             var product = $(this).attr('data-product');
             var company_name = $(this).attr('data-companyname');
             $('#insuredInput').val(company_name);
+            $('#hiddenInputId').val(id);
+            $()
             if (product == 'General Liabilities') {
                 $('#generalLiabilitiesPolicyForm').modal('show');
             }

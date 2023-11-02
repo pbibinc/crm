@@ -43,20 +43,12 @@ class BrokerQuotation extends Model
 
     public function getApprovedProduct($userProfileId)
     {
-    // Get the broker quotations with the given user profile ID
-      $brokerQuotations = self::where('user_profile_id', $userProfileId)->orderBy('id')->get();
-
-    // Collect the related QuotationProduct models
-       $quotationProducts = collect();
-       foreach ($brokerQuotations as $brokerQuotation) {
-          if ($brokerQuotation->QuotationProduct) {
-              $quotationProducts->push($brokerQuotation->QuotationProduct);
-            }
-        }
-        $filteredQuotationProducts = $quotationProducts->filter(function ($quotationProduct) {
-            return $quotationProduct->status == 6;
-        });
-
-        return $filteredQuotationProducts->isEmpty() ? null : $filteredQuotationProducts;
+        $brokerQuotations = self::where('user_profile_id', $userProfileId)->with(['quotationProduct' => function($query){
+            $query->select('id', 'product', 'status', 'quote_information_id');
+        }])->whereHas('quotationProduct', function($query){
+            $query->where('status', 6);
+        })->orderBy('id')->get();
+        $quotationProducts = $brokerQuotations->pluck('quotationProduct');
+        return $quotationProducts->isEmpty() ? null : $quotationProducts;
     }
 }

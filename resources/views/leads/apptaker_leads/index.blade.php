@@ -503,12 +503,9 @@
                         data: {
                             leadId: leadsId
                         },
-                        success: function(response) {
-
-                        }
-
+                        success: function(response) {}
                     });
-                    window.open("http://localhost:3000/appoinnted-lead-questionare", "_blank",
+                    window.open("http://localhost:3000/appoinnted-lead-questionare", "s_blank",
                         "width=1000,height=849");
                     $('#transactionLogModal').modal('hide');
                 }
@@ -520,7 +517,6 @@
                     $('#leadsDataModal').modal('show');
                     $('#transactionLogModal').modal('hide');
                 }
-
                 if (selectedDisposition == '6') {
                     $('#noAnswerModal').modal('show');
                     $('#transactionLogModal').modal('hide');
@@ -540,8 +536,6 @@
                     $('#transactionLogModal').modal('hide');
                 }
             });
-
-
             // $(document).on('click', '[id^="companyLink"]', function(e){
             //     var rowId = $(this).data('id');
             //     var dropDown = $('select[data-row="'+rowId+'"]');

@@ -10,21 +10,21 @@
                 <div class="row mb-2">
                     <div class="col-6">
                         <label class="form-label" for="policyNumber">Policy Number</label>
-                        <input type="text" class="form-control" id="policyNumber">
+                        <input type="text" class="form-control" id="policyNumber" required>
                     </div>
                     <div class="col-6">
                         <label class="form-label" for="insuredInput">Insured</label>
-                        <input type="text" class="form-control" id="insuredInput">
+                        <input type="text" class="form-control" id="insuredInput" required>
                     </div>
                 </div>
                 <div class="row mb-2">
                     <div class="col-6">
                         <label class="form-label" for="carriersInput">Carriers</label>
-                        <input type="text" class="form-control" id="carriersInput">
+                        <input type="text" class="form-control" id="carriersInput" required>
                     </div>
                     <div class="col-6">
                         <label class="form-label" for="insurerInput">Insurer</label>
-                        <input type="text" class="form-control" id="insurerInput">
+                        <input type="text" class="form-control" id="insurerInput" required>
                     </div>
                 </div>
                 <div class="row mb-2">
@@ -134,9 +134,12 @@
                         <input type="file" class="form-control" id="attachedFile">
                     </div>
                 </div>
+                <input type="hidden" id="hiddenInputId">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success waves-effect waves-light">Save</button>
+                <button type="button"
+                    class="btn btn-success waves-effect waves-light saveGeneralLiabilitiesPolicyForm"
+                    id="saveGeneralLiabilitiesPolicyForm" type="submit">Save</button>
                 <button type="button" class="btn btn-secondary waves-effect waves-light"
                     data-bs-dismiss="modal">Close</button>
             </div>
@@ -144,8 +147,56 @@
     </div>
 </div>
 <script>
-    $(document).on(function(e) {
-        e.preventDefault();
+    $(document).ready(function() {
+        $('#effectiveDate').on('change', function() {
+            var effectiveDate = new Date($(this).val());
+            var expirationDate = new Date(effectiveDate);
 
+            expirationDate.setFullYear(effectiveDate.getFullYear() + 1);
+
+            var formattedExpirationDate = expirationDate.toISOString().split('T')[0];
+
+            $('#expirationDate').val(formattedExpirationDate);
+        });
+        $('#saveGeneralLiabilitiesPolicyForm').on('click', function(e) {
+            e.preventDefault();
+            var formData = {
+                policyNumber: $('#policyNumber').val(),
+                insured: $('#insuredInput').val(),
+                carriers: $('#carriersInput').val(),
+                insurer: $('#insurerInput').val(),
+                commercialGl: $('#commercialGl').prop('checked'),
+                claimsMade: $('#claimsMade').prop('checked'),
+                occur: $('#occur').prop('checked'),
+                policy: $('#policy').prop('checked'),
+                project: $('#project').prop('checked'),
+                loc: $('#loc').prop('checked'),
+                addlInsdL: $('#addlInsd').prop('checked'),
+                subrWvd: $('#subrWvd').prop('checked'),
+                eachOccurence: $('#eachOccurence').val(),
+                rentedDmg: $('#rentedDmg').val(),
+                eachOccurence: $('#eachOccurence').val(),
+                rentedDmg: $('#rentedDmg').val(),
+                medExp: $('#medExp').val(),
+                perAdvInjury: $('#perAdvInjury').val(),
+                genAggregate: $('#genAggregate').val(),
+                comp: $('#comp').val(),
+                effectiveDate: $('#effectiveDate').val(),
+                expirationDate: $('#expirationDate').val(),
+                attachedFile: $('#attachedFile').val(),
+            };
+            $.ajax({
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "{{ route('binding.save-general-liabilities-policy') }}",
+                data: formData,
+                dataType: "json",
+                success: function(data) {
+                    alert(data.success);
+                }
+            })
+        });
     });
 </script>

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('quotation_product_id')->constrained('quotation_product_table');
             $table->string('policy_number');
+            $table->string('carrier');
             $table->string('insurer');
             $table->string('payment_mode');
             $table->timestamps();
