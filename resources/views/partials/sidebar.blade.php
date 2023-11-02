@@ -28,15 +28,12 @@
             <!-- Left Menu Start -->
             <ul class="metismenu list-unstyled" id="side-menu">
                 <li class="menu-title">Menu</li>
-                @can('view', App\Models\Attendance::find(1))
-                    <li>
-                        <a href="{{ route('dashboard') }}" class="waves-effect">
-                            <i class="ri-dashboard-line"></i><span class="badge rounded-pill bg-success float-end">3</span>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                @endcan
-
+                <li>
+                    <a href="{{ route('dashboard') }}" class="waves-effect">
+                        <i class="ri-dashboard-line"></i><span class="badge rounded-pill bg-success float-end">3</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
                 <li class="menu-title">Admin</li>
 
                 <li>
@@ -85,38 +82,6 @@
                     </ul>
                 </li>
 
-                {{-- <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="ri-profile-line"></i>
-                        <span>HR</span>
-                    </a> --}}
-                {{-- <ul class="sub-menu" aria-expanded="false">
-                        <li class=""><a href="javascript: void(0);" class="has-arrow" aria-expanded="true">Leave
-                                Forms</a>
-                            <ul class="sub-menu mm-collapse mm-show" aria-expanded="true" style="">
-                                <li><a href="javascript: void(0);">Vacation Leave</a></li>
-                                <li><a href="javascript: void(0);">Sick Leave</a></li>
-                                <li><a href="javascript: void(0);">Emergency Leave</a></li>
-                                <li><a href="javascript: void(0);">Birthday Leave</a></li>
-                            </ul>
-                        </li> --}}
-                {{-- <li><a href="{{ route('hrforms.') }}">Memos</a></li> --}}
-                {{-- <li><a href="{{ route('hrforms.attendance-records-index') }}">Attendance Records</a></li>
-                        <li><a href="javascript: void(0);">Online Monitoring</a></li>
-                        <li><a href="{{ route('hrforms.birthday-calendar-index') }}">Birthday Calendar</a></li>
-                        <li><a href="{{ route('hrforms.company-handbook') }}">Company Handbook</a></li>
-                        <li class=""><a href="javascript: void(0);" class="has-arrow" aria-expanded="true">Other
-                                Forms</a>
-                            <ul class="sub-menu mm-collapse mm-show" aria-expanded="true" style="">
-                                <li><a href="{{ route('hrforms.accountability-form') }}">Accountability Form</a></li>
-                                <li><a href="{{ route('hrforms.incident-report-form') }}">Incident Report</a></li>
-                                <li><a href="javascript: void(0);">Proposal Form</a></li>
-                                <li><a href="javascript: void(0);">Disposal Form</a></li>
-                                <li><a href="javascript: void(0);">MoM (Minutes of Meeting) Form</a></li>
-                            </ul>
-                        </li> --}}
-                {{-- </ul>
-                </li> --}}
 
                 <li class="menu-title">Sales</li>
                 <li>

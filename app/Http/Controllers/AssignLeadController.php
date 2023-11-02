@@ -122,7 +122,6 @@ class AssignLeadController extends Controller
 
     public function getDataTableLeads(Request $request)
     {
-        $userProfiles = UserProfile::all();
         $userProfileId = $request->input('userProfile');
         $accountProfileValue = $request->input('accountProfileValue');
         if($userProfileId){
@@ -160,9 +159,6 @@ class AssignLeadController extends Controller
            ->update([
             'prime_lead' => 2
            ]);
-           Cache::forget('leads_funnel');
-           Cache::forget('leads_data');
-           Cache::forget('apptaker_leads');
         return response()->json(['success' => 'Leads are succesfully assign into prime lead']);
     }
 
@@ -189,9 +185,6 @@ class AssignLeadController extends Controller
                $lead->save();
                event(new LeadAssignEvent($lead, $userProfile->id, $userProfile->id, now()));
             }
-            Cache::forget('leads_funnel');
-            Cache::forget('leads_data');
-            Cache::forget('apptaker_leads');
         return response()->json(['success' => 'the leads are succesfully assign into'. ' '  . $userProfile->firstname . ' ' . $userProfile->american_surname]);
     }
 

@@ -3,284 +3,270 @@
     <div class="page-content pt-6">
         <div class="container-fluid">
             <div class="row">
-
                 <div class="col-8">
-                    <div class="card">
-                        <div class="card-body">
-                            <div>
-                                <table class="table table-bordered dt-responsive nowrap" id="dataTable" width="100%">
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <label class="form-label">Time Zone</label>
-                                            <select name="timezone" id="timezoneDropdown" class="form-control select2">
-                                                <option value="">Select a timezone</option>
-                                                <option value="">ALL</option>
-                                                @foreach ($timezones as $timezone => $identifier)
-                                                    <option value="{{ $timezone }}">{{ $timezone }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-4">
-                                            <div class="mb-3">
-                                                <div class="form-group">
-                                                    <label class="form-label">States</label>
-                                                    <select name="states" id="statesDropdown" class="form-control select2">
-                                                        <option value="">Select</option>
-                                                        <option value="">All</option>
-                                                        @foreach ($states as $abbr => $name)
-                                                            <option value="{{ $abbr }}">{{ $name }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
+                    <div class="row">
+                        <div>
+                            <div class="card"
+                                style=" box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
+                                <div class="card-body">
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="timezoneDropdown" class="form-label">Time Zone</label>
+                                                <select name="timezone" id="timezoneDropdown" class="form-control select2">
+                                                    <option value="">Select a timezone</option>
+                                                    <option value="">ALL</option>
+                                                    @foreach ($timezones as $timezone => $identifier)
+                                                        <option value="{{ $timezone }}">{{ $timezone }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
 
-                                        <div class="col-4">
-                                            <div class="mb-3">
-                                                <div class="form-group">
-                                                    <label for="websiteOriginatedDropdown" class="form-label">Website
-                                                        Originated</label>
-                                                    <select name="website_originated" id="websiteOriginatedDropdown"
-                                                        class="form-control select2">
-                                                        <option value="">Select a Website</option>
-                                                        <option value="">ALL</option>
-                                                        @foreach ($sites as $site)
-                                                            <option
-                                                                value="{{ substr($site->name, 0, strlen($site->name) - 4) }}">
-                                                                {{ substr($site->name, 0, strlen($site->name) - 4) }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="statesDropdown" class="form-label">States</label>
+                                                <select name="states" id="statesDropdown" class="form-control select2">
+                                                    <option value="">Select</option>
+                                                    <option value="">All</option>
+                                                    @foreach ($states as $abbr => $name)
+                                                        <option value="{{ $abbr }}">{{ $name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="websiteOriginatedDropdown" class="form-label">Website
+                                                    Originated</label>
+                                                <select name="website_originated" id="websiteOriginatedDropdown"
+                                                    class="form-control select2">
+                                                    <option value="">Select a Website</option>
+                                                    <option value="">ALL</option>
+                                                    @foreach ($sites as $site)
+                                                        <option
+                                                            value="{{ substr($site->name, 0, strlen($site->name) - 4) }}">
+                                                            {{ substr($site->name, 0, strlen($site->name) - 4) }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
 
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="classCodeLeadDropdown" class="form-label">Class Code</label>
+                                                <select name="classCodeLead" id="classCodeLeadDropdown"
+                                                    class="form-control select2">
+                                                    <option value="">Select Class Code</option>
+                                                    <option value="">ALL</option>
+                                                    @foreach ($classCodeLeads as $classCodeLead)
+                                                        <option value="{{ $classCodeLead->name }}">
+                                                            {{ $classCodeLead->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="leadTypeDropdown" class="form-label">Leads Type</label>
+                                                <select name="lead_type" id="leadTypeDropdown" class="form-control select2">
+                                                    <option value="">Select a Type</option>
+                                                    <option value="">ALL</option>
+                                                    <option value="2">Prime Lead</option>
+                                                    <option value="1">Normal Lead</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+                        <div class="col-7">
+                            <div class="card"
+                                style=" box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
+                                <div class="card-body d-flex flex-column justify-content-between">
+                                    <div class="row">
                                         <div class="col-6">
-                                            <label class="form-label">Class Code</label>
-                                            <select name="classCodeLead" id="classCodeLeadDropdown"
-                                                class="form-control select2">
-                                                <option value="">Select Class Code</option>
-                                                <option value="">ALL</option>
-                                                @foreach ($classCodeLeads as $classCodeLead)
-                                                    <option value="{{ $classCodeLead->name }}">{{ $classCodeLead->name }}
+                                            <label for="leadsQuantityUser" class="form-label">Assign Lead Quantity</label>
+                                            <div class="input-group mb-3">
+                                                <input class="form-control" type="number" value="10"
+                                                    id="leadsQuantityUser"
+                                                    onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                                <button type="button" id="assignRandomLeadsUser"
+                                                    class="btn btn-outline-primary" data-bs-toggle="tooltip"
+                                                    data-bs-placement="top"
+                                                    title="Assign Random Leads to user based on the quantity input above">Assign
+                                                    to User</button>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <label for="leadsQuantityRandom" class="form-label">Assign Random Leads
+                                                Quantity</label>
+                                            <div class="input-group">
+                                                <input class="form-control" type="number" value="10"
+                                                    id="leadsQuantityRandom"
+                                                    onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                                <button type="button" id="assignRandomLeads"
+                                                    class="btn btn-outline-primary" data-bs-toggle="tooltip"
+                                                    data-bs-placement="top"
+                                                    title="Assign Random Leads to a random user">Assign Random</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-5">
+                            <div class="card"
+                                style=" box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <button type="button" id="assignLead" class="btn btn-primary btn-lg mb-2"
+                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="Assign checked Leads to a selected user">Assign Lead</button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="button" id="assignPremiumLead" class="btn btn-primary btn-lg"
+                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="Assign premium leads">Assign Premium</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div>
+                            <div class="card"
+                                style=" box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
+                                <div class="card-body">
+                                    <div>
+                                        <table class="table table-bordered dt-responsive nowrap" id="dataTable"
+                                            width="100%">
+                                            <br>
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Company Name</th>
+                                                    {{-- <th>Tel Number</th> --}}
+                                                    <th>State abbr</th>
+                                                    <th>Class Code</th>
+                                                    <th>Website Originated</th>
+                                                    <th>Imported Date</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="row">
+                        <div class="card"
+                            style=" box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
+                            <div class="card-body">
+                                <div class="row mb-2">
+                                    <div class="col-6">
+                                        <label class="form-label">App Taker</label>
+                                        <div class="col-lg-12">
+                                            <select class="form-control select2" id="userProfileDropdown">
+                                                <option value="">select agents</option>
+                                                @foreach ($userProfiles as $userProfile)
+                                                    @php
+                                                        $ratings = $userProfile->ratings;
+                                                        $numberOfRatings = $ratings->count();
+                                                        $sumOfRatings = $ratings->sum('rating');
+                                                        $divisorRatings = $numberOfRatings * 5;
+                                                        $overallRating = $numberOfRatings > 0 ? $sumOfRatings / $numberOfRatings : 0;
+                                                        $overallRatingPercentage = $numberOfRatings > 0 ? ($sumOfRatings / $divisorRatings) * 100 : 0;
+                                                        $leadsCounter = count(
+                                                            $userProfile->leads->filter(function ($lead) {
+                                                                return $lead->pivot->current_user_id !== 0;
+                                                            }),
+                                                        );
+                                                    @endphp
+                                                    <option value="{{ $userProfile->id }}">
+                                                        {{ $userProfile->firstname . ' ' . $userProfile->american_surname }}
+                                                        <small class="text-muted">({{ $overallRating }} star)
+                                                            ({{ $leadsCounter }} leads)
+                                                        </small>
                                                     </option>
                                                 @endforeach
                                             </select>
                                         </div>
-
-                                        <div class="col-6">
-                                            <div class="mb-3">
-                                                <div class="form-group">
-                                                    <label for="leadTypeDropdown" class="form-label">Leads Type</label>
-                                                    <select name="lead_type" id="leadTypeDropdown"
-                                                        class="form-control select2">
-                                                        <option value="">Select a Website</option>
-                                                        <option value="">ALL</option>
-                                                        <option value="2">Prime Lead</option>
-                                                        <option value="1">Normal Lead</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-
                                     </div>
-
-
-
-                                    <div class="row">
-
-                                        <div class="col-6">
-                                            <div class="form-group">
-                                                <label class="form-label">Assign Lead Quantity</label>
-                                                <input class="form-control" type="number" value="10"
-                                                    id="leadsQuantityUser"
-                                                    onkeypress="return event.charCode >= 48 && event.charCode <= 57">
-                                                {{--                                                {!! Form::label('assign_leads_quantity', 'Assign Lead Quantity') !!} --}}
-                                                {{--                                                {!! Form::text('assign_leads_quantity', null, ['class' => 'form-control']) !!} --}}
-                                            </div>
-                                        </div>
-
-                                        <div class="col-6">
-                                            <div class="form-group">
-                                                <label class="form-label">Assign Random Leads Quantity</label>
-                                                <input class="form-control" type="number" value="10"
-                                                    id="leadsQuantityRandom"
-                                                    onkeypress="return event.charCode >= 48 && event.charCode <= 57">
-                                                {{--                                                {!! Form::label('random_leads_quantity', 'Assign Random Leads Quantity') !!} --}}
-                                                {{--                                                {!! Form::text('random_leads_quantity', null, ['class' => 'form-control']) !!} --}}
-                                            </div>
+                                    <div class="col-6">
+                                        <label class="form-label">Accounts</label>
+                                        <div class="col-lg-12">
+                                            <select class="form-control select2" id="accountsDropdown">
+                                                <option value="">select agents</option>
+                                                @foreach ($accounts as $account)
+                                                    @php
+                                                        $accountLeadsCounter = count($account->leads);
+                                                    @endphp
+                                                    <option value="{{ $account->id }}">
+                                                        {{ $account->firstname . ' ' . $account->american_surname }}<small
+                                                            class="text-muted"> ({{ $accountLeadsCounter }} leads)</small>
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
-                                    <br>
+                                </div>
+                                <button type="button" id="voidAll"
+                                    class="btn btn-outline-danger waves-effect waves-light" data-bs-toggle="tooltip"
+                                    data-bs-placement="top" title="Button to void all leads to account">Void ALL
+                                    Leads</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="card"
+                            style=" box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
 
-                                    <div class="row">
+                            <div class="card-body">
 
-                                        <div class="col-3">
-                                            <div class="d-grid mb-3">
-                                                <button type="button" id="assignRandomLeadsUser"
-                                                    class="btn btn-primary waves-effect waves-light "
-                                                    data-bs-toggle="tooltip" data-bs-placement="top"
-                                                    title="Button to assign Random Leads to a user base to the quantity input on top">Assign
-                                                    Random Leads to user</button>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-3">
-                                            <div class="d-grid mb-3">
-                                                <button type="button" id="assignLead"
-                                                    class="btn btn-primary waves-effect waves-light "
-                                                    data-bs-toggle="tooltip" data-bs-placement="top"
-                                                    title="Button to assign checked Leads to a selected user">Assign
-                                                    Lead</button>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-3">
-                                            <div class="d-grid mb-3">
-                                                <button type="button" id="assignPremiumLead"
-                                                    class="btn btn-primary waves-effect waves-light"
-                                                    data-bs-toggle="tooltip" data-bs-placement="top"
-                                                    title="Button for assgining premium leads">Assign Premium Lead</button>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-3">
-                                            <div class="d-grid mb-3">
-                                                <button type="button" id="assignRandomLeads"
-                                                    class="btn btn-primary waves-effect waves-light "
-                                                    data-bs-toggle="tooltip" data-bs-placement="top"
-                                                    title="Button to assign Random Leads to a random user">Assign Random
-                                                    Leads</button>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                    <br>
+                                <table id="datatableLeads" class="table table-bordered dt-responsive nowrap"
+                                    style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead>
                                         <tr>
-                                            <th></th>
                                             <th>Company Name</th>
-                                            {{-- <th>Tel Number</th> --}}
-                                            <th>State abbr</th>
-                                            <th>Class Code</th>
-                                            <th>Website Originated</th>
-                                            <th>Imported Date</th>
-
+                                            <th>Tel Num</th>
+                                            {{-- <th>State Abbr</th>
+                                        <th>Website Originated</th> --}}
+                                            <th>action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+
 
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
-                </div>
 
-
-                <div class="col-4">
-                    <div class="card ">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-6">
-                                    <label class="form-label">App Taker</label>
-                                    <div class="col-lg-12">
-                                        <select class="form-control select2" id="userProfileDropdown">
-                                            <option value="">select agents</option>
-                                            @foreach ($userProfiles as $userProfile)
-                                                @php
-                                                    $ratings = $userProfile->ratings;
-                                                    $numberOfRatings = $ratings->count();
-                                                    $sumOfRatings = $ratings->sum('rating');
-                                                    $divisorRatings = $numberOfRatings * 5;
-                                                    $overallRating = $numberOfRatings > 0 ? $sumOfRatings / $numberOfRatings : 0;
-                                                    $overallRatingPercentage = $numberOfRatings > 0 ? ($sumOfRatings / $divisorRatings) * 100 : 0;
-                                                    $leadsCounter = count(
-                                                        $userProfile->leads->filter(function ($lead) {
-                                                            return $lead->pivot->current_user_id !== 0;
-                                                        }),
-                                                    );
-                                                @endphp
-                                                <option value="{{ $userProfile->id }}">
-                                                    {{ $userProfile->firstname . ' ' . $userProfile->american_surname }}
-                                                    <small class="text-muted">({{ $overallRating }} star)
-                                                        ({{ $leadsCounter }} leads)
-                                                    </small>
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-6">
-                                    <label class="form-label">Accounts</label>
-                                    <div class="col-lg-12">
-                                        <select class="form-control select2" id="accountsDropdown">
-                                            <option value="">select agents</option>
-                                            @foreach ($accounts as $account)
-                                                @php
-                                                    $accountLeadsCounter = count($account->leads);
-                                                @endphp
-                                                <option value="{{ $account->id }}">
-                                                    {{ $account->firstname . ' ' . $account->american_surname }}<small
-                                                        class="text-muted"> ({{ $accountLeadsCounter }} leads)</small>
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row mt-3">
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <label for="" class="form-label" id="selectStatesLabel">Select
-                                            States</label>
-                                        <select name="states" id="userStatesDropdown" class="form-control select2">
-                                            <option value="">Select States</option>
-                                            <option value="">ALL</option>
-                                            @foreach ($states as $abbr => $name)
-                                                <option value="{{ $abbr }}">{{ $name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-
-                                </div>
-                            </div>
-
-                            <br>
-
-                            <div class="d-grid mb-3">
-                                <button type="button" id="voidAll"
-                                    class="btn btn-outline-danger waves-effect waves-light" data-bs-toggle="tooltip"
-                                    data-bs-placement="top" title="Button to void all leads to account">Void ALL
-                                    Leads</button>
-                            </div>
-
-                            <br>
-                            <table id="datatableLeads" class="table table-bordered dt-responsive nowrap"
-                                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th>Company Name</th>
-                                        <th>Tel Num</th>
-                                        {{-- <th>State Abbr</th>
-                                    <th>Website Originated</th> --}}
-                                        <th>action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
                 </div>
 
             </div>
@@ -308,8 +294,8 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" name="submit_button"
-                        id="submit_button">Submit</button>
+                    <button type="button" class="btn btn-success ladda-button" data-style="expand-right"
+                        data-toggle="tooltip" name="submit_button" id="submit_button">Submit</button>
                 </div>
 
             </div>
@@ -332,8 +318,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" name="okAssignPremiumButton"
-                        id="okAssignPremiumButton">Assign</button>
+                    <button type="button" class="btn btn-success ladda-button" data-style="expand-right"
+                        data-toggle="tooltip" name="okAssignPremiumButton" id="okAssignPremiumButton">Assign</button>
                 </div>
             </div>
         </div>
@@ -353,14 +339,13 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-danger" name="ok_button" id="ok_button">Void</button>
+                    <button type="button" class="btn btn-danger ladda-button" data-style="expand-right"
+                        data-toggle="tooltip" name="ok_button" id="ok_button">Void</button>
                 </div>
             </div>
         </div>
     </div>
     {{-- end of modal --}}
-
-
 
     {{-- start of voiding all leads to a user --}}
     <div class="modal fade" id="confirmVoidAllModal" tabindex="-1">
@@ -375,8 +360,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-danger" name="void_ok_button"
-                        id="void_ok_button">Void</button>
+                    <button type="button" class="btn btn-danger ladda-button" data-style="expand-right"
+                        data-toggle="tooltip" name="void_ok_button" id="void_ok_button">Void</button>
                 </div>
             </div>
         </div>
@@ -396,8 +381,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" name="assign_ok_button"
-                        id="assign_ok_button">Assign</button>
+                    <button type="button" class="btn btn-success ladda-button" data-style="expand-right"
+                        data-toggle="tooltip" name="assign_ok_button" id="assign_ok_button">Assign</button>
                 </div>
             </div>
         </div>
@@ -417,8 +402,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" name="assign_random_ok_button"
-                        id="assign_random_ok_button">Assign</button>
+                    <button type="button" class="btn btn-success ladda-button" data-style="expand-right"
+                        data-toggle="tooltip" name="assign_random_ok_button" id="assign_random_ok_button">Assign</button>
                 </div>
             </div>
         </div>
@@ -592,7 +577,8 @@
             });
 
             $('#okAssignPremiumButton').on('click', function() {
-                console
+                var laddaButton = Ladda.create($(this)[0]);
+                laddaButton.start();
                 $.ajax({
                     url: "{{ route('assign-premium-leads') }}",
                     headers: {
@@ -607,6 +593,7 @@
                         // Handle the response from the server
                         console.log(response);
                         if (response.success) {
+                            laddaButton.stop();
                             // Display a success message
                             Swal.fire({
                                 title: 'Success',
@@ -636,7 +623,7 @@
             //Apptaker Dropdown Configuration
             $('#userProfileDropdown').on('change', function() {
                 $('#datatableLeads').DataTable().ajax.reload();
-                $('#dataTable').DataTable().ajax.reload();
+                // $('#dataTable').DataTable().ajax.reload();
                 let userProfileValue = $(this).val();
                 if (userProfileValue != "") {
                     $.ajax({
@@ -672,7 +659,7 @@
             //Accounts Dropdown Configuration
             $('#accountsDropdown').on('change', function() {
                 $('#datatableLeads').DataTable().ajax.reload();
-                $('#dataTable').DataTable().ajax.reload();
+                // $('#dataTable').DataTable().ajax.reload();
                 let accountsProfileValue = $(this).val();
                 if (accountsProfileValue != "") {
                     $.ajax({
@@ -727,6 +714,8 @@
 
             //ajax for submitting the button for assigning random leads to user
             $('#assign_ok_button').on('click', function() {
+                var laddaButton = Ladda.create($(this)[0]);
+                laddaButton.start();
                 $.ajax({
                     url: "{{ route('assign-random-leads-user') }}",
                     headers: {
@@ -740,6 +729,7 @@
                         accountProfileValue: $('#accountsDropdown').val()
                     },
                     success: function(response) {
+                        laddaButton.stop();
                         if (response.errors) {
                             var errors = response.errors;
                             $.each(errors, function(key, value) {
@@ -790,6 +780,8 @@
                 });
                 if (id.length > 0) {
                     if (userProfileId || accountProfileId) {
+                        var laddaButton = Ladda.create($(this)[0]);
+                        laddaButton.start();
                         $.ajax({
                             url: "{{ route('assign-leads') }}",
                             headers: {
@@ -803,6 +795,7 @@
                                 accountProfileId: accountProfileId
                             },
                             success: function(data) {
+                                laddaButton.stop();
                                 Swal.fire({
                                     title: 'Success',
                                     text: data.success,
@@ -840,6 +833,8 @@
             $('#assign_random_ok_button').on('click', function() {
                 var id = [];
                 // console.log('this test the button shit');
+                var laddaButton = Ladda.create($(this)[0]);
+                laddaButton.start();
                 $.ajax({
                     url: "{{ route('assign-random-leads') }}",
                     headers: {
@@ -851,6 +846,7 @@
                         leadsQuantityRandom: $('#leadsQuantityRandom').val(),
                     },
                     success: function(response) {
+                        laddaButton.stop();
                         if (response.errors) {
                             var errors = response.errors;
                             $.each(errors, function(key, value) {
@@ -905,6 +901,8 @@
         //script for sending the ajax request
         $('#void_ok_button').click(function() {
             event.preventDefault();
+            var laddaButton = Ladda.create($(this)[0]);
+            laddaButton.start();
             $.ajax({
                 url: "{{ route('void-all') }}",
                 headers: {
@@ -917,6 +915,7 @@
                     accountProfileId: $('#accountsDropdown').val(),
                 },
                 success: function(data) {
+                    laddaButton.stop();
                     Swal.fire({
                         title: 'Success',
                         text: data.success,
@@ -954,6 +953,8 @@
         //script for voiding lead from user
         $('#ok_button').click(function() {
             event.preventDefault();
+            var laddaButton = Ladda.create($(this)[0]);
+            laddaButton.start();
             $.ajax({
                 url: "{{ route('void-leads-user') }}",
                 headers: {
@@ -967,6 +968,7 @@
                     accountProfileId: $('#accountsDropdown').val()
                 },
                 success: function(data) {
+                    laddaButton.stop();
                     Swal.fire({
                         title: 'Success',
                         text: data.success,
@@ -999,6 +1001,8 @@
         //script for submiting of redeployement
         $('#submit_button').click(function() {
             event.preventDefault();
+            var laddaButton = Ladda.create($(this)[0]);
+            laddaButton.start();
             $.ajax({
                 url: "{{ route('redeploy-leads-user') }}",
                 headers: {
@@ -1011,6 +1015,7 @@
                     userProfileId: $('#userProfileRedeployDropdown').val()
                 },
                 success: function(data) {
+                    laddaButton.stop();
                     Swal.fire({
                         title: 'Success',
                         text: data.success,
