@@ -5,8 +5,6 @@ import LeadCity from "../data/lead-city";
 import LeadZipCodeCities from "../data/lead-city-zipcode";
 import ClassCodeData from "../data/classcode-data";
 
-
-
 export const ContextData = createContext();
 
 const ContextDataProvider = ({ children }) => {
@@ -14,7 +12,7 @@ const ContextDataProvider = ({ children }) => {
     const { zipcodes, ziploading } = LeadZipcode();
     const { cities, cityLoading } = LeadCity();
     const { zipCity } = LeadZipCodeCities();
-    const {classCodeArray} = ClassCodeData();
+    const { classCodeArray } = ClassCodeData();
 
     return (
         <ContextData.Provider
@@ -26,7 +24,7 @@ const ContextDataProvider = ({ children }) => {
                 cities,
                 cityLoading,
                 zipCity,
-                classCodeArray
+                classCodeArray,
             }}
         >
             {children}

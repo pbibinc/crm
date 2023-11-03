@@ -16,6 +16,10 @@ const router = createBrowserRouter([
             </ContextDataProvider>
         ),
     },
+    {
+        path: "*",
+        element: <div>404</div>,
+    },
 ]);
 
 export default router;
