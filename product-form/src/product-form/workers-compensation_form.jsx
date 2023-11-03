@@ -19,15 +19,18 @@ import SaveIcon from "@mui/icons-material/Save";
 import axios from "axios";
 import WorkersCompData from "../data/workers-comp-data";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 
 const WorkersCompensationForm = () => {
     const getWorkersCompensationData = () => {
-        let storedData = JSON.parse(sessionStorage.getItem("storeWorkersCompData")) || {};
+        let storedData =
+            JSON.parse(sessionStorage.getItem("storeWorkersCompData")) || {};
         return storedData;
     };
 
-    const generalInfomrationInstance = JSON.parse(sessionStorage.getItem("generalInformationStoredData"));
+    const generalInfomrationInstance = JSON.parse(
+        sessionStorage.getItem("generalInformationStoredData")
+    );
     const [totalEmployee, setTotalEmployee] = useState(0);
     const [employeeDescription, setEmployeeDescription] = useState("");
     const [employeeNumber, setEmployeeNumber] = useState([0]);
@@ -42,31 +45,51 @@ const WorkersCompensationForm = () => {
     const [payrollDropdownValue, setPayrollDropdownValue] = useState(2);
     const [specificDescriptionOfEmployee, setSpecificDescriptionOfEmployee] =
         useState("");
-    const [feinValue, setFeinValue] = useState(() => getWorkersCompensationData()?.feinValue || "");
-    const [ssnValue, setSsnValue] = useState(() => getWorkersCompensationData()?.ssnValue || "");
+    const [feinValue, setFeinValue] = useState(
+        () => getWorkersCompensationData()?.feinValue || ""
+    );
+    const [ssnValue, setSsnValue] = useState(
+        () => getWorkersCompensationData()?.ssnValue || ""
+    );
 
     const [expirationDate, setExpirationDate] = useState(() => {
         const expiration = getWorkersCompensationData()?.expirationDate;
-        return expiration && !isNaN(Date.parse(expiration)) ? new Date(expiration) : new Date();
+        return expiration && !isNaN(Date.parse(expiration))
+            ? new Date(expiration)
+            : new Date();
     });
-    const [priorCarrier, setPriorCarrier] = useState(() => getWorkersCompensationData()?.priorCarrier || "");
-    const [workersCompensationAmount, setWorkersCompensationAmount] =
-        useState(() => getWorkersCompensationData()?.workersCompensationAmount || "");
+    const [priorCarrier, setPriorCarrier] = useState(
+        () => getWorkersCompensationData()?.priorCarrier || ""
+    );
+    const [workersCompensationAmount, setWorkersCompensationAmount] = useState(
+        () => getWorkersCompensationData()?.workersCompensationAmount || ""
+    );
 
+    const [policyLimit, setPolicyLimit] = useState(
+        () => getWorkersCompensationData()?.policyLimit || 0
+    );
 
-    const [policyLimit, setPolicyLimit] = useState(() => getWorkersCompensationData()?.policyLimit || 0);
+    const [eachAccident, setEachAccident] = useState(
+        () => getWorkersCompensationData()?.eachAccident || 0
+    );
 
-    const [eachAccident, setEachAccident] = useState(() => getWorkersCompensationData()?.eachAccident || 0);
+    const [eachEmployee, setEachEmployee] = useState(
+        () => getWorkersCompensationData()?.eachEmployee || 0
+    );
 
-    const [eachEmployee, setEachEmployee] = useState(() => getWorkersCompensationData()?.eachEmployee || 0);
-
-    const [remarks, setRemarks] = useState(() => getWorkersCompensationData()?.remarks || "");
+    const [remarks, setRemarks] = useState(
+        () => getWorkersCompensationData()?.remarks || ""
+    );
     const [dateofClaim, setDateofClaim] = useState(new Date());
     const [lossAmount, setLossAmount] = useState(0);
 
-    const [isEditing, SetIsEditing] = useState(() => getWorkersCompensationData()?.isUpdate == true ? false : true);
+    const [isEditing, SetIsEditing] = useState(() =>
+        getWorkersCompensationData()?.isUpdate == true ? false : true
+    );
 
-    const [isUpdate, SetIsUpdate] = useState(() => getWorkersCompensationData()?.isUpdate || false);
+    const [isUpdate, SetIsUpdate] = useState(
+        () => getWorkersCompensationData()?.isUpdate || false
+    );
 
     const [storedWorkersCompData, setStoredWorkersCompData] = useState(null);
 
@@ -81,16 +104,28 @@ const WorkersCompensationForm = () => {
             expirationDate: expirationDate,
             priorCarrier: priorCarrier,
             workersCompensationAmount: workersCompensationAmount,
-            policyLimit: {value: policyLimit?.value, label: policyLimit?.label},
-            eachAccident: {value: eachAccident?.value, label: eachAccident?.label},
-            eachEmployee: {value: eachEmployee?.value, label: eachEmployee?.label},
+            policyLimit: {
+                value: policyLimit?.value,
+                label: policyLimit?.label,
+            },
+            eachAccident: {
+                value: eachAccident?.value,
+                label: eachAccident?.label,
+            },
+            eachEmployee: {
+                value: eachEmployee?.value,
+                label: eachEmployee?.label,
+            },
             remarks: remarks,
             isUpdate: isUpdate,
             isEditing: isEditing,
             dateofClaim: dateofClaim,
         };
 
-        sessionStorage.setItem("storeWorkersCompData", JSON.stringify(workersCompLocalData));
+        sessionStorage.setItem(
+            "storeWorkersCompData",
+            JSON.stringify(workersCompLocalData)
+        );
     }, [
         totalEmployee,
         employeeDescription,
@@ -109,7 +144,7 @@ const WorkersCompensationForm = () => {
         dateofClaim,
         lossAmount,
         isUpdate,
-        isEditing
+        isEditing,
     ]);
 
     useEffect(() => {
@@ -134,12 +169,17 @@ const WorkersCompensationForm = () => {
     }
     //script for computing the value of total employee
     useEffect(() => {
-        const storedGeneralInformationInstance = JSON.parse(sessionStorage.getItem("generalInformationStoredData") || "{}");
-            let fullTime = parseInt(storedGeneralInformationInstance.full_time_employee, 10) || 0;
-            let partTime = parseInt(storedGeneralInformationInstance.part_time_employee, 10) || 0;
-            setTotalEmployeeSum(fullTime + partTime);
+        const storedGeneralInformationInstance = JSON.parse(
+            sessionStorage.getItem("generalInformationStoredData") || "{}"
+        );
+        let fullTime =
+            parseInt(storedGeneralInformationInstance.full_time_employee, 10) ||
+            0;
+        let partTime =
+            parseInt(storedGeneralInformationInstance.part_time_employee, 10) ||
+            0;
+        setTotalEmployeeSum(fullTime + partTime);
     }, []);
-
 
     //script for setting the total employee
     useEffect(() => {
@@ -194,14 +234,28 @@ const WorkersCompensationForm = () => {
     ];
 
     useEffect(() => {
-        const storedGeneralInformationInstance = JSON.parse(sessionStorage.getItem("generalInformationStoredData") || "{}");
-        const payrollOwnerFloat = parseFloat(storedGeneralInformationInstance.owners_payroll.replace(/[^0-9.]/g, ''));
+        const storedGeneralInformationInstance = JSON.parse(
+            sessionStorage.getItem("generalInformationStoredData") || "{}"
+        );
+        const payrollOwnerFloat = parseFloat(
+            storedGeneralInformationInstance.owners_payroll.replace(
+                /[^0-9.]/g,
+                ""
+            )
+        );
         setOwnersPayroll(Math.floor(payrollOwnerFloat));
     }, []);
 
     useEffect(() => {
-        const storedGeneralInformationInstance = JSON.parse(sessionStorage.getItem("generalInformationStoredData") || "{}");
-        const payrollEmployeeFloat = parseFloat(storedGeneralInformationInstance.employee_payroll.replace(/[^0-9.]/g, ''));
+        const storedGeneralInformationInstance = JSON.parse(
+            sessionStorage.getItem("generalInformationStoredData") || "{}"
+        );
+        const payrollEmployeeFloat = parseFloat(
+            storedGeneralInformationInstance.employee_payroll.replace(
+                /[^0-9.]/g,
+                ""
+            )
+        );
         setEmployeePayroll(Math.floor(payrollEmployeeFloat));
     }, []);
 
@@ -211,12 +265,10 @@ const WorkersCompensationForm = () => {
 
         if (payrollDropdownChange === 1) {
             setTotalPayroll(employeePayroll + ownersPayroll);
-        } else  {
+        } else {
             setTotalPayroll(employeePayroll);
         }
     };
-
-
 
     {
         /* Ending Setup Computing total employee payroll*/
@@ -281,11 +333,8 @@ const WorkersCompensationForm = () => {
         //workers comp object data for employee description per employee
         employee_description: employeeDescription,
         number_of_employee: employeeNumber,
-
     };
     console.log(workersCompFormData);
-
-
 
     function submitWorkersCompensationForm() {
         const generalInformationId = leadInstance?.data.id || null;
@@ -299,31 +348,31 @@ const WorkersCompensationForm = () => {
             .then((response) => {
                 SetIsEditing(false);
                 SetIsUpdate(true);
-                if(method == "post"){
+                if (method == "post") {
                     Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: `Workers Compensation  has been saved` ,
+                        position: "top-end",
+                        icon: "success",
+                        title: `Workers Compensation  has been saved`,
                         showConfirmButton: false,
-                    })
-                }else{
+                    });
+                } else {
                     Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Workers Compensation has been successfully updated',
+                        position: "top-end",
+                        icon: "success",
+                        title: "Workers Compensation has been successfully updated",
                         showConfirmButton: false,
-                    })
+                    });
                 }
             })
             .catch((error) => {
                 console.log("Error::", error);
                 console.log("err:", error.response.data.message);
                 Swal.fire({
-                    position: 'top-end',
-                    icon: 'warning',
+                    position: "top-end",
+                    icon: "warning",
                     title: `Error:: kindly call your IT and Refer to them this error ${error.response.data.message}`,
                     showConfirmButton: false,
-                })
+                });
             });
     }
 
@@ -714,7 +763,12 @@ const WorkersCompensationForm = () => {
                             classNamePrefix="select"
                             options={limitDropdownOptions}
                             value={policyLimit}
-                            onChange={(e) => setPolicyLimit({value: e.value, label: `$${e.value}`})}
+                            onChange={(e) =>
+                                setPolicyLimit({
+                                    value: e.value,
+                                    label: `$${e.value}`,
+                                })
+                            }
                             isDisabled={!isEditing}
                         />
                     </>
@@ -735,7 +789,12 @@ const WorkersCompensationForm = () => {
                                     classNamePrefix="select"
                                     options={limitDropdownOptions}
                                     value={eachAccident}
-                                    onChange={(e) => setEachAccident({value: e.value, label: `$${e.value}`})}
+                                    onChange={(e) =>
+                                        setEachAccident({
+                                            value: e.value,
+                                            label: `$${e.value}`,
+                                        })
+                                    }
                                     isDisabled={!isEditing}
                                 />
                             </>
@@ -752,7 +811,12 @@ const WorkersCompensationForm = () => {
                                     classNamePrefix="select"
                                     options={limitDropdownOptions}
                                     value={eachEmployee}
-                                    onChange={(e) => setEachEmployee({value: e.value, label: `$${e.value}`})}
+                                    onChange={(e) =>
+                                        setEachEmployee({
+                                            value: e.value,
+                                            label: `$${e.value}`,
+                                        })
+                                    }
                                     isDisabled={!isEditing}
                                 />
                             </>
@@ -865,61 +929,62 @@ const WorkersCompensationForm = () => {
             <Row
                 classValue="mb-3"
                 rowContent={[
-
                     <Column
                         key="toolsEquipmentSubmmitButtonColumn"
                         classValue="col-10"
-                        colContent={
-                            <>
-
-                            </>
-                        }
+                        colContent={<></>}
                     />,
                     <Column
                         key="toolsEquipmentEdittButtonColumn"
                         classValue="col-2"
                         colContent={
                             <>
-                            <Row
-                              rowContent={
-                                <>
-                                    <Column
-                                       key="submitButtonColumn"
-                                       classValue="col-6"
-                                       colContent={
-                                        <div className="d-grid gap-2">
-                                        <Button
-                                        variant="success"
-                                        size="lg"
-                                        onClick={submitWorkersCompensationForm}
-                                        disabled={!isEditing}
-                                         >
-                                         <SaveIcon />
-                                         </Button>
-                                         </div>
-
-                                        }
-                                    />
-                                    <Column
-                                       key="editButtonColumn"
-                                       classValue="col-6"
-                                       colContent={
-                                        <div className="d-grid gap-2">
-                                        <Button
-                                        variant="primary"
-                                        size="lg"
-                                        disabled={isEditing}
-                                        onClick={() => SetIsEditing(true)}
-                                        >
-                                         <SaveAsIcon />
-                                        </Button>
-                                            </div>
-                                        }
-                                    />
-                                </>
-                              }
-                            />
-
+                                <Row
+                                    rowContent={
+                                        <>
+                                            <Column
+                                                key="submitButtonColumn"
+                                                classValue="col-6"
+                                                colContent={
+                                                    <div className="d-grid gap-2">
+                                                        <Button
+                                                            variant="success"
+                                                            size="lg"
+                                                            onClick={
+                                                                submitWorkersCompensationForm
+                                                            }
+                                                            disabled={
+                                                                !isEditing
+                                                            }
+                                                        >
+                                                            <SaveIcon />
+                                                        </Button>
+                                                    </div>
+                                                }
+                                            />
+                                            <Column
+                                                key="editButtonColumn"
+                                                classValue="col-6"
+                                                colContent={
+                                                    <div className="d-grid gap-2">
+                                                        <Button
+                                                            variant="primary"
+                                                            size="lg"
+                                                            disabled={isEditing}
+                                                            onClick={() =>
+                                                                SetIsEditing(
+                                                                    true
+                                                                )
+                                                            }
+                                                        >
+                                                            <SaveAsIcon />
+                                                        </Button>
+                                                    </div>
+                                                }
+                                            />
+                                        </>
+                                    }
+                                />
                             </>
                         }
                     />,
