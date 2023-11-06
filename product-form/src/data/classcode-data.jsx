@@ -7,7 +7,7 @@ const ClassCodeData = () => {
         const fetchClassCodeData = async () => {
             try {
                 const response = await axios.get(
-                    "   http://insuraprime_crm.test/api/classcode/data"
+                    "http://insuraprime_crm.test/api/classcode/data"
                 );
                 setClassCodeData(response.data);
             } catch (error) {
@@ -37,7 +37,7 @@ const ClassCodeData = () => {
         );
     }
 
-    return {classCodeArray};
+    return { classCodeArray };
 };
 
 export default ClassCodeData;
