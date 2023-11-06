@@ -19,7 +19,10 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:3000'],
+    'allowed_origins' => [
+        env('CORS_DEV_ORIGIN', 'http://localhost:3000'),
+        env('CORS_PROD_ORIGIN', 'https://crm.pbibinc.com')
+    ],
 
     'allowed_origins_patterns' => [],
 
