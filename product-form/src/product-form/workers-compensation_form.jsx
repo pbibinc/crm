@@ -851,22 +851,22 @@ const WorkersCompensationForm = () => {
                             </>
                         }
                     />,
-                    <Column
-                        key="crossSellColumn"
-                        classValue="col-6"
-                        colContent={
-                            <>
-                                <Label labelContent="Cross Sell" />
-                                <Select
-                                    className="basic=single"
-                                    classNamePrefix="select"
-                                    id="generalLiabilitiesCrossSellDropdown"
-                                    name="generalLiabilitiesCrossSellDropdown"
-                                    isDisabled={!isEditing}
-                                />
-                            </>
-                        }
-                    />,
+                    // <Column
+                    //     key="crossSellColumn"
+                    //     classValue="col-6"
+                    //     colContent={
+                    //         <>
+                    //             <Label labelContent="Cross Sell" />
+                    //             <Select
+                    //                 className="basic=single"
+                    //                 classNamePrefix="select"
+                    //                 id="generalLiabilitiesCrossSellDropdown"
+                    //                 name="generalLiabilitiesCrossSellDropdown"
+                    //                 isDisabled={!isEditing}
+                    //             />
+                    //         </>
+                    //     }
+                    // />,
                 ]}
             />
             <Row

@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import axiosClient from "../api/axios.client";
 
 const LeadZipCodeCities = () => {
     const [leadZipCodeCities, setLeadZipCodeCities] = useState(null);
-
     useEffect(() => {
         const fetchLeadZipCodeCities = async () => {
             try {
-                const response = await axios.get(
-                    `http://insuraprime_crm.test/api/leads/lead-details/lead-address`
+                const response = await axiosClient.get(
+                    `/api/leads/lead-details/lead-address`
                 );
                 setLeadZipCodeCities(response.data);
             } catch (error) {
@@ -37,7 +37,6 @@ const LeadZipCodeCities = () => {
             })
         );
     }
-
 
     return { zipCity };
 };

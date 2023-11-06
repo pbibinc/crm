@@ -24,7 +24,7 @@ class LeadDetailController extends BaseController
             return $this->sendError('Lead not found.');
         }
         return $this->sendResponse($lead->toArray(), 'Lead retrieved successfully.');
-    }  
+    }
     public function leadAddress()
     {
         $leadId = Cache::get('lead_id');

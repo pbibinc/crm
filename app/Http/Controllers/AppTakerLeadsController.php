@@ -46,7 +46,7 @@ class AppTakerLeadsController extends Controller
 
         // $cityAddress = Lead::select('city')->distinct()->get();
         if($request->ajax()){
-            $query = Lead::select('company_name', 'tel_num', 'class_code','state_abbr')->where('status', 2)->whereHas('userProfile', function($q) use ($user){
+            $query = Lead::select('id','company_name', 'tel_num', 'class_code','state_abbr')->where('status', 2)->whereHas('userProfile', function($q) use ($user){
                 $q->where('user_id', $user->id);
             })
             ->orderBy('id');
@@ -173,18 +173,17 @@ class AppTakerLeadsController extends Controller
         return response()->json(['cities' => $cities, 'zipcode' => $zipcode]);
     }
 
-    public function productPdf(Request $request){
-        $formData = $request->all();
+    // public function productPdf(Request $request){
+    //     $formData = $request->all();
 
-        $pdf = PDF::loadView('leads.apptaker_leads.product_pdf_viewer.general-liability-pdf-view', $formData);
-        return $pdf->download('product.pdf');
-    }
+    //     $pdf = PDF::loadView('leads.apptaker_leads.product_pdf_viewer.general-liability-pdf-view', $formData);
+    //     return $pdf->download('product.pdf');
+    // }
     public function productForms(Request $request){
         return view('leads.apptaker_leads.questionare-new-tab');
     }
 
     public function listLeadId(Request $request){
-
         Cache::put('lead_id', $request->input('leadId'), 60 * 60);
     }
 }

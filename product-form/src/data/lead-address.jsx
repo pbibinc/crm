@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
+import axiosClient from "../api/axios.client";
 
 const LeadAddress = () => {
     const [leadAddress, setLeadAddress] = useState(null);
     useEffect(() => {
         const fetchLeadAddress = async () => {
             try {
-                const response = await fetch(
-                    `http://insuraprime_crm.test/api/leads/lead-details/lead-address`
+                const response = await axiosClient.get(
+                    `/api/leads/lead-details/lead-address`
                 );
-                const data = await response.json();
-                setLeadAddress(data);
+                setLeadAddress(response.data);
             } catch (error) {
                 console.error("Error fetching lead address", error);
             }

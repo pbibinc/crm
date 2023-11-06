@@ -27,7 +27,6 @@ import { ContextData } from "../contexts/context-data-provider";
 import { NumericFormat } from "react-number-format";
 import Swal from "sweetalert2";
 // import Col from "react-bootstrap/esm/Col";
-
 const GeneralLiabilitiesForm = () => {
     const { classCodeArray } = useContext(ContextData);
     const getLeadStoredData = () => {
@@ -51,8 +50,11 @@ const GeneralLiabilitiesForm = () => {
         () => getGeneralLiabilitiesStoredData()?.classcCodeObject || []
     );
 
+<<<<<<< HEAD
     const [amount, setAmount] = useState("");
 
+=======
+>>>>>>> 177b4e8be9117a8a45c59401fc62e701cc9b16cd
     const [multipleStatePercentage, setMultipleStatePercentage] = useState(
         () => getGeneralLiabilitiesStoredData()?.multiple_percentage || [0]
     );
@@ -66,8 +68,12 @@ const GeneralLiabilitiesForm = () => {
         () => getGeneralLiabilitiesStoredData()?.isMultipleStateChecked || false
     );
 
+    //have loss variable
     const [isHaveLossesChecked, setIsHaveLossesChecked] = useState(false);
     const [dateOptionsValue, setDateOptionsValue] = useState(1);
+    const [dateOfClaim, setDateOfClaim] = useState(null);
+    const [amount, setAmount] = useState("");
+    const [haveLossAmount, setHaveLossAmount] = useState("");
 
     //states for setting value for coverage limits in general liabilities
     const [selectedLimit, setSelectedLimit] = useState(
@@ -279,6 +285,7 @@ const GeneralLiabilitiesForm = () => {
             ","
         );
         setAmount(numbericValue);
+        setHaveLossAmount(numbericValue);
     };
 
     // const handleLargestProjectAmountChange = (event) => {
@@ -613,6 +620,7 @@ const GeneralLiabilitiesForm = () => {
         cross_sell: selectedCrossSell,
 
         //object for mutilple classcode
+        isMultipleStateChecked: isMultipleStateChecked,
         multiple_percentage: multipleStatePercentage,
         multiple_states: selectedStates,
 
@@ -630,6 +638,11 @@ const GeneralLiabilitiesForm = () => {
         hazardous_waste: hazardousWaste,
         asbestos_mold: asbestosMold,
         tall_building: tallBuilding,
+
+        //have loss object
+        isHaveLossesChecked: isHaveLossesChecked,
+        dateOfClaim: dateOfClaim,
+        haveLossAmount: haveLossAmount,
 
         isUpdate: isUpdate,
         isEditing: isEditing,
@@ -683,7 +696,7 @@ const GeneralLiabilitiesForm = () => {
         policy_premium: policyPremium,
         cross_sell: selectedCrossSell,
 
-        //object for mutilple classcode
+        //object for mutilple state
         isMultipleStateChecked: isMultipleStateChecked,
         multiple_percentage: multipleStatePercentage,
         multiple_states: selectedStates,
@@ -713,6 +726,7 @@ const GeneralLiabilitiesForm = () => {
             return { value: e.value, label: e.label };
         }),
     };
+    console.log("generalLiabilitiesStoredFormData", generalLiabilitiesFormData);
 
     sessionStorage.setItem(
         "generalLiabilitiesStoredData",
@@ -794,16 +808,22 @@ const GeneralLiabilitiesForm = () => {
                                 key={`inputPercentageColumn${index}`}
                                 classValue="col-2"
                                 colContent={
-                                    <Form.Control
-                                        key={index}
-                                        type="text"
-                                        value={percentage}
-                                        disabled={!isEditing}
-                                        onChange={(event) =>
-                                            handlePercentageChange(index, event)
-                                        }
-                                        onBlur={handleInputBlur}
-                                    />
+                                    <InputGroup className="mb-3">
+                                        <Form.Control
+                                            key={index}
+                                            type="text"
+                                            value={percentage}
+                                            disabled={!isEditing}
+                                            onChange={(event) =>
+                                                handlePercentageChange(
+                                                    index,
+                                                    event
+                                                )
+                                            }
+                                            onBlur={handleInputBlur}
+                                        />
+                                        <InputGroup.Text>%</InputGroup.Text>
+                                    </InputGroup>
                                 }
                             />,
 
@@ -1590,6 +1610,9 @@ const GeneralLiabilitiesForm = () => {
                                             rowContent={
                                                 <DateDay
                                                     disabled={!isEditing}
+                                                    onChange={(date) =>
+                                                        setDateOfClaim(date)
+                                                    }
                                                 />
                                             }
                                         />
@@ -1599,6 +1622,9 @@ const GeneralLiabilitiesForm = () => {
                                             rowContent={
                                                 <DateMonth
                                                     disabled={!isEditing}
+                                                    onChange={(date) =>
+                                                        setDateOfClaim(date)
+                                                    }
                                                 />
                                             }
                                         />
