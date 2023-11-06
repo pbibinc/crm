@@ -21,7 +21,7 @@ return [
 
     'allowed_origins' => [
         env('CORS_DEV_ORIGIN', 'http://localhost:3000'),
-        env('CORS_PROD_ORIGIN', 'https://crm.pbibinc.com')
+        env('CORS_PROD_ORIGIN', 'https://form.pbibinc.com')
     ],
 
     'allowed_origins_patterns' => [],
