@@ -10,6 +10,7 @@ use App\Models\ClassCodeQuestionare;
 use App\Models\CoverageLimit;
 use App\Models\GeneralInformation;
 use App\Models\GeneralLiabilities;
+use App\Models\GeneralLiabilitiesHaveLoss;
 use App\Models\GeneralLiabilitiesRecreationalFacilities;
 use App\Models\MultipleState;
 use App\Models\QuotationProduct;
@@ -26,6 +27,7 @@ class GeneralLiabilitiesDataController extends BaseController
     public function saveGeneralLiabilities(Request $request)
     {
         $data = $request->all();
+        Log::info("General Liabilities Data: ", [$data]);
         try{
 
 
@@ -113,6 +115,8 @@ class GeneralLiabilitiesDataController extends BaseController
                 $classCodePercentage->save();
             }
 
+
+
             //saving for Classcode questionare
             $classCodeAnswers = $data['classCodeAnswer']; // Assuming this is an array
             $classCodeQuestions = $data['classCodeQuestion']; // Assuming this is an array
@@ -135,19 +139,28 @@ class GeneralLiabilitiesDataController extends BaseController
             }
 
              //saving multiple state
-            $mergedData = array_map(function ($state, $percentage) {
-            return ['state' => $state, 'percentage' => $percentage];
-            }, $data['multiple_states'], $data['multiple_percentage']);
+             if($data['isMultipleStateChecked'] !== false){
+                $mergedData = array_map(function ($state, $percentage) {
+                    return ['state' => $state, 'percentage' => $percentage];
+                    }, $data['multiple_states'], $data['multiple_percentage']);
 
-            foreach($mergedData as $data){
-             $multipleState = new MultipleState();
-             $multipleState->general_liabilities_id = $generalLiabilitiId;
-             $multipleState->state = $data['state'];
-             $multipleState->percentage = (int)$data['percentage'];
-             $multipleState->save();
-            }
+                    foreach($mergedData as $data){
+                     $multipleState = new MultipleState();
+                     $multipleState->general_liabilities_id = $generalLiabilitiId;
+                     $multipleState->state = $data['state'];
+                     $multipleState->percentage = (int)$data['percentage'];
+                     $multipleState->save();
+                    }
+             }
 
-
+        //saving of have loss general liabilities table
+        if($data['isHaveLossesChecked'] !== false){
+            $generalLiabilitiesHaveLoss = new GeneralLiabilitiesHaveLoss();
+            $generalLiabilitiesHaveLoss->general_liabilities_id = $generalLiabilitiId;
+            $generalLiabilitiesHaveLoss->date_of_claim = Carbon::parse($data['dateOfClaim'])->toDateString();
+            $generalLiabilitiesHaveLoss->loss_amount = $data['haveLossAmount'];
+            $generalLiabilitiesHaveLoss->save();
+         }
 
         }catch(\Exception $e){
             Log::error('Error saving general liabilities data: '.$e->getMessage());
@@ -263,24 +276,59 @@ class GeneralLiabilitiesDataController extends BaseController
                         $recreationalFacilitiesGeneralLiabilities->save();
                     }
                 }
-
-                    //updating the multiple state data
-                    $multipleState = MultipleState::where('general_liabilities_id', $generalLiabilitiesId)->get();
-                    $multipleStateDelete = $multipleState->each->delete();
-                    if($multipleStateDelete){
-                        $mergedData = array_map(function ($state, $percentage) {
-                            return ['state' => $state, 'percentage' => $percentage];
-                        }, $data['multiple_states'], $data['multiple_percentage']);
-
-                        foreach($mergedData as $data){
-                         $multipleState = new MultipleState();
-                         $multipleState->general_liabilities_id = $generalLiabilitiesId;
-                         $multipleState->state = $data['state'];
-                         $multipleState->percentage = (int)$data['percentage'];
-                         $multipleState->save();
+                  //updating the have loss data
+                  if($data['isHaveLossesChecked'] !== false){
+                    $generalLiabilitiesHaveLoss = GeneralLiabilitiesHaveLoss::where('general_liabilities_id', $generalLiabilitiesId)->first();
+                    if($generalLiabilitiesHaveLoss){
+                        $generalLiabilitiesHaveLoss = $generalLiabilitiesHaveLoss->delete();
+                        if($generalLiabilitiesHaveLoss){
+                            $generalLiabilitiesHaveLoss = new GeneralLiabilitiesHaveLoss();
+                            $generalLiabilitiesHaveLoss->general_liabilities_id = $generalLiabilitiesId;
+                            $generalLiabilitiesHaveLoss->date_of_claim = Carbon::parse($data['dateOfClaim'])->toDateString();
+                            $generalLiabilitiesHaveLoss->loss_amount = $data['haveLossAmount'];
+                            $generalLiabilitiesHaveLoss->save();
                         }
                     }
+                }else{
+                    $generalLiabilitiesHaveLoss = GeneralLiabilitiesHaveLoss::where('general_liabilities_id', $generalLiabilitiesId)->first();
+                    if($generalLiabilitiesHaveLoss){
+                        $generalLiabilitiesHaveLoss->delete();
+                    }
+                }
 
+                    //updating the multiple state data
+                    if($data['isMultipleStateChecked'] !== false){
+                        $multipleState = MultipleState::where('general_liabilities_id', $generalLiabilitiesId)->get();
+                        $multipleStateDelete = $multipleState->each->delete();
+                        if($multipleStateDelete){
+                            $mergedData = array_map(function ($state, $percentage) {
+                                return ['state' => $state, 'percentage' => $percentage];
+                            }, $data['multiple_states'], $data['multiple_percentage']);
+
+                            foreach($mergedData as $data){
+                             $multipleState = new MultipleState();
+                             $multipleState->general_liabilities_id = $generalLiabilitiesId;
+                             $multipleState->state = $data['state'];
+                             $multipleState->percentage = (int)$data['percentage'];
+                             $multipleState->save();
+                            }
+                        }else{
+                            $mergedData = array_map(function ($state, $percentage) {
+                                return ['state' => $state, 'percentage' => $percentage];
+                            }, $data['multiple_states'], $data['multiple_percentage']);
+
+                            foreach($mergedData as $data){
+                             $multipleState = new MultipleState();
+                             $multipleState->general_liabilities_id = $generalLiabilitiesId;
+                             $multipleState->state = $data['state'];
+                             $multipleState->percentage = (int)$data['percentage'];
+                             $multipleState->save();
+                            }
+                        }
+                    }else{
+                        $multipleState = MultipleState::where('general_liabilities_id', $generalLiabilitiesId)->get();
+                        $multipleStateDelete = $multipleState->each->delete();
+                    }
 
 
             }

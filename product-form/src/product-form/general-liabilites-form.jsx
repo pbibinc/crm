@@ -25,16 +25,13 @@ import DatePicker from "react-datepicker";
 import ClassCodeMain from "../classcode-forms/classcode_main";
 import { ContextData } from "../contexts/context-data-provider";
 import { NumericFormat } from "react-number-format";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
+
 // import Col from "react-bootstrap/esm/Col";
-
 const GeneralLiabilitiesForm = () => {
-
-    const {classCodeArray} = useContext(ContextData);
+    const { classCodeArray } = useContext(ContextData);
     const getLeadStoredData = () => {
-        const storedData = JSON.parse(
-            sessionStorage.getItem("lead") || "{}"
-        );
+        const storedData = JSON.parse(sessionStorage.getItem("lead") || "{}");
         return storedData;
     };
     const getGeneralLiabilitiesStoredData = () => {
@@ -42,31 +39,51 @@ const GeneralLiabilitiesForm = () => {
             sessionStorage.getItem("generalLiabilitiesStoredData") || "{}"
         );
         return storedData;
-    }
-    const [classCodePercentages, setClassCodePercentage] = useState(() => getGeneralLiabilitiesStoredData()?.classcode_percentage || [0]);
+    };
+    const [classCodePercentages, setClassCodePercentage] = useState(
+        () => getGeneralLiabilitiesStoredData()?.classcode_percentage || [0]
+    );
 
-    const [selectedClassCode, setSelectedClassCode] = useState(() => getGeneralLiabilitiesStoredData()?.classCode || []);
-    const [selectedClassCodeObject, setSelectedClassCodeObject] = useState(() => getGeneralLiabilitiesStoredData()?.classcCodeObject || []);
+    const [selectedClassCode, setSelectedClassCode] = useState(
+        () => getGeneralLiabilitiesStoredData()?.classCode || []
+    );
+    const [selectedClassCodeObject, setSelectedClassCodeObject] = useState(
+        () => getGeneralLiabilitiesStoredData()?.classcCodeObject || []
+    );
 
-    const [amount, setAmount] = useState("");
+    const [multipleStatePercentage, setMultipleStatePercentage] = useState(
+        () => getGeneralLiabilitiesStoredData()?.multiple_percentage || [0]
+    );
+    const [selectedStates, setSelectedStates] = useState(
+        () => getGeneralLiabilitiesStoredData()?.multiple_states || []
+    );
+    const [multistateSelectedObject, setMultistateSelectedObject] = useState(
+        () => getGeneralLiabilitiesStoredData()?.multistateSelectedObject || []
+    );
+    const [isMultipleStateChecked, setIsMultipleStateChecked] = useState(
+        () => getGeneralLiabilitiesStoredData()?.isMultipleStateChecked || false
+    );
 
-    const [multipleStatePercentage, setMultipleStatePercentage] = useState(() => getGeneralLiabilitiesStoredData()?.multiple_percentage || [0]);
-    const [selectedStates, setSelectedStates] = useState(()=> getGeneralLiabilitiesStoredData()?.multiple_states || []);
-    const [multistateSelectedObject, setMultistateSelectedObject] = useState(() => getGeneralLiabilitiesStoredData()?.multistateSelectedObject || []);
-    const [isMultipleStateChecked, setIsMultipleStateChecked] = useState(() => getGeneralLiabilitiesStoredData()?.isMultipleStateChecked || false);
-
+    //have loss variable
     const [isHaveLossesChecked, setIsHaveLossesChecked] = useState(false);
     const [dateOptionsValue, setDateOptionsValue] = useState(1);
+    const [dateOfClaim, setDateOfClaim] = useState(null);
+    const [amount, setAmount] = useState("");
+    const [haveLossAmount, setHaveLossAmount] = useState("");
 
     //states for setting value for coverage limits in general liabilities
     const [selectedLimit, setSelectedLimit] = useState(
         getGeneralLiabilitiesStoredData()?.limit || null
     );
-    const [selectedMedical, setSelectedMedical] = useState(() => getGeneralLiabilitiesStoredData()?.medical || "");
-    const [selectedFireDamage, setSelectedFireDamage] = useState(() => getGeneralLiabilitiesStoredData()?.fire_damage || "");
-    const [selectedDeductible, setSelectedDeductible] = useState(() => getGeneralLiabilitiesStoredData()?.deductible || "");
-
-
+    const [selectedMedical, setSelectedMedical] = useState(
+        () => getGeneralLiabilitiesStoredData()?.medical || ""
+    );
+    const [selectedFireDamage, setSelectedFireDamage] = useState(
+        () => getGeneralLiabilitiesStoredData()?.fire_damage || ""
+    );
+    const [selectedDeductible, setSelectedDeductible] = useState(
+        () => getGeneralLiabilitiesStoredData()?.deductible || ""
+    );
 
     //states for setting value for general liabilities common questionare
     const [leadId, setLeadId] = useState(() => {
@@ -78,54 +95,108 @@ const GeneralLiabilitiesForm = () => {
     //     setLeadId(leadDetailsInstance?.data?.id);
     // }, [leadDetailsInstance]);
 
-    const [bussinessDescription, setBussinessDescription] = useState(() => getGeneralLiabilitiesStoredData()?.business_description || "" );
-    const [residentialPercentage, setResidentialPercentage] = useState(() => getGeneralLiabilitiesStoredData()?.residential_percentage || 50);
-    const [commercialPercentage, setCommercialPercentage] = useState(() => getGeneralLiabilitiesStoredData()?.commercial_percentage || 50);
-    const [constructionPercentage, setConstructionPercentage] = useState(() => getGeneralLiabilitiesStoredData()?.construction_percentage || 50);
-    const [repairRemodelPercentage, setRepairRemodelPercentage] = useState(() => getGeneralLiabilitiesStoredData()?.repair_remodel_percentage || 50);
+    const [bussinessDescription, setBussinessDescription] = useState(
+        () => getGeneralLiabilitiesStoredData()?.business_description || ""
+    );
+    const [residentialPercentage, setResidentialPercentage] = useState(
+        () => getGeneralLiabilitiesStoredData()?.residential_percentage || 50
+    );
+    const [commercialPercentage, setCommercialPercentage] = useState(
+        () => getGeneralLiabilitiesStoredData()?.commercial_percentage || 50
+    );
+    const [constructionPercentage, setConstructionPercentage] = useState(
+        () => getGeneralLiabilitiesStoredData()?.construction_percentage || 50
+    );
+    const [repairRemodelPercentage, setRepairRemodelPercentage] = useState(
+        () => getGeneralLiabilitiesStoredData()?.repair_remodel_percentage || 50
+    );
 
-    const [selfPerformingRoofing, setSelfPerformingRoofing] = useState(() => getGeneralLiabilitiesStoredData()?.self_performing_roofing || false);
-    const [concreteFoundationWork, setConcreteFoundationWork] = useState(() => getGeneralLiabilitiesStoredData()?.concrete_foundation_work || false);
-    const [perfromTractWork, setPerfromTractWork] = useState(() => getGeneralLiabilitiesStoredData()?.perform_tract_work || false);
-    const [workOnCondominium, setWorkOnCondominium] = useState(() => getGeneralLiabilitiesStoredData()?.work_on_condominium || false);
-
+    const [selfPerformingRoofing, setSelfPerformingRoofing] = useState(
+        () =>
+            getGeneralLiabilitiesStoredData()?.self_performing_roofing || false
+    );
+    const [concreteFoundationWork, setConcreteFoundationWork] = useState(
+        () =>
+            getGeneralLiabilitiesStoredData()?.concrete_foundation_work || false
+    );
+    const [perfromTractWork, setPerfromTractWork] = useState(
+        () => getGeneralLiabilitiesStoredData()?.perform_tract_work || false
+    );
+    const [workOnCondominium, setWorkOnCondominium] = useState(
+        () => getGeneralLiabilitiesStoredData()?.work_on_condominium || false
+    );
 
     const [
         performRemodellingWorkCheckSwitch,
         setPerformRemodellingWorkCheckSwitch,
-    ] = useState(() => getGeneralLiabilitiesStoredData()?.perform_remodelling_work || false);
+    ] = useState(
+        () =>
+            getGeneralLiabilitiesStoredData()?.perform_remodelling_work || false
+    );
 
-    const [selectedBusinessEntity, setSelectedBusinessEntity] = useState(() => getGeneralLiabilitiesStoredData()?.business_entity || "");
+    const [selectedBusinessEntity, setSelectedBusinessEntity] = useState(
+        () => getGeneralLiabilitiesStoredData()?.business_entity || ""
+    );
 
-    const [yearsInBusiness, setYearsInBusiness] = useState(() => getGeneralLiabilitiesStoredData()?.years_in_business || "");
-    const [yearsInProfession, setYearsInProfession] = useState(() => getGeneralLiabilitiesStoredData()?.years_in_profession || "");
+    const [yearsInBusiness, setYearsInBusiness] = useState(
+        () => getGeneralLiabilitiesStoredData()?.years_in_business || ""
+    );
+    const [yearsInProfession, setYearsInProfession] = useState(
+        () => getGeneralLiabilitiesStoredData()?.years_in_profession || ""
+    );
 
-    const [largestProject, setLargestProject] = useState(() => getGeneralLiabilitiesStoredData()?.largest_project || "");
-    const [largestProjectAmount, setLargestProjectAmount] = useState(() => getGeneralLiabilitiesStoredData()?.largest_project_amount || "");
+    const [largestProject, setLargestProject] = useState(
+        () => getGeneralLiabilitiesStoredData()?.largest_project || ""
+    );
+    const [largestProjectAmount, setLargestProjectAmount] = useState(
+        () => getGeneralLiabilitiesStoredData()?.largest_project_amount || ""
+    );
 
-    const [contactLicense, setContactLicense] = useState(() => getGeneralLiabilitiesStoredData()?.contact_license || "");
-    const [contactLicenseName, setContactLicenseName] = useState(() => getGeneralLiabilitiesStoredData()?.contact_license_name || "");
+    const [contactLicense, setContactLicense] = useState(
+        () => getGeneralLiabilitiesStoredData()?.contact_license || ""
+    );
+    const [contactLicenseName, setContactLicenseName] = useState(
+        () => getGeneralLiabilitiesStoredData()?.contact_license_name || ""
+    );
 
-    const [policyPremium, setPolicyPremium] = useState(() => getGeneralLiabilitiesStoredData()?.policy_premium || "");
+    const [policyPremium, setPolicyPremium] = useState(
+        () => getGeneralLiabilitiesStoredData()?.policy_premium || ""
+    );
 
     const [selectedCrossSell, setSelectedCrossSell] = useState("");
     const [expirationGeneralLiability, setExpirationGeneralLiability] =
         useState(null);
 
-    const [blastingOperation, setBlastingOperation] = useState(getGeneralLiabilitiesStoredData()?.blasting_operation || false);
-    const [hazardousWaste, setHazardousWaste] = useState(getGeneralLiabilitiesStoredData()?.hazardous_waste || false);
-    const [asbestosMold, setAsbestosMold] = useState(getGeneralLiabilitiesStoredData()?.asbestos_mold || false);
-    const [tallBuilding, setTallBuilding] = useState(getGeneralLiabilitiesStoredData()?.tall_building || false);
+    const [blastingOperation, setBlastingOperation] = useState(
+        getGeneralLiabilitiesStoredData()?.blasting_operation || false
+    );
+    const [hazardousWaste, setHazardousWaste] = useState(
+        getGeneralLiabilitiesStoredData()?.hazardous_waste || false
+    );
+    const [asbestosMold, setAsbestosMold] = useState(
+        getGeneralLiabilitiesStoredData()?.asbestos_mold || false
+    );
+    const [tallBuilding, setTallBuilding] = useState(
+        getGeneralLiabilitiesStoredData()?.tall_building || false
+    );
 
     const [selectedRecreationalFacilities, setSelectedRecreationalFacilities] =
-        useState(() => getGeneralLiabilitiesStoredData()?.recreational_facilities || []);
+        useState(
+            () =>
+                getGeneralLiabilitiesStoredData()?.recreational_facilities || []
+        );
 
-    const [isOfficeHome, setIsOfficeHome] = useState(() => getGeneralLiabilitiesStoredData()?.is_office_home || false);
+    const [isOfficeHome, setIsOfficeHome] = useState(
+        () => getGeneralLiabilitiesStoredData()?.is_office_home || false
+    );
 
+    const [isEditing, setIsEditing] = useState(() =>
+        getGeneralLiabilitiesStoredData()?.isUpdate == true ? false : true
+    );
 
-    const [isEditing, setIsEditing] = useState(() => getGeneralLiabilitiesStoredData()?.isUpdate == true ? false : true);
-
-    const [isUpdate, SetIsUpdate] = useState(() => getGeneralLiabilitiesStoredData()?.isUpdate || false);
+    const [isUpdate, SetIsUpdate] = useState(
+        () => getGeneralLiabilitiesStoredData()?.isUpdate || false
+    );
 
     // const [classCodes, SetClassCodes] = useState([]);
 
@@ -210,6 +281,7 @@ const GeneralLiabilitiesForm = () => {
             ","
         );
         setAmount(numbericValue);
+        setHaveLossAmount(numbericValue);
     };
 
     // const handleLargestProjectAmountChange = (event) => {
@@ -231,10 +303,11 @@ const GeneralLiabilitiesForm = () => {
         setSelectedClassCode(updatedClassCode);
 
         const updatedLabelClassCode = [...selectedClassCodeObject];
-        updatedLabelClassCode[index] = {value: isNaN(value) ? 0 : value, label: label || ""};
-        setSelectedClassCodeObject(updatedLabelClassCode)
-
-
+        updatedLabelClassCode[index] = {
+            value: isNaN(value) ? 0 : value,
+            label: label || "",
+        };
+        setSelectedClassCodeObject(updatedLabelClassCode);
     };
 
     // Variable for adding new batch
@@ -328,7 +401,7 @@ const GeneralLiabilitiesForm = () => {
         updatedSelectedStates[index] = value;
         setSelectedStates(updatedSelectedStates);
         const updatedSelectedStatesObject = updatedSelectedStates.map((e) => {
-            return {value:e, label:e};
+            return { value: e, label: e };
         });
         setMultistateSelectedObject(updatedSelectedStatesObject);
     };
@@ -348,13 +421,11 @@ const GeneralLiabilitiesForm = () => {
     const handleClassCodeData = (index, data) => {
         clasCodeDescription[index] = data.description;
         classCodeIdData[index] = data.classcodeId;
-        classCodeFormData[index]= data.value;
+        classCodeFormData[index] = data.value;
     };
-
 
     //script for defining classcode data dropdown
     const classCodeData = classCodeArray;
-
 
     let classCodeArr = [];
     if (Array.isArray(classCodeData)) {
@@ -545,6 +616,7 @@ const GeneralLiabilitiesForm = () => {
         cross_sell: selectedCrossSell,
 
         //object for mutilple classcode
+        isMultipleStateChecked: isMultipleStateChecked,
         multiple_percentage: multipleStatePercentage,
         multiple_states: selectedStates,
 
@@ -563,6 +635,11 @@ const GeneralLiabilitiesForm = () => {
         asbestos_mold: asbestosMold,
         tall_building: tallBuilding,
 
+        //have loss object
+        isHaveLossesChecked: isHaveLossesChecked,
+        dateOfClaim: dateOfClaim,
+        haveLossAmount: haveLossAmount,
+
         isUpdate: isUpdate,
         isEditing: isEditing,
 
@@ -570,17 +647,23 @@ const GeneralLiabilitiesForm = () => {
         recreational_facilities: selectedRecreationalFacilities.map((e) => {
             return e.value;
         }),
-
     };
-
-
 
     const generalLiabilitiesStoredFormData = {
         //objects for coverage limit table
-        limit: {value: selectedLimit?.value, label: selectedLimit?.label},
-        medical: {value: selectedMedical?.value, label: selectedMedical?.label},
-        fire_damage: {value: selectedFireDamage?.value, label: selectedFireDamage?.label},
-        deductible: {value: selectedDeductible?.value, label: selectedDeductible?.label},
+        limit: { value: selectedLimit?.value, label: selectedLimit?.label },
+        medical: {
+            value: selectedMedical?.value,
+            label: selectedMedical?.label,
+        },
+        fire_damage: {
+            value: selectedFireDamage?.value,
+            label: selectedFireDamage?.label,
+        },
+        deductible: {
+            value: selectedDeductible?.value,
+            label: selectedDeductible?.label,
+        },
 
         //objects for general liabilities common questionare
         leadId: leadId,
@@ -594,7 +677,10 @@ const GeneralLiabilitiesForm = () => {
         perform_tract_work: perfromTractWork,
         work_on_condominium: workOnCondominium,
         perform_remodelling_work: performRemodellingWorkCheckSwitch,
-        business_entity: {value: selectedBusinessEntity?.value, label: selectedBusinessEntity.label},
+        business_entity: {
+            value: selectedBusinessEntity?.value,
+            label: selectedBusinessEntity.label,
+        },
         years_in_business: yearsInBusiness,
         years_in_profession: yearsInProfession,
         largest_project: largestProject,
@@ -606,12 +692,11 @@ const GeneralLiabilitiesForm = () => {
         policy_premium: policyPremium,
         cross_sell: selectedCrossSell,
 
-        //object for mutilple classcode
+        //object for mutilple state
         isMultipleStateChecked: isMultipleStateChecked,
         multiple_percentage: multipleStatePercentage,
         multiple_states: selectedStates,
         multistateSelectedObject: multistateSelectedObject,
-
 
         //object for classcode woodworking
         classCodeAnswer: classCodeFormData,
@@ -634,14 +719,15 @@ const GeneralLiabilitiesForm = () => {
 
         //object for general liabilities recreational facilities
         recreational_facilities: selectedRecreationalFacilities.map((e) => {
-            return {value:e.value, label:e.label};
+            return { value: e.value, label: e.label };
         }),
-
     };
+    console.log("generalLiabilitiesStoredFormData", generalLiabilitiesFormData);
 
-
-
-    sessionStorage.setItem("generalLiabilitiesStoredData", JSON.stringify(generalLiabilitiesStoredFormData));
+    sessionStorage.setItem(
+        "generalLiabilitiesStoredData",
+        JSON.stringify(generalLiabilitiesStoredFormData)
+    );
 
     function submitGeneralLiabilitiesForm() {
         const leadIdTobeUpdates = getLeadStoredData()?.data?.id;
@@ -655,33 +741,33 @@ const GeneralLiabilitiesForm = () => {
             .then((response) => {
                 setIsEditing(false);
                 SetIsUpdate(true);
-                if(method == "post"){
+                if (method == "post") {
                     Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'General Liabilities  has been saved',
+                        position: "top-end",
+                        icon: "success",
+                        title: "General Liabilities  has been saved",
                         showConfirmButton: false,
-                        timer: 1500
-                    })
-                }else{
+                        timer: 1500,
+                    });
+                } else {
                     Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'General Liabilities has been successfully updated',
+                        position: "top-end",
+                        icon: "success",
+                        title: "General Liabilities has been successfully updated",
                         showConfirmButton: false,
-                        timer: 1500
-                    })
+                        timer: 1500,
+                    });
                 }
             })
             .catch((error) => {
                 console.log("Error::", error);
                 Swal.fire({
-                    position: 'top-end',
-                    icon: 'warning',
+                    position: "top-end",
+                    icon: "warning",
                     title: `Error:: kindly call your IT and Refer to them this error ${error.response.data.error}`,
                     showConfirmButton: false,
-                    timer: 1500
-                })
+                    timer: 1500,
+                });
             });
     }
 
@@ -718,16 +804,22 @@ const GeneralLiabilitiesForm = () => {
                                 key={`inputPercentageColumn${index}`}
                                 classValue="col-2"
                                 colContent={
-                                    <Form.Control
-                                        key={index}
-                                        type="text"
-                                        value={percentage}
-                                        disabled={!isEditing}
-                                        onChange={(event) =>
-                                            handlePercentageChange(index, event)
-                                        }
-                                        onBlur={handleInputBlur}
-                                    />
+                                    <InputGroup className="mb-3">
+                                        <Form.Control
+                                            key={index}
+                                            type="text"
+                                            value={percentage}
+                                            disabled={!isEditing}
+                                            onChange={(event) =>
+                                                handlePercentageChange(
+                                                    index,
+                                                    event
+                                                )
+                                            }
+                                            onBlur={handleInputBlur}
+                                        />
+                                        <InputGroup.Text>%</InputGroup.Text>
+                                    </InputGroup>
                                 }
                             />,
 
@@ -769,7 +861,7 @@ const GeneralLiabilitiesForm = () => {
                     <Column
                         classValue="col-12"
                         colContent={
-                          <>
+                            <>
                                 <Label labelContent="Business Description" />
                                 <Form.Control
                                     as="textarea"
@@ -782,7 +874,7 @@ const GeneralLiabilitiesForm = () => {
                                     }
                                     disabled={!isEditing}
                                 />
-                          </>
+                            </>
                         }
                     />
                 }
@@ -1371,20 +1463,22 @@ const GeneralLiabilitiesForm = () => {
                             <>
                                 <Label labelContent="Amount" />
                                 <NumericFormat
-                                  className="form-control"
-                                  thousandSeparator={true}
-                                  prefix={"$"}
-                                  decimalScale={2}
-                                  fixedDecimalScale={true}
-                                  allowNegative={false}
-                                  placeholder="$0.00"
-                                  value={largestProjectAmount}
-                                  onChange={(e) => setLargestProjectAmount(e.target.value)}
-                                  disabled={!isEditing}
+                                    className="form-control"
+                                    thousandSeparator={true}
+                                    prefix={"$"}
+                                    decimalScale={2}
+                                    fixedDecimalScale={true}
+                                    allowNegative={false}
+                                    placeholder="$0.00"
+                                    value={largestProjectAmount}
+                                    onChange={(e) =>
+                                        setLargestProjectAmount(e.target.value)
+                                    }
+                                    disabled={!isEditing}
                                 />
                             </>
                         }
-                    />
+                    />,
                 ]}
             />
 
@@ -1512,6 +1606,9 @@ const GeneralLiabilitiesForm = () => {
                                             rowContent={
                                                 <DateDay
                                                     disabled={!isEditing}
+                                                    onChange={(date) =>
+                                                        setDateOfClaim(date)
+                                                    }
                                                 />
                                             }
                                         />
@@ -1521,6 +1618,9 @@ const GeneralLiabilitiesForm = () => {
                                             rowContent={
                                                 <DateMonth
                                                     disabled={!isEditing}
+                                                    onChange={(date) =>
+                                                        setDateOfClaim(date)
+                                                    }
                                                 />
                                             }
                                         />
@@ -1597,12 +1697,14 @@ const GeneralLiabilitiesForm = () => {
                                     allowNegative={false}
                                     placeholder="$0.00"
                                     value={policyPremium}
-                                    onChange={(e) => setPolicyPremium(e.target.value)}
+                                    onChange={(e) =>
+                                        setPolicyPremium(e.target.value)
+                                    }
                                     disabled={!isEditing}
                                 />
                             </>
                         }
-                    />
+                    />,
                 ]}
             />
 
@@ -1641,9 +1743,7 @@ const GeneralLiabilitiesForm = () => {
                                     name="medicalDropdown"
                                     options={medicalLimitOptions}
                                     value={selectedMedical}
-                                    onChange={(e) =>
-                                        setSelectedMedical(e)
-                                    }
+                                    onChange={(e) => setSelectedMedical(e)}
                                     isDisabled={!isEditing}
                                 />
                             </>
@@ -1667,9 +1767,7 @@ const GeneralLiabilitiesForm = () => {
                                     name="medicalDropdown"
                                     options={fireDamageArray}
                                     value={selectedFireDamage}
-                                    onChange={(e) =>
-                                        setSelectedFireDamage(e)
-                                    }
+                                    onChange={(e) => setSelectedFireDamage(e)}
                                     isDisabled={!isEditing}
                                 />
                             </>
@@ -1688,9 +1786,7 @@ const GeneralLiabilitiesForm = () => {
                                     name="medicalDropdown"
                                     options={deductibleArray}
                                     value={selectedDeductible}
-                                    onChange={(e) =>
-                                        setSelectedDeductible(e)
-                                    }
+                                    onChange={(e) => setSelectedDeductible(e)}
                                     isDisabled={!isEditing}
                                 />
                             </>
@@ -1799,61 +1895,62 @@ const GeneralLiabilitiesForm = () => {
             <Row
                 classValue="mb-3"
                 rowContent={[
-
                     <Column
                         key="generalLiabilitiesAddButtonColumn"
                         classValue="col-10"
-                        colContent={
-                            <>
-
-                            </>
-                        }
+                        colContent={<></>}
                     />,
                     <Column
                         key="generalLiabilitiesEditButtonColumn"
                         classValue="col-2"
                         colContent={
                             <>
-                            <Row
-                              rowContent={
-                                <>
-                                    <Column
-                                       key="submitButtonColumn"
-                                       classValue="col-6"
-                                       colContent={
-                                        <div className="d-grid gap-2">
-                                        <Button
-                                        variant="success"
-                                        size="lg"
-                                        onClick={submitGeneralLiabilitiesForm}
-                                        disabled={!isEditing}
-                                         >
-                                         <SaveIcon />
-                                         </Button>
-                                         </div>
-
-                                        }
-                                    />
-                                    <Column
-                                       key="editButtonColumn"
-                                       classValue="col-6"
-                                       colContent={
-                                        <div className="d-grid gap-2">
-                                        <Button
-                                        variant="primary"
-                                        size="lg"
-                                        disabled={isEditing}
-                                        onClick={() => setIsEditing(true)}
-                                        >
-                                         <SaveAsIcon />
-                                        </Button>
-                                            </div>
-                                        }
-                                    />
-                                </>
-                              }
-                            />
-
+                                <Row
+                                    rowContent={
+                                        <>
+                                            <Column
+                                                key="submitButtonColumn"
+                                                classValue="col-6"
+                                                colContent={
+                                                    <div className="d-grid gap-2">
+                                                        <Button
+                                                            variant="success"
+                                                            size="lg"
+                                                            onClick={
+                                                                submitGeneralLiabilitiesForm
+                                                            }
+                                                            disabled={
+                                                                !isEditing
+                                                            }
+                                                        >
+                                                            <SaveIcon />
+                                                        </Button>
+                                                    </div>
+                                                }
+                                            />
+                                            <Column
+                                                key="editButtonColumn"
+                                                classValue="col-6"
+                                                colContent={
+                                                    <div className="d-grid gap-2">
+                                                        <Button
+                                                            variant="primary"
+                                                            size="lg"
+                                                            disabled={isEditing}
+                                                            onClick={() =>
+                                                                setIsEditing(
+                                                                    true
+                                                                )
+                                                            }
+                                                        >
+                                                            <SaveAsIcon />
+                                                        </Button>
+                                                    </div>
+                                                }
+                                            />
+                                        </>
+                                    }
+                                />
                             </>
                         }
                     />,

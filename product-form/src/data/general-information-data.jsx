@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import LeadDetails from "./lead-details";
+import axios from "axios";
+import axiosClient from "../api/axios.client";
 
 const GeneralInformationData = () => {
     const [generalInformation, setGeneralInformation] = useState(null);
@@ -7,11 +9,10 @@ const GeneralInformationData = () => {
     useEffect(() => {
         const fetchGenerealInformation = async () => {
             try {
-                const respons = await fetch(
-                    `http://insuraprime_crm.test/api/general_information`
+                const response = await axiosClient.get(
+                    `/api/general_information`
                 );
-                const data = await respons.json();
-                setGeneralInformation(data);
+                setGeneralInformation(response.data);
             } catch (error) {
                 console.error("Error fetching general information", error);
             }
