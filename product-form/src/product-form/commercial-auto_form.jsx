@@ -367,17 +367,10 @@ const CommercialAutoForm = () => {
     function submitCommercialAutoForm() {
         const leadId = storedLeads?.data?.id;
         const url = isUpdate
-<<<<<<< HEAD
-            ? `http://insuraprime_crm.test/api/commercial-auto-data/update/${leadId}`
-            : `http://insuraprime_crm.test/api/commercial-auto-data/store`;
-        const method = isUpdate ? "put" : "post";
-        axios[method](url, commercialAutoFormData)
-=======
             ? `/api/commercial-auto-data/update/${leadId}`
             : `/api/commercial-auto-data/store`;
         const method = isUpdate ? "put" : "post";
         axiosClient[method](url, commercialAutoFormData)
->>>>>>> 167828cf917e073ab4068e811bbf4e4fe246071e
             .then((response) => {
                 setIsEditing(false);
                 setIsUpdate(true);
@@ -581,20 +574,6 @@ const CommercialAutoForm = () => {
                             colContent={
                                 <>
                                     <Label labelContent="Radius Mileage" />
-<<<<<<< HEAD
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Radius Mileage"
-                                        onChange={(e) =>
-                                            handleFirstVehicleInformationInput(
-                                                "radius",
-                                                e.target.value
-                                            )
-                                        }
-                                        disabled={!isEditing}
-                                        value={firstVehicleInformation?.radius}
-                                    />
-=======
                                     <div className="input-group">
                                         <Form.Control
                                             type="text"
@@ -614,7 +593,6 @@ const CommercialAutoForm = () => {
                                             KM
                                         </span>
                                     </div>
->>>>>>> 167828cf917e073ab4068e811bbf4e4fe246071e
                                 </>
                             }
                         />,
@@ -805,24 +783,6 @@ const CommercialAutoForm = () => {
                                 colContent={
                                     <>
                                         <Label labelContent="Radius Mileage" />
-<<<<<<< HEAD
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Radius Mileage"
-                                            onChange={(e) =>
-                                                handleVehicleInformationInput(
-                                                    index,
-                                                    "radius",
-                                                    e.target.value
-                                                )
-                                            }
-                                            disabled={!isEditing}
-                                            value={
-                                                vehicleInformation[index]
-                                                    ?.radius
-                                            }
-                                        />
-=======
                                         <div className="input-group">
                                             <Form.Control
                                                 type="text"
@@ -844,7 +804,6 @@ const CommercialAutoForm = () => {
                                                 KM
                                             </span>
                                         </div>
->>>>>>> 167828cf917e073ab4068e811bbf4e4fe246071e
                                     </>
                                 }
                             />,
@@ -1434,23 +1393,6 @@ const CommercialAutoForm = () => {
                         classValue="col-6"
                         colContent={
                             <>
-<<<<<<< HEAD
-                                <Label labelContent="Cross Sell" />
-                                <Select
-                                    className="basic=single"
-                                    classNamePrefix="select"
-                                    id="generalLiabilitiesCrossSellDropdown"
-                                    name="generalLiabilitiesCrossSellDropdown"
-                                    options={workersCompensationOption}
-                                    onChange={(e) =>
-                                        setCrossSell({
-                                            value: e.value,
-                                            label: e.label,
-                                        })
-                                    }
-                                    isDisabled={!isEditing}
-                                    value={crossSell}
-=======
                                 <Label labelContent="Prior Carrier" />
                                 <Form.Control
                                     type="text"
@@ -1460,7 +1402,6 @@ const CommercialAutoForm = () => {
                                     }
                                     value={priorCarrier}
                                     disabled={!isEditing}
->>>>>>> 167828cf917e073ab4068e811bbf4e4fe246071e
                                 />
                             </>
                         }
@@ -1802,7 +1743,6 @@ const CommercialAutoForm = () => {
                                     <SaveAsIcon />
                                     <span className="ms-2">Edit</span>
                                 </Button>
->>>>>>> 167828cf917e073ab4068e811bbf4e4fe246071e
                             </>
                         }
                     />,
