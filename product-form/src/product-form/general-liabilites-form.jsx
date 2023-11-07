@@ -50,11 +50,6 @@ const GeneralLiabilitiesForm = () => {
         () => getGeneralLiabilitiesStoredData()?.classcCodeObject || []
     );
 
-<<<<<<< HEAD
-    const [amount, setAmount] = useState("");
-
-=======
->>>>>>> 177b4e8be9117a8a45c59401fc62e701cc9b16cd
     const [multipleStatePercentage, setMultipleStatePercentage] = useState(
         () => getGeneralLiabilitiesStoredData()?.multiple_percentage || [0]
     );
