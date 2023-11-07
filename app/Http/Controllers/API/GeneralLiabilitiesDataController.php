@@ -116,6 +116,16 @@ class GeneralLiabilitiesDataController extends BaseController
             }
 
 
+        //saving of have loss general liabilities table
+        if($data['isHaveLossesChecked'] !== false){
+            $generalLiabilitiesHaveLoss = new GeneralLiabilitiesHaveLoss();
+            $generalLiabilitiesHaveLoss->general_liabilities_id = $generalLiabilitiId;
+            $generalLiabilitiesHaveLoss->date_of_claim = Carbon::parse($data['dateOfClaim'])->toDateString();
+            $generalLiabilitiesHaveLoss->loss_amount = $data['haveLossAmount'];
+            $generalLiabilitiesHaveLoss->save();
+         }
+
+
 
             //saving for Classcode questionare
             $classCodeAnswers = $data['classCodeAnswer']; // Assuming this is an array
@@ -153,14 +163,6 @@ class GeneralLiabilitiesDataController extends BaseController
                     }
              }
 
-        //saving of have loss general liabilities table
-        if($data['isHaveLossesChecked'] !== false){
-            $generalLiabilitiesHaveLoss = new GeneralLiabilitiesHaveLoss();
-            $generalLiabilitiesHaveLoss->general_liabilities_id = $generalLiabilitiId;
-            $generalLiabilitiesHaveLoss->date_of_claim = Carbon::parse($data['dateOfClaim'])->toDateString();
-            $generalLiabilitiesHaveLoss->loss_amount = $data['haveLossAmount'];
-            $generalLiabilitiesHaveLoss->save();
-         }
 
         }catch(\Exception $e){
             Log::error('Error saving general liabilities data: '.$e->getMessage());

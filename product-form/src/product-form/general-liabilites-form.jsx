@@ -26,9 +26,13 @@ import ClassCodeMain from "../classcode-forms/classcode_main";
 import { ContextData } from "../contexts/context-data-provider";
 import { NumericFormat } from "react-number-format";
 import Swal from "sweetalert2";
+import axiosClient from "../api/axios.client";
+import { FidgetSpinner } from "react-loader-spinner";
+
 // import Col from "react-bootstrap/esm/Col";
 const GeneralLiabilitiesForm = () => {
     const { classCodeArray } = useContext(ContextData);
+    const [isLoading, setIsLoading] = useState(false);
     const getLeadStoredData = () => {
         const storedData = JSON.parse(sessionStorage.getItem("lead") || "{}");
         return storedData;
@@ -732,15 +736,17 @@ const GeneralLiabilitiesForm = () => {
         const leadIdTobeUpdates = getLeadStoredData()?.data?.id;
 
         const url = isUpdate
-            ? `http://insuraprime_crm.test/api/general-liabilities-data/${leadIdTobeUpdates}`
-            : "http://insuraprime_crm.test/api/general-liabilities-data";
+            ? `/api/general-liabilities-data/${leadIdTobeUpdates}`
+            : "/api/general-liabilities-data";
 
         const method = isUpdate ? "put" : "post";
-        axios[method](url, generalLiabilitiesFormData)
+        axiosClient[method](url, generalLiabilitiesFormData)
             .then((response) => {
                 setIsEditing(false);
                 SetIsUpdate(true);
+                setIsLoading(true);
                 if (method == "post") {
+                    setIsLoading(false);
                     Swal.fire({
                         position: "top-end",
                         icon: "success",
@@ -749,6 +755,7 @@ const GeneralLiabilitiesForm = () => {
                         timer: 1500,
                     });
                 } else {
+                    setIsLoading(false);
                     Swal.fire({
                         position: "top-end",
                         icon: "success",
@@ -1891,7 +1898,7 @@ const GeneralLiabilitiesForm = () => {
                     />,
                 ]}
             /> */}
-            <Row
+            {/* <Row
                 classValue="mb-3"
                 rowContent={[
                     <Column
@@ -1950,6 +1957,40 @@ const GeneralLiabilitiesForm = () => {
                                         </>
                                     }
                                 />
+                            </>
+                        }
+                    />,
+                ]}
+            /> */}
+
+            <Row
+                classValue="mb-3"
+                rowContent={[
+                    <Column
+                        key="generalLiabilitiesEditButtonColumn"
+                        classValue="col-12 d-flex justify-content-center align-items-center"
+                        colContent={
+                            <>
+                                <Button
+                                    variant="success"
+                                    size="lg"
+                                    onClick={submitGeneralLiabilitiesForm}
+                                    disabled={!isEditing}
+                                    className="mx-2"
+                                >
+                                    <SaveIcon />
+                                    <span className="ms-2">Save</span>
+                                </Button>
+                                <Button
+                                    variant="primary"
+                                    size="lg"
+                                    disabled={isEditing}
+                                    onClick={() => setIsEditing(true)}
+                                    className="mx-2"
+                                >
+                                    <SaveAsIcon />
+                                    <span className="ms-2">Edit</span>
+                                </Button>
                             </>
                         }
                     />,

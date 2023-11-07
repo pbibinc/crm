@@ -13,7 +13,8 @@ import SaveIcon from "@mui/icons-material/Save";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
 import axios from "axios";
 import Swal from "sweetalert2";
-//import { set } from "lodash";
+// import { set } from "lodash";
+import axiosClient from "../api/axios.client";
 
 const ExcessLiabilitiesForm = () => {
     const GetExcessLiabilityData = () => {
@@ -176,10 +177,10 @@ const ExcessLiabilitiesForm = () => {
     function submitExcessliabilityForm() {
         const leadId = getLeadData()?.data?.id;
         const url = isUpdate
-            ? `http://insuraprime_crm.test/api/excess-liability-data/update/${leadId} `
-            : `http://insuraprime_crm.test/api/excess-liability-data/store`;
+            ? `/api/excess-liability-data/update/${leadId} `
+            : `/api/excess-liability-data/store`;
         const method = isUpdate ? "put" : "post";
-        axios[method](url, excessLiabilityFormData)
+        axiosClient[method](url, excessLiabilityFormData)
             .then((response) => {
                 console.log(response);
                 setIsEditing(false);
@@ -472,7 +473,7 @@ const ExcessLiabilitiesForm = () => {
                     />,
                 ]}
             /> */}
-            <Row
+            {/* <Row
                 classValue="mb-3"
                 rowContent={[
                     <Column
@@ -531,6 +532,40 @@ const ExcessLiabilitiesForm = () => {
                                         </>
                                     }
                                 />
+                            </>
+                        }
+                    />,
+                ]}
+            /> */}
+
+            <Row
+                classValue="mb-3"
+                rowContent={[
+                    <Column
+                        key="generalLiabilitiesEditButtonColumn"
+                        classValue="col-12 d-flex justify-content-center align-items-center"
+                        colContent={
+                            <>
+                                <Button
+                                    variant="success"
+                                    size="lg"
+                                    onClick={submitExcessliabilityForm}
+                                    disabled={!isEditing}
+                                    className="mx-2"
+                                >
+                                    <SaveIcon />
+                                    <span className="ms-2">Save</span>
+                                </Button>
+                                <Button
+                                    variant="primary"
+                                    size="lg"
+                                    disabled={isEditing}
+                                    onClick={() => setIsEditing(true)}
+                                    className="mx-2"
+                                >
+                                    <SaveAsIcon />
+                                    <span className="ms-2">Edit</span>
+                                </Button>
                             </>
                         }
                     />,
