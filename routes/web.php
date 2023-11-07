@@ -249,9 +249,6 @@ Route::prefix('departments')->group(function(){
 });
 
 //end Routes for departments
-
-
-
 });
 
 

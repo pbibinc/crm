@@ -56,7 +56,16 @@
                     // {data: 'status', name: 'status'},
                     // {data: 'sent_out_date', name: 'sent_out_date'},
                     // {data: 'action', name: 'action', orderable: false, searchable: false}
-                ]
+                ],
+                language: {
+                    emptyTable: "No data available in the table"
+                },
+                initComplete: function(settings, json) {
+                    if (json.recordsTotal === 0) {
+                        // Handle the case when there's no data (e.g., show a message)
+                        console.log("No data available.");
+                    }
+                }
             });
         });
         $(document).on('click', '.bindButton', function(e) {
