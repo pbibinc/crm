@@ -136,7 +136,7 @@
                             @can('viewLeadsFunnel', App\Models\Lead::find(1))
                                 <li><a href="{{ route('assign') }}">Assign Leads</a></li>
                             @endcan
-                            <li><a href="pages-directory.html">Leads Profile</a></li>
+                            {{-- <li><a href="pages-directory.html">Leads Profile</a></li> --}}
                         </ul>
                     @endcan
                 <li class="menu-title">Customer Service</li>

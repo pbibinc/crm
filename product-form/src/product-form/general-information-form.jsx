@@ -14,11 +14,12 @@ import Form from "react-bootstrap/Form";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import SaveAsiCon from "@mui/icons-material/SaveAs";
-console
+console;
 import SaveIcon from "@mui/icons-material/Save";
 import { ContextData } from "../contexts/context-data-provider";
 import { NumericFormat } from "react-number-format";
 import Swal from "sweetalert2";
+import axiosClient from "../api/axios.client";
 const GeneralInformationForm = () => {
     const { lead, zipcodes, cities, zipCity } = useContext(ContextData);
 
@@ -30,25 +31,63 @@ const GeneralInformationForm = () => {
         return JSON.parse(storedData || "{}");
     };
 
-    const [amount, setAmount] = useState(() => getStoredGeneralInformation().amount || "");
-    const [selectedZipCode, setSelectedZipCode] = useState(() => getStoredGeneralInformation().zipcode || "");
-    const [selectedCity, setSelectedCity] = useState(() => getStoredGeneralInformation().state || "");
-    const [firstName, setFirstName] = useState(() => getStoredGeneralInformation().firstname || "");
-    const [lastName, setLastName] = useState(() => getStoredGeneralInformation().lastname || "");
-    const [jobPosition, setJobPosition] = useState(() => getStoredGeneralInformation().job_position || "");
-    const [address, setAddress] = useState(() => getStoredGeneralInformation().address || "");
-    const [alternativeNumber, setAlternativeNumber] = useState(() => getStoredGeneralInformation().alt_num || "");
-    const [fax, setFax] = useState(() => getStoredGeneralInformation().fax || "");
-    const [email, setEmail] = useState(() => getStoredGeneralInformation().email || "");
-    const [fullTimeEmployee, setFullTimeEmployee] = useState(() => getStoredGeneralInformation().full_time_employee || "");
-    const [partTimeEmployee, setPartTimeEmployee] = useState(() => getStoredGeneralInformation().part_time_employee || "");
-    const [grossReceipt, setGrossReceipt] = useState(() => getStoredGeneralInformation().gross_receipt || "");
-    const [employeePayroll, setEmployeePayroll] = useState(() => getStoredGeneralInformation().employee_payroll || "");
-    const [subOut, setSubOUt] = useState(() => getStoredGeneralInformation().sub_out || "");
-    const [ownersPayroll, setOwnersPayroll] = useState(() => getStoredGeneralInformation().owners_payroll || "");
-    const [allTradesAndWork, setAllTradeAndWork] = useState(() => getStoredGeneralInformation().all_trade_work || "");
-    const [isEditing, setIsEditing] = useState(() => getStoredGeneralInformation().isUpdate == true ? false : true);
-    const [isUpdate, SetIsUpdate] = useState(() => getStoredGeneralInformation().isUpdate || false);
+    const [amount, setAmount] = useState(
+        () => getStoredGeneralInformation().amount || ""
+    );
+    const [selectedZipCode, setSelectedZipCode] = useState(
+        () => getStoredGeneralInformation().zipcode || ""
+    );
+    const [selectedCity, setSelectedCity] = useState(
+        () => getStoredGeneralInformation().state || ""
+    );
+    const [firstName, setFirstName] = useState(
+        () => getStoredGeneralInformation().firstname || ""
+    );
+    const [lastName, setLastName] = useState(
+        () => getStoredGeneralInformation().lastname || ""
+    );
+    const [jobPosition, setJobPosition] = useState(
+        () => getStoredGeneralInformation().job_position || ""
+    );
+    const [address, setAddress] = useState(
+        () => getStoredGeneralInformation().address || ""
+    );
+    const [alternativeNumber, setAlternativeNumber] = useState(
+        () => getStoredGeneralInformation().alt_num || ""
+    );
+    const [fax, setFax] = useState(
+        () => getStoredGeneralInformation().fax || ""
+    );
+    const [email, setEmail] = useState(
+        () => getStoredGeneralInformation().email || ""
+    );
+    const [fullTimeEmployee, setFullTimeEmployee] = useState(
+        () => getStoredGeneralInformation().full_time_employee || ""
+    );
+    const [partTimeEmployee, setPartTimeEmployee] = useState(
+        () => getStoredGeneralInformation().part_time_employee || ""
+    );
+    const [grossReceipt, setGrossReceipt] = useState(
+        () => getStoredGeneralInformation().gross_receipt || ""
+    );
+    const [employeePayroll, setEmployeePayroll] = useState(
+        () => getStoredGeneralInformation().employee_payroll || ""
+    );
+    const [subOut, setSubOUt] = useState(
+        () => getStoredGeneralInformation().sub_out || ""
+    );
+    const [ownersPayroll, setOwnersPayroll] = useState(
+        () => getStoredGeneralInformation().owners_payroll || ""
+    );
+    const [allTradesAndWork, setAllTradeAndWork] = useState(
+        () => getStoredGeneralInformation().all_trade_work || ""
+    );
+    const [isEditing, setIsEditing] = useState(() =>
+        getStoredGeneralInformation().isUpdate == true ? false : true
+    );
+    const [isUpdate, SetIsUpdate] = useState(
+        () => getStoredGeneralInformation().isUpdate || false
+    );
 
     // const [storedLeadId, setStoredLeadId] = useState(() => {
     //     const storedgeneralInformationStoredData = JSON.parse(
@@ -71,7 +110,6 @@ const GeneralInformationForm = () => {
     useEffect(() => {
         setLeadId(lead?.data?.id);
     }, [lead?.data?.id]);
-
 
     // if(isTheSameLead == false) {
     //     sessionStorage.removeItem("generalInformationStoredData");
@@ -103,9 +141,15 @@ const GeneralInformationForm = () => {
             isUpdate: isUpdate,
             amount: amount,
         };
-        sessionStorage.setItem("generalInformationStoredData", JSON.stringify(newgeneralInformationStoredData));
+        sessionStorage.setItem(
+            "generalInformationStoredData",
+            JSON.stringify(newgeneralInformationStoredData)
+        );
 
-        localStorage.setItem("generalInformationStoredData", JSON.stringify(newgeneralInformationStoredData));
+        localStorage.setItem(
+            "generalInformationStoredData",
+            JSON.stringify(newgeneralInformationStoredData)
+        );
     }, [
         leadId,
         firstName,
@@ -150,31 +194,31 @@ const GeneralInformationForm = () => {
         material_cost: parseInt(amount.replace(/\D/g, ""), 10),
     };
 
-
     function submitGeneralInformationForm() {
         const leadIdTobeUpdates = lead?.data?.id;
+
         const url = isUpdate
-            ? `http://insuraprime_crm.test/api/general-information-data/${leadIdTobeUpdates}`
-            : "http://insuraprime_crm.test/api/general-information-data";
+            ? `/api/general-information-data/${leadIdTobeUpdates}`
+            : "/api/general-information-data";
 
         const method = isUpdate ? "put" : "post";
 
-        axios[method](url, generalInfomrationFormData)
+        axiosClient[method](url, generalInfomrationFormData)
             .then((response) => {
                 setIsEditing(false);
                 SetIsUpdate(true);
-                if(isUpdate) {
+                if (isUpdate) {
                     Swal.fire({
                         icon: "success",
                         title: "Success",
                         text: "General Information has been updated",
-                    })
-                }else{
+                    });
+                } else {
                     Swal.fire({
                         icon: "success",
                         title: "Success",
                         text: "General Information has been saved",
-                    })
+                    });
                 }
             })
             .catch((error) => {
@@ -231,22 +275,17 @@ const GeneralInformationForm = () => {
 
     // Hande Amount change for Material Cost
     const handleAmountChange = (event) => {
-
-
         setAmount(event.target.value);
     };
 
-
-
     //script for city and zipcode dropdown
 
-
-    let zipCodeArray = []
+    let zipCodeArray = [];
     if (zipcodes !== undefined && zipcodes !== null) {
         zipCodeArray = Object.values(zipcodes.toString().split(","));
-      }
+    }
 
-    let cityArray = []
+    let cityArray = [];
     if (cities !== undefined && cities !== null) {
         cityArray = Object.values(cities.toString().split(","));
     }
@@ -571,13 +610,13 @@ const GeneralInformationForm = () => {
                                 <>
                                     <Label labelContent="Employee Payroll" />
                                     <NumericFormat
-                                       className="form-control"
-                                       thousandSeparator={true}
-                                       prefix={"$"}
-                                       decimalScale={2}
-                                       fixedDecimalScale={true}
-                                       allowNegative={false}
-                                       placeholder="$0.00"
+                                        className="form-control"
+                                        thousandSeparator={true}
+                                        prefix={"$"}
+                                        decimalScale={2}
+                                        fixedDecimalScale={true}
+                                        allowNegative={false}
+                                        placeholder="$0.00"
                                         value={employeePayroll}
                                         disabled={!isEditing}
                                         onChange={(e) =>
@@ -599,13 +638,13 @@ const GeneralInformationForm = () => {
                                 <>
                                     <Label labelContent="Sub Out/1099" />
                                     <NumericFormat
-                                       className="form-control"
-                                       thousandSeparator={true}
-                                       prefix={"$"}
-                                       decimalScale={2}
-                                       fixedDecimalScale={true}
-                                       allowNegative={false}
-                                       placeholder="$0.00"
+                                        className="form-control"
+                                        thousandSeparator={true}
+                                        prefix={"$"}
+                                        decimalScale={2}
+                                        fixedDecimalScale={true}
+                                        allowNegative={false}
+                                        placeholder="$0.00"
                                         value={subOut}
                                         disabled={!isEditing}
                                         onChange={(e) =>
@@ -622,13 +661,13 @@ const GeneralInformationForm = () => {
                                 <>
                                     <Label labelContent="Owners Payroll" />
                                     <NumericFormat
-                                         className="form-control"
-                                         thousandSeparator={true}
-                                         prefix={"$"}
-                                         decimalScale={2}
-                                         fixedDecimalScale={true}
-                                         allowNegative={false}
-                                         placeholder="$0.00"
+                                        className="form-control"
+                                        thousandSeparator={true}
+                                        prefix={"$"}
+                                        decimalScale={2}
+                                        fixedDecimalScale={true}
+                                        allowNegative={false}
+                                        placeholder="$0.00"
                                         value={ownersPayroll}
                                         disabled={!isEditing}
                                         onChange={(e) =>
@@ -671,16 +710,16 @@ const GeneralInformationForm = () => {
                             classValue="col-10"
                             colContent={
                                 <NumericFormat
-                                className="form-control"
-                                thousandSeparator={true}
-                                prefix={"$"}
-                                decimalScale={2}
-                                fixedDecimalScale={true}
-                                allowNegative={false}
-                                placeholder="$0.00"
-                                value={`$${amount}`}
-                                disabled={!isEditing}
-                                onChange={handleAmountChange}
+                                    className="form-control"
+                                    thousandSeparator={true}
+                                    prefix={"$"}
+                                    decimalScale={2}
+                                    fixedDecimalScale={true}
+                                    allowNegative={false}
+                                    placeholder="$0.00"
+                                    value={`$${amount}`}
+                                    disabled={!isEditing}
+                                    onChange={handleAmountChange}
                                 />
                             }
                         />,

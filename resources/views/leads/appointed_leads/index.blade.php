@@ -76,7 +76,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($groupedProducts as $company => $groupedProduct)
-                                        <tr>
+                                        <tr style="background-color: #f0f0f0;">
                                             <td><strong><b>{{ $company }}</b></strong></td>
                                             <td><strong><b>Product</b></strong></td>
                                             <td><strong><b>Telemarketer</b></strong></td>
@@ -114,7 +114,7 @@
                             <h4 class="card-title mb-4">Broker's Product List</h4>
                             <table id="productQuotedView" class="table table-bordered dt-responsive nowrap"
                                 style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                <thead>
+                                <thead style="background-color: #f0f0f0;">
                                     <th>Company Name</th>
                                     <th>Product</th>
                                     <th>Broker Assistant</th>

@@ -56,7 +56,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($groupedProducts as $companyName => $groupedProduct)
-                                        <tr>
+                                        <tr style="background-color: #f0f0f0;">
                                             <td><strong><b>{{ $companyName }}</b></strong></td>
                                             <td><input type="checkbox" class="companyCheckAllBox"
                                                     data-company="{{ $companyName }}" name="company[]"></td>
@@ -156,7 +156,7 @@
                             <div class="row mb-4">
                                 <table id="datatableLeads" class="table table-bordered dt-responsive nowrap"
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                    <thead>
+                                    <thead style="background-color: #f0f0f0;">
                                         <tr>
                                             <th></th>
                                             <th>Product</th>
