@@ -131,15 +131,15 @@
                 order: [
                     [2, 'desc']
                 ],
-                language: {
-                    emptyTable: "No data available in the table"
-                },
-                initComplete: function(settings, json) {
-                    if (json.recordsTotal === 0) {
-                        // Handle the case when there's no data (e.g., show a message)
-                        console.log("No data available.");
-                    }
-                }
+                // language: {
+                //     emptyTable: "No data available in the table"
+                // },
+                // initComplete: function(settings, json) {
+                //     if (json.recordsTotal === 0) {
+                //         // Handle the case when there's no data (e.g., show a message)
+                //         console.log("No data available.");
+                //     }
+                // }
                 // createdRow: function (row, data, dataIndex) {
                 //     if (data.status == 3) {
                 //       $(row).css({
@@ -154,7 +154,9 @@
             $('.getConfimedProductTable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('get-confirmed-product') }}",
+                ajax: {
+                    url: "{{ route('get-confirmed-product') }}"
+                },
                 columns: [{
                         data: 'product',
                         name: 'product'
@@ -167,15 +169,15 @@
                     // {data: 'sent_out_date', name: 'sent_out_date'},
                     // {data: 'action', name: 'action', orderable: false, searchable: false}
                 ],
-                language: {
-                    emptyTable: "No data available in the table"
-                },
-                initComplete: function(settings, json) {
-                    if (json.recordsTotal === 0) {
-                        // Handle the case when there's no data (e.g., show a message)
-                        console.log("No data available.");
-                    }
-                }
+                // language: {
+                //     emptyTable: "No data available in the table"
+                // },
+                // initComplete: function(settings, json) {
+                //     if (json.recordsTotal === 0) {
+                //         // Handle the case when there's no data (e.g., show a message)
+                //         console.log("No data available.");
+                //     }
+                // }
             })
 
             $('#assignPendingLeadsTable').on('click', '.viewButton', function() {
