@@ -509,7 +509,6 @@ class QuotationController extends Controller
                 $lead = $confirmedProduct->QuoteInformation->QuoteLead->leads->company_name;
                 return $lead;
             })
-
             ->make(true);
         }
         return view('leads.broker_leads.confirmed-product-list');
