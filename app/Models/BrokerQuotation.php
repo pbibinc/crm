@@ -49,6 +49,6 @@ class BrokerQuotation extends Model
             $query->where('status', 6);
         })->orderBy('id')->get();
         $quotationProducts = $brokerQuotations->pluck('quotationProduct');
-        return $quotationProducts->isEmpty() ? null : $quotationProducts;
+        return $quotationProducts->isEmpty() ? [] : $quotationProducts;
     }
 }
