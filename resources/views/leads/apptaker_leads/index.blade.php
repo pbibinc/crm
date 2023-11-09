@@ -96,7 +96,8 @@
                 </div>
 
                 <div class="col-12">
-                    <div class="card">
+                    <div class="card"
+                        style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                         <div class="card-body">
                             <table id="leadsApptakerDataTable" class="table table-bordered dt-responsive nowrap"
                                 style="border-collapse: collapse; border-spacing: 0; width: 100%;">
@@ -214,7 +215,7 @@
 
                                 </div>
 
-                                <thead>
+                                <thead style="background-color: #f0f0f0;">
                                     <tr>
                                         <th>Company Name</th>
                                         <th>Tel Num</th>
@@ -409,7 +410,7 @@
                             d.leadType = $('#leadTypeDropdown').val()
                     },
                     dataSrc: function(json) {
-                        $('#dataCount').html(json.totalDataCount);
+                        $('#dataCount').html(json.totalDataCount ? json.totalDataCount : 0);
                         return json.data;
                     }
                 },

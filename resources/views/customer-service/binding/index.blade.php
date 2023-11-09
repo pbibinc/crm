@@ -8,7 +8,8 @@
                         style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                         <div class="card-body">
                             <h4 class="card-title mb-4">Products For Binding</h4>
-                            <table id="getConfimedProductTable" class="table table-bordered dt-responsive nowrap"
+                            <table id="getConfimedProductTable"
+                                class="table table-bordered dt-responsive nowrap getConfimedProductTable"
                                 style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead>
                                     <th>Product</th>
@@ -33,7 +34,7 @@
     </div>
     <script>
         $(document).ready(function() {
-            $('#getConfimedProductTable').DataTable({
+            $('.getConfimedProductTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('binding') }}",
