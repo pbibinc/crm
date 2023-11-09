@@ -22,7 +22,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Swal from "sweetalert2";
 import axiosClient from "../api/axios.client";
 
-import { Audio, ThreeDots } from "react-loader-spinner";
+// import { Audio, ThreeDots } from "react-loader-spinner";
 
 const WorkersCompensationForm = () => {
     const getWorkersCompensationData = () => {
@@ -934,117 +934,40 @@ const WorkersCompensationForm = () => {
                     />,
                 ]}
             /> */}
-            {isLoading ? (
-                <Audio
-                    height="80"
-                    width="80"
-                    radius="9"
-                    color="green"
-                    ariaLabel="loading"
-                    wrapperStyle
-                    wrapperClass
-                />
-            ) : (
-                // <Row
-                //     classValue="mb-3"
-                //     rowContent={[
-                //         <Column
-                //             key="toolsEquipmentSubmmitButtonColumn"
-                //             classValue="col-10"
-                //             colContent={<></>}
-                //         />,
-                //         <Column
-                //             key="toolsEquipmentEdittButtonColumn"
-                //             classValue="col-2"
-                //             colContent={
-                //                 <>
-                //                     <Row
-                //                         rowContent={
-                //                             <>
-                //                                 <Column
-                //                                     key="submitButtonColumn"
-                //                                     classValue="col-6"
-                //                                     colContent={
-                //                                         <div className="d-grid gap-2">
-                //                                             <Button
-                //                                                 variant="success"
-                //                                                 size="lg"
-                //                                                 onClick={
-                //                                                     submitWorkersCompensationForm
-                //                                                 }
-                //                                                 disabled={
-                //                                                     !isEditing
-                //                                                 }
-                //                                             >
-                //                                                 <SaveIcon />
-                //                                             </Button>
-                //                                         </div>
-                //                                     }
-                //                                 />
-                //                                 <Column
-                //                                     key="editButtonColumn"
-                //                                     classValue="col-6"
-                //                                     colContent={
-                //                                         <div className="d-grid gap-2">
-                //                                             <Button
-                //                                                 variant="primary"
-                //                                                 size="lg"
-                //                                                 disabled={
-                //                                                     isEditing
-                //                                                 }
-                //                                                 onClick={() =>
-                //                                                     SetIsEditing(
-                //                                                         true
-                //                                                     )
-                //                                                 }
-                //                                             >
-                //                                                 <SaveAsIcon />
-                //                                             </Button>
-                //                                         </div>
-                //                                     }
-                //                                 />
-                //                             </>
-                //                         }
-                //                     />
-                //                 </>
-                //             }
-                //         />,
-                //     ]}
-                // />
-                <Row
-                    classValue="mb-3"
-                    rowContent={[
-                        <Column
-                            key="generalLiabilitiesEditButtonColumn"
-                            classValue="col-12 d-flex justify-content-center align-items-center"
-                            colContent={
-                                <>
-                                    <Button
-                                        variant="success"
-                                        size="lg"
-                                        onClick={submitWorkersCompensationForm}
-                                        disabled={!isEditing}
-                                        className="mx-2"
-                                    >
-                                        <SaveIcon />
-                                        <span className="ms-2">Save</span>
-                                    </Button>
-                                    <Button
-                                        variant="primary"
-                                        size="lg"
-                                        disabled={isEditing}
-                                        onClick={() => SetIsEditing(true)}
-                                        className="mx-2"
-                                    >
-                                        <SaveAsIcon />
-                                        <span className="ms-2">Edit</span>
-                                    </Button>
-                                </>
-                            }
-                        />,
-                    ]}
-                />
-            )}
+
+            <Row
+                classValue="mb-3"
+                rowContent={[
+                    <Column
+                        key="generalLiabilitiesEditButtonColumn"
+                        classValue="col-12 d-flex justify-content-center align-items-center"
+                        colContent={
+                            <>
+                                <Button
+                                    variant="success"
+                                    size="lg"
+                                    onClick={submitWorkersCompensationForm}
+                                    disabled={!isEditing}
+                                    className="mx-2"
+                                >
+                                    <SaveIcon />
+                                    <span className="ms-2">Save</span>
+                                </Button>
+                                <Button
+                                    variant="primary"
+                                    size="lg"
+                                    disabled={isEditing}
+                                    onClick={() => SetIsEditing(true)}
+                                    className="mx-2"
+                                >
+                                    <SaveAsIcon />
+                                    <span className="ms-2">Edit</span>
+                                </Button>
+                            </>
+                        }
+                    />,
+                ]}
+            />
         </>
     );
 };

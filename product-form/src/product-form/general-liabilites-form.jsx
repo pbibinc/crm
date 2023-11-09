@@ -27,7 +27,7 @@ import { ContextData } from "../contexts/context-data-provider";
 import { NumericFormat } from "react-number-format";
 import Swal from "sweetalert2";
 import axiosClient from "../api/axios.client";
-import { FidgetSpinner } from "react-loader-spinner";
+// import { FidgetSpinner } from "react-loader-spinner";
 
 // import Col from "react-bootstrap/esm/Col";
 const GeneralLiabilitiesForm = () => {
