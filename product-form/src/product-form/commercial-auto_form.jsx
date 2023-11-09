@@ -15,7 +15,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { get } from "lodash";
+// import { get } from "lodash";
 import axiosClient from "../api/axios.client";
 
 const CommercialAutoForm = () => {
@@ -367,10 +367,17 @@ const CommercialAutoForm = () => {
     function submitCommercialAutoForm() {
         const leadId = storedLeads?.data?.id;
         const url = isUpdate
+<<<<<<< HEAD
+            ? `http://insuraprime_crm.test/api/commercial-auto-data/update/${leadId}`
+            : `http://insuraprime_crm.test/api/commercial-auto-data/store`;
+        const method = isUpdate ? "put" : "post";
+        axios[method](url, commercialAutoFormData)
+=======
             ? `/api/commercial-auto-data/update/${leadId}`
             : `/api/commercial-auto-data/store`;
         const method = isUpdate ? "put" : "post";
         axiosClient[method](url, commercialAutoFormData)
+>>>>>>> 167828cf917e073ab4068e811bbf4e4fe246071e
             .then((response) => {
                 setIsEditing(false);
                 setIsUpdate(true);
@@ -574,6 +581,20 @@ const CommercialAutoForm = () => {
                             colContent={
                                 <>
                                     <Label labelContent="Radius Mileage" />
+<<<<<<< HEAD
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Radius Mileage"
+                                        onChange={(e) =>
+                                            handleFirstVehicleInformationInput(
+                                                "radius",
+                                                e.target.value
+                                            )
+                                        }
+                                        disabled={!isEditing}
+                                        value={firstVehicleInformation?.radius}
+                                    />
+=======
                                     <div className="input-group">
                                         <Form.Control
                                             type="text"
@@ -593,6 +614,7 @@ const CommercialAutoForm = () => {
                                             KM
                                         </span>
                                     </div>
+>>>>>>> 167828cf917e073ab4068e811bbf4e4fe246071e
                                 </>
                             }
                         />,
@@ -783,6 +805,24 @@ const CommercialAutoForm = () => {
                                 colContent={
                                     <>
                                         <Label labelContent="Radius Mileage" />
+<<<<<<< HEAD
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Radius Mileage"
+                                            onChange={(e) =>
+                                                handleVehicleInformationInput(
+                                                    index,
+                                                    "radius",
+                                                    e.target.value
+                                                )
+                                            }
+                                            disabled={!isEditing}
+                                            value={
+                                                vehicleInformation[index]
+                                                    ?.radius
+                                            }
+                                        />
+=======
                                         <div className="input-group">
                                             <Form.Control
                                                 type="text"
@@ -804,6 +844,7 @@ const CommercialAutoForm = () => {
                                                 KM
                                             </span>
                                         </div>
+>>>>>>> 167828cf917e073ab4068e811bbf4e4fe246071e
                                     </>
                                 }
                             />,
@@ -1148,6 +1189,7 @@ const CommercialAutoForm = () => {
             />
             <Row
                 classValue="mb-3"
+<<<<<<< HEAD
                 rowContent={[
                     <Column
                         key="vehicleMaintenanceProgramColumn"
@@ -1538,6 +1580,416 @@ const CommercialAutoForm = () => {
             )}
             <Row
                 classValue="mb-4"
+=======
+>>>>>>> 167828cf917e073ab4068e811bbf4e4fe246071e
+                rowContent={[
+                    <Column
+                        key="vehicleMaintenanceProgramColumn"
+                        classValue="col-6"
+                        colContent={
+                            <>
+                                <Label labelContent="Is There a vehicle maintenance program in operation" />
+                            </>
+                        }
+                    />,
+                    <Column
+                        key="vehicleMaintenanceProgramSwitchColumn"
+                        classValue="col-6"
+                        colContent={
+                            <>
+                                <Label labelContent="Are any vehicle customized, altered or have special equipment?" />
+                            </>
+                        }
+                    />,
+                ]}
+            />
+            <Row
+                classValue="mb-3"
+                rowContent={[
+                    <Column
+                        key="vehicleMaintenanceProgramSwitchColumn"
+                        classValue="col-6"
+                        colContent={
+                            <Form.Check
+                                type="switch"
+                                id="custom-switch"
+                                onChange={handleVehicleMaintenanceProgramSwitch}
+                                disabled={!isEditing}
+                                checked={isVehiceMaintenanceProgramChecked}
+                            />
+                        }
+                    />,
+                    <Column
+                        key="vehicleCustomiedSwitchColumn"
+                        classValue="col-6"
+                        colContent={
+                            <Form.Check
+                                type="switch"
+                                id="custom-switch"
+                                onChange={handleVehicleCustomizedSwitch}
+                                disabled={!isEditing}
+                                checked={isVehicleCustomizedChecked}
+                            />
+                        }
+                    />,
+                ]}
+            />
+            <Row
+                classValue="mb-3"
+                rowContent={[
+                    <Column
+                        key="vehicleMaintenanceProgramDescriptionColumn"
+                        classValue="col-6"
+                        colContent={
+                            <>
+                                {isVehiceMaintenanceProgramChecked && (
+                                    <Form.Control
+                                        as={"textarea"}
+                                        rows={3}
+                                        onChange={(e) =>
+                                            setVehicleMaintenanceDescription(
+                                                e.target.value
+                                            )
+                                        }
+                                        disabled={!isEditing}
+                                        value={vehicleMaintenanceDescription}
+                                    />
+                                )}
+                            </>
+                        }
+                    />,
+                    <Column
+                        key="vehicleCustomiedDescriptionColumn"
+                        classValue="col-6"
+                        colContent={
+                            <>
+                                {isVehicleCustomizedChecked && (
+                                    <Form.Control
+                                        as={"textarea"}
+                                        rows={3}
+                                        onChange={(e) =>
+                                            setVehicleCustomizedDescription(
+                                                e.target.value
+                                            )
+                                        }
+                                        disabled={!isEditing}
+                                        value={vehicleCustomizedDescription}
+                                    />
+                                )}
+                            </>
+                        }
+                    />,
+                ]}
+            />
+
+            <Row
+                classValue="mb-3"
+                rowContent={[
+                    <Column
+                        key="vehicleOwnedByTheProspectColumn"
+                        classValue="col-6"
+                        colContent={
+                            <>
+                                <Label labelContent="Are any vehicles owned by the prospect not to be scheduled on this application?" />
+                            </>
+                        }
+                    />,
+                    <Column
+                        key="vehicleOwnedCoverageDeclinedColumn"
+                        classValue="col-6"
+                        colContent={
+                            <>
+                                <Label labelContent="Has any policy or coverage been declined, canceled or non-renewed during the prior 3 years?" />
+                            </>
+                        }
+                    />,
+                ]}
+            />
+            <Row
+                classValue="mb-3"
+                rowContent={[
+                    <Column
+                        key="vehicleOwnedByTheProspectSwitch"
+                        classValue="col-6"
+                        colContent={
+                            <Form.Check
+                                type="switch"
+                                id="custom-switch"
+                                onChange={(e) =>
+                                    setIsVehicleOwnedProspect(e.target.checked)
+                                }
+                                disabled={!isEditing}
+                                checked={isVehicleOwnedProspect}
+                            />
+                        }
+                    />,
+                    <Column
+                        key="vehicleOwnedCoverageDeclinedSwitch"
+                        classValue="col-6"
+                        colContent={
+                            <Form.Check
+                                type="switch"
+                                id="custom-switch"
+                                onChange={(e) =>
+                                    setIsDeclinedCanceledNonRenewed(
+                                        e.target.checked
+                                    )
+                                }
+                                disabled={!isEditing}
+                                checked={isDeclinedCanceledNonRenewed}
+                            />
+                        }
+                    />,
+                ]}
+            />
+            <Row
+                classValue="mb-3"
+                rowContent={[
+                    <Column
+                        key="prospectHasLossPast4YearsColumn"
+                        classValue="col-6"
+                        colContent={
+                            <>
+                                <Label labelContent="Has the prospect had any losses in the past 4 years?" />
+                            </>
+                        }
+                    />,
+                    <Column
+                        key="ownedVehicleUsedForTowingColumn"
+                        classValue="col-6"
+                        colContent={
+                            <>
+                                <Label labelContent="Are owned vehicles used for towing special equipment?" />
+                            </>
+                        }
+                    />,
+                ]}
+            />
+            <Row
+                classValue="mb-3"
+                rowContent={[
+                    <Column
+                        key="prospectHasLossPast4YearsSwitch"
+                        classValue="col-6"
+                        colContent={
+                            <Form.Check
+                                type="switch"
+                                id="custom-switch"
+                                onChange={(e) =>
+                                    setIsProspectLoss(e.target.checked)
+                                }
+                                disabled={!isEditing}
+                                checked={isProspectLoss}
+                            />
+                        }
+                    />,
+                    <Column
+                        key="ownedVehicleUsedForTowingSwitch"
+                        classValue="col-6"
+                        colContent={
+                            <Form.Check
+                                type="switch"
+                                id="custom-switch"
+                                onChange={(e) =>
+                                    setIsVehicleUsedTowing(e.target.checked)
+                                }
+                                disabled={!isEditing}
+                                checked={isVehicleUsedTowing}
+                            />
+                        }
+                    />,
+                ]}
+            />
+            <Row
+                classValue="mb-3"
+                rowContent={[
+                    <Column
+                        key="expirationOfAutoColumn"
+                        classValue="col-6"
+                        colContent={
+                            <>
+                                <Label labelContent="Expiration of Auto" />
+                                <br></br>
+                                <DatePicker
+                                    className="custom-datepicker-input"
+                                    placeholderText="MM/DD/YYYY"
+                                    selected={expirationOfAuto}
+                                    onChange={(date) =>
+                                        setExpirationOfAuto(date)
+                                    }
+                                    disabled={!isEditing}
+                                />
+                            </>
+                        }
+                    />,
+                    <Column
+                        key="priorCarrierColumn"
+                        classValue="col-6"
+                        colContent={
+                            <>
+<<<<<<< HEAD
+                                <Label labelContent="Cross Sell" />
+                                <Select
+                                    className="basic=single"
+                                    classNamePrefix="select"
+                                    id="generalLiabilitiesCrossSellDropdown"
+                                    name="generalLiabilitiesCrossSellDropdown"
+                                    options={workersCompensationOption}
+                                    onChange={(e) =>
+                                        setCrossSell({
+                                            value: e.value,
+                                            label: e.label,
+                                        })
+                                    }
+                                    isDisabled={!isEditing}
+                                    value={crossSell}
+=======
+                                <Label labelContent="Prior Carrier" />
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Prior Carrier"
+                                    onChange={(e) =>
+                                        setPriorCarrier(e.target.value)
+                                    }
+                                    value={priorCarrier}
+                                    disabled={!isEditing}
+>>>>>>> 167828cf917e073ab4068e811bbf4e4fe246071e
+                                />
+                            </>
+                        }
+                    />,
+                ]}
+            />
+            <Row
+                classValue="mb-3"
+                rowContent={
+                    <Column
+                        classValue="col-6"
+                        colContent={
+                            <>
+                                <Label labelContent="Have Loss" />
+                                <Form.Check
+                                    type="switch"
+                                    id="haveLossCheckSwitch"
+                                    onChange={handleHaveLossChange}
+                                    disabled={!isEditing}
+                                    checked={isHaveLossChecked}
+                                />
+                            </>
+                        }
+                    />
+                }
+            />
+            {isHaveLossChecked && (
+                <Row
+                    classValue="mb-3"
+                    rowContent={
+                        <Column
+                            classValue="col-6"
+                            colContent={
+                                <>
+                                    <Label labelContent="Choose Format" />
+                                    <Select
+                                        className="basic=single"
+                                        classNamePrefix="select"
+                                        options={dateOptions}
+                                        //   value={handleDateOptionsChange}
+                                        onChange={handleDateOptionsChange}
+                                        isDisabled={!isEditing}
+                                    />
+                                </>
+                            }
+                        />
+                    }
+                />
+            )}
+            {isHaveLossChecked && (
+                <Row
+                    classValue="mb-3"
+                    rowContent={[
+                        <Column
+                            key="dateOfLossColumn"
+                            classValue="col-6"
+                            colContent={
+                                <>
+                                    <Row
+                                        classValue="mb-1"
+                                        rowContent={
+                                            <Label labelContent="Date of Claim" />
+                                        }
+                                    />
+
+                                    {haveLossDateOption === 1 && (
+                                        <Row
+                                            rowContent={
+                                                <DatePicker
+                                                    //   selected={dateofClaim}
+                                                    placeholderText="MM/DD/YYYY"
+                                                    showMonthDropdown
+                                                    showYearDropdown
+                                                    className="custom-datepicker-input"
+                                                    selected={dateOfClaim}
+                                                    onChange={(date) =>
+                                                        setDateOfClaim(date)
+                                                    }
+                                                    disabled={!isEditing}
+                                                />
+                                            }
+                                        />
+                                    )}
+
+                                    {haveLossDateOption === 2 && (
+                                        <Row
+                                            rowContent={
+                                                <DatePicker
+                                                    //   selected={dateofClaim}
+                                                    dateFormat="MM/yyyy"
+                                                    placeholderText="MM/YYYY"
+                                                    showMonthYearPicker
+                                                    showMonthDropdown
+                                                    showYearDropdown
+                                                    className="custom-datepicker-input"
+                                                    selected={dateOfClaim}
+                                                    onChange={(date) =>
+                                                        setDateOfClaim(date)
+                                                    }
+                                                    disabled={!isEditing}
+                                                />
+                                            }
+                                        />
+                                    )}
+                                </>
+                            }
+                        />,
+                        <Column
+                            key="lossAmountColumn"
+                            classValue="col-6"
+                            colContent={
+                                <>
+                                    <Label labelContent="Loss Amount" />
+                                    <NumericFormat
+                                        //   value={lossAmount}
+                                        className="form-control"
+                                        thousandSeparator={true}
+                                        prefix={"$"}
+                                        decimalScale={2}
+                                        fixedDecimalScale={true}
+                                        allowNegative={false}
+                                        placeholder="$0.00"
+                                        value={lossAmount}
+                                        onChange={(e) =>
+                                            setLossAmount(e.target.value)
+                                        }
+                                        disabled={!isEditing}
+                                    />
+                                </>
+                            }
+                        />,
+                    ]}
+                />
+            )}
+            <Row
+                classValue="mb-4"
                 rowContent={
                     [
                         // <Column
@@ -1707,6 +2159,8 @@ const CommercialAutoForm = () => {
                                         </>
                                     }
                                 />
+<<<<<<< HEAD
+=======
                             </>
                         }
                     />,
@@ -1741,6 +2195,7 @@ const CommercialAutoForm = () => {
                                     <SaveAsIcon />
                                     <span className="ms-2">Edit</span>
                                 </Button>
+>>>>>>> 167828cf917e073ab4068e811bbf4e4fe246071e
                             </>
                         }
                     />,

@@ -8,9 +8,7 @@ import ErrorBoundary from "./error-catch/error-boundaries";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
-        <ErrorBoundary>
-            <RouterProvider router={router} />
-        </ErrorBoundary>
+        <RouterProvider router={router} />
     </React.StrictMode>
     // "testicles"
 );

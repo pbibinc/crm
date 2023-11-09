@@ -502,7 +502,7 @@
                         },
                         success: function(response) {}
                     });
-                    window.open("http://localhost:3000/appoinnted-lead-questionare", "s_blank",
+                    window.open("https://form.pbibinc.com/appoinnted-lead-questionare", "s_blank",
                         "width=1000,height=849");
                     $('#transactionLogModal').modal('hide');
                 }

@@ -4,7 +4,7 @@ import Row from "../element/row-element";
 import Label from "../element/label-element";
 import Column from "../element/column-element";
 import Form from "react-bootstrap/Form";
-import { set } from "lodash";
+//import { set } from "lodash";
 const RoofingRepairResidentialForm = ({ setClassCodeFormData, disabled }) => {
     const [chekedHotWork, setChekedHotWork] = useState(false);
     const questionareHotWork =
