@@ -12,10 +12,13 @@ use App\Policies\UserProfilePolicy;
 use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class UserProfileController extends Controller
 {
@@ -41,14 +44,7 @@ class UserProfileController extends Controller
         if($request->ajax()){
             $userProfiles = UserProfile::with('position', 'department', 'user')
             ->select('id', 'firstname', 'lastname', 'american_surname', 'is_active', 'id_num',
-            'position_id', 'department_id', 'user_id', 'created_at', 'updated_at');
-
-            // $userProfiles->map(function($item){
-            //     $item->created_at_formatted =
-            //     $item->updated_at_formatted = Carbon::parse($item->updated_at)->format('Y-m-d H:i:s');
-            //     return $item;
-            // });
-
+            'position_id', 'department_id', 'user_id', 'created_at', 'updated_at')->orderBy('id', 'desc');
             return DataTables::of($userProfiles)
             ->addColumn('full_name', function ($userProfile){
                 return '<a href="#" data-toggle="modal" id="fullnameLink" name="fullNameLinkData" data-target="#leadsDataModal" data-id="'.$userProfile->id.'" data-name="'.$userProfile->company_name.'">'.$userProfile->firstname . ' ' . $userProfile->lastname.'</a>';
@@ -97,35 +93,27 @@ class UserProfileController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request);
-        $validator = Validator::make($request->all(), [
-            'first_name' => 'required|regex:/^[A-Z][a-z]*/',
-            'last_name' => 'required|regex:/^[A-Z][a-z]*/',
-            'american_surname' => 'required|regex:/^[A-Z][a-z]*/',
-            'id_num' => 'required',
-        ]);
+        try{
+            DB::beginTransaction();
+            $request->validate([
+                'first_name' => 'required|regex:/^[A-Z][a-z]*/',
+                'last_name' => 'required|regex:/^[A-Z][a-z]*/',
+                'american_surname' => 'required|regex:/^[A-Z][a-z]*/',
+                'id_num' => 'required|unique:user_profiles,id_num',
+                'media' => 'required|file|max:2048|mimes:jpeg,png,jpg,gif,svg'
+            ]);
 
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()]);
-        }
-
-    
-        $file = $request->file('media');
-        if($file){
+            $file = $request->file('media');
             $basename = $file->getClientOriginalName();
             $directoryPath =  public_path('backend/assets/images/users');
             $type = $file->getClientMimeType();
             $size = $file->getSize();
-    
             if(!File::isDirectory($directoryPath)){
                 File::makeDirectory($directoryPath, 0777, true, true);
             }
-    
             $file->move($directoryPath, $basename);
-
             $filepath = 'backend/assets/images/users/'. $basename;
-           
+
             $metadata = new Metadata;
             $metadata->basename = $basename;
             $metadata->filename = $basename;
@@ -145,16 +133,18 @@ class UserProfileController extends Controller
             $userProfile->user_id = $request->input('account_id');
             $userProfile->skype_profile = $request->input('skype_profile');
             $userProfile->streams_number = $request->input('streams_number');
-    
             $userProfile->media()->associate($metadata->id);
-    
             $userProfile->save();
-            return response()->json(['success' => 'User profile created successfully.']);
-        }else{
-            return response()->json(['error' => 'Kindly Upload image']);
+            DB::commit();
+        }catch (ValidationException $e){
+            Log::info("Error for creating", [$e->getMessage()]);
+            return response()->json([
+                    'errors' => $e->validator->errors(),
+                    'message' => 'Validation failed'
+                ],422);
         }
-       
     }
+
     public function edit($id)
     {
 
@@ -193,13 +183,13 @@ class UserProfileController extends Controller
             if(!File::isDirectory($directoryPath)){
                 File::makeDirectory($directoryPath, 0777, true, true);
             }
-    
+
             // Moving the file to your directory
             $file->move($directoryPath, $basename);
-    
+
             // Complete filepath
             $filepath = 'backend/assets/images/users/' . $basename;
-    
+
             $metadata = new Metadata;
             $metadata->basename = $basename;
             $metadata->filename = $basename;
@@ -217,7 +207,7 @@ class UserProfileController extends Controller
                 $metadata->delete();
                 return response()->json(['error' => 'Uploaded file is not an image.']);
             }
-    
+
             $userProfile = UserProfile::find($request->hidden_id);
             $userProfile->firstname = ucfirst($request->input('first_name'));
             $userProfile->lastname = ucfirst($request->input('last_name'));
@@ -230,7 +220,7 @@ class UserProfileController extends Controller
             $userProfile->skype_profile = $request->input('skype_profile');
             $userProfile->streams_number = $request->input('streams_number');
             $userProfile->media()->associate($metadata);
-        
+
             $userProfile->save();
             return response()->json(['success' => 'Data is successfully updated']);
         }
@@ -246,16 +236,16 @@ class UserProfileController extends Controller
             $userProfile->user_id = $request->input('account_id');
             $userProfile->skype_profile = $request->input('skype_profile');
             $userProfile->streams_number = $request->input('streams_number');
-            
+
             $userProfile->save();
         }
-        
-       
-     
-      
-        
-      
-            
+
+
+
+
+
+
+
     }
 
     public function changeStatus()
