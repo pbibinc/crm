@@ -8,10 +8,12 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 use Illuminate\Validation\Rules;
+use Illuminate\Validation\ValidationException;
 use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
@@ -58,22 +60,33 @@ class UserController extends Controller
 
    public function store(Request $request)
    {
-       $validator = $request->validate([
-           'name' => 'required',
-           'email' => 'required|email|unique:users,email',
-           'role_id' => 'required|exists:roles,id',
-           'password' => 'required|min:8|confirmed',
-           'password_confirmation' => 'required|min:8',
-           'username' => 'required|unique:users,username',
-       ]);
+    try{
+        DB::beginTransaction();
 
-         $user = new User;
-         $user->name = $request->name;
-         $user->email = $request->email;
-         $user->role_id = $request->role_id;
-         $user->password = Hash::make($request->password);
-         $user->username = $request->username;
-         $user->save();
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'role_id' => 'required|exists:roles,id',
+            'password' => 'required|min:8|confirmed',
+            'username' => 'required|unique:users,username',
+        ]);
+
+        $user = new User;
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->role_id = $request->role_id;
+        $user->password = Hash::make($request->password);
+        $user->username = $request->username;
+        $user->save();
+
+        DB::commit();
+    }catch(ValidationException $e){
+        Log::info("Error for Assigning", [$e->getMessage()]);
+        return response()->json([
+            'errors' => $e->validator->errors(),
+            'message' => 'Validation failed'
+        ], 422);
+    }
    }
 
    public  function edit($id)
