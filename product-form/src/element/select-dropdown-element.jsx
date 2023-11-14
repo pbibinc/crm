@@ -1,20 +1,20 @@
+import InputMask from "react-input-mask";
 import React from "react";
-import { useForm, useFormContext } from "react-hook-form";
-import Form from "react-bootstrap/Form";
-import { Error } from "@mui/icons-material";
-import { AnimatePresence, motion } from "framer-motion";
 import { findInputError } from "../utils/findInputError";
 import { isFormInvalid } from "../utils/isFormInvalid";
-const Input = ({
+import { AnimatePresence, motion } from "framer-motion";
+import { Error } from "@mui/icons-material";
+import { useForm, useFormContext } from "react-hook-form";
+import Select from "react-select";
+
+const SelectDropdownElement = ({
+    value,
+    isDisabled,
     label,
-    type,
-    classValue,
-    id,
-    inputValue,
-    validation,
-    onBlur,
     onChange,
-    disabled,
+    id,
+    name,
+    options,
 }) => {
     const {
         register,
@@ -23,8 +23,6 @@ const Input = ({
 
     const inputError = findInputError(errors, label);
     const isInvalid = isFormInvalid(inputError);
-    // console.log(inputError[label].message);
-    // const { errors } = formState;
     return (
         <div className="flex flex-col w-full gap-2">
             <AnimatePresence mode="wait" initial={false}>
@@ -35,14 +33,15 @@ const Input = ({
                     />
                 )}
             </AnimatePresence>
-            <Form.Control
-                type={type}
-                className={errors[label] ? "is-invalid" : ""}
+            <Select
                 id={id}
-                defaultValue={inputValue}
-                onBlur={onBlur}
+                name={name}
+                options={options}
+                value={value}
+                isDisabled={isDisabled}
                 onChange={onChange}
-                disabled={!disabled}
+                className="basic-single"
+                classNamePrefix="select"
                 {...register(label, {
                     required: {
                         value: true,
@@ -50,11 +49,6 @@ const Input = ({
                     },
                 })}
             />
-            {/* {errors[label] && (
-                <div className="invalid-feedback">
-                    <Error /> {errors[label].message}
-                </div>
-            )} */}
         </div>
     );
 };
@@ -80,4 +74,5 @@ const framer_error = {
     exit: { opacity: 0, y: 10 },
     transition: { duration: 0.2 },
 };
-export default Input;
+
+export default SelectDropdownElement;

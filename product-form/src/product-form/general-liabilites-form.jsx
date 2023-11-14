@@ -725,7 +725,6 @@ const GeneralLiabilitiesForm = () => {
             return { value: e.value, label: e.label };
         }),
     };
-    console.log("generalLiabilitiesStoredFormData", generalLiabilitiesFormData);
 
     sessionStorage.setItem(
         "generalLiabilitiesStoredData",

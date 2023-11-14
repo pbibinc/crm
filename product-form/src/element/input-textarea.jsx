@@ -1,21 +1,12 @@
 import React from "react";
-import { useForm, useFormContext } from "react-hook-form";
-import Form from "react-bootstrap/Form";
-import { Error } from "@mui/icons-material";
-import { AnimatePresence, motion } from "framer-motion";
 import { findInputError } from "../utils/findInputError";
 import { isFormInvalid } from "../utils/isFormInvalid";
-const Input = ({
-    label,
-    type,
-    classValue,
-    id,
-    inputValue,
-    validation,
-    onBlur,
-    onChange,
-    disabled,
-}) => {
+import { AnimatePresence, motion } from "framer-motion";
+import { Error } from "@mui/icons-material";
+import { useForm, useFormContext } from "react-hook-form";
+import { Form } from "react-bootstrap";
+
+const InputTextArea = ({ value, label, rows, onChange, disabled }) => {
     const {
         register,
         formState: { errors },
@@ -23,8 +14,6 @@ const Input = ({
 
     const inputError = findInputError(errors, label);
     const isInvalid = isFormInvalid(inputError);
-    // console.log(inputError[label].message);
-    // const { errors } = formState;
     return (
         <div className="flex flex-col w-full gap-2">
             <AnimatePresence mode="wait" initial={false}>
@@ -36,13 +25,14 @@ const Input = ({
                 )}
             </AnimatePresence>
             <Form.Control
-                type={type}
-                className={errors[label] ? "is-invalid" : ""}
-                id={id}
-                defaultValue={inputValue}
-                onBlur={onBlur}
-                onChange={onChange}
+                as="textarea"
+                value={value}
+                rows={rows}
                 disabled={!disabled}
+                onChange={onChange}
+                className={
+                    errors[label] ? "is-invalid form-control" : "form-control"
+                }
                 {...register(label, {
                     required: {
                         value: true,
@@ -50,11 +40,6 @@ const Input = ({
                     },
                 })}
             />
-            {/* {errors[label] && (
-                <div className="invalid-feedback">
-                    <Error /> {errors[label].message}
-                </div>
-            )} */}
         </div>
     );
 };
@@ -80,4 +65,5 @@ const framer_error = {
     exit: { opacity: 0, y: 10 },
     transition: { duration: 0.2 },
 };
-export default Input;
+
+export default InputTextArea;
