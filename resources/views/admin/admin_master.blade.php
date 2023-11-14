@@ -18,6 +18,7 @@
     <link href="https://msurguy.github.io/ladda-bootstrap/dist/ladda-themeless.min.css" rel="stylesheet">
     <script src="https://msurguy.github.io/ladda-bootstrap/dist/spin.min.js"></script>
     <script src="https://msurguy.github.io/ladda-bootstrap/dist/ladda.min.js"></script>
+
     <!--Jquery extension -->
     <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script>
 
@@ -67,7 +68,7 @@
     <!-- JAVASCRIPT -->
     <script src="{{ mix('js/app.js') }}"></script>
     <script src="{{ asset('js/bootstrap.js') }}"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
 
     {{-- <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script> --}}
 
