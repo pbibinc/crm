@@ -157,6 +157,8 @@ class AppTakerLeadsController extends Controller
        $stateInput = $request->input('stateAbbr');
        $zipcodeInput = $request->input('zipcode');
        $cityInput = $request->input('city');
+       $cities = [];
+       $zipcode = [];
        if($zipcodeInput != null){
         $cities = UnitedState::where('zipcode', $zipcodeInput)->pluck('city')->first();
         $zipcode = UnitedState::where('state_abbr', $stateInput)->get();
@@ -172,13 +174,6 @@ class AppTakerLeadsController extends Controller
 
         return response()->json(['cities' => $cities, 'zipcode' => $zipcode]);
     }
-
-    // public function productPdf(Request $request){
-    //     $formData = $request->all();
-
-    //     $pdf = PDF::loadView('leads.apptaker_leads.product_pdf_viewer.general-liability-pdf-view', $formData);
-    //     return $pdf->download('product.pdf');
-    // }
     public function productForms(Request $request){
         return view('leads.apptaker_leads.questionare-new-tab');
     }
