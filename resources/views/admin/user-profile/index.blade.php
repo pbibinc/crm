@@ -341,7 +341,6 @@
                                 // Loop through and display error messages
                                 for (let field in errors) {
                                     const errorMessage = errors[field];
-                                    console.log(errorMessage);
                                     $(`#${field}`).addClass('is-invalid');
                                     $(`#${field}Error`).text(errorMessage[0]).show();
                                 }
@@ -357,9 +356,6 @@
             user_profile_id = $(this).attr('id');
             $('#confirmModal').modal('show');
         })
-
-
-
         //script for sending delete
         $('#ok_button').click(function() {
             $.ajax({

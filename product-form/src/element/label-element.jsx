@@ -1,11 +1,17 @@
 import React from "react";
-import Form from 'react-bootstrap/Form';
-
+import Form from "react-bootstrap/Form";
 
 class Label extends React.Component {
     render() {
         const { labelContent, forValue } = this.props;
-        return <Form.Label  htmlFor={forValue}  style={{ color: 'gray', fontWeight: 500 }}>{labelContent}</Form.Label>;
+        return (
+            <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                // for="{forValue}"
+            >
+                {labelContent}
+            </label>
+        );
     }
 }
 

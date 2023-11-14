@@ -1,21 +1,11 @@
 import React from "react";
 import { useForm, useFormContext } from "react-hook-form";
-import Form from "react-bootstrap/Form";
-import { Error } from "@mui/icons-material";
-import { AnimatePresence, motion } from "framer-motion";
+import { NumericFormat } from "react-number-format";
 import { findInputError } from "../utils/findInputError";
 import { isFormInvalid } from "../utils/isFormInvalid";
-const Input = ({
-    label,
-    type,
-    classValue,
-    id,
-    inputValue,
-    validation,
-    onBlur,
-    onChange,
-    disabled,
-}) => {
+import { AnimatePresence, motion } from "framer-motion";
+import { Error } from "@mui/icons-material";
+const NumericFormatInput = ({ onChange, label, value, disabled }) => {
     const {
         register,
         formState: { errors },
@@ -23,8 +13,6 @@ const Input = ({
 
     const inputError = findInputError(errors, label);
     const isInvalid = isFormInvalid(inputError);
-    // console.log(inputError[label].message);
-    // const { errors } = formState;
     return (
         <div className="flex flex-col w-full gap-2">
             <AnimatePresence mode="wait" initial={false}>
@@ -35,14 +23,19 @@ const Input = ({
                     />
                 )}
             </AnimatePresence>
-            <Form.Control
-                type={type}
-                className={errors[label] ? "is-invalid" : ""}
-                id={id}
-                defaultValue={inputValue}
-                onBlur={onBlur}
+            <NumericFormat
+                className={
+                    errors[label] ? "is-invalid form-control" : "form-control"
+                }
+                thousandSeparator={true}
+                prefix={"$"}
+                decimalScale={2}
+                fixedDecimalScale={true}
+                allowNegative={false}
+                placeholder="$0.00"
+                value={value}
+                disabled={disabled}
                 onChange={onChange}
-                disabled={!disabled}
                 {...register(label, {
                     required: {
                         value: true,
@@ -50,15 +43,9 @@ const Input = ({
                     },
                 })}
             />
-            {/* {errors[label] && (
-                <div className="invalid-feedback">
-                    <Error /> {errors[label].message}
-                </div>
-            )} */}
         </div>
     );
 };
-
 const InputError = ({ message }) => {
     const errorStyle = {
         color: "red",
@@ -80,4 +67,4 @@ const framer_error = {
     exit: { opacity: 0, y: 10 },
     transition: { duration: 0.2 },
 };
-export default Input;
+export default NumericFormatInput;

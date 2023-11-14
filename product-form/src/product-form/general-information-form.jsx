@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useForm, FormProvider } from "react-hook-form";
 import InputMask from "react-input-mask";
 import Row from "../element/row-element";
 import Column from "../element/column-element";
@@ -13,15 +14,22 @@ import Select from "react-select";
 import Form from "react-bootstrap/Form";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
-import SaveAsiCon from "@mui/icons-material/SaveAs";
+import SaveAsIcon from "@mui/icons-material/SaveAs";
 console;
 import SaveIcon from "@mui/icons-material/Save";
 import { ContextData } from "../contexts/context-data-provider";
 import { NumericFormat } from "react-number-format";
 import Swal from "sweetalert2";
 import axiosClient from "../api/axios.client";
+import Input from "../element/input-element";
+import NumericFormatInput from "../element/numeric-format";
+import InputMaskElement from "../element/input-mask-element";
+import InputTextArea from "../element/input-textarea";
+import SelectDropdownElement from "../element/select-dropdown-element";
 const GeneralInformationForm = () => {
     const { lead, zipcodes, cities, zipCity } = useContext(ContextData);
+
+    const methods = useForm();
 
     const getStoredGeneralInformation = () => {
         let storedData = sessionStorage.getItem("generalInformationStoredData");
@@ -308,11 +316,14 @@ const GeneralInformationForm = () => {
             label: city,
         };
     });
+    const onSubmit = methods.handleSubmit((data) => {
+        console.log(data);
+    });
 
     return (
         /*Row for First Name And Lastname*/
         lead && LeadZipcode ? (
-            <form action="">
+            <FormProvider {...methods}>
                 <Row
                     classValue="mb-3"
                     rowContent={[
@@ -321,16 +332,16 @@ const GeneralInformationForm = () => {
                             classValue="col-6"
                             colContent={
                                 <>
-                                    <Label labelContent="First Name" />
-                                    <Form.Control
+                                    <Label labelContent="First Name *" />
+                                    <Input
+                                        label="first name"
                                         type="text"
                                         id="firstName"
                                         value={firstName}
-                                        disabled={!isEditing}
+                                        disabled={isEditing}
                                         onChange={(e) =>
                                             setFirstName(e.target.value)
                                         }
-                                        required
                                     />
                                 </>
                             }
@@ -341,18 +352,18 @@ const GeneralInformationForm = () => {
                             colContent={
                                 <>
                                     <Label
-                                        labelContent="Last Name"
+                                        labelContent="Last Name *"
                                         forValue="lastName"
                                     />
-                                    <Form.Control
+                                    <Input
+                                        label="last name"
                                         type="text"
                                         id="lastName"
                                         value={lastName}
-                                        disabled={!isEditing}
+                                        disabled={isEditing}
                                         onChange={(e) =>
                                             setLastName(e.target.value)
                                         }
-                                        required
                                     />
                                 </>
                             }
@@ -368,14 +379,15 @@ const GeneralInformationForm = () => {
                             colContent={
                                 <>
                                     <Label
-                                        labelContent="Job Position"
+                                        labelContent="Job Position *"
                                         forValue="jobPosition"
                                     />
-                                    <Form.Control
+                                    <Input
+                                        label="job position"
                                         type="text"
                                         id="jobPosition"
                                         value={jobPosition}
-                                        disabled={!isEditing}
+                                        disabled={isEditing}
                                         onChange={(e) =>
                                             setJobPosition(e.target.value)
                                         }
@@ -394,10 +406,9 @@ const GeneralInformationForm = () => {
                             classValue="col-6"
                             colContent={
                                 <>
-                                    <Label labelContent="Zip Code" />
+                                    <Label labelContent="Zip Code *" />
                                     <Select
-                                        className="basic-single"
-                                        classNamePrefix="select"
+                                        label="zip code"
                                         // isSearchable={isSearchable}
                                         id="zipCodeDropdown"
                                         name="zipCodeDropdown"
@@ -423,7 +434,7 @@ const GeneralInformationForm = () => {
                                         name="zipCodeDropdown"
                                         options={cityDropdown}
                                         value={selectedCity}
-                                        isDisabled={!isEditing}
+                                        isDisabled="true"
                                         onChange={handleCityChange}
                                     />
                                 </>
@@ -441,11 +452,12 @@ const GeneralInformationForm = () => {
                             colContent={
                                 <>
                                     <Label labelContent="Address" />
-                                    <Form.Control
+                                    <Input
+                                        label="address"
                                         type="text"
                                         id="address"
                                         value={address}
-                                        disabled={!isEditing}
+                                        disabled={isEditing}
                                         onChange={(e) =>
                                             setAddress(e.target.value)
                                         }
@@ -480,11 +492,12 @@ const GeneralInformationForm = () => {
                             colContent={
                                 <>
                                     <Label labelContent="Alternative Number" />
-                                    <Form.Control
+                                    <Input
+                                        label="alternative number"
                                         type="text"
                                         id="alternativeNumber"
                                         value={alternativeNumber}
-                                        disabled={!isEditing}
+                                        disabled={isEditing}
                                         onChange={(e) =>
                                             setAlternativeNumber(e.target.value)
                                         }
@@ -498,7 +511,8 @@ const GeneralInformationForm = () => {
                             colContent={
                                 <>
                                     <Label labelContent="Fax" />
-                                    <InputMask
+                                    <InputMaskElement
+                                        label="fax"
                                         mask="9-999999999"
                                         type="text"
                                         id="fax"
@@ -522,11 +536,12 @@ const GeneralInformationForm = () => {
                             colContent={
                                 <>
                                     <Label labelContent="Email" />
-                                    <Form.Control
+                                    <Input
+                                        label="email"
                                         type="email"
                                         id="email"
                                         value={email}
-                                        disabled={!isEditing}
+                                        disabled={isEditing}
                                         onChange={(e) =>
                                             setEmail(e.target.value)
                                         }
@@ -545,11 +560,12 @@ const GeneralInformationForm = () => {
                             colContent={
                                 <>
                                     <Label labelContent="Full Time Employee" />
-                                    <Form.Control
+                                    <Input
+                                        label="full time employee"
                                         type="number"
                                         id="fullTimeEmployee"
                                         value={fullTimeEmployee}
-                                        disabled={!isEditing}
+                                        disabled={isEditing}
                                         onChange={(e) =>
                                             setFullTimeEmployee(e.target.value)
                                         }
@@ -563,11 +579,12 @@ const GeneralInformationForm = () => {
                             colContent={
                                 <>
                                     <Label labelContent="Part Time Employee" />
-                                    <Form.Control
+                                    <Input
+                                        label="part time employee"
                                         type="number"
                                         id="partTimeEmployee"
                                         value={partTimeEmployee}
-                                        disabled={!isEditing}
+                                        disabled={isEditing}
                                         onChange={(e) =>
                                             setPartTimeEmployee(e.target.value)
                                         }
@@ -586,7 +603,8 @@ const GeneralInformationForm = () => {
                             colContent={
                                 <>
                                     <Label labelContent="Gross Receipt" />
-                                    <NumericFormat
+                                    <NumericFormatInput
+                                        label="gross receipt"
                                         className="form-control"
                                         thousandSeparator={true}
                                         prefix={"$"}
@@ -609,7 +627,8 @@ const GeneralInformationForm = () => {
                             colContent={
                                 <>
                                     <Label labelContent="Employee Payroll" />
-                                    <NumericFormat
+                                    <NumericFormatInput
+                                        label="employee receipt"
                                         className="form-control"
                                         thousandSeparator={true}
                                         prefix={"$"}
@@ -637,7 +656,8 @@ const GeneralInformationForm = () => {
                             colContent={
                                 <>
                                     <Label labelContent="Sub Out/1099" />
-                                    <NumericFormat
+                                    <NumericFormatInput
+                                        label="sub out"
                                         className="form-control"
                                         thousandSeparator={true}
                                         prefix={"$"}
@@ -660,7 +680,8 @@ const GeneralInformationForm = () => {
                             colContent={
                                 <>
                                     <Label labelContent="Owners Payroll" />
-                                    <NumericFormat
+                                    <NumericFormatInput
+                                        label="owners payroll"
                                         className="form-control"
                                         thousandSeparator={true}
                                         prefix={"$"}
@@ -684,14 +705,14 @@ const GeneralInformationForm = () => {
                     rowContent={
                         <div>
                             <Label labelContent="List ALL trades and or work that you subcontract" />
-                            <Form.Control
-                                as="textarea"
+                            <InputTextArea
+                                label="all trade work"
                                 value={allTradesAndWork}
                                 onChange={(e) =>
                                     setAllTradeAndWork(e.target.value)
                                 }
                                 rows={5}
-                                disabled={!isEditing}
+                                disabled={isEditing}
                             />
                         </div>
                     }
@@ -709,7 +730,8 @@ const GeneralInformationForm = () => {
                             key="materialCostInput"
                             classValue="col-10"
                             colContent={
-                                <NumericFormat
+                                <NumericFormatInput
+                                    label="material cost"
                                     className="form-control"
                                     thousandSeparator={true}
                                     prefix={"$"}
@@ -730,48 +752,36 @@ const GeneralInformationForm = () => {
                     classValue="mb-3"
                     rowContent={[
                         <Column
-                            key="saveButtonColumn"
-                            classValue="col-6"
+                            key="generalLiabilitiesEditButtonColumn"
+                            classValue="col-12 d-flex justify-content-center align-items-center"
                             colContent={
                                 <>
-                                    <div className="d-grid gap-2">
-                                        {" "}
-                                        <Button
-                                            variant="success"
-                                            size="lg"
-                                            style={{ marginRight: "10px" }}
-                                            onClick={
-                                                submitGeneralInformationForm
-                                            }
-                                            disabled={!isEditing}
-                                        >
-                                            <SaveIcon />
-                                        </Button>
-                                    </div>
-                                </>
-                            }
-                        />,
-                        <Column
-                            key="editButtonColumn"
-                            classValue="col-6"
-                            colContent={
-                                <>
-                                    <div className="d-grid gap-2">
-                                        <Button
-                                            variant="primary"
-                                            size="lg"
-                                            disabled={isEditing}
-                                            onClick={() => setIsEditing(true)}
-                                        >
-                                            <SaveAsiCon />
-                                        </Button>{" "}
-                                    </div>
+                                    <Button
+                                        variant="success"
+                                        size="lg"
+                                        onClick={onSubmit}
+                                        disabled={!isEditing}
+                                        className="mx-2"
+                                    >
+                                        <SaveIcon />
+                                        <span className="ms-2">Save</span>
+                                    </Button>
+                                    <Button
+                                        variant="primary"
+                                        size="lg"
+                                        disabled={isEditing}
+                                        onClick={() => setIsEditing(true)}
+                                        className="mx-2"
+                                    >
+                                        <SaveAsIcon />
+                                        <span className="ms-2">Edit</span>
+                                    </Button>
                                 </>
                             }
                         />,
                     ]}
                 />
-            </form>
+            </FormProvider>
         ) : (
             <div>loading...</div>
         )

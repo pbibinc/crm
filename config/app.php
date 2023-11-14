@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'insurprime_crm'),
 
     /*
     |--------------------------------------------------------------------------
@@ -24,7 +24,7 @@ return [
     |
     | This value determines the "environment" your application is currently
     | running in. This may determine how you prefer to configure various
-    | services the application utilizes. Set this in your ".env" file.
+    | services the application utilizes. Set this in your ".env" file..
     |
     */
 
