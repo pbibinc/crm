@@ -12,6 +12,7 @@ use App\Policies\UserProfilePolicy;
 use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -22,7 +23,7 @@ use Illuminate\Validation\ValidationException;
 
 class UserProfileController extends Controller
 {
-    public function  index(Request $request)
+    public function index(Request $request)
     {
         $this->authorize('view', UserProfile::find(1));
         $positions = Position::all();
@@ -94,14 +95,27 @@ class UserProfileController extends Controller
     public function store(Request $request)
     {
         try{
-            DB::beginTransaction();
+
             $request->validate([
-                'first_name' => 'required|regex:/^[A-Z][a-z]*/',
-                'last_name' => 'required|regex:/^[A-Z][a-z]*/',
+                'first_name' => 'required|unique:user_profiles,firstname|regex:/^[A-Z][a-z]*/',
+                'last_name' => 'required|unique:user_profiles,lastname|regex:/^[A-Z][a-z]*/',
                 'american_surname' => 'required|regex:/^[A-Z][a-z]*/',
                 'id_num' => 'required|unique:user_profiles,id_num',
-                'media' => 'required|file|max:2048|mimes:jpeg,png,jpg,gif,svg'
+                'media' => 'required|file|max:2048|mimes:jpeg,png,jpg,gif,svg',
+                'account_id' => 'required|unique:user_profiles,user_id'
             ]);
+
+            //code for unique tokenn to prevent double submission
+            $token = $request->input('token');
+            if(Cache::has($token)){
+                return response()->json([
+                    'message' => 'Duplicate submission, please try again'
+                ],422);
+            }
+            $token = Str::random(10);
+            Cache::put($token, true, 10);
+
+            DB::beginTransaction();
 
             $file = $request->file('media');
             $basename = $file->getClientOriginalName();
@@ -136,6 +150,9 @@ class UserProfileController extends Controller
             $userProfile->media()->associate($metadata->id);
             $userProfile->save();
             DB::commit();
+
+            Cache::forget($token);
+
         }catch (ValidationException $e){
             Log::info("Error for creating", [$e->getMessage()]);
             return response()->json([

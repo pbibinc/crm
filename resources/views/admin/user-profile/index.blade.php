@@ -138,8 +138,8 @@
 
                             <div class="form-group">
                                 {!! Form::label('account_id', 'Account') !!}
-                                {!! Form::select('account_id', $accounts->pluck('name', 'id'), null, ['class' => 'form-control']) !!}
-                                <div class="invalid-feedback" id="noteDescriptionError"></div>
+                                {!! Form::select('account_id', $accounts->pluck('name', 'id'), null, ['class' => 'form-control account_id']) !!}
+                                <div class="invalid-feedback" id="account_idError"></div>
                             </div>
 
                             <div class="form-group">
@@ -305,7 +305,6 @@
                         processData: false,
                         contentType: false,
                         success: function(response) {
-                            console.log(response);
                             laddaButton.stop();
                             if (response.error) {
                                 var errorMessage = response.error;
@@ -341,6 +340,7 @@
                                 // Loop through and display error messages
                                 for (let field in errors) {
                                     const errorMessage = errors[field];
+
                                     $(`#${field}`).addClass('is-invalid');
                                     $(`#${field}Error`).text(errorMessage[0]).show();
                                 }

@@ -92,7 +92,7 @@
 
                     </div>
                     <div class="row">
-                        <div class="col-7">
+                        <div class="col-8">
                             <div class="card"
                                 style=" box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                                 <div class="card-body d-flex flex-column justify-content-between">
@@ -111,8 +111,9 @@
                                             </div>
                                         </div>
                                         <div class="col-6">
-                                            <label for="leadsQuantityRandom" class="form-label">Assign Random Leads
-                                                Quantity</label>
+                                            <label for="leadsQuantityRandom" class="form-label">Assign Random Leads To
+                                                Apptaker
+                                                Quantity </label>
                                             <div class="input-group">
                                                 <input class="form-control" type="number" value="10"
                                                     id="leadsQuantityRandom"
@@ -120,7 +121,7 @@
                                                 <button type="button" id="assignRandomLeads"
                                                     class="btn btn-outline-primary" data-bs-toggle="tooltip"
                                                     data-bs-placement="top"
-                                                    title="Assign Random Leads to a random user">Assign Random</button>
+                                                    title="Assign Random Leads to a random apptaker">Assign Random</button>
                                             </div>
                                         </div>
 
@@ -128,7 +129,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-5">
+                        <div class="col-4">
                             <div class="card"
                                 style=" box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                                 <div class="card-body">
@@ -834,48 +835,58 @@
                 var id = [];
                 // console.log('this test the button shit');
                 var laddaButton = Ladda.create($(this)[0]);
-                laddaButton.start();
-                $.ajax({
-                    url: "{{ route('assign-random-leads') }}",
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    dataType: "json",
-                    method: "POST",
-                    data: {
-                        leadsQuantityRandom: $('#leadsQuantityRandom').val(),
-                    },
-                    success: function(response) {
-                        laddaButton.stop();
-                        if (response.errors) {
-                            var errors = response.errors;
-                            $.each(errors, function(key, value) {
-                                $('#' + key).addClass('is-invalid');
-                                $('#' + key + '_error').html(value);
-                            });
-                        } else {
-                            Swal.fire({
-                                title: 'Success',
-                                text: response.success,
-                                icon: 'success'
-                            }).then(function() {
+                var userCount = {{ count($userProfiles) }}
+                if (userCount == 0) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'There is no Apptaker Please Asssign a apptaker then use this button again',
+                        icon: 'error'
+                    });
+                } else {
+                    laddaButton.start();
+                    $.ajax({
+                        url: "{{ route('assign-random-leads') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        dataType: "json",
+                        method: "POST",
+                        data: {
+                            leadsQuantityRandom: $('#leadsQuantityRandom').val(),
+                        },
+                        success: function(response) {
+                            laddaButton.stop();
+                            if (response.errors) {
+                                var errors = response.errors;
+                                $.each(errors, function(key, value) {
+                                    $('#' + key).addClass('is-invalid');
+                                    $('#' + key + '_error').html(value);
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Success',
+                                    text: response.success,
+                                    icon: 'success'
+                                }).then(function() {
+                                    location.reload();
+                                });
                                 location.reload();
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            var errorMessage = 'An Error Occured';
+                            if (xhr.responseJSON && xhr.responseJSON.error) {
+                                errorMessage = xhr.responseJSON.error;
+                            }
+                            Swal.fire({
+                                title: 'Error',
+                                text: errorMessage,
+                                icon: 'error'
                             });
-                            location.reload();
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        var errorMessage = 'An Error Occured';
-                        if (xhr.responseJSON && xhr.responseJSON.error) {
-                            errorMessage = xhr.responseJSON.error;
-                        }
-                        Swal.fire({
-                            title: 'Error',
-                            text: errorMessage,
-                            icon: 'error'
-                        });
-                    }
-                });
+                    });
+                }
+
             });
 
 

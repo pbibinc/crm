@@ -152,6 +152,7 @@ class AssignLeadController extends Controller
           }
     }
 
+    //assigning leads into premium leads
     public function assignPremiumLead(Request $request, Lead $lead)
     {
         $leadsId = $request->input('leadsId');
@@ -162,6 +163,7 @@ class AssignLeadController extends Controller
         return response()->json(['success' => 'Leads are succesfully assign into prime lead']);
     }
 
+    //assign single leads into a user
     public function assign(Request $request, Lead $lead)
     {
         $leadsId = $request->input('id');
@@ -188,6 +190,7 @@ class AssignLeadController extends Controller
         return response()->json(['success' => 'the leads are succesfully assign into'. ' '  . $userProfile->firstname . ' ' . $userProfile->american_surname]);
     }
 
+    //assigning random leads into random users
     public function assignRandomLeads(Request $request)
     {
      $quantityLeadsRandom = $request->input('leadsQuantityRandom');
@@ -207,9 +210,6 @@ class AssignLeadController extends Controller
             $lead->save();
             event(new LeadAssignEvent($lead, $user->id, $user->id, now()));
         }
-        Cache::forget('leads_funnel');
-        Cache::forget('leads_data');
-        Cache::forget('apptaker_leads');
         return response()->json(['success' => 'Random Leads are Assign to Different Users']);
     }
 
