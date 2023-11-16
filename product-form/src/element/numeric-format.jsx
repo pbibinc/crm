@@ -5,7 +5,7 @@ import { findInputError } from "../utils/findInputError";
 import { isFormInvalid } from "../utils/isFormInvalid";
 import { AnimatePresence, motion } from "framer-motion";
 import { Error } from "@mui/icons-material";
-import { set } from "lodash";
+
 const NumericFormatInput = ({
     label,
     disabled,
