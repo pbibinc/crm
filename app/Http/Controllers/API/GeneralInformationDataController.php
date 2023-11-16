@@ -35,9 +35,9 @@ class GeneralInformationDataController extends BaseController
             $generalInformation->address = $data['address'];
             $generalInformation->zipcode = $data['zipcode'];
             $generalInformation->state = $data['state'];
-            $generalInformation->alt_num = $data['alt_num'];
+            $generalInformation->alt_num = $data['alt_num'] ? $data['alt_num'] : '99999999999';
             $generalInformation->email_address = $data['email'];
-            $generalInformation->fax = $data['fax'];
+            $generalInformation->fax = $data['fax'] ? $data['fax'] : '9999999999';
             $generalInformation->gross_receipt = $data['gross_receipt'];
             $generalInformation->full_time_employee = $data['full_time_employee'];
             $generalInformation->part_time_employee = $data['part_time_employee'];
@@ -45,7 +45,7 @@ class GeneralInformationDataController extends BaseController
             $generalInformation->all_trade_work = $data['all_trade_work'];
             $generalInformation->leads_id = $data['lead_id'];
             $generalInformation->owners_payroll = $data['owners_payroll'];
-            $generalInformation->sub_out = $data['sub_out'];
+            $generalInformation->sub_out = $data['sub_out'] ? $data['sub_out'] : '';
             $generalInformation->material_cost = $data['material_cost'];
             $generalInformationSaving =  $generalInformation->save();
             if($generalInformationSaving){
@@ -92,16 +92,16 @@ class GeneralInformationDataController extends BaseController
          $generalInformation->address = $data['address'];
          $generalInformation->zipcode = $data['zipcode'];
          $generalInformation->state = $data['state'];
-         $generalInformation->alt_num = $data['alt_num'];
+         $generalInformation->alt_num = $data['alt_num'] ? $data['alt_num'] : '99999999999';
          $generalInformation->email_address = $data['email'];
-         $generalInformation->fax = $data['fax'];
+         $generalInformation->fax = $data['fax'] ? $data['fax'] : '9999999999';
          $generalInformation->gross_receipt = $data['gross_receipt'];
          $generalInformation->full_time_employee = $data['full_time_employee'];
          $generalInformation->part_time_employee = $data['part_time_employee'];
          $generalInformation->employee_payroll = $data['employee_payroll'];
          $generalInformation->all_trade_work = $data['all_trade_work'];
          $generalInformation->owners_payroll = $data['owners_payroll'];
-         $generalInformation->sub_out = $data['sub_out'];
+         $generalInformation->sub_out = $data['sub_out'] ? $data['sub_out'] : ' ';
          $generalInformation->material_cost = $data['material_cost'];
          $generalInformation->save();
 

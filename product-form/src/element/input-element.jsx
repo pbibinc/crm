@@ -1,30 +1,18 @@
 import React from "react";
-import { useForm, useFormContext } from "react-hook-form";
+import { useFormContext, Controller } from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import { Error } from "@mui/icons-material";
 import { AnimatePresence, motion } from "framer-motion";
 import { findInputError } from "../utils/findInputError";
 import { isFormInvalid } from "../utils/isFormInvalid";
-const Input = ({
-    label,
-    type,
-    classValue,
-    id,
-    inputValue,
-    validation,
-    onBlur,
-    onChange,
-    disabled,
-}) => {
-    const {
-        register,
-        formState: { errors },
-    } = useFormContext();
+
+const Input = ({ label, type, inputValue, id, disabled, onChangeInput }) => {
+    const { control, formState } = useFormContext();
+    const { errors } = formState;
 
     const inputError = findInputError(errors, label);
     const isInvalid = isFormInvalid(inputError);
-    // console.log(inputError[label].message);
-    // const { errors } = formState;
+
     return (
         <div className="flex flex-col w-full gap-2">
             <AnimatePresence mode="wait" initial={false}>
@@ -35,26 +23,27 @@ const Input = ({
                     />
                 )}
             </AnimatePresence>
-            <Form.Control
-                type={type}
-                className={errors[label] ? "is-invalid" : ""}
-                id={id}
+            <Controller
+                name={label} // Assuming label corresponds to the input name
+                control={control}
                 defaultValue={inputValue}
-                onBlur={onBlur}
-                onChange={onChange}
-                disabled={!disabled}
-                {...register(label, {
-                    required: {
-                        value: true,
-                        message: "required",
-                    },
-                })}
+                rules={{
+                    required: "this form is required",
+                }}
+                render={({ field }) => (
+                    <Form.Control
+                        type={type}
+                        className={errors[label] ? "is-invalid" : ""}
+                        id={id}
+                        value={field.value}
+                        onChange={(e) => {
+                            field.onChange(e);
+                            onChangeInput(e.target.value);
+                        }}
+                        disabled={disabled}
+                    />
+                )}
             />
-            {/* {errors[label] && (
-                <div className="invalid-feedback">
-                    <Error /> {errors[label].message}
-                </div>
-            )} */}
         </div>
     );
 };
@@ -80,4 +69,5 @@ const framer_error = {
     exit: { opacity: 0, y: 10 },
     transition: { duration: 0.2 },
 };
+
 export default Input;

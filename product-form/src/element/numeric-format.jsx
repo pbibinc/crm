@@ -1,18 +1,32 @@
 import React from "react";
-import { useForm, useFormContext } from "react-hook-form";
+import { Controller, useForm, useFormContext } from "react-hook-form";
 import { NumericFormat } from "react-number-format";
 import { findInputError } from "../utils/findInputError";
 import { isFormInvalid } from "../utils/isFormInvalid";
 import { AnimatePresence, motion } from "framer-motion";
 import { Error } from "@mui/icons-material";
-const NumericFormatInput = ({ onChange, label, value, disabled }) => {
-    const {
-        register,
-        formState: { errors },
-    } = useFormContext();
-
+import { set } from "lodash";
+const NumericFormatInput = ({
+    label,
+    disabled,
+    id,
+    name,
+    inputValue,
+    onChangeInput,
+}) => {
+    const { control, formState } = useFormContext();
+    const { errors } = formState;
     const inputError = findInputError(errors, label);
     const isInvalid = isFormInvalid(inputError);
+
+    const handleChanged = (values) => {
+        const inputValue = values.floatValue;
+        setValue(label, inputValue);
+
+        if (!inputValue || inputValue <= 0) {
+            setValue(label, null);
+        }
+    };
     return (
         <div className="flex flex-col w-full gap-2">
             <AnimatePresence mode="wait" initial={false}>
@@ -23,25 +37,34 @@ const NumericFormatInput = ({ onChange, label, value, disabled }) => {
                     />
                 )}
             </AnimatePresence>
-            <NumericFormat
-                className={
-                    errors[label] ? "is-invalid form-control" : "form-control"
-                }
-                thousandSeparator={true}
-                prefix={"$"}
-                decimalScale={2}
-                fixedDecimalScale={true}
-                allowNegative={false}
-                placeholder="$0.00"
-                value={value}
-                disabled={disabled}
-                onChange={onChange}
-                {...register(label, {
-                    required: {
-                        value: true,
-                        message: "required",
-                    },
-                })}
+            <Controller
+                name={label}
+                control={control}
+                defaultValue={inputValue}
+                rules={{ required: "this form is required" }}
+                render={({ field }) => (
+                    <NumericFormat
+                        className={
+                            errors[label]
+                                ? "is-invalid form-control"
+                                : "form-control"
+                        }
+                        value={field.value}
+                        id={id}
+                        thousandSeparator={true}
+                        prefix={"$"}
+                        decimalScale={2}
+                        fixedDecimalScale={true}
+                        allowNegative={false}
+                        placeholder="$0.00"
+                        disabled={disabled}
+                        onValueChange={(values) => {
+                            field.onChange(values.floatValue);
+                            onChangeInput(values.floatValue);
+                        }}
+                        name={name}
+                    />
+                )}
             />
         </div>
     );
