@@ -243,12 +243,14 @@ const WorkersCompensationForm = () => {
         const storedGeneralInformationInstance = JSON.parse(
             sessionStorage.getItem("generalInformationStoredData") || "{}"
         );
-        const payrollOwnerFloat = parseFloat(
-            storedGeneralInformationInstance.owners_payroll.replace(
-                /[^0-9.]/g,
-                ""
-            )
-        );
+        // const payrollOwnerFloat = parseFloat(
+        //     storedGeneralInformationInstance.owners_payroll.replace(
+        //         /[^0-9.]/g,
+        //         ""
+        //     )
+        // );
+        const payrollOwnerFloat =
+            storedGeneralInformationInstance.owners_payroll;
         setOwnersPayroll(Math.floor(payrollOwnerFloat));
     }, []);
 
@@ -256,12 +258,14 @@ const WorkersCompensationForm = () => {
         const storedGeneralInformationInstance = JSON.parse(
             sessionStorage.getItem("generalInformationStoredData") || "{}"
         );
-        const payrollEmployeeFloat = parseFloat(
-            storedGeneralInformationInstance.employee_payroll.replace(
-                /[^0-9.]/g,
-                ""
-            )
-        );
+        // const payrollEmployeeFloat = parseFloat(
+        //     storedGeneralInformationInstance.employee_payroll.replace(
+        //         /[^0-9.]/g,
+        //         ""
+        //     )
+        // );
+        const payrollEmployeeFloat =
+            storedGeneralInformationInstance.employee_payroll;
         setEmployeePayroll(Math.floor(payrollEmployeeFloat));
     }, []);
 
