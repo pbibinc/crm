@@ -69,52 +69,50 @@ class AssignLeadController extends Controller
         }
 
         if($request->ajax()){
-                $query = Lead::select('company_name', 'state_abbr', 'class_code', 'website_originated', 'created_at')->where('status', 1)->orderBy('id');
-
-
-                if (!empty($request->get('website_originated'))) {
-                    $query->where('website_originated', $request->get('website_originated'));
+                $query = Lead::select('id', 'company_name', 'state_abbr', 'class_code', 'website_originated', 'created_at')->where('status', 1)->orderBy('id');
+                if ($request->filled('website_originated')) {
+                    $query->where('website_originated', $request->website_originated);
                 }
-
-                // dd($request->get('states'));
-                if (!empty($request->get('timezone'))){
-                    $timezoneStates = $timezones[$request->get('timezone')];
-                    $data = $query->whereIn('state_abbr', $timezoneStates);
+                if ($request->filled('timezone')) {
+                    $timezoneStates = $timezones[$request->timezone];
+                    $query->whereIn('state_abbr', $timezoneStates);
                 }
-
-                // if (!empty($request->get('states'))){
-                //     $query->where('state_abbr', $request->get('states'));
-                // }
-
-                if (!empty($request->get('classCodeLead'))){
-                    $query->where('class_code', $request->get('classCodeLead'));
+                if ($request->filled('classCodeLead')) {
+                    $query->where('class_code', $request->classCodeLead);
+                }
+                if ($request->filled('leadType')){
+                    $query->where('prime_lead', $request->leadType);
                 }
 
                 if (!empty($request->get('leadType'))){
                     $query->where('prime_lead', $request->get('leadType'));
                 }
 
-                $data = $query->select('id', 'company_name', 'tel_num', 'state_abbr',
-                    'class_code', 'website_originated', 'created_at')->orderBy('id');
+                if($request->filled('websites')){
+                    $query->where('website_originated', $request->websites);
+                }
 
-                // Cache::put('leads_funnel', $data, 60 * 60);
-            // }
+               // Filter by states
+               if ($request->filled('states')) {
+               // Convert the string to an array if it's not an array
+               $selectedStateNames = is_array($request->states) ? $request->states : explode(',', $request->states);
 
-            if (!empty($request->get('website'))) {
-                $data = $data->filter(function ($row) use ($request) {
-                    return $row['website_originated'] == $request->get('website');
-                });
-            }
+                $query->where('state_abbr', $selectedStateNames[0]);
+              }
 
-            return DataTables::of($data)->addIndexColumn()
-                ->addColumn('created_at_formatted', function ($data) {
-                    return Carbon::parse($data->created_at)->format('Y-m-d H:i:s');
+            //   if($request->fille)
+
+            return DataTables::of($query)->addIndexColumn()
+                ->addColumn('created_at_formatted', function ($lead) {
+                    return Carbon::parse($lead->created_at)->format('Y-m-d H:i:s');
                 })
-                ->addColumn('updated_at_formatted', function ($data) {
-                    return Carbon::parse($data->updated_at)->format('Y-m-d H:i:s');
+                ->addColumn('updated_at_formatted', function ($lead) {
+                    return Carbon::parse($lead->updated_at)->format('Y-m-d H:i:s');
                 })
-                ->addColumn('checkbox', '<input type="checkbox" name="users_checkbox[]"  class="users_checkbox" value="{{$id}}" />')
-                ->rawColumns(['checkbox', 'action'])
+                ->addColumn('checkbox', function ($lead) {
+                    return '<input type="checkbox" name="users_checkbox[]" class="users_checkbox" value="' . $lead->id . '" />';
+                })
+                ->rawColumns(['checkbox'])
                 ->make(true);
         }
         return view('leads.assign_leads.index', compact('userProfiles', 'sites','timezones', 'accounts', 'classCodeLeads', 'leadsCountByState', 'states'));
