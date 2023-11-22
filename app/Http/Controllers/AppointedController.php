@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\API\RecreationalController;
+use App\Http\Controllers\Controller;
+use App\Models\ClassCodeLead;
+use App\Models\Lead;
+use App\Models\QuotationProduct;
+use App\Models\QuoteLead;
+use App\Models\RecreationalFacilities;
+use App\Models\UnitedState;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Yajra\DataTables\Facades\DataTables;
+
+class AppointedController extends Controller
+{
+    //
+    public function index(Request $request)
+    {
+        $user = Auth::user();
+        $leads = Lead::getAppointedLeadsByUserProfileId($user->userProfile->id);
+        if($request->ajax())
+        {
+            return DataTables::of($leads)
+            ->addColumn('company_name_action', function($leads){
+                return '<a href="#" id="companyLink" name"companyLinkButtonData" data-id="'.$leads->id.'">'.$leads->company_name.'</a>';
+            })
+            ->addColumn('action', function($leads){
+                $profileViewRoute = route('appointed-list-profile-view', ['leadsId' => $leads->id]);
+                return '<a href="'.$profileViewRoute.'" class="view btn btn-success btn-sm" id="'.$leads->id.'" name"view"><i class="ri-eye-line"></i></a>';
+            })
+            ->rawColumns(['company_name_action', 'action'])
+            ->toJson();
+        }
+        return view('leads.appointed_leads.appointed.index');
+    }
+
+    public function leadsProfileView(Request $request,$leadsId)
+    {
+        $leads = Lead::find($leadsId);
+        $usAddress = UnitedState::getUsAddress($leads->GeneralInformation->zipcode);
+        $classCodeLeads = ClassCodeLead::all();
+        $sortedClassCodeLeads = ClassCodeLead::sortByName($classCodeLeads);
+        $recreationalFacilities = RecreationalFacilities::all();
+        $states = ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV',
+        'AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI', 'AZ', 'CO', 'ID', 'MT', 'NV', 'NM', 'UT', 'WY',
+        'CA', 'OR', 'WA', 'AK', 'HI'
+        ];
+        $timezones = [
+            'Eastern' => ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV'],
+            'Central' => ['AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI'],
+            'Mountain' => ['AZ', 'CO', 'ID', 'MT', 'NV', 'NM', 'UT', 'WY'],
+            'Pacific' => ['CA', 'OR', 'WA'],
+            'Alaska' => ['AK'],
+            'Hawaii-Aleutian' => ['HI']
+        ];
+        $timezoneStrings = [
+            'Eastern' => 'America/New_York',
+            'Central' => 'America/Chicago',
+            'Mountain' => 'America/Denver',
+            'Pacific' => 'America/Los_Angeles',
+            'Alaska' => 'America/Anchorage',
+            'Hawaii-Aleutian' => 'Pacific/Honolulu'
+        ];
+        $timezoneForState = null;
+        foreach($timezones as $timezone => $states){
+            if(in_array($leads->state_abbr, $states)){
+                $timezoneForState =  $timezoneStrings[$timezone];
+            }
+        }
+        $localTime = Carbon::now($timezoneForState);
+        $products = QuotationProduct::getQuotedProductByQuotedInformationId($leads->quoteLead->QuoteInformation->id);
+
+        return view('leads.appointed_leads.apptaker-leads-view.index', compact('leads', 'localTime', 'usAddress', 'products', 'sortedClassCodeLeads', 'classCodeLeads', 'recreationalFacilities', 'states'));
+    }
+
+}
