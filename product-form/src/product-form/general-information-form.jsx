@@ -318,7 +318,35 @@ const GeneralInformationForm = () => {
                 }
             })
             .catch((error) => {
-                console.log("Error::", error);
+                if (error.request.status == 409) {
+                    const generalInformation =
+                        error.response.data.generalInformation;
+                    const userProfile = error.response.data.userProfile;
+
+                    // Styling for the tables
+                    const tableStyle =
+                        "border-collapse: collapse; width: 100%;";
+                    const thStyle =
+                        "border: 1px solid #ddd; padding: 8px; text-align: left; background-color: #f2f2f2; color: black;";
+                    const tdStyle = "border: 1px solid #ddd; padding: 8px;";
+
+                    let generalInfoTableHtmlFullName = `<table style="${tableStyle}"><thead><tr><th style="${thStyle}">Contact Person:</th><td style="${tdStyle}">${generalInformation.firstname} ${generalInformation.lastname}</td></tr></thead></table>`;
+                    let generalInfoTableHtml = `<table style="${tableStyle}"><thead><tr><th style="${thStyle}">Position:</th><td style="${tdStyle}">${generalInformation.job_position}</td></tr></thead></table>`;
+
+                    let userProfileTableHtml = `<table style="${tableStyle}"><thead><tr><th style="${thStyle}">Appointer:</th><td style="${tdStyle}">${userProfile.firstname} ${userProfile.lastname}</td></tr></thead></table>`;
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...This Lead is Already Been Appointed",
+                        html: `<br>${generalInfoTableHtmlFullName}<br>${generalInfoTableHtml}<br>${userProfileTableHtml}`,
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "Error:: kindly call your IT and Refer to them this error",
+                    });
+                }
             });
     };
     const { formState } = methods;
@@ -454,7 +482,7 @@ const GeneralInformationForm = () => {
                                 classValue="col-6"
                                 colContent={
                                     <>
-                                        <Label labelContent="Address" />
+                                        <Label labelContent="Address *" />
                                         <Input
                                             label="address"
                                             type="text"
@@ -539,7 +567,7 @@ const GeneralInformationForm = () => {
                                 classValue="col-6"
                                 colContent={
                                     <>
-                                        <Label labelContent="Email" />
+                                        <Label labelContent="Email *" />
                                         <Input
                                             label="email"
                                             type="email"
@@ -562,7 +590,7 @@ const GeneralInformationForm = () => {
                                 classValue="col-6"
                                 colContent={
                                     <>
-                                        <Label labelContent="Full Time Employee" />
+                                        <Label labelContent="Full Time Employee *" />
                                         <Input
                                             label="full time employee"
                                             type="number"
@@ -582,7 +610,7 @@ const GeneralInformationForm = () => {
                                 classValue="col-6"
                                 colContent={
                                     <>
-                                        <Label labelContent="Part Time Employee" />
+                                        <Label labelContent="Part Time Employee *" />
                                         <Input
                                             label="part time employee"
                                             type="number"
@@ -607,7 +635,7 @@ const GeneralInformationForm = () => {
                                 classValue="col-6"
                                 colContent={
                                     <>
-                                        <Label labelContent="Gross Receipt" />
+                                        <Label labelContent="Gross Receipt *" />
                                         <NumericFormatInput
                                             label="gross receipt"
                                             id="grossReceipt"
@@ -627,7 +655,7 @@ const GeneralInformationForm = () => {
                                 classValue="col-6"
                                 colContent={
                                     <>
-                                        <Label labelContent="Employee Payroll" />
+                                        <Label labelContent="Employee Payroll *" />
                                         <NumericFormatInput
                                             label="employee receipt"
                                             id="employeePayroll"
@@ -652,7 +680,7 @@ const GeneralInformationForm = () => {
                                 classValue="col-6"
                                 colContent={
                                     <>
-                                        <Label labelContent="Sub Out/1099" />
+                                        <Label labelContent="Sub Out/1099 *" />
                                         <NumericFormatInput
                                             label="sub out"
                                             name="subOut"
@@ -670,7 +698,7 @@ const GeneralInformationForm = () => {
                                 classValue="col-6"
                                 colContent={
                                     <>
-                                        <Label labelContent="Owners Payroll" />
+                                        <Label labelContent="Owners Payroll *" />
                                         <NumericFormatInput
                                             label="owners payroll"
                                             id={"ownersPayroll"}
@@ -704,7 +732,6 @@ const GeneralInformationForm = () => {
                             </div>
                         }
                     />
-
                     <Row
                         classValue="mb-4"
                         rowContent={[
@@ -712,7 +739,7 @@ const GeneralInformationForm = () => {
                                 key="materialCostLableColumn"
                                 classValue="col-2"
                                 colContent={
-                                    <Label labelContent="Material Cost" />
+                                    <Label labelContent="Material Cost *" />
                                 }
                             />,
                             <Column

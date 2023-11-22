@@ -50,7 +50,7 @@ class GeneralInformation extends Model
 
     public function generalLiabilities()
     {
-        return $this->hasOne(GeneralLiabilities::class);
+        return $this->hasOne(GeneralLiabilities::class, 'general_information_id', 'id');
     }
 
     public function workersCompensation()

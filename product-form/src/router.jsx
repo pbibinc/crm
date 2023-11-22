@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import AppointedLeadQuestionare from "./views/appoinnted-lead-questionare.jsx";
 import GeneralLiabilitiesForm from "./product-form/general-liabilites-form.jsx";
 import ContextDataProvider from "./contexts/context-data-provider.jsx";
+import GeneralLiabilitiesFormEdit from "./views/general-liabilities-edit.jsx";
 
 const router = createBrowserRouter([
     {
@@ -13,6 +14,14 @@ const router = createBrowserRouter([
         element: (
             <ContextDataProvider>
                 <GeneralLiabilitiesForm />
+            </ContextDataProvider>
+        ),
+    },
+    {
+        path: "/general-liabilities-form/edit",
+        element: (
+            <ContextDataProvider>
+                <GeneralLiabilitiesFormEdit />
             </ContextDataProvider>
         ),
     },

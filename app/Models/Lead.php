@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-;
 
 class Lead extends Model
 {
@@ -22,17 +21,6 @@ class Lead extends Model
         'website_originated',
         'disposition_name',
     ];
-
-    // public function userProfile()
-    // {
-    //     return $this->belongsTo(UserProfile::class);
-    // }
-
-    // public  static function  fetchLeads($paginate = 50)
-    // {
-    //     return self::select('company_name', 'tel_num', 'state_abbr', 'website_originated', 'class_code')
-    //     ->paginate($paginate);
-    // }
 
     public function dispositions()
     {
@@ -55,6 +43,20 @@ class Lead extends Model
     public static function getAppointedLeads()
     {
         $leads = self::where('disposition_id', 1)->where('status', 3)->with('userProfile')->get();
+
+        if($leads){
+            return $leads;
+        }
+        return null;
+    }
+
+    public static function getAppointedLeadsByUserProfileId($userProfileId)
+    {
+        $leads = self::where('disposition_id', 1)
+        ->where('status', 3)
+        ->wherehas('userProfile', function($query) use ($userProfileId){
+            $query->where('user_id', $userProfileId);
+        })->select('id', 'company_name', 'tel_num', 'class_code', 'state_abbr')->orderBy('id');
 
         if($leads){
             return $leads;
@@ -143,7 +145,10 @@ class Lead extends Model
         return $this->hasMany(LeadNotes::class, 'lead_id');
     }
 
-
+    public function classcodeQuestionare()
+    {
+        return $this->hasMany(ClassCodeQuestionare::class, 'lead_id', 'id');
+    }
 
 
 }

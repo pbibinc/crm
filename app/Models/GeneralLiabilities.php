@@ -52,6 +52,11 @@ class GeneralLiabilities extends Model
         return $this->hasMany(ClassCodePercentage::class, 'general_liabilities_id', 'id');
     }
 
+    public function classCodePercentage()
+    {
+        return $this->belongsToMany(ClassCodeLead::class, 'classcode_percentage_table', 'general_liabilities_id', 'classcode_id')->withPivot('percentage');
+    }
+
     public function multiStates()
     {
         return $this->hasMany(MultipleState::class, 'general_liabilities_id', 'id');
@@ -67,6 +72,14 @@ class GeneralLiabilities extends Model
         return $this->hasOne(Subcontractor::class, 'general_liabilities_id', 'id');
     }
 
+    public function recreationalFacilities()
+    {
+        return $this->belongsToMany(RecreationalFacilities::class, 'general_liability_facilities_table', 'general_liabilities_id', 'recreational_facilities_id');
+    }
 
+    // public function coverageLimit()
+    // {
+    //     return $this->hasOne(CoverageLimit::class, 'id', 'coverage_limit_id');
+    // }
 
 }

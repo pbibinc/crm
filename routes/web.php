@@ -10,6 +10,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\API\LeadDetailController;
+use App\Http\Controllers\AppointedController;
 use App\Http\Controllers\BirthdayController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\Demo\DemoController;
@@ -124,6 +125,12 @@ Route::prefix('list-leads')->group(function  () {
     Route::get('/assign-appointed-lead', [AssignAppointedLeadController::class, 'index'])->name('assign-appointed-lead');
     Route::post('/assign-appointed-lead/assign-lead', [AssignAppointedLeadController::class, 'assignAppointedLead'])->name('assign-leads-market-specialist');
     Route::get('/assign-appointed-lead/get-data-table', [AssignAppointedLeadController::class, 'getDataTable'])->name('get-data-table');
+});
+
+Route::prefix('appointed-list')->group(function(){
+    route::get('/', [AppointedController::class, 'index'])->name('appointed-list');
+    route::get('/{leadsId}', [AppointedController::class, 'leadsProfileView'])->name('appointed-list-profile-view');
+
 });
 
 

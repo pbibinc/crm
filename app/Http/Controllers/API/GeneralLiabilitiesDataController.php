@@ -12,6 +12,7 @@ use App\Models\GeneralInformation;
 use App\Models\GeneralLiabilities;
 use App\Models\GeneralLiabilitiesHaveLoss;
 use App\Models\GeneralLiabilitiesRecreationalFacilities;
+use App\Models\Lead;
 use App\Models\MultipleState;
 use App\Models\QuotationProduct;
 use App\Models\QuoteInformation;
@@ -27,10 +28,15 @@ class GeneralLiabilitiesDataController extends BaseController
     public function saveGeneralLiabilities(Request $request)
     {
         $data = $request->all();
-        Log::info("General Liabilities Data: ", [$data]);
+        $dataGeneralInformationId = GeneralInformation::where('leads_id', $data['leadId'])->value('id');
+
+        if (empty($dataGeneralInformationId)) {
+            return response()->json(['error' => 'General Information Data is not yet saved.'], 409);
+        }
+        if(GeneralLiabilities::where('general_information_id', $dataGeneralInformationId)->exists()){
+            return response()->json(['error' => 'General Liabilities Data has been already saved.'], 409);
+        }
         try{
-
-
               //Saving general liabilities coverage limit
               $coverageLimit = new CoverageLimit();
               $coverageLimit->limit = $data['limit'];
@@ -41,8 +47,6 @@ class GeneralLiabilitiesDataController extends BaseController
 
               $coverageLimitId = $coverageLimit->id;
 
-
-              //
                $generalInformationId = GeneralInformation::where('leads_id', $data['leadId'])->value('id');
                $expirationOfGeneralLiabilitiesRaw =  Carbon::parse($data['expiration_general_liability'])->toDateString();
 
@@ -116,14 +120,14 @@ class GeneralLiabilitiesDataController extends BaseController
             }
 
 
-        //saving of have loss general liabilities table
-        if($data['isHaveLossesChecked'] !== false){
+         //saving of have loss general liabilities table
+         if($data['isHaveLossesChecked'] !== false){
             $generalLiabilitiesHaveLoss = new GeneralLiabilitiesHaveLoss();
             $generalLiabilitiesHaveLoss->general_liabilities_id = $generalLiabilitiId;
             $generalLiabilitiesHaveLoss->date_of_claim = Carbon::parse($data['dateOfClaim'])->toDateString();
             $generalLiabilitiesHaveLoss->loss_amount = $data['haveLossAmount'];
             $generalLiabilitiesHaveLoss->save();
-         }
+          }
 
 
 
@@ -162,7 +166,6 @@ class GeneralLiabilitiesDataController extends BaseController
                      $multipleState->save();
                     }
              }
-
 
         }catch(\Exception $e){
             Log::error('Error saving general liabilities data: '.$e->getMessage());
@@ -331,20 +334,150 @@ class GeneralLiabilitiesDataController extends BaseController
                         $multipleState = MultipleState::where('general_liabilities_id', $generalLiabilitiesId)->get();
                         $multipleStateDelete = $multipleState->each->delete();
                     }
-
-
             }
 
         }catch(\Exception $e){
             Log::error('Error updating general liabilities data: '.$e->getMessage());
             return response()->json(['error' => 'Failed to update data.'], 500);
         }
+    }
 
+    public function edit($id)
+    {
 
+        $leads = Lead::find($id);
+        if(is_null($leads)){
+            return $this->sendError('General Liabilities not found.');
+        }
+        $generalLiabilities = $leads->generalInformation->generalLiabilities;
+        $multipleStates = $generalLiabilities->multiStates;
+        $multipleStatePercentage = [];
+        $multipleStatesData = [];
+        $multiplestateSelectedObject = [];
+        if($multipleStates != null){
+            foreach($multipleStates as $multipleState){
+                $multipleStatePercentage [] = $multipleState->percentage;
+                $multipleStatesData [] = $multipleState->state;
+                $multiplestateSelectedObject [] = [
+                    'value' => $multipleState->state,
+                    'label' => $multipleState->state
+                ];
+            }
+        }
+        $classCodeQuestionare = $leads->classcodeQuestionare;
+        $classCodeAnswer = [];
+        $classCodeQuestion = [];
+        $classCodeId = [];
+        if($classCodeQuestionare != null){
+            foreach($classCodeQuestionare as $classCode){
+                $classCodeAnswer [] = $classCode->answer;
+                $classCodeQuestion [] = $classCode->question;
+                $classCodeId [] = $classCode->classcode_id;
+            }
+        }
+        $classCodeQuestionare = $generalLiabilities->classCodePercentage;
+        $classCodePercentages = [];
+        $selectedClassCodeObject = [];
+        $selectedClassCode = [];
+        if($classCodeQuestionare != null){
+            foreach($classCodeQuestionare as $classCode){
+                $classCodePercentages [] = $classCode->pivot->percentage;
+                $selectedClassCodeObject [] = [
+                    'value' => $classCode->id,
+                    'label' => $classCode->name,
+                ];
+                $selectedClassCode [] = $classCode->id;
+            }
+        }
+        $recreationalFacilities = $generalLiabilities->recreationalFacilities;
+        $recreationalFacilitiesData = [];
+        if($recreationalFacilities != null){
+            foreach($recreationalFacilities as $recreationalFacility){
+                $recreationalFacilitiesData [] = [
+                    'value' => $recreationalFacility->id,
+                    'label' => $recreationalFacility->name,
+                ];
+            }
+        }
 
+        $generalLiabilitiesFormData = [
+            //general liabilities common data
+            'business_description' => $generalLiabilities->business_description,
+            'residential_percentage' => $generalLiabilities->residential,
+            'commercial_percentage' => $generalLiabilities->commercial,
+            'construction_percentage' => $generalLiabilities->new_construction,
+            'repair_remodel_percentage' => $generalLiabilities->repair,
+            'self_performing_roofing' => $generalLiabilities->self_perform_roofing == 1 ? true : false,
+            'concrete_foundation_work' => $generalLiabilities->concrete_foundation_work == 1 ? true : false,
+            'perform_tract_work' => $generalLiabilities->perform_track_work == 1 ? true : false,
+            'work_on_condominium' => $generalLiabilities->is_condo_townhouse == 1 ? true : false,
+            'perform_remodelling_work' => $generalLiabilities->perform_multi_dwelling == 1 ? true : false,
+            'business_entity' => [
+                'value' => $generalLiabilities->business_entity,
+                'label' => $generalLiabilities->business_entity
+            ],
+            'years_in_business' => $generalLiabilities->years_in_business,
+            'years_in_profession' => $generalLiabilities->years_in_professional,
+            'largest_project' => $generalLiabilities->largest_project,
+            'largest_project_amount' => $generalLiabilities->largest_project_amount,
+            'contact_license' => $generalLiabilities->contract_license,
+            'contact_license_name' => $generalLiabilities->contract_license_name,
+            'is_office_home' => $generalLiabilities->is_office_home == 1 ? true : false,
+            'expiration_general_liability' => $generalLiabilities->expiration_of_general_liabilities,
+            'policy_premium' => $generalLiabilities->policy_premium,
+            'cross_sell' => $generalLiabilities->cross_sell,
 
+            //object for multiple state
+            'isMultipleStateChecked' => $multipleStates->count() > 0 ? true : false,
+            'multiple_percentage' => $multipleStatePercentage,
+            'multiple_states' => $multipleStatesData,
+            'multistateSelectedObject' => $multiplestateSelectedObject,
+
+            //object for classcode questionare
+            'classCodeAnswer' => $classCodeAnswer,
+            'classCodeQuestion' => $classCodeQuestion,
+            'classCodeid' => $classCodeId,
+
+            //object for classcode percentage
+            'classcode_percentage' => $classCodePercentages,
+            'classcCodeObject' => $selectedClassCodeObject,
+            'classCode' => $selectedClassCode,
+
+            //object for general liabilities subccontract questionare
+            'blasting_operation' => $generalLiabilities->subcontractor->blasting_operation == 1 ? true : false,
+            'hazardous_waste' => $generalLiabilities->subcontractor->hazardous_waste == 1 ? true : false,
+            'asbestos_mold' => $generalLiabilities->subcontractor->asbestos_mold == 1 ? true : false,
+            'tall_building' => $generalLiabilities->subcontractor->three_stories_height == 1 ? true : false,
+
+            //mode
+            'isUpdate' => true,
+            'isEditing' => false,
+
+            //recreational facilities data
+            'recreational_facilities' => $recreationalFacilitiesData,
+
+            //coverage limit data
+            'limit' => [
+                'value' => $generalLiabilities->coverageLimit->limit,
+                'label' => $generalLiabilities->coverageLimit->limit
+            ],
+            'medical' => [
+                'value' => $generalLiabilities->coverageLimit->medical,
+                'label' => $generalLiabilities->coverageLimit->medical
+            ],
+            'fire_damage' => [
+                'value' => $generalLiabilities->coverageLimit->fire_damage,
+                'label' => $generalLiabilities->coverageLimit->fire_damage
+            ],
+            'deductible' => [
+                'value' => $generalLiabilities->coverageLimit->deductible,
+                'label' => $generalLiabilities->coverageLimit->deductible
+            ],
+        ];
+        return response()->json([$generalLiabilitiesFormData, 'Lead retrieved successfully.']);
     }
 
 }
+
 
 ?>

@@ -7,23 +7,25 @@ import { ContextData } from "../contexts/context-data-provider";
 
 const Header = () => {
     const { lead } = useContext(ContextData);
-    if(lead){
+    if (lead) {
         sessionStorage.setItem("lead", JSON.stringify(lead));
     }
 
     localStorage.setItem("leadId", JSON.stringify(lead?.data?.id));
     const storedLeadData = JSON.parse(sessionStorage.getItem("lead"));
-    const storedLeadId = JSON.parse(localStorage.getItem("generalInformationStoredData"));
+    const storedLeadId = JSON.parse(
+        localStorage.getItem("generalInformationStoredData")
+    );
 
-    if(storedLeadData?.data?.id !== storedLeadId?.id){
+    if (storedLeadData?.data?.id !== storedLeadId?.id) {
         localStorage.removeItem("generalInformationStoredData");
     }
 
     function formatPhoneNumber(phoneNumberString) {
-        const cleaned = ('' + phoneNumberString).replace(/\D/g, ''); // Remove any non-numeric characters
+        const cleaned = ("" + phoneNumberString).replace(/\D/g, ""); // Remove any non-numeric characters
         const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/); // Match the number pattern
         if (match) {
-            return '(' + match[1] + ') ' + match[2] + '-' + match[3];
+            return "(" + match[1] + ") " + match[2] + "-" + match[3];
         }
         return null;
     }
@@ -53,7 +55,9 @@ const Header = () => {
                         }}
                     />
                 </div>
-                <div className="d-flex">{formatPhoneNumber(lead?.data?.tel_num)}</div>
+                <div className="d-flex">
+                    {formatPhoneNumber(lead?.data?.tel_num)}
+                </div>
             </div>
         </header>
     );

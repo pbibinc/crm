@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\GeneralInformation;
 use App\Models\Lead;
+use App\Models\LeadHistory;
 use App\Models\QuoteInformation;
 use App\Models\QuoteLead;
 use App\Models\UserProfile;
@@ -21,10 +22,17 @@ class GeneralInformationDataController extends BaseController
     public function getGeneralInformationData(Request $request)
     {
 
-        try{
+    try{
             DB::beginTransaction();
             $data = $request->all();
             Cache::put('general_information_data', $data);
+
+            if(GeneralInformation::where('leads_id', $data['lead_id'])->exists()){
+                $generalInformation = GeneralInformation::where('leads_id', $data['lead_id'])->first();
+                $userProfile = LeadHistory::getAppointerUserProfile($data['lead_id']);
+                return response()->json(['message' => 'General Informmation Data has been already saved', 'generalInformation' => $generalInformation, 'userProfile' => $userProfile], 409);
+            }
+
 
             //saving gneral information data
             // Log::info("user id", [Auth::user()->id]);

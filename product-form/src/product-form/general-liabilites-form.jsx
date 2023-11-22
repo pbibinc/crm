@@ -32,6 +32,8 @@ import axiosClient from "../api/axios.client";
 // import Col from "react-bootstrap/esm/Col";
 const GeneralLiabilitiesForm = () => {
     const { classCodeArray } = useContext(ContextData);
+    const { generalLiabilitiesData } = useContext(ContextData);
+    console.log("context", generalLiabilitiesData); // Use the context object
     const [isLoading, setIsLoading] = useState(false);
     const getLeadStoredData = () => {
         const storedData = JSON.parse(sessionStorage.getItem("lead") || "{}");
@@ -41,8 +43,9 @@ const GeneralLiabilitiesForm = () => {
         const storedData = JSON.parse(
             sessionStorage.getItem("generalLiabilitiesStoredData") || "{}"
         );
-        return storedData;
+        return generalLiabilitiesData ? generalLiabilitiesData[0] : storedData;
     };
+
     const [classCodePercentages, setClassCodePercentage] = useState(
         () => getGeneralLiabilitiesStoredData()?.classcode_percentage || [0]
     );
@@ -577,16 +580,6 @@ const GeneralLiabilitiesForm = () => {
         })
     );
 
-    // Hande Amount change for Material Cost
-    // const handlePolicyAmountChange = (event) => {
-    //     const numbericValue = event.target.value.replace(/[^0-9]/g, "");
-    //     const formattedValue = numbericValue.replace(
-    //         /\B(?=(\d{3})+(?!\d))/g,
-    //         ","
-    //     );
-    //     setPolicyPremium(numbericValue);
-    // };
-
     const generalLiabilitiesFormData = {
         //objects for coverage limit table
         limit: selectedLimit?.value,
@@ -747,32 +740,31 @@ const GeneralLiabilitiesForm = () => {
                 if (method == "post") {
                     setIsLoading(false);
                     Swal.fire({
-                        position: "top-end",
                         icon: "success",
                         title: "General Liabilities  has been saved",
-                        showConfirmButton: false,
-                        timer: 1500,
                     });
                 } else {
                     setIsLoading(false);
                     Swal.fire({
-                        position: "top-end",
                         icon: "success",
                         title: "General Liabilities has been successfully updated",
-                        showConfirmButton: false,
-                        timer: 1500,
                     });
                 }
             })
             .catch((error) => {
-                console.log("Error::", error);
-                Swal.fire({
-                    position: "top-end",
-                    icon: "warning",
-                    title: `Error:: kindly call your IT and Refer to them this error ${error.response.data.error}`,
-                    showConfirmButton: false,
-                    timer: 1500,
-                });
+                if (error.response.status == 409) {
+                    console.log("Error::", error);
+                    Swal.fire({
+                        icon: "warning",
+                        title: `${error.response.data.error}`,
+                    });
+                } else {
+                    console.log("Error::", error);
+                    Swal.fire({
+                        icon: "warning",
+                        title: `Error:: kindly call your IT and Refer to them this error ${error.response.data.error}`,
+                    });
+                }
             });
     }
 
@@ -1799,7 +1791,7 @@ const GeneralLiabilitiesForm = () => {
                     />,
                 ]}
             />
-            <Row
+            {/* <Row
                 classValue="mb-4"
                 rowContent={[
                     <Column
@@ -1855,7 +1847,7 @@ const GeneralLiabilitiesForm = () => {
                         }
                     />
                 }
-            />
+            /> */}
             {/* <Row
                 classValue="mb-4"
                 rowContent={[
