@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -61,15 +62,24 @@ class UserController extends Controller
    public function store(Request $request)
    {
     try{
-        DB::beginTransaction();
 
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email',
+            'name' => 'required|unique:users,name|regex:/^[A-Z][a-z]*/',
+            'email' => 'required|email|unique:users,email|regex:/^[A-Z][a-z]*/',
             'role_id' => 'required|exists:roles,id',
             'password' => 'required|min:8|confirmed',
             'username' => 'required|unique:users,username',
         ]);
+        $token = $request->input('token');
+        if(Cache::has($token)){
+            return response()->json([
+                'message' => 'Duplicate subimission, please try again'
+            ],422);
+        }
+        $token = Str::random(10);
+        Cache::put($token, true, 10);
+
+        DB::beginTransaction();
 
         $user = new User;
         $user->name = $request->name;
@@ -80,12 +90,13 @@ class UserController extends Controller
         $user->save();
 
         DB::commit();
+        Cache::forget($token);
     }catch(ValidationException $e){
         Log::info("Error for Assigning", [$e->getMessage()]);
         return response()->json([
             'errors' => $e->validator->errors(),
             'message' => 'Validation failed'
-        ], 422);
+        ],422);
     }
    }
 

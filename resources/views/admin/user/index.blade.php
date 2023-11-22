@@ -80,34 +80,36 @@
                         <h5 class="modal-title" id="dataModalLabel">Add Position</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        <form id="dataModalForm">
+                    <form id="dataModalForm">
+                        <div class="modal-body">
+
                             @csrf
                             <div class="form-group mb-3">
                                 <label for="name" class="form-label">Name:</label>
-                                <input type="text" class="form-control" id="name" placeholder="Name" required>
+                                <input type="text" class="form-control" id="name" placeholder="Name">
                                 <div class="invalid-feedback" id="nameError"></div>
                             </div>
 
                             <div class="form-group mb-3">
                                 <label for="username" class="form-label">Username:</label>
-                                <input type="text" class="form-control" id="username" placeholder="Username" required>
+                                <input type="text" class="form-control" id="username" placeholder="Username">
                                 <div class="invalid-feedback" id="usernameError"></div>
                             </div>
 
                             <div class="form-group mb-3">
                                 <label for="email">Email:</label>
-                                <input type="text" class="form-control" id="email" placeholder="Email" required>
+                                <input type="text" class="form-control" id="email" placeholder="Email">
                                 <div class="invalid-feedback" id="emailError"></div>
                             </div>
 
                             <div class="form-group mb-3">
                                 <label for="password">Password</label>
                                 <input type="password" class="form-control mb-3" id="password" name="password"
-                                    placeholder="Password" required>
+                                    placeholder="Password">
+
                                 <label for="password_confirmation">Password Confirmation</label>
                                 <input type="password" class="form-control" placeholder="Password Confirmation"
-                                    name="password_confirmation" id="password_confirmation" required>
+                                    name="password_confirmation" id="password_confirmation">
                                 <div class="invalid-feedback" id="passwordError"></div>
                             </div>
 
@@ -118,21 +120,18 @@
                             <input type="hidden" name="action" id="action" value="add">
                             <input type="hidden" name="hidden_id" id="hidden_id" />
 
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <input type="submit" name="action_button" id="action_button" value="Add"
-                            class="btn btn-primary">
-                    </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <input type="submit" name="action_button" id="action_button" value="Add"
+                                class="btn btn-primary">
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
     {{-- end of modal --}}
-
-
-
 
     {{-- start of deletion of modal --}}
     <div class="modal fade" id="confirmModal" tabindex="-1">
@@ -147,7 +146,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-danger" name="ok_button" id="ok_button">gege</button>
+                    <button type="button" class="btn btn-danger" name="ok_button" id="ok_button">Submit</button>
                 </div>
             </div>
         </div>
@@ -258,8 +257,7 @@
 
             if ($('#action').val() == 'Add') {
                 action_url = "{{ route('admin.users.store') }}"
-            }
-            if ($('#action').val() == 'Update') {
+            } else if ($('#action').val() == 'Update') {
                 action_url = "{{ route('admin.users.update') }}"
             }
 
@@ -277,11 +275,8 @@
                     location.reload();
                 },
                 error: function(jqXHR, xhr, status, error) {
-                    // var errors = xhr.responseJSON.errors;
-                    // var errorHtml = '<ul>';
                     if (jqXHR.status == 422) {
                         const errors = jqXHR.responseJSON.errors;
-                        console.log(errors);
                         // Remove any existing errors
                         $('.is-invalid').removeClass('is-invalid');
                         $('.invalid-feedback').empty();
@@ -289,6 +284,7 @@
                         // Loop through and display error messages
                         for (let field in errors) {
                             const errorMessage = errors[field];
+                            console.log(field);
                             $(`#${field}`).addClass('is-invalid');
                             $(`#${field}Error`).text(errorMessage[0]).show();
                         }
