@@ -14,6 +14,7 @@ use App\Http\Controllers\API\GeneralLiabilitiesDataController;
 use App\Http\Controllers\API\ToolsEquipmentController;
 use App\Http\Controllers\API\WorkersCompDataController;
 use App\Http\Controllers\LeadController;
+use App\Models\GeneralLiabilities;
 use App\Models\Lead;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -40,16 +41,25 @@ Route::get('leads/lead-details/lead-address', [LeadDetailController::class, 'lea
 Route::get('classcode/data', [ClassCodeDataController::class, 'index'])->withoutMiddleware(['auth:sanctum']);
 Route::get('states', [StateAddressController::class, 'states'])->withoutMiddleware(['auth:sanctum']);
 Route::get('recreational', [RecreationalController::class, 'recreationalFactilies'])->withoutMiddleware(['auth:sanctum']);
+
 Route::post('general-information-data', [GeneralInformationDataController::class, 'getGeneralInformationData'])->withoutMiddleware(['auth:sanctum']);
 Route::get('general_information', [GeneralInformationDataController::class, 'generalInformationData'])->withoutMiddleware(['auth:sanctum']);
 Route::put('general-information-data/{id}', [GeneralInformationDataController::class, 'updateGenneralInformationData'])->withoutMiddleware(['auth:sanctum']);
+
+//route for general liabilities
 Route::post('general-liabilities-data', [GeneralLiabilitiesDataController::class, 'saveGeneralLiabilities'])->withoutMiddleware(['auth:sanctum']);
 Route::put('general-liabilities-data/{id}', [GeneralLiabilitiesDataController::class, 'updateGeneralLiabilities'])->withoutMiddleware(['auth:sanctum']);
+Route::get('general-liabilities-data/edit/{id}', [GeneralLiabilitiesDataController::class, 'edit'])->withoutMiddleware(['auth:sanctum']);
+
+//route for workers compensation
 Route::post('workers-comp-data/store', [WorkersCompDataController::class, 'saveWorkersComp'])->withoutMiddleware(['auth:sanctum']);
 Route::put('workers-comp-data/{id}', [WorkersCompDataController::class, 'updateWorkersComp'])->withoutMiddleware(['auth:sanctum']);
 Route::get('workers-comp-data/get/{id}', [WorkersCompDataController::class, 'getWorkersCompData'])->withoutMiddleware(['auth:sanctum']);
+
+//route for commercial auto
 Route::post('commercial-auto-data/store', [CommercialAutoController::class, 'saveCommercialAuto'])->withoutMiddleware(['auth:sanctum']);
 Route::put('commercial-auto-data/update/{id}', [CommercialAutoController::class, 'updateCommercialAuto'])->withoutMiddleware(['auth:sanctum']);
+
 Route::post('excess-liability-data/store', [ExcessLiabilityController::class, 'saveExcessLiability'])->withoutMiddleware(['auth:sanctum']);
 Route::put('excess-liability-data/update/{id}', [ExcessLiabilityController::class, 'updateExcessLiability'])->withoutMiddleware(['auth:sanctum']);
 Route::post('tools-equipment/store', [ToolsEquipmentController::class, 'storeToolsEquipment'])->withoutMiddleware(['auth:sanctum']);
