@@ -1,33 +1,32 @@
 @include('partials.main')
 
 <head>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    @include('partials.title-meta')
+    {{-- csrf token --}}
+    @include('layouts.csrf')
 
-    <div id="preloader">
-        <div id="status">
-            <div class="spinner">
-                <i class="ri-loader-line spin-icon"></i>
-            </div>
-        </div>
-    </div>
+    {{-- preloader --}}
+    @include('layouts.preloader')
 
-    <!-- Sweet Alert CSS-->
-    <link href="{{ asset('backend/assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
+    {{-- header css --}}
 
-    <link href="https://msurguy.github.io/ladda-bootstrap/dist/ladda-themeless.min.css" rel="stylesheet">
-    <script src="https://msurguy.github.io/ladda-bootstrap/dist/spin.min.js"></script>
-    <script src="https://msurguy.github.io/ladda-bootstrap/dist/ladda.min.js"></script>
+    @include('partials.head')
 
     <!--Jquery extension -->
     <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script>
 
-    <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('backend/assets/images/favicon.ico') }}">
-    <script src="{{ asset('backend/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <!-- Sweet Alert CSS-->
+    <link href="{{ asset('backend/assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
 
-    <!-- jquery.vectormap css -->
-    {{-- <link href="{{asset('backend/assets/libs/admin-resources/jquery.vecto rmap/jquery-jvectormap-1.2.2.css')}}" rel="stylesheet" type="text/css" /> --}}
+    {{-- ladda spinner button --}}
+    <link href="https://msurguy.github.io/ladda-bootstrap/dist/ladda-themeless.min.css" rel="stylesheet">
+    <script src="https://msurguy.github.io/ladda-bootstrap/dist/spin.min.js"></script>
+    <script src="https://msurguy.github.io/ladda-bootstrap/dist/ladda.min.js"></script>
+
+
+
+    <!-- App favicon -->
+    {{-- <link rel="shortcut icon" href="{{ asset('backend/assets/images/favicon.icon') }}"> --}}
+    <script src="{{ asset('backend/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
     <!-- Add the evo-calendar.css for styling -->
     <link href="{{ asset('backend/assets/libs/evo-calendar/css/evo-calendar.min.css') }}" rel="stylesheet"
@@ -66,9 +65,9 @@
     @include('partials.head')
 
     <!-- JAVASCRIPT -->
-    <script src="{{ mix('js/app.js') }}"></script>
-    <script src="{{ asset('js/bootstrap.js') }}"></script>
-    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    {{-- <script src="{{ mix('js/app.js') }}"></script> --}}
+    {{-- <script src="{{ asset('js/bootstrap.js') }}"></script> --}}
+    {{-- <script src="{{ asset('js/jquery.min.js') }}"></script> --}}
 
     {{-- <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script> --}}
 
@@ -77,7 +76,6 @@
 
     <script src="{{ asset('backend/assets/libs/select2/js/select2.min.js') }}"></script>
 
-    @include('partials.head')
 
     <!-- JAVASCRIPT -->
     <script src="{{ asset('backend/assets/libs/metismenu/metisMenu.min.js') }}"></script>
@@ -113,22 +111,6 @@
 
     @include('partials.menu')
 
-    {{--    @include('partials.header') --}}
-
-    {{--    <div class="main-content"> --}}
-    {{--        <div class="page-content"> --}}
-    {{--            <div class="container-fluid"> --}}
-    {{--                @include('partials.page-title') --}}
-    {{--            </div> --}}
-    {{--        </div> --}}
-    {{--    </div> --}}
-
-
-    <!-- ========== Left Sidebar Start ========== -->
-    {{--    @include('partials.sidebar') --}}
-    <!-- Left Sidebar End -->
-
-
     <!-- ============================================================== -->
     <!-- Start right Content here -->
     <!-- ============================================================== -->
@@ -154,13 +136,6 @@
 
 <!-- Right bar overlay-->
 <div class="rightbar-overlay"></div>
-
-
-
-<!-- apexcharts -->
-{{-- <script src="{{ asset('backend/assets/libs/apexcharts/apexcharts.js') }}"></script> --}}
-
-
 
 <!-- jquery.vectormap map -->
 <script src="{{ asset('backend/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js') }}">
@@ -213,15 +188,18 @@
 <script src="{{ asset('backend/assets/js/app.js') }}"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-{{-- form validation --}}
+{{-- form validation style --}}
 <link href="{{ asset('backend/assets/libs/spectrum-colorpicker2/spectrum.min.css') }}" rel="stylesheet"
     type="text/css">
 <link href="{{ asset('backend/assets/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css') }}"
     rel="stylesheet">
+
+<script href="{{ asset('backend/assets/libs/spectrum-colorpicker2/spectrum.min.js') }}"></script>
 <script src="{{ asset('backend/assets/libs/parsleyjs/parsley.min.js') }}"></script>
 <script src="{{ asset('backend/assets/js/pages/form-validation.init.js') }}"></script>
-<script src="{{ asset('backend/assets/js/pages/form-advanced.init.js') }}"></script>
+{{-- <script src="{{ asset('backend/assets/js/pages/form-advanced.init.js') }}"></script> --}}
 <script src="{{ asset('backend/assets/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js') }}"></script>
+
 <!-- Sweet Alerts js -->
 <script src="{{ asset('backend/assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
 

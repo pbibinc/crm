@@ -94,7 +94,7 @@
 
                     <ul class="sub-menu" aria-expanded="false">
                         <li><a href="{{ route('apptaker-leads') }}">Lead List</a></li>
-                        {{-- <li><a href="{{ route('apptaker-leads') }}">Call Back</a></li> --}}
+                        <li><a href="{{ route('appointed-list') }}">Appointed List</a></li>
                         {{-- <li><a href="{{ route('apptaker-leads') }}">Lead List</a></li> --}}
                     </ul>
                 </li>
