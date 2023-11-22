@@ -32,7 +32,7 @@ class AppTakerLeadsController extends Controller
             'Pacific' => ['CA', 'OR', 'WA'],
             'Alaska' => ['AK'],
             'Hawaii-Aleutian' => ['HI']
-        ];
+    ];
         $sites = Site::all();
         $states = ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV',
             'AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI', 'AZ', 'CO', 'ID', 'MT', 'NV', 'NM', 'UT', 'WY',
@@ -48,100 +48,15 @@ class AppTakerLeadsController extends Controller
         if($request->ajax()){
             $query = Lead::select('id','company_name', 'tel_num', 'class_code','state_abbr')->where('status', 2)->whereHas('userProfile', function($q) use ($user){
                 $q->where('user_id', $user->id);
-            })
-            ->orderBy('id');
+            });
             return DataTables::of($query)
             ->addColumn('company_name_action', function ($query){
                            return '<a href="#" data-toggle="modal" id="companyLink" name="companyLinkButtonData" data-target="#leadsDataModal" data-id="'.$query->id.'" data-name="'.$query->company_name.'">'.$query->company_name.'</a>';
                         })
             ->rawColumns(['company_name_action'])
-            ->toJson();
+            ->make(true);
         }
-        // if($request->ajax()){
-        //     if(Cache::has('apptaker_leads')){
-        //         $data = Cache::get('apptaker_leads');
 
-        //         if (!empty($request->get('timezone'))){
-        //             $timezoneStates = $timezones[$request->get('timezone')];
-        //             $data = $data->whereIn('state_abbr', $timezoneStates);
-        //         }
-
-        //         if (!empty($request->get('classCodeLead'))){
-        //             $data = $data->filter(function ($row) use ($request){
-        //                 return strtolower($row['class_code']) == strtolower($request->get('classCodeLead'));
-        //             });
-        //         }
-        //         if (!empty($request->get('states'))) {
-        //             $data = $data->filter(function ($row) use ($request){
-        //                 return $row['state_abbr'] == $request->get('states');
-        //             });
-        //         }
-        //         if (!empty($request->get('leadType'))) {
-        //             $data = $data->filter(function ($row) use ($request){
-        //                 return $row['prime_lead'] == $request->get('leadType');
-        //             });
-        //         }
-        //         // log::info($data);
-
-        //     }else{
-        //         $query = Lead::whereHas('userProfile', function ($q) use ($user){
-        //             $q->where('user_profile_id', $user->id);
-        //         })
-        //         ->where('status', 2);
-        //         $data = $query->select('id', 'company_name', 'tel_num', 'state_abbr', 'website_originated', 'created_at', 'disposition_id', 'class_code', 'prime_lead')->get();
-        //         $leadCollection = $data;
-
-        //         // $dispositions = Disposition::all();
-        //         $data->each(function ($lead) use ($dispositions){
-        //             $lead->dispositions = $dispositions;
-        //         });
-
-        //         Cache::put('apptaker_leads', $data, 60 * 60);
-        //     }
-
-        //     if (!empty($request->get('website'))) {
-        //         $data = $data->filter(function ($row) use ($request) {
-        //             return $row['website_originated'] == $request->get('website');
-        //         });
-        //     }
-
-        //     if (!empty($request->get('states'))) {
-        //         $data = $data->filter(function ($row) use ($request) {
-        //             return $row['state_abbr'] == $request->get('states');
-        //         });
-        //     }
-        //     if (!empty($request->get('leadType'))) {
-        //         $data = $data->filter(function ($row) use ($request){
-        //             return $row['prime_lead'] == $request->get('leadType');
-        //         });
-        //     }
-        //     // log::info($data);
-        //     if (!empty($request->get('timezone'))){
-        //         $timezoneStates = $timezones[$request->get('timezone')];
-        //         $data = $data->whereIn('state_abbr', $timezoneStates);
-        //     }
-
-        //     if (!empty($request->get('classCodeLead'))){
-        //         $data = $data->filter(function ($row) use ($request){
-        //             return strtolower($row['class_code']) == strtolower($request->get('classCodeLead'));
-        //         });
-        //     }
-        //     return DataTables::of($data)->addIndexColumn()
-        //         ->addColumn('created_at_formatted', function ($data) {
-        //             return Carbon::parse($data->created_at)->format('Y-m-d H:i:s');
-        //         })
-        //         ->addColumn('company_name_action', function ($data){
-        //            return '<a href="#" data-toggle="modal" id="companyLink" name="companyLinkButtonData" data-target="#leadsDataModal" data-id="'.$data->id.'" data-name="'.$data->company_name.'">'.$data->company_name.'</a>';
-        //         })
-
-        //         ->addColumn('company_name_action', function($data){
-        //           return  '<a href="#" data-toggle="modal" id="companyLink'.$data->id.'" data-row="'.$data->id.'" name="companyLinkButtonData" data-target="#leadsDataModal" data-telnum = "'.$data->tel_num.'"  data-state= "'.$data->state_abbr.'" data-id="'.$data->id.'" data-name="'.$data->company_name.'">'.$data->company_name.'</a>';
-        //         })
-
-        //         ->rawColumns(['company_name_action', 'dispositions', 'company_name_action',])
-        //         ->with(['totalDataCount' => $data->count()])
-        //         ->make(true);
-        // }
         return view('leads.apptaker_leads.index', compact('timezones', 'sites', 'states', 'sortedClassCodeLeads', 'classCodeLeads', 'dispositions', 'recreationalFacilities', 'dataCount'));
 
     }
@@ -179,6 +94,12 @@ class AppTakerLeadsController extends Controller
     }
 
     public function listLeadId(Request $request){
-        Cache::put('lead_id', $request->input('leadId'), 60 * 60);
+        $leadId = $request->input('leadId');
+        $cachedLeadId = Cache::get('lead_id');
+        if($leadId == $cachedLeadId){
+            Cache::get('lead_id');
+        }else{
+            Cache::put('lead_id', $leadId, 60 * 60);
+        }
     }
 }
