@@ -401,6 +401,9 @@
             $('#leadsApptakerDataTable').DataTable({
                 processing: true,
                 serverSide: true,
+                searching: true,
+                scrollY: 500,
+                scrollX: true,
                 ajax: {
                     url: "{{ route('apptaker-leads') }}",
                     data: function(d) {
@@ -490,7 +493,6 @@
                 var rowId = dropdownId.replace('dispositionDropDown', '');
                 var selectedDisposition = $(this).val();
                 var url = "{{ env('APP_FORM_URL') }}";
-                console.log(url);
                 if (selectedDisposition == '1') {
                     $.ajax({
                         url: "{{ route('list-lead-id') }}",

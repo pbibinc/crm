@@ -294,7 +294,7 @@
                     productsArray.push($(this).val());
                 });
 
-                console.log(productsArray);
+
                 var marketSpecialistUserProfileId = $('#marketSpecialistDropDown').val();
                 var agentUserProfileId = $('#agentDropDown').val();
                 if (productsArray.length > 0) {

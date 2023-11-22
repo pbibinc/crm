@@ -26,7 +26,6 @@ class Role extends Model
     {
         return $this->permissions()->where('name', $name)->exists();
     }
-    
 
-   
+
 }

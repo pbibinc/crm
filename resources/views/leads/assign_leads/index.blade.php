@@ -156,7 +156,7 @@
                                 <div class="card-body">
                                     <div>
                                         <table class="table table-bordered dt-responsive nowrap" id="dataTable"
-                                            width="100%">
+                                            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                             <br>
                                             <thead>
                                                 <tr>
@@ -436,7 +436,7 @@
                             d.states = $('#statesDropdown').val(),
                             d.classCodeLead = $('#classCodeLeadDropdown').val(),
                             // d.userProfile = $('#userProfileDropdown').val(),
-                            d.search = $('input[type="search"]').val(),
+                            // d.search = $('input[type="search"]').val(),
                             d.leadType = $('#leadTypeDropdown').val(),
                             d.appTakerId = $('#userProfileDropdown').val(),
                             d.accountsId = $('#accountsDropdown').val()
@@ -554,10 +554,7 @@
                     classCodeLead).load();
             });
 
-            //StatesDropdown configuration mainly use for filter
-            //   $('#statesDropdown').on('change', function() {
-            //    $('#')
-            // });
+
 
             //event for assigning premium leads
             var leadsId = [];

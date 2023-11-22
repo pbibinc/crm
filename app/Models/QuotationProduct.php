@@ -123,4 +123,13 @@ class QuotationProduct extends Model
         return null;
     }
 
+    public static function getQuotedProductByQuotedInformationId($quoteInformationId)
+    {
+        $product = self::where('quote_information_id', $quoteInformationId)->get();
+        if($product){
+            return $product;
+        }
+        return null;
+    }
+
 }
