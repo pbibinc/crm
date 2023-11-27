@@ -13,6 +13,7 @@ use App\Models\UnitedState;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
 class AppointedController extends Controller
@@ -21,7 +22,9 @@ class AppointedController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
+
         $leads = Lead::getAppointedLeadsByUserProfileId($user->userProfile->id);
+
         if($request->ajax())
         {
             return DataTables::of($leads)
