@@ -255,7 +255,10 @@
                                             {{-- <div class="tab-pane active" id="generalLiabilites" role="tabpanel"> --}}
                                             @include(
                                                 'leads.appointed_leads.product-view.general-liability-profile',
-                                                ['generalLiabilities' => $generalLiabilities]
+                                                [
+                                                    'generalLiabilities' => $generalLiabilities,
+                                                    'actionButtons' => false,
+                                                ]
                                             )
                                             {{-- </div> --}}
                                         @endif
@@ -263,7 +266,10 @@
                                             {{-- <div class="tab-pane" id="workersCompensation" role="tabpanel"> --}}
                                             @include(
                                                 'leads.appointed_leads.product-view.workers-comp-profile',
-                                                ['generalInformation' => $generalInformation]
+                                                [
+                                                    'generalInformation' => $generalInformation,
+                                                    'actionButtons' => false,
+                                                ]
                                             )
                                             {{-- </div> --}}
                                         @endif
@@ -271,7 +277,10 @@
                                             {{-- <div class="tab-pane" id="commercialAuto" role="tabpanel"> --}}
                                             @include(
                                                 'leads.appointed_leads.product-view.commercial-auto-profile',
-                                                ['generalInformation' => $generalInformation]
+                                                [
+                                                    'generalInformation' => $generalInformation,
+                                                    'actionButtons' => false,
+                                                ]
                                             )
                                             {{-- </div> --}}
                                         @endif
@@ -279,7 +288,10 @@
                                             {{-- <div class="tab-pane" id="excessLiabiliy" role="tabpanel"> --}}
                                             @include(
                                                 'leads.appointed_leads.product-view.excess-liability-profile',
-                                                ['generalInformation' => $generalInformation]
+                                                [
+                                                    'generalInformation' => $generalInformation,
+                                                    'actionButtons' => false,
+                                                ]
                                             )
                                             {{-- </div> --}}
                                         @endif
@@ -287,7 +299,10 @@
                                             {{-- <div class="tab-pane" id="toolsEquipment" role="tabpanel"> --}}
                                             @include(
                                                 'leads.appointed_leads.product-view.tools-equipment-profile',
-                                                ['generalInformation' => $generalInformation]
+                                                [
+                                                    'generalInformation' => $generalInformation,
+                                                    'actionButtons' => false,
+                                                ]
                                             )
                                             {{-- </div> --}}
                                         @endif
@@ -295,7 +310,10 @@
                                             {{-- <div class="tab-pane" id="buildersRisk" role="tabpanel"> --}}
                                             @include(
                                                 'leads.appointed_leads.product-view.builders-risk-profile',
-                                                ['generalInformation' => $generalInformation]
+                                                [
+                                                    'generalInformation' => $generalInformation,
+                                                    'actionButtons' => false,
+                                                ]
                                             )
                                             {{-- </div> --}}
                                         @endif
@@ -303,7 +321,10 @@
                                             {{-- <div class="tab-pane" id="bop" role="tabpanel"> --}}
                                             @include(
                                                 'leads.appointed_leads.product-view.business-owners-profile',
-                                                ['generalInformation' => $generalInformation]
+                                                [
+                                                    'generalInformation' => $generalInformation,
+                                                    'actionButtons' => false,
+                                                ]
                                             )
                                             {{-- </div> --}}
                                         @endif
