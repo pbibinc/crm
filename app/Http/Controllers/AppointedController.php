@@ -22,9 +22,13 @@ class AppointedController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
+<<<<<<< HEAD
 
         $leads = Lead::getAppointedLeadsByUserProfileId($user->userProfile->id);
         Log::info($leads);
+=======
+        $leads = Lead::getAppointedLeadsByUserProfileId($user->id);
+>>>>>>> b29730f83e407f94344ad42c5a115daf0eee5a43
         if($request->ajax())
         {
             return DataTables::of($leads)
