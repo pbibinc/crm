@@ -130,7 +130,6 @@ Route::prefix('list-leads')->group(function  () {
 Route::prefix('appointed-list')->group(function(){
     route::get('/', [AppointedController::class, 'index'])->name('appointed-list');
     route::get('/{leadsId}', [AppointedController::class, 'leadsProfileView'])->name('appointed-list-profile-view');
-
 });
 
 

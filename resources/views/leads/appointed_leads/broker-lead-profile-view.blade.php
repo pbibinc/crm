@@ -300,7 +300,6 @@
                                             )
                                         </div>
                                     @endif
-
                                 </div>
                                 <div class="tab-pane" id="activityLog" role="tabpanel">
                                     @include('leads.appointed_leads.log-activity.activity-log', [

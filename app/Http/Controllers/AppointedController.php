@@ -22,13 +22,7 @@ class AppointedController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-<<<<<<< HEAD
-
-        $leads = Lead::getAppointedLeadsByUserProfileId($user->userProfile->id);
-        Log::info($leads);
-=======
         $leads = Lead::getAppointedLeadsByUserProfileId($user->id);
->>>>>>> b29730f83e407f94344ad42c5a115daf0eee5a43
         if($request->ajax())
         {
             return DataTables::of($leads)
@@ -36,7 +30,7 @@ class AppointedController extends Controller
                 return '<a href="#" id="companyLink" name"companyLinkButtonData" data-id="'.$leads->id.'">'.$leads->company_name.'</a>';
             })
             ->addColumn('action', function($leads){
-                $profileViewRoute = route('appointed-list-profle-view', ['leadsId' => $leads->id]);
+                $profileViewRoute = route('appointed-list-profile-view', ['leadsId' => $leads->id]);
                 return '<a href="'.$profileViewRoute.'" class="viiew btn btn-success btn-sm" id="'.$leads->id.'" name"view"><i class="ri-eye-line"></i></a>';
             })
             ->rawColumns(['company_name_action', 'action'])
