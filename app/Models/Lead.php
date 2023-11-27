@@ -64,7 +64,6 @@ class Lead extends Model
         return null;
     }
 
-
     public static function getLeads($id)
     {
         $lead = self::find($id);

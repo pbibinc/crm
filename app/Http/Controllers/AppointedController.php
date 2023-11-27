@@ -36,7 +36,7 @@ class AppointedController extends Controller
                 return '<a href="'.$profileViewRoute.'" class="view btn btn-success btn-sm" id="'.$leads->id.'" name"view"><i class="ri-eye-line"></i></a>';
             })
             ->rawColumns(['company_name_action', 'action'])
-            ->toJson();
+            ->make(true);
         }
         return view('leads.appointed_leads.appointed.index');
     }
