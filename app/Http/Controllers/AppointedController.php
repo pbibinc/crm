@@ -24,7 +24,7 @@ class AppointedController extends Controller
         $user = Auth::user();
 
         $leads = Lead::getAppointedLeadsByUserProfileId($user->userProfile->id);
-
+        Log::info($leads);
         if($request->ajax())
         {
             return DataTables::of($leads)
