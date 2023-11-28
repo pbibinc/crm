@@ -101,7 +101,7 @@
                                 <label for="email">Email:</label>
                                 <input type="text" class="form-control" id="email" name="email"
                                     placeholder="Email">
-                                <div class="invalid-feedback" id="emailError"></div>
+                                {{-- <div class="invalid-feedback" id="emailError"></div> --}}
                             </div>
 
                             <div class="form-group mb-3">
