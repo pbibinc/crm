@@ -114,12 +114,14 @@ class UserController extends Controller
    }
    public function update(Request $request)
    {
+
        $form_date = array(
            'name' => $request->name,
            'username' => $request->username,
            'email' => $request->email,
            'role_id' => $request->role_id
        );
+
      User::whereId($request->hidden_id)->update($form_date);
    }
 

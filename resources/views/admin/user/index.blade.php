@@ -86,26 +86,28 @@
                             @csrf
                             <div class="form-group mb-3">
                                 <label for="name" class="form-label">Name:</label>
-                                <input type="text" class="form-control" id="name" placeholder="Name">
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Name">
                                 <div class="invalid-feedback" id="nameError"></div>
                             </div>
 
                             <div class="form-group mb-3">
                                 <label for="username" class="form-label">Username:</label>
-                                <input type="text" class="form-control" id="username" placeholder="Username">
+                                <input type="text" class="form-control" id="username" name="username"
+                                    placeholder="Username">
                                 <div class="invalid-feedback" id="usernameError"></div>
                             </div>
 
                             <div class="form-group mb-3">
                                 <label for="email">Email:</label>
-                                <input type="text" class="form-control" id="email" placeholder="Email">
+                                <input type="text" class="form-control" id="email" name="email"
+                                    placeholder="Email">
                                 <div class="invalid-feedback" id="emailError"></div>
                             </div>
 
                             <div class="form-group mb-3">
                                 <label for="password">Password</label>
                                 <input type="password" class="form-control mb-3" id="password" name="password"
-                                    placeholder="Password">
+                                    name="password" placeholder="Password">
 
                                 <label for="password_confirmation">Password Confirmation</label>
                                 <input type="password" class="form-control" placeholder="Password Confirmation"
@@ -262,6 +264,7 @@
             }
 
             var name = $('#name').val();
+
             //form sending on creationg
             $.ajax({
                 type: 'POST',
