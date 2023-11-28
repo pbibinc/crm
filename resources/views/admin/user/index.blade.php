@@ -264,7 +264,7 @@
             }
 
             var name = $('#name').val();
-
+            console.log($(this).serialize());
             //form sending on creationg
             $.ajax({
                 type: 'POST',

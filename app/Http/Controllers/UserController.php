@@ -16,6 +16,7 @@ use Illuminate\Support\MessageBag;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -65,7 +66,7 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'required|unique:users,name|regex:/^[A-Z][a-z]*/',
-            'email' => 'required|email|unique:users,email|regex:/^[A-Z][a-z]*/',
+            'email' => 'required|email|unique:users,email',
             'role_id' => 'required|exists:roles,id',
             'password' => 'required|min:8|confirmed',
             'username' => 'required|unique:users,username',
