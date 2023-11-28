@@ -34,93 +34,123 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <li class="menu-title">Admin</li>
+                @can('view', App\Models\Permission::find(1))
+                    <li class="menu-title">Admin</li>
 
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="ri-lock-line"></i>
-                        <span>Security</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ route('admin.users.index') }}">Accounts</a></li>
-                        <li><a href="{{ route('admin.roles.index') }}">Role</a></li>
-                        @can('view', App\Models\Permission::find(1))
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="ri-lock-line"></i>
+                            <span>Security</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="{{ route('admin.users.index') }}">Accounts</a></li>
+                            <li><a href="{{ route('admin.roles.index') }}">Role</a></li>
                             <li><a href="{{ route('admin.permissions.index') }}">Permission</a></li>
+
+                        </ul>
+                    </li>
+                    <li>
+                        @can('viewAny', App\Models\UserProfile::find(1))
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="ri-user-2-line"></i>
+                                <span>Administrator</span>
+                            </a>
                         @endcan
-                    </ul>
-                </li>
-                <li>
-                    @can('viewAny', App\Models\UserProfile::find(1))
+                        <ul class="sub-menu" aria-expanded="false">
+                            @can('view', App\Models\Position::find(1))
+                                <li><a href="{{ route('admin.positions.index') }}">Position</a></li>
+                            @endcan
+
+                            @can('view', App\Models\Department::find(1))
+                                <li><a href="{{ route('admin.departments.index') }}">Departments</a></li>
+                            @endcan
+                            @can('view', App\Models\UserProfile::find(1))
+                                <li><a href="{{ route('admin.user-profiles.index') }}">User Profile</a></li>
+                            @endcan
+
+                        </ul>
+                    </li>
+
+                    <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="ri-user-2-line"></i>
-                            <span>Administrator</span>
+                            <i class="mdi mdi-account-group-outline" style="font-size: 22px"></i>
+                            <span>Departments</span>
                         </a>
-                    @endcan
-                    <ul class="sub-menu" aria-expanded="false">
-                        @can('view', App\Models\Position::find(1))
-                            <li><a href="{{ route('admin.positions.index') }}">Position</a></li>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="{{ route('it-department') }}">IT DEPARTMENT</a></li>
+                            <li><a href="{{ route('csr-department') }}">CSR DEPARTMENT</a></li>
+                        </ul>
+                    </li>
+
+                @endcan
+                @can('viewAnySales', App\Models\Lead::find(1))
+
+                    <li class="menu-title">Sales</li>
+                    <li>
+                        @can('viewAnyApptaker', App\Models\Lead::find(1))
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="ri-headphone-line"></i>
+                                <span>App Taker</span>
+                            </a>
+
+                            <ul class="sub-menu" aria-expanded="false">
+                                @can('viewApptakerLeadList', App\Models\Lead::find(1))
+                                    <li><a href="{{ route('apptaker-leads') }}">Lead List</a></li>
+                                @endcan
+                                @can('viewApptakerLeadListAppointed', App\Models\Lead::find(1))
+                                    <li><a href="{{ route('appointed-list') }}">Appointed List</a></li>
+                                @endcan
+                            </ul>
+
                         @endcan
 
-                        @can('view', App\Models\Department::find(1))
-                            <li><a href="{{ route('admin.departments.index') }}">Departments</a></li>
+                    </li>
+
+                    <li>
+                        @can('viewAnyQuotation', App\Models\Lead::find(1))
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="ri-clipboard-line"></i>
+                                <span>Quotation</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                @can('viewForQouteLeads', App\Models\Lead::find(1))
+                                    <li><a href="{{ route('appointed-leads') }}">For Qoute Leads</a></li>
+                                @endcan
+
+                                @can('viewAssignApppointedLeads', App\Models\Lead::find(1))
+                                    <li><a href="{{ route('assign-appointed-lead') }}">Assign Appointed Leads</a></li>
+                                @endcan
+
+                                @can('viewAssignQuotedLeads', App\Models\Lead::find(1))
+                                    <li><a href="{{ route('get-quoted-product') }}">Assign Quoted Leads</a></li>
+                                @endcan
+                            </ul>
+
                         @endcan
-                        @can('view', App\Models\UserProfile::find(1))
-                            <li><a href="{{ route('admin.user-profiles.index') }}">User Profile</a></li>
+
+                    </li>
+
+                    <li>
+                        @can('viewAnyBrokerAssistant', App\Models\Lead::find(1))
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="ri-briefcase-line"></i>
+                                <span>Broker Assistant</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                @can('viewBrokerAssistantLeadList', App\Models\Lead::find(1))
+                                    <li><a href="{{ route('get-pending-product') }}">Broker Assistant View</a></li>
+                                @endcan
+                                {{-- <li><a href="{{route('get-confirmed-product')}}">Confirmed Product</a></li> --}}
+                            </ul>
                         @endcan
 
-                    </ul>
-                </li>
-
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="mdi mdi-account-group-outline" style="font-size: 22px"></i>
-                        <span>Departments</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ route('it-department') }}">IT DEPARTMENT</a></li>
-                        <li><a href="{{ route('csr-department') }}">CSR DEPARTMENT</a></li>
-                    </ul>
-                </li>
+                    </li>
 
 
-                <li class="menu-title">Sales</li>
-                <li>
-                    @can('view', App\Models\Lead::find(1))
-                        <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="ri-headphone-line"></i>
-                            <span>App Taker</span>
-                        </a>
-                    @endcan
+                @endcan
 
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ route('apptaker-leads') }}">Lead List</a></li>
-                        <li><a href="{{ route('appointed-list') }}">Appointed List</a></li>
-                        {{-- <li><a href="{{ route('apptaker-leads') }}">Lead List</a></li> --}}
-                    </ul>
-                </li>
 
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="ri-clipboard-line"></i>
-                        <span>Quotation</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ route('appointed-leads') }}">For Qoute Leads</a></li>
-                        <li><a href="{{ route('assign-appointed-lead') }}">Assign Appointed Leads</a></li>
-                        <li><a href="{{ route('get-quoted-product') }}">Assign Quoted Leads</a></li>
-                    </ul>
-                </li>
 
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="ri-briefcase-line"></i>
-                        <span>Broker Assistant</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ route('get-pending-product') }}">Broker Assistant View</a></li>
-                        {{-- <li><a href="{{route('get-confirmed-product')}}">Confirmed Product</a></li> --}}
-                    </ul>
-                </li>
 
                 @can('view', App\Models\Lead::find(1))
                     <li class="menu-title">Leads</li>
@@ -138,19 +168,23 @@
                             @endcan
                             {{-- <li><a href="pages-directory.html">Leads Profile</a></li> --}}
                         </ul>
-                    @endcan
-                <li class="menu-title">Customer Service</li>
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="ri-shopping-cart-line"></i>
-                        <span>Binding</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ route('binding') }}">Products</a></li>
-                    </ul>
-                </li>
+                    </li>
+                @endcan
 
-                </li>
+
+
+                @can('viewAnyCustomerService', App\Models\Lead::find(1))
+                    <li class="menu-title">Customer Service</li>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="ri-shopping-cart-line"></i>
+                            <span>Binding</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="{{ route('binding') }}">Products</a></li>
+                        </ul>
+                    </li>
+                @endcan
             </ul>
         </div>
         <!-- Sidebar -->

@@ -103,4 +103,60 @@ class LeadPolicy
     {
         //
     }
+
+    public function viewAnyApptaker(User $user, Lead $lead)
+    {
+        return $user->role->hasPermission('view_any_apptaker');
+    }
+
+    public function viewApptakerLeadList(User $user, Lead $lead)
+    {
+        return $user->role->hasPermission('view_apptaker_lead_list');
+    }
+
+    public function viewApptakerLeadListAppointed(User $user, Lead $lead)
+    {
+        return $user->role->hasPermission('view_apptaker_appointed_lead_list');
+    }
+
+    public function viewAnySales(User $user, Lead $lead)
+    {
+        return $user->role->hasPermission('view_any_sales');
+    }
+
+    public function viewAnyQuotation(User $user, Lead $lead)
+    {
+        return $user->role->hasPermission('view_any_quotation');
+    }
+
+    public function viewForQouteLeads(User $user, Lead $lead)
+    {
+        return $user->role->hasPermission('view_for_qoute_leads');
+    }
+
+    public function viewAssignApppointedLeads(User $user, Lead $lead)
+    {
+        return $user->role->hasPermission('view_assign_apppointed_leads');
+    }
+
+    public function viewAssignQuotedLeads(User $user, Lead $lead)
+    {
+        return $user->role->hasPermission('view_assign_quoted_leads');
+    }
+
+    public function viewAnyBrokerAssistant(User $user, Lead $lead)
+    {
+        return $user->role->hasPermission('view_any_broker_assistant');
+    }
+
+    public function viewBrokerAssistantLeadList(User $user, Lead $lead)
+    {
+        return $user->role->hasPermission('view_broker_assistant_lead_list');
+    }
+
+    public function viewAnyCustomerService(User $user, Lead $lead)
+    {
+        return $user->role->hasPermission('view_any_customer_service');
+    }
+
 }
