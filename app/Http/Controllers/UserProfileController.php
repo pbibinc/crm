@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
-
+use Illuminate\Support\Str;
 class UserProfileController extends Controller
 {
     public function index(Request $request)
