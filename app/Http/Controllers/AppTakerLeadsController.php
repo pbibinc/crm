@@ -7,6 +7,7 @@ use App\Models\ClassCodeLead;
 use App\Models\Disposition;
 use App\Models\Lead;
 use App\Models\RecreationalFacilities;
+use App\Models\RemarksModel;
 use App\Models\Site;
 use App\Models\UnitedState;
 use App\Models\UserProfile;
@@ -15,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -44,9 +46,12 @@ class AppTakerLeadsController extends Controller
         $recreationalFacilities = RecreationalFacilities::all();
         $dataCount = Lead::getLeadsAppointed($user->id);
 
-        // $cityAddress = Lead::select('city')->distinct()->get();
+    // $cityAddress = Lead::select('city')->distinct()->get();
         if($request->ajax()){
-            $query = Lead::select('id','company_name', 'tel_num', 'class_code','state_abbr')->where('status', 2)->whereHas('userProfile', function($q) use ($user){
+            $query = Lead::select('id', 'company_name', 'tel_num', 'class_code', 'state_abbr')
+            ->where('status', 2)
+            ->whereNull('disposition_id')
+            ->whereHas('userProfile', function ($q) use ($user) {
                 $q->where('user_id', $user->id);
             });
             return DataTables::of($query)
@@ -101,5 +106,27 @@ class AppTakerLeadsController extends Controller
         }else{
             Cache::put('lead_id', $leadId, 60 * 60);
         }
+    }
+
+    public function storeLeadRemarksDisposition(Request $request)
+    {
+
+        try{
+            DB::beginTransaction();
+            $data = $request->all();
+            $lead = Lead::find($data['leadId']);
+            $lead->disposition_id = $data['dispositionId'];
+            $leadSaving =  $lead->save();
+            $remarksLead = new RemarksModel();
+            $remarksLead->lead_id = $data['leadId'];
+            $remarksLead->remarks = $data['remarks'];
+            $remarksLead->save();
+            DB::commit();
+            return response()->json(['success' => 'Lead disposition and remarks saved successfully'], 200);
+        }catch(\Exception $e){
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'An error occurred'], 500);
+        }
+
     }
 }

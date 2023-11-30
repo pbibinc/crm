@@ -268,7 +268,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success waves-effect waves-light"
+                        <button type="button" class="btn btn-success waves-effect waves-light callbackDispoSubmitButton"
                             id="callbackDispoSubmitButton">Submit</button>
                         <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
                     </div>
@@ -276,6 +276,7 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
+
 
         <!--Modal for GateKeeper Disposition-->
         <div class="modal fade bs-example-modal-center" id="gateKeeperModal" tabindex="-1" role="dialog"
@@ -293,37 +294,37 @@
                             </div>
                             <div class="col-9">
                                 <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00"
-                                    id="example-datetime-local-input">
+                                    id="callBackDateTime">
                             </div>
                         </div>
                         <div class="row mt-3">
                             <label>Remarks</label>
                             <div>
-                                <textarea required class="form-control" rows="5"></textarea>
+                                <textarea required class="form-control" id="callBackRemarks" rows="5"></textarea>
                             </div>
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success waves-effect waves-light">Submit</button>
+                        <button type="button" class="btn btn-success waves-effect waves-light callbackDispoSubmitButton"
+                            id="callbackDispoSubmitButton">Submit</button>
                         <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
 
-        <!--Modal for No Answer Disposition-->
+        <!--Modal for No transaction Disposition-->
         <div class="modal fade bs-example-modal-center" id="transactionLogModal" tabindex="-1" role="dialog"
             aria-labelledby="mySmallModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="mySmallModalLabel">Set Time When To Call Back</h5>
+                        <h5 class="modal-title" id="mySmallModalLabel">Dispositions</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
-
                             <div class="mb-3">
                                 <div class="form-group">
                                     <label class="form-label">Disposition</label>
@@ -342,13 +343,14 @@
                         <div class="row mt-3">
                             <label>Remarks</label>
                             <div>
-                                <textarea required class="form-control" rows="5"></textarea>
+                                <textarea required class="form-control" rows="5" id="remarksDescription"></textarea>
                             </div>
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success waves-effect waves-light">Submit</button>
+                        <button type="button" class="btn btn-success waves-effect waves-light callbackDispoSubmitButton"
+                            id="submitRemarks">Submit</button>
                         <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div><!-- /.modal-content -->
@@ -357,7 +359,7 @@
 
 
         <!--Modal for No Answer Disposition-->
-        <div class="modal fade bs-example-modal-center" id="noAnswerModal" tabindex="-1" role="dialog"
+        <div class="modal fade bs-example-modal-center" id="noAnswerCallBack" tabindex="-1" role="dialog"
             aria-labelledby="mySmallModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -372,13 +374,15 @@
                             </div>
                             <div class="col-9">
                                 <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00"
-                                    id="example-datetime-local-input">
+                                    id="callBackDateTime">
                             </div>
+                            <textarea name="" id="callBackRemarks" cols="30" rows="10" value="N/A" hidden></textarea>
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success waves-effect waves-light">Submit</button>
+                        <button type="button" class="btn btn-success waves-effect waves-light callbackDispoSubmitButton"
+                            id="callbackDispoSubmitButton">Submit</button>
                         <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div><!-- /.modal-content -->
@@ -386,9 +390,6 @@
         </div><!-- /.modal -->
 
     </div>
-
-
-
     {{-- //scripts for forms etc --}}
     <script src="{{ asset('backend/assets/libs/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js') }}"></script>
     <script src="{{ asset('backend/assets/libs/twitter-bootstrap-wizard/prettify.js') }}"></script>
@@ -519,7 +520,7 @@
                     $('#transactionLogModal').modal('hide');
                 }
                 if (selectedDisposition == '6') {
-                    $('#noAnswerModal').modal('show');
+                    $('#noAnswerCallBack').modal('show');
                     $('#transactionLogModal').modal('hide');
                 }
 
@@ -536,19 +537,30 @@
                 if (selectedDisposition == '13') {
                     $('#transactionLogModal').modal('hide');
                 }
-            });
-            // $(document).on('click', '[id^="companyLink"]', function(e){
-            //     var rowId = $(this).data('id');
-            //     var dropDown = $('select[data-row="'+rowId+'"]');
-            //     var selectedDisposition = dropDown.val();
-            //         e.preventDefault();
-            //         $('#transactionLogModal').modal('show');
-            // });
 
-            $('#callbackDispoSubmitButton').on('click', function(e) {
+                var remarks = $('#remarksDescription').val();
+                $.ajax({
+                    url: "{{ route('list-lead-id') }}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    dataType: 'json',
+                    method: 'POST',
+                    data: {
+                        dispositionId: selectedDisposition,
+                        remarks: remarks,
+                        leadId: leadsId
+                    },
+                    success: function(response) {}
+                });
+            });
+            $('.callbackDispoSubmitButton').on('click', function(e) {
                 e.preventDefault();
+                console.log('test callback sumbit button');
                 var dateTime = $('#callBackDateTime').val();
                 var callBackRemarks = $('#callBackRemarks').val();
+                var dispositionId = $('#dispositionDropDown').val();
+                var leadId = $('#leadId').val();
                 $.ajax({
                     url: "{{ route('call-back.store') }}",
                     headers: {
@@ -558,19 +570,53 @@
                     method: 'POST',
                     data: {
                         dateTime: dateTime,
-                        callBackRemarks: callBackRemarks
+                        callBackRemarks: callBackRemarks,
+                        dispositionId: dispositionId,
+                        leadId: leadsId,
+                        status: 1
                     },
                     success: function(response) {
-                        Swal.fire({
-                            title: 'Success',
-                            text: 'Leads assigned successfully.',
-                            icon: 'success'
-                        }).then(function() {
-                            location.reload();
-                        });
+                        location.reload();
+                        console.log('test this code')
+                        $('#transactionLogModal').modal('hide');
+                    },
+                    error: function(xhr, status, error) {
+                        alert("please call your it for better assistance");
                     }
                 });
             });
+
+        });
+
+
+
+        $('#submitRemarks').on('click', function(e) {
+            e.preventDefault();
+            var remarks = $('#remarksDescription').val();
+            var dispositionId = $('#dispositionDropDown').val();
+            var leadId = $('#leadId').val();
+            $.ajax({
+                url: "{{ route('assign-remark-leads') }}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: 'json',
+                method: 'POST',
+                data: {
+                    remarks: remarks,
+                    dispositionId: dispositionId,
+                    leadId: leadsId
+                },
+                success: function(response) {
+                    console.log(response);
+                    $('#transactionLogModal').modal('hide');
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    alert(xhr.responseText);
+                }
+            });
+
 
         });
     </script>
