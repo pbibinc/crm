@@ -30,4 +30,14 @@ class Callback extends Model
         }
         return null;
     }
+
+    public function lead()
+    {
+        return $this->belongsTo(Lead::class);
+    }
+
+    public function disposition()
+    {
+        return Disposition::find($this->id);
+    }
 }
