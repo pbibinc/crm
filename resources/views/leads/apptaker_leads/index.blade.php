@@ -537,7 +537,6 @@
                 if (selectedDisposition == '13') {
                     $('#transactionLogModal').modal('hide');
                 }
-
                 var remarks = $('#remarksDescription').val();
                 $.ajax({
                     url: "{{ route('list-lead-id') }}",

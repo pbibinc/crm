@@ -37,7 +37,7 @@ class CallBackController extends Controller
             })
             ->addColumn('disposition', function ($data){
                 $disposition = Disposition::find($data->type);
-                return $disposition ? $disposition->name : '';
+            return $disposition ? $disposition->name : '';
             })
             ->addColumn('company_name', function ($data){
                 $lead = Lead::find($data->lead_id);

@@ -316,34 +316,10 @@
                         "width=1000,height=849");
                     $('#transactionModal').modal('hide');
                 }
-                // if (selectedDisposition == '2') {
-                //     $('#callbackModal').modal('show');
-                //     $('#transactionModal').modal('hide');
-                // }
-                // if (selectedDisposition == '3') {
-                //     $('#leadsDataModal').modal('show');
-                //     $('#transactionModal').modal('hide');
-                // }
-                // if (selectedDisposition == '6') {
-                //     $('#noAnswerCallBack').modal('show');
-                //     $('#transactionModal').modal('hide');
-                // }
-
-                // if (selectedDisposition == '11') {
-                //     $('#callbackModal').modal('show');
-                //     $('#transactionModal').modal('hide');
-                // }
-
-                // if (selectedDisposition == '12') {
-                //     $('#gateKeeperModal').modal('show');
-                //     $('#transactionModal').modal('hide');
-                // }
-
-                // if (selectedDisposition == '13') {
-                //     $('#transactionModal').modal('hide');
-                // }
-
-
+                if (selectedDisposition !== '2' && selectedDisposition !== "6" && selectedDisposition !==
+                    "11" && selectedDisposition !== "12") {
+                    $('callBackDateTime').hide();
+                }
                 $('.callbackDispoSubmitButton').on('click', function(e) {
                     e.preventDefault();
                     var callBackRemarks = $('#callBackRemarks').val();
