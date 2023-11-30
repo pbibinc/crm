@@ -35,7 +35,6 @@ class CallBackController extends Controller
                 $time =  date('h:i A', strtotime($data->date_time));
                 return $date. ' ' .$time;
             })
-
             ->addColumn('disposition', function ($data){
                 $disposition = Disposition::find($data->type);
                 return $disposition ? $disposition->name : '';

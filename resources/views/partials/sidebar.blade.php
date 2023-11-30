@@ -100,6 +100,7 @@
                                 @can('viewApptakerLeadListAppointed', App\Models\Lead::find(1))
                                     <li><a href="{{ route('appointed-list') }}">Appointed List</a></li>
                                 @endcan
+                                <li><a href="{{ route('callback-lead') }}">Call Back</a></li>
                             </ul>
 
                         @endcan
@@ -146,11 +147,7 @@
 
                     </li>
 
-
                 @endcan
-
-
-
 
                 @can('view', App\Models\Lead::find(1))
                     <li class="menu-title">Leads</li>

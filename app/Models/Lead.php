@@ -26,6 +26,50 @@ class Lead extends Model
     {
         return $this->belongsTo(Disposition::class);
     }
+    public function GeneralInformation()
+    {
+        return $this->hasOne(GeneralInformation::class, 'leads_id');
+    }
+
+    public function commercialAutoExpirationProduct()
+    {
+        return $this->hasOne(ExpirationProduct::class, 'lead_id')->where('product', 3);
+    }
+
+    public function toolsEquipmentExpirationProduct()
+    {
+        return $this->hasOne(ExpirationProduct::class, 'lead_id')->where('product', 5);
+    }
+
+    public function buildersRiskExpirationProduct()
+    {
+        return $this->hasOne(ExpirationProduct::class, 'lead_id')->where('product', 6);
+    }
+
+    public function businessOwnersExpirationProduct()
+    {
+        return $this->hasOne(ExpirationProduct::class, 'lead_id')->where('product', 7);
+    }
+
+    public function leadHistories()
+    {
+        return $this->hasMany(LeadHistory::class, 'lead_id');
+    }
+
+    public function quoteLead()
+    {
+        return $this->hasOne(QuoteLead::class, 'leads_id');
+    }
+
+    public function notes()
+    {
+        return $this->hasMany(LeadNotes::class, 'lead_id');
+    }
+
+    public function classcodeQuestionare()
+    {
+        return $this->hasMany(ClassCodeQuestionare::class, 'lead_id', 'id');
+    }
 
     public function userProfile()
     {
@@ -38,6 +82,11 @@ class Lead extends Model
     public function quoterUserProfile()
     {
         return $this->belongsToMany(UserProfile::class, 'quote_lead_table', 'leads_id', 'user_profiles_id');
+    }
+
+    public function callback()
+    {
+        return $this->belongsTo(Callback::class, 'lead_id');
     }
 
     public static function getAppointedLeads()
@@ -74,35 +123,7 @@ class Lead extends Model
         return null;
     }
 
-    public function GeneralInformation()
-    {
-        return $this->hasOne(GeneralInformation::class, 'leads_id');
-    }
 
-    public function commercialAutoExpirationProduct()
-    {
-        return $this->hasOne(ExpirationProduct::class, 'lead_id')->where('product', 3);
-    }
-
-    public function toolsEquipmentExpirationProduct()
-    {
-        return $this->hasOne(ExpirationProduct::class, 'lead_id')->where('product', 5);
-    }
-
-    public function buildersRiskExpirationProduct()
-    {
-        return $this->hasOne(ExpirationProduct::class, 'lead_id')->where('product', 6);
-    }
-
-    public function businessOwnersExpirationProduct()
-    {
-        return $this->hasOne(ExpirationProduct::class, 'lead_id')->where('product', 7);
-    }
-
-    public function leadHistories()
-    {
-        return $this->hasMany(LeadHistory::class, 'lead_id');
-    }
 
     public static function getLeadsAppointed($userProfileId)
     {
@@ -134,20 +155,8 @@ class Lead extends Model
     }
 
 
-    public function quoteLead()
-    {
-        return $this->hasOne(QuoteLead::class, 'leads_id');
-    }
 
-    public function notes()
-    {
-        return $this->hasMany(LeadNotes::class, 'lead_id');
-    }
 
-    public function classcodeQuestionare()
-    {
-        return $this->hasMany(ClassCodeQuestionare::class, 'lead_id', 'id');
-    }
 
 
 }

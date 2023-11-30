@@ -114,6 +114,7 @@ Route::middleware(['auth'])->group(function (){
          Route::get('/assign-appointed-lead', [AssignAppointedLeadController::class, 'index'])->name('assign-appointed-lead');
          Route::post('/assign-appointed-lead/assign-lead', [AssignAppointedLeadController::class, 'assignAppointedLead'])->name('assign-leads-market-specialist');
          Route::get('/assign-appointed-lead/get-data-table', [AssignAppointedLeadController::class, 'getDataTable'])->name('get-data-table');
+         Route::post('/assign-remark-leads', [AppTakerLeadsController::class, 'storeLeadRemarksDisposition'])->name('assign-remark-leads');
         });
 
         //route for appointed list
@@ -172,6 +173,8 @@ Route::middleware(['auth'])->group(function (){
         //storiing for callback
         Route::prefix('call-back')->group(function (){
          Route::post('/store', [CallBackController::class, 'store'])->name('call-back.store');
+         Route::get('/callback-lead', [CallBackController::class, 'index'])->name('callback-lead');
+         Route::put('/update/{id}', [CallBackController::class, 'update'])->name('call-back.update');
         });
 
         // Leads Routes
