@@ -115,6 +115,7 @@ Route::middleware(['auth'])->group(function (){
          Route::post('/assign-appointed-lead/assign-lead', [AssignAppointedLeadController::class, 'assignAppointedLead'])->name('assign-leads-market-specialist');
          Route::get('/assign-appointed-lead/get-data-table', [AssignAppointedLeadController::class, 'getDataTable'])->name('get-data-table');
          Route::post('/assign-remark-leads', [AppTakerLeadsController::class, 'storeLeadRemarksDisposition'])->name('assign-remark-leads');
+         Route::post('/update-remark-leads', [AppTakerLeadsController::class, 'updateLeadRemarksDisposition'])->name('update-remark-leads');
         });
 
         //route for appointed list
@@ -175,6 +176,10 @@ Route::middleware(['auth'])->group(function (){
          Route::post('/store', [CallBackController::class, 'store'])->name('call-back.store');
          Route::get('/callback-lead', [CallBackController::class, 'index'])->name('callback-lead');
          Route::put('/update/{id}', [CallBackController::class, 'update'])->name('call-back.update');
+         Route::put('/update-non-callback-dispositions/{id}', [CallBackController::class, 'updateNonCallbackDispositions'])->name('update-non-callback-dispositions');
+         Route::get('/other-dispositions-data', [CallBackController::class, 'otherDispositionsData'])->name('other-dispositions-data');
+         Route::post('/delete/{id}', [CallBackController::class, 'deleteNonCallbackDisposition'])->name('non-call-back.destroy');
+         Route::post('/delete-callback/{id}', [CallBackController::class, 'deleteCallBackDisposition'])->name('delete-callback-disposition');
         });
 
         // Leads Routes

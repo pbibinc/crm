@@ -254,8 +254,8 @@
                                     <label for="example-datetime-local-input" class="col-form-label">Date and time</label>
                                 </div>
                                 <div class="col-9">
-                                    <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00"
-                                        id="callBackDateTime" name="callBackDateTime">
+                                    <input class="form-control" type="datetime-local" id="callBackDateTime"
+                                        name="callBackDateTime">
                                 </div>
                             </div>
                             <div class="row mt-3">
@@ -293,8 +293,7 @@
                                 <label for="example-datetime-local-input" class="col-form-label">Date and time</label>
                             </div>
                             <div class="col-9">
-                                <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00"
-                                    id="callBackDateTime">
+                                <input class="form-control" type="datetime-local" id="callBackDateTime">
                             </div>
                         </div>
                         <div class="row mt-3">
@@ -349,7 +348,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success waves-effect waves-light callbackDispoSubmitButton"
+                        <button type="button" class="btn btn-success waves-effect waves-light "
                             id="submitRemarks">Submit</button>
                         <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
                     </div>
@@ -373,8 +372,7 @@
                                 <label for="example-datetime-local-input" class="col-form-label">Date and time</label>
                             </div>
                             <div class="col-9">
-                                <input class="form-control" type="datetime-local" value="2011-08-19T13:45:00"
-                                    id="callBackDateTime">
+                                <input class="form-control" type="datetime-local" id="callBackDateTime">
                             </div>
                             <textarea name="" id="callBackRemarks" cols="30" rows="10" value="N/A" hidden></textarea>
                         </div>
@@ -388,7 +386,6 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-
     </div>
     {{-- //scripts for forms etc --}}
     <script src="{{ asset('backend/assets/libs/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js') }}"></script>
@@ -398,7 +395,6 @@
     <script src="{{ asset('backend/assets/libs/inputmask/jquery.inputmask.min.js') }}"></script>
     <script>
         $(document).ready(function() {
-
             $('#leadsApptakerDataTable').DataTable({
                 processing: true,
                 serverSide: true,
@@ -446,11 +442,6 @@
                     // {data: 'website_originated', name: 'website_originated', searchable:false},
 
                 ]
-            });
-
-            //submmit functionalities for call back disposition
-            $('#callbackDispoSubmitButton').on('click', function(e) {
-
             });
 
             $('#openFormLinkButton').on('click', function(e) {
@@ -515,10 +506,7 @@
                     $('#callbackModal').modal('show');
                     $('#transactionLogModal').modal('hide');
                 }
-                if (selectedDisposition == '3') {
-                    $('#leadsDataModal').modal('show');
-                    $('#transactionLogModal').modal('hide');
-                }
+
                 if (selectedDisposition == '6') {
                     $('#noAnswerCallBack').modal('show');
                     $('#transactionLogModal').modal('hide');
