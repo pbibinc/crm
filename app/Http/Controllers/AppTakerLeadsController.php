@@ -119,6 +119,7 @@ class AppTakerLeadsController extends Controller
             $leadSaving =  $lead->save();
             $remarksLead = new RemarksModel();
             $remarksLead->lead_id = $data['leadId'];
+            $remarksLead->type = $data['dispositionId'];
             $remarksLead->remarks = $data['remarks'];
             $remarksLead->save();
             DB::commit();
@@ -129,4 +130,5 @@ class AppTakerLeadsController extends Controller
         }
 
     }
+
 }
