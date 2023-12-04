@@ -112,7 +112,6 @@ class CallBackController extends Controller
 
     public function update(Request $request, $id)
     {
-
         try{
             DB::beginTransaction();
             $data = $request->all();
@@ -129,7 +128,6 @@ class CallBackController extends Controller
             }
             DB::commit();
             return response()->json(['success' => 'Succefully Updated in callback'], 200);
-
         }catch(\Exception $e){
             DB::rollback();
             Log::error($e->getMessage());
