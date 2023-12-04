@@ -84,7 +84,6 @@
 
                 @endcan
                 @can('viewAnySales', App\Models\Lead::find(1))
-
                     <li class="menu-title">Sales</li>
                     <li>
                         @can('viewAnyApptaker', App\Models\Lead::find(1))
@@ -92,7 +91,6 @@
                                 <i class="ri-headphone-line"></i>
                                 <span>App Taker</span>
                             </a>
-
                             <ul class="sub-menu" aria-expanded="false">
                                 @can('viewApptakerLeadList', App\Models\Lead::find(1))
                                     <li><a href="{{ route('apptaker-leads') }}">Lead List</a></li>
@@ -100,13 +98,12 @@
                                 @can('viewApptakerLeadListAppointed', App\Models\Lead::find(1))
                                     <li><a href="{{ route('appointed-list') }}">Appointed List</a></li>
                                 @endcan
-                                <li><a href="{{ route('callback-lead') }}">Call Back</a></li>
+                                @can('viewCallBackLeadList', App\Models\Lead::find(1))
+                                    <li><a href="{{ route('callback-lead') }}">Call Back</a></li>
+                                @endcan
                             </ul>
-
                         @endcan
-
                     </li>
-
                     <li>
                         @can('viewAnyQuotation', App\Models\Lead::find(1))
                             <a href="javascript: void(0);" class="has-arrow waves-effect">

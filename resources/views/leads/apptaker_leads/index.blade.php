@@ -357,135 +357,145 @@
         </div><!-- /.modal -->
 
 
-        <!--Modal for No Answer Disposition-->
-        <div class="modal fade bs-example-modal-center" id="noAnswerCallBack" tabindex="-1" role="dialog"
-            aria-labelledby="mySmallModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="mySmallModalLabel">Set Time When To Call Back</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-3">
-                                <label for="example-datetime-local-input" class="col-form-label">Date and time</label>
-                            </div>
-                            <div class="col-9">
-                                <input class="form-control" type="datetime-local" id="callBackDateTime">
-                            </div>
-                            <textarea name="" id="callBackRemarks" cols="30" rows="10" value="N/A" hidden></textarea>
-                        </div>
-                    </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-success waves-effect waves-light callbackDispoSubmitButton"
-                            id="callbackDispoSubmitButton">Submit</button>
-                        <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
-    </div>
-    {{-- //scripts for forms etc --}}
-    <script src="{{ asset('backend/assets/libs/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js') }}"></script>
-    <script src="{{ asset('backend/assets/libs/twitter-bootstrap-wizard/prettify.js') }}"></script>
-    <script src="{{ asset('backend/assets/js/pages/form-wizard.init.js') }}"></script>
-    <script src="{{ asset('backend/assets/js/pages/form-mask.init.js') }}"></script>
-    <script src="{{ asset('backend/assets/libs/inputmask/jquery.inputmask.min.js') }}"></script>
-    <script>
-        $(document).ready(function() {
-            $('#leadsApptakerDataTable').DataTable({
-                processing: true,
-                serverSide: true,
-                searching: true,
-                scrollY: 500,
-                scrollX: true,
-                ajax: {
-                    url: "{{ route('apptaker-leads') }}",
-                    data: function(d) {
-                        d.website_originated = $('#websiteOriginatedDropdown').val(),
-                            d.classCodeLead = $('#classCodeLeadDropdown').val(),
-                            d.states = $('#statesDropdown').val(),
-                            d.leadType = $('#leadTypeDropdown').val()
-                    },
-                    dataSrc: function(json) {
-                        $('#dataCount').html(json.totalDataCount ? json.totalDataCount : 0);
-                        return json.data;
-                    }
-                },
-                columns: [{
-                        data: 'company_name_action',
-                        name: 'company_name_action',
-                        render: function(data, type, row) {
-                            if (row.prime_lead == 2) {
-                                return '<div class="d-flex justify-content-between">' + data +
-                                    '<i class="far fa-gem"></i></div>'
-                            } else {
-                                return data;
-                            }
+        <script src="{{ asset('backend/assets/libs/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js') }}"></script>
+        <script src="{{ asset('backend/assets/libs/twitter-bootstrap-wizard/prettify.js') }}"></script>
+        <script src="{{ asset('backend/assets/js/pages/form-wizard.init.js') }}"></script>
+        <script src="{{ asset('backend/assets/js/pages/form-mask.init.js') }}"></script>
+        <script src="{{ asset('backend/assets/libs/inputmask/jquery.inputmask.min.js') }}"></script>
+        <script>
+            $(document).ready(function() {
+                $('#leadsApptakerDataTable').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    searching: true,
+                    scrollY: 500,
+                    scrollX: true,
+                    ajax: {
+                        url: "{{ route('apptaker-leads') }}",
+                        data: function(d) {
+                            d.website_originated = $('#websiteOriginatedDropdown').val(),
+                                d.classCodeLead = $('#classCodeLeadDropdown').val(),
+                                d.states = $('#statesDropdown').val(),
+                                d.leadType = $('#leadTypeDropdown').val()
+                        },
+                        dataSrc: function(json) {
+                            $('#dataCount').html(json.totalDataCount ? json.totalDataCount : 0);
+                            return json.data;
                         }
                     },
-                    {
-                        data: 'tel_num',
-                        name: 'tel_num'
-                    },
-                    {
-                        data: 'class_code',
-                        name: 'class_code'
-                    },
-                    {
-                        data: 'state_abbr',
-                        name: 'state_abbr'
-                    },
-                    // {data: 'dispositions', name:'dispositions'},
-                    // {data: 'website_originated', name: 'website_originated', searchable:false},
+                    columns: [{
+                            data: 'company_name_action',
+                            name: 'company_name_action',
+                            render: function(data, type, row) {
+                                if (row.prime_lead == 2) {
+                                    return '<div class="d-flex justify-content-between">' + data +
+                                        '<i class="far fa-gem"></i></div>'
+                                } else {
+                                    return data;
+                                }
+                            }
+                        },
+                        {
+                            data: 'tel_num',
+                            name: 'tel_num'
+                        },
+                        {
+                            data: 'class_code',
+                            name: 'class_code'
+                        },
+                        {
+                            data: 'state_abbr',
+                            name: 'state_abbr'
+                        },
+                        // {data: 'dispositions', name:'dispositions'},
+                        // {data: 'website_originated', name: 'website_originated', searchable:false},
 
-                ]
-            });
+                    ]
+                });
 
-            $('#openFormLinkButton').on('click', function(e) {
-                window.open("http://localhost:3000/appoinnted-lead-questionare", "_blank",
-                    "width=400,height=800");
-            });
+                $('#openFormLinkButton').on('click', function(e) {
+                    window.open("http://localhost:3000/appoinnted-lead-questionare", "_blank",
+                        "width=400,height=800");
+                });
 
-            // scripts for reloading and configuring the dropdowns filters
-            $('#websiteOriginatedDropdown').on('change', function() {
-                $('#leadsApptakerDataTable').DataTable().ajax.reload();
-            });
+                // scripts for reloading and configuring the dropdowns filters
+                $('#websiteOriginatedDropdown').on('change', function() {
+                    $('#leadsApptakerDataTable').DataTable().ajax.reload();
+                });
 
-            $('#timezoneDropdown').on('change', function() {
-                var timezone = $(this).val();
-                $('#leadsApptakerDataTable').DataTable().ajax.url(
-                    "{{ route('apptaker-leads') }}?timezone=" + timezone).load();
-            });
-            $('#companyLink').on('click', function() {
-                console.log('test')
-            });
+                $('#timezoneDropdown').on('change', function() {
+                    var timezone = $(this).val();
+                    $('#leadsApptakerDataTable').DataTable().ajax.url(
+                        "{{ route('apptaker-leads') }}?timezone=" + timezone).load();
+                });
+                $('#companyLink').on('click', function() {
+                    console.log('test')
+                });
 
-            $('#classCodeLeadDropdown').on('change', function() {
-                var classCodeLead = $(this).val();
-                $('#leadsApptakerDataTable').DataTable().ajax.reload();
-            });
+                $('#classCodeLeadDropdown').on('change', function() {
+                    var classCodeLead = $(this).val();
+                    $('#leadsApptakerDataTable').DataTable().ajax.reload();
+                });
 
-            $('#statesDropdown').on('change', function() {
-                $('#leadsApptakerDataTable').DataTable().ajax.reload();
-            });
+                $('#statesDropdown').on('change', function() {
+                    $('#leadsApptakerDataTable').DataTable().ajax.reload();
+                });
 
-            $('#dataModal').on('submit', function(e) {
-                e.preventDefault();
-            });
+                $('#dataModal').on('submit', function(e) {
+                    e.preventDefault();
+                });
 
-            $('#leadTypeDropdown').on('change', function() {
-                $('#leadsApptakerDataTable').DataTable().ajax.reload();
-            });
+                $('#leadTypeDropdown').on('change', function() {
+                    $('#leadsApptakerDataTable').DataTable().ajax.reload();
+                });
 
-            $(document).on('change', '#dispositionDropDown', function(e) {
-                var dropdownId = $(this).attr('id')
-                var rowId = dropdownId.replace('dispositionDropDown', '');
-                var selectedDisposition = $(this).val();
-                var url = "{{ env('APP_FORM_URL') }}";
-                if (selectedDisposition == '1') {
+                $(document).on('change', '#dispositionDropDown', function(e) {
+                    var dropdownId = $(this).attr('id')
+                    var rowId = dropdownId.replace('dispositionDropDown', '');
+                    var selectedDisposition = $(this).val();
+                    var url = "{{ env('APP_FORM_URL') }}";
+                    if (selectedDisposition == '1') {
+                        $.ajax({
+                            url: "{{ route('list-lead-id') }}",
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            dataType: 'json',
+                            method: 'POST',
+                            data: {
+                                leadId: leadsId
+                            },
+                            success: function(response) {}
+                        });
+                        window.open(`${url}/appoinnted-lead-questionare`, "s_blank",
+                            "width=1000,height=849");
+                        $('#transactionLogModal').modal('hide');
+                    }
+                    if (selectedDisposition == '2') {
+                        $('#callbackModal').modal('show');
+                        $('#transactionLogModal').modal('hide');
+                    }
+
+                    if (selectedDisposition == '6') {
+                        $('#callbackModal').modal('show');
+                        $('#transactionLogModal').modal('hide');
+                    }
+
+                    if (selectedDisposition == '11') {
+                        $('#callbackModal').modal('show');
+                        $('#transactionLogModal').modal('hide');
+                    }
+
+                    if (selectedDisposition == '12') {
+                        $('#gateKeeperModal').modal('show');
+                        $('#transactionLogModal').modal('hide');
+                    }
+
+                    if (selectedDisposition == '13') {
+                        $('#transactionLogModal').modal('hide');
+                    }
+                    var remarks = $('#remarksDescription').val();
                     $.ajax({
                         url: "{{ route('list-lead-id') }}",
                         headers: {
@@ -494,117 +504,77 @@
                         dataType: 'json',
                         method: 'POST',
                         data: {
+                            dispositionId: selectedDisposition,
+                            remarks: remarks,
                             leadId: leadsId
                         },
                         success: function(response) {}
                     });
-                    window.open(`${url}/appoinnted-lead-questionare`, "s_blank",
-                        "width=1000,height=849");
-                    $('#transactionLogModal').modal('hide');
-                }
-                if (selectedDisposition == '2') {
-                    $('#callbackModal').modal('show');
-                    $('#transactionLogModal').modal('hide');
-                }
-
-                if (selectedDisposition == '6') {
-                    $('#noAnswerCallBack').modal('show');
-                    $('#transactionLogModal').modal('hide');
-                }
-
-                if (selectedDisposition == '11') {
-                    $('#callbackModal').modal('show');
-                    $('#transactionLogModal').modal('hide');
-                }
-
-                if (selectedDisposition == '12') {
-                    $('#gateKeeperModal').modal('show');
-                    $('#transactionLogModal').modal('hide');
-                }
-
-                if (selectedDisposition == '13') {
-                    $('#transactionLogModal').modal('hide');
-                }
-                var remarks = $('#remarksDescription').val();
-                $.ajax({
-                    url: "{{ route('list-lead-id') }}",
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    dataType: 'json',
-                    method: 'POST',
-                    data: {
-                        dispositionId: selectedDisposition,
-                        remarks: remarks,
-                        leadId: leadsId
-                    },
-                    success: function(response) {}
                 });
+                $('.callbackDispoSubmitButton').on('click', function(e) {
+                    e.preventDefault();
+                    var dateTime = $('#callBackDateTime').val();
+                    console.log(dateTime);
+                    var callBackRemarks = $('#callBackRemarks').val();
+                    var dispositionId = $('#dispositionDropDown').val();
+                    var leadId = $('#leadId').val();
+                    $.ajax({
+                        url: "{{ route('call-back.store') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        dataType: 'json',
+                        method: 'POST',
+                        data: {
+                            dateTime: dateTime,
+                            callBackRemarks: callBackRemarks,
+                            dispositionId: dispositionId,
+                            leadId: leadsId,
+                            status: 1
+                        },
+                        success: function(response) {
+                            location.reload();
+                            console.log('test this code')
+                            $('#transactionLogModal').modal('hide');
+                        },
+                        error: function(xhr, status, error) {
+                            alert("please call your it for better assistance");
+                        }
+                    });
+                });
+
             });
-            $('.callbackDispoSubmitButton').on('click', function(e) {
+
+
+
+            $('#submitRemarks').on('click', function(e) {
                 e.preventDefault();
-                console.log('test callback sumbit button');
-                var dateTime = $('#callBackDateTime').val();
-                var callBackRemarks = $('#callBackRemarks').val();
+                var remarks = $('#remarksDescription').val();
                 var dispositionId = $('#dispositionDropDown').val();
                 var leadId = $('#leadId').val();
                 $.ajax({
-                    url: "{{ route('call-back.store') }}",
+                    url: "{{ route('assign-remark-leads') }}",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     dataType: 'json',
                     method: 'POST',
                     data: {
-                        dateTime: dateTime,
-                        callBackRemarks: callBackRemarks,
+                        remarks: remarks,
                         dispositionId: dispositionId,
-                        leadId: leadsId,
-                        status: 1
+                        leadId: leadsId
                     },
                     success: function(response) {
-                        location.reload();
-                        console.log('test this code')
+                        console.log(response);
                         $('#transactionLogModal').modal('hide');
+                        location.reload();
                     },
                     error: function(xhr, status, error) {
-                        alert("please call your it for better assistance");
+                        alert(xhr.responseText);
                     }
                 });
+
+
             });
-
-        });
-
-
-
-        $('#submitRemarks').on('click', function(e) {
-            e.preventDefault();
-            var remarks = $('#remarksDescription').val();
-            var dispositionId = $('#dispositionDropDown').val();
-            var leadId = $('#leadId').val();
-            $.ajax({
-                url: "{{ route('assign-remark-leads') }}",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                dataType: 'json',
-                method: 'POST',
-                data: {
-                    remarks: remarks,
-                    dispositionId: dispositionId,
-                    leadId: leadsId
-                },
-                success: function(response) {
-                    console.log(response);
-                    $('#transactionLogModal').modal('hide');
-                    location.reload();
-                },
-                error: function(xhr, status, error) {
-                    alert(xhr.responseText);
-                }
-            });
-
-
-        });
-    </script>
-@endsection
+        </script>
+    @endsection

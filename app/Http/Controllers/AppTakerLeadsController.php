@@ -40,9 +40,9 @@ class AppTakerLeadsController extends Controller
             'AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI', 'AZ', 'CO', 'ID', 'MT', 'NV', 'NM', 'UT', 'WY',
             'CA', 'OR', 'WA', 'AK', 'HI'
             ];
-        $classCodeLeads = ClassCodeLead::all();
+        $classCodeLeads = ClassCodeLead::orderBy('name', 'asc')->get();
         $sortedClassCodeLeads = ClassCodeLead::sortByName($classCodeLeads);
-        $dispositions = Disposition::all();
+        $dispositions = Disposition::orderBy('name', 'asc')->get();
         $recreationalFacilities = RecreationalFacilities::all();
         $dataCount = Lead::getLeadsAppointed($user->id);
 

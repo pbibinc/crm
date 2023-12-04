@@ -159,4 +159,9 @@ class LeadPolicy
         return $user->role->hasPermission('view_any_customer_service');
     }
 
+    public function viewCallBackLeadList(User $user, Lead $lead)
+    {
+        return $user->role->hasPermission('view_call_back_lead_list');
+    }
+
 }
