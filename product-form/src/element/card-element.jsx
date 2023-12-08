@@ -1,12 +1,18 @@
 import React from "react";
 
-class Card extends React.Component {
+class CardElement extends React.Component {
     render() {
         const { headerContent, bodyContent } = this.props;
+        const titleStyle = {
+            color: "white",
+        };
+        const headerStyle = {
+            backgroundColor: "#064367",
+        };
         return (
             <div className="card">
-                <div className="card-header">
-                    <h3>{headerContent}</h3>
+                <div className="card-header" style={headerStyle}>
+                    <h6 style={titleStyle}>{headerContent}</h6>
                 </div>
                 <div className="card-body">{bodyContent}</div>
                 {/*  */}
@@ -14,4 +20,4 @@ class Card extends React.Component {
         );
     }
 }
-export default Card;
+export default CardElement;

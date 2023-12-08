@@ -1,0 +1,77 @@
+/* Styles for the button grid container */
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        2,
+        1fr
+    ); /* Adjust the number of columns as needed */
+    gap: 10px; /* Adjust the gap between buttons as needed */
+}
+
+/* Styles for each button row */
+.button-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Styles for the buttons */
+.form-button-close {
+    width: 100%; /* Ensure buttons take up the full width of their container */
+    max-width: 220px; /* Adjust the maximum button width as needed */
+    text-align: center;
+    font-size: 15px; /* Adjust font size as needed */
+    padding: 10px 15px;
+    border: 1px solid #ffff; /* Button border color */
+    border-radius: 30px; /* Button border radius */
+    color: #ffff; /* Button text color */
+    background-color: transparent; /* Button background color */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Transition effects */
+    margin-bottom: 10px;
+
+    /* Hover styles */
+    &:hover {
+        background-color: #ffff; /* Hover background color */
+        color: #0170a8; /* Hover text color */
+        text-decoration: none;
+    }
+}
+.form-button-callback {
+    width: 100%; /* Ensure buttons take up the full width of their container */
+    max-width: 220px; /* Adjust the maximum button width as needed */
+    text-align: center;
+    font-size: 15px; /* Adjust font size as needed */
+    padding: 10px 15px;
+    border: 1px solid #ffff; /* Button border color */
+    border-radius: 30px; /* Button border radius */
+    color: #0170a8; /* Button text color */
+    background-color: #ffff; /* Button background color */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Transition effects */
+    margin-bottom: 10px;
+
+    /* Hover styles */
+    &:hover {
+        background-color: #ffff; /* Hover background color */
+        color: #0170a8; /* Hover text color */
+        text-decoration: none;
+    }
+}
+.footerDiv {
+    background-color: #064367;
+    text-align: center;
+    padding: 12px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 7%;
+    display: flex;
+    justify-content: "space-between";
+    align-items: "center";
+}
+
+.craftedWithStyle {
+    text-align: right;
+    white-space: nowrap;
+    color: white;
+    margin-left: 45%;
+    margin-top: 0.6%;
+}

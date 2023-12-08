@@ -130,4 +130,13 @@ class UserController extends Controller
    {
        $user->delete();
    }
+
+   public function getUser()
+   {
+         $userId = Cache::get('user_id');
+         $userData = User::find($userId);
+         return response()->json([
+              'user' => $userData
+         ]);
+   }
 }

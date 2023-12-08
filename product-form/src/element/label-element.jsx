@@ -6,7 +6,7 @@ class Label extends React.Component {
         const { labelContent, forValue } = this.props;
         return (
             <label
-                className="block text-gray-700 text-sm font-bold mb-2"
+                className="control-label col-xs-4"
                 // for="{forValue}"
             >
                 {labelContent}

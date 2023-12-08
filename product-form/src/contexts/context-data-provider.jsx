@@ -5,6 +5,8 @@ import LeadCity from "../data/lead-city";
 import LeadZipCodeCities from "../data/lead-city-zipcode";
 import ClassCodeData from "../data/classcode-data";
 import GeneralLiabilitiesData from "../data/general-liabilities-data";
+import getAuthToken from "../data/auth-token-data";
+import userData from "../data/user-data";
 
 export const ContextData = createContext();
 
@@ -15,6 +17,8 @@ const ContextDataProvider = ({ children }) => {
     const { zipCity } = LeadZipCodeCities();
     const { classCodeArray } = ClassCodeData();
     const { generalLiabilitiesData } = GeneralLiabilitiesData();
+    const { authToken } = getAuthToken();
+    const { user } = userData();
     return (
         <ContextData.Provider
             value={{
@@ -27,6 +31,8 @@ const ContextDataProvider = ({ children }) => {
                 zipCity,
                 classCodeArray,
                 generalLiabilitiesData,
+                authToken,
+                user,
             }}
         >
             {children}

@@ -21,7 +21,7 @@ class CallBackController extends Controller
         $leads = $user->userProfile->leads;
         $callbacks = [];
         $leadArr = [];
-        $dispositions = Disposition::all();
+        $dispositions = Disposition::orderBy('name', 'asc')->get();
         foreach($leads as $lead){
             $callback = Callback::where('lead_id', $lead->id)->first();
             if($callback){
@@ -69,29 +69,20 @@ class CallBackController extends Controller
         try{
             DB::beginTransaction();
             $data = $request->all();
-            $type = 0;
-            switch($data['dispositionId']){
-                case 2:
-                    $type = 2;
-                    break;
-                case 11:
-                    $type = 11;
-                    break;
-                case 12:
-                    $type = 12;
-                    break;
-                case 6:
-                    $type = 6;
-                    break;
+
+            if($data['status'] == 1){
+                $lead = Lead::find($data['leadId']);
+                $lead->disposition_id = $data['type'];
+                $lead->save();
             }
+            if(Callback::where('lead_id', $data['leadId'])->where('status', 2)->exists()){
+                $callback = Callback::where('lead_id', $data['leadId'])->where('status', 2)->first();
 
-            $lead = Lead::find($data['leadId']);
-            $lead->disposition_id = $data['dispositionId'];
-            $lead->save();
-
-            $callback = new Callback();
+            }else{
+                $callback = new Callback();
+            }
             $callback->lead_id = $data['leadId'];
-            $callback->type = $type;
+            $callback->type = $data['type'];
             $callback->date_time = $data['dateTime'];
             $callback->remarks = $data['callBackRemarks'] ? $data['callBackRemarks'] : ' ';
             $callback->status = $data['status'];

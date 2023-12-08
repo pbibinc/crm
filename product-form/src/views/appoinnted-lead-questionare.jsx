@@ -8,9 +8,7 @@ import Accordion from "./product-accordion";
 export default function AppointedLeadQuestionare() {
     return (
         <>
-            <div>
-                <Main />
-            </div>
+            <Main />
         </>
     );
 }
