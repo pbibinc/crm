@@ -16,24 +16,28 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Str;
 class GeneralInformationDataController extends BaseController
 {
     public function getGeneralInformationData(Request $request)
     {
-
     try{
+        $token = $request->input('token');
+        if(Cache::has($token)){
+            return response()->json([
+                'message' => 'Duplicate submission, please try again'
+            ],422);
+        }
+        $token = Str::random(10);
+        Cache::put($token, true, 10);
             DB::beginTransaction();
             $data = $request->all();
             Cache::put('general_information_data', $data);
-
             if(GeneralInformation::where('leads_id', $data['lead_id'])->exists()){
                 $generalInformation = GeneralInformation::where('leads_id', $data['lead_id'])->first();
                 $userProfile = LeadHistory::getAppointerUserProfile($data['lead_id']);
                 return response()->json(['message' => 'General Informmation Data has been already saved', 'generalInformation' => $generalInformation, 'userProfile' => $userProfile], 409);
             }
-
-
             //saving gneral information data
             // Log::info("user id", [Auth::user()->id]);
             $generalInformation = new GeneralInformation();
@@ -78,6 +82,7 @@ class GeneralInformationDataController extends BaseController
             event(new AppointmentTaken($Lead, $Lead->userProfile[0]->id, $Lead->userProfile[0]->id, now()));
 
             DB::commit();
+            Cache::forget($token);
         }catch(\Exception $e){
             DB::rollback();
             Log::info("Error for General Information", [$e->getMessage()]);

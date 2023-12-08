@@ -21,4 +21,9 @@ class ClassCodeLead extends Model
         return $this->belongsToMany(GeneralLiabilities::class, 'classcode_percentage_table', 'classcode_id', 'general_liabilities_id');
     }
 
+    public function classCodeAlphabetical()
+    {
+        return $this->sortBy('name');
+    }
+
 }

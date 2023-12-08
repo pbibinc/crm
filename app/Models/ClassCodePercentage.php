@@ -21,4 +21,6 @@ class ClassCodePercentage extends Model
     {
         return $this->hasOne(ClassCodeLead::class, 'id', 'classcode_id');
     }
+
+
 }

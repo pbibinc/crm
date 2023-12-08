@@ -21,7 +21,8 @@ use Carbon\Carbon;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 class GeneralLiabilitiesDataController extends BaseController
 {
 
@@ -37,6 +38,15 @@ class GeneralLiabilitiesDataController extends BaseController
             return response()->json(['error' => 'General Liabilities Data has been already saved.'], 409);
         }
         try{
+            $token = $request->input('token');
+            if(Cache::has($token)){
+                return response()->json([
+                    'message' => 'Duplicate submission, please try again'
+                ],422);
+            }
+            $token = Str::random(10);
+            Cache::put($token, true, 10);
+            DB::beginTransaction();
               //Saving general liabilities coverage limit
               $coverageLimit = new CoverageLimit();
               $coverageLimit->limit = $data['limit'];
@@ -49,7 +59,6 @@ class GeneralLiabilitiesDataController extends BaseController
 
                $generalInformationId = GeneralInformation::where('leads_id', $data['leadId'])->value('id');
                $expirationOfGeneralLiabilitiesRaw =  Carbon::parse($data['expiration_general_liability'])->toDateString();
-
 
               //saving general liabilities common data
                $generalLiabilities = new GeneralLiabilities();
@@ -166,7 +175,8 @@ class GeneralLiabilitiesDataController extends BaseController
                      $multipleState->save();
                     }
              }
-
+             DB::commit();
+             Cache::forget($token);
         }catch(\Exception $e){
             Log::error('Error saving general liabilities data: '.$e->getMessage());
             // Log::error($mergedClassCodeQuestionareData);

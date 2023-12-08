@@ -112,22 +112,17 @@
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
                                 @can('viewForQouteLeads', App\Models\Lead::find(1))
-                                    <li><a href="{{ route('appointed-leads') }}">For Qoute Leads</a></li>
+                                    <li><a href="{{ route('appointed-leads') }}">For Quote Leads</a></li>
                                 @endcan
-
                                 @can('viewAssignApppointedLeads', App\Models\Lead::find(1))
                                     <li><a href="{{ route('assign-appointed-lead') }}">Assign Appointed Leads</a></li>
                                 @endcan
-
                                 @can('viewAssignQuotedLeads', App\Models\Lead::find(1))
                                     <li><a href="{{ route('get-quoted-product') }}">Assign Quoted Leads</a></li>
                                 @endcan
                             </ul>
-
                         @endcan
-
                     </li>
-
                     <li>
                         @can('viewAnyBrokerAssistant', App\Models\Lead::find(1))
                             <a href="javascript: void(0);" class="has-arrow waves-effect">

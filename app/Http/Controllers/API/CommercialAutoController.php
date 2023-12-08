@@ -12,6 +12,7 @@ use App\Models\DriverSpouse;
 use App\Models\ExpirationProduct;
 use App\Models\GeneralInformation;
 use App\Models\HaveLoss;
+use App\Models\LeadHistory;
 use App\Models\QuotationProduct;
 use App\Models\QuoteInformation;
 use App\Models\QuoteLead;
@@ -22,30 +23,38 @@ use Faker\Provider\Base;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 class CommercialAutoController extends BaseController
 {
     public function saveCommercialAuto(Request $request)
     {
         try{
+            $token = $request->input('token');
+            if(Cache::has($token)){
+                return response()->json([
+                    'message' => 'Duplicate submission, please try again'
+                ],422);
+            }
+            $token = Str::random(10);
+            Cache::put($token, true, 10);
             DB::beginTransaction();
             $data = $request->all();
-
             $comercialAuto = new CommercialAuto();
 
             $generalInformationId = GeneralInformation::getIdByLeadId($data['leadId']);
+            if(CommercialAuto::where('general_information_id', $generalInformationId)->exists()){
+                return response()->json(['error' => 'General Liabilities Data has been already saved.'], 409);
+            }
             if($generalInformationId){
                 $comercialAuto->general_information_id = $generalInformationId;
                 $comercialAuto->ssn = $data['ssnValue'];
                 $comercialAuto->fein = $data['feinValue'];
-
-
                 $comercialAuto->garage_address = $data['garage_address'];
                 $comercialAuto->save();
             }else{
-                return $this->sendError('General Information not found');
+                return response()->json(['error' => 'General Information Data is not yet saved.'], 409);
             }
-
             $vehicleInformationData = $data['vehicle_information'];
 
             foreach($vehicleInformationData as $dataVehicle){
@@ -71,7 +80,6 @@ class CommercialAutoController extends BaseController
                 $driverInformation->driver_license_number = $driverInformationData['driver_license_number'];
                 Log::info("Marital_status", [$driverInformationData['martial_status']['value']]);
                 $driverInformation->marital_status = $driverInformationData['martial_status']['value'];
-
                 $driverInformation->years_of_experience = $driverInformationData['years_driving_experience'];
                 $driverInformation->save();
 
@@ -129,15 +137,13 @@ class CommercialAutoController extends BaseController
                 $HaveLosstable->loss_amount = $data['loss_amount'];
                 $HaveLosstable->save();
             }
-
             DB::commit();
-
+            Cache::forget($token);
         }catch(\Exception $e){
             DB::rollBack();
             Log::info("Error for Commercial Auto", [$e->getMessage()]);
             return $this->sendError('Error saving commercial auto data');
         }
-
     }
 
     public function updateCommercialAuto(Request $request, $id)

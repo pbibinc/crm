@@ -514,7 +514,6 @@
                 $('.callbackDispoSubmitButton').on('click', function(e) {
                     e.preventDefault();
                     var dateTime = $('#callBackDateTime').val();
-                    console.log(dateTime);
                     var callBackRemarks = $('#callBackRemarks').val();
                     var dispositionId = $('#dispositionDropDown').val();
                     var leadId = $('#leadId').val();
@@ -528,7 +527,7 @@
                         data: {
                             dateTime: dateTime,
                             callBackRemarks: callBackRemarks,
-                            dispositionId: dispositionId,
+                            type: dispositionId,
                             leadId: leadsId,
                             status: 1
                         },

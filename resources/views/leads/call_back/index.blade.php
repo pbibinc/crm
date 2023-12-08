@@ -458,7 +458,7 @@
                             dataType: 'json',
                             method: 'POST',
                             data: {
-                                dispositionId: selectedDisposition,
+                                type: selectedDisposition,
                                 dateTime: dateTime,
                                 callBackRemarks: callBackRemarks,
                                 leadId: leadsId,
@@ -466,31 +466,32 @@
                             },
                             success: function(response) {
                                 location.reload();
+                                $.ajax({
+                                    url: "{{ route('non-call-back.destroy', ':id') }}"
+                                        .replace(':id',
+                                            remarksId),
+                                    headers: {
+                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                                            .attr('content')
+                                    },
+                                    dataType: 'json',
+                                    method: 'POST',
+                                    data: {
+                                        dispositionId: selectedDisposition,
+                                        remarksId: remarksId,
+                                        callBackRemarks: callBackRemarks,
+                                        leadId: leadsId
+                                    },
+                                    success: function(response) {
+                                        location.reload();
+                                    }
+                                });
                             },
                             error: function(response) {
                                 alert('error');
                             }
                         });
-                        $.ajax({
-                            url: "{{ route('non-call-back.destroy', ':id') }}"
-                                .replace(':id',
-                                    remarksId),
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
-                                    .attr('content')
-                            },
-                            dataType: 'json',
-                            method: 'POST',
-                            data: {
-                                dispositionId: selectedDisposition,
-                                remarksId: remarksId,
-                                callBackRemarks: callBackRemarks,
-                                leadId: leadsId
-                            },
-                            success: function(response) {
-                                location.reload();
-                            }
-                        });
+
 
                     } else {
                         $.ajax({

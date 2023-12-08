@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\ApiAuthController;
 use App\Http\Controllers\API\BuildersRiskController;
 use App\Http\Controllers\API\BusinessOwnersPolicyController;
 use App\Http\Controllers\API\ClassCodeDataController;
@@ -13,7 +14,12 @@ use App\Http\Controllers\API\StateAddressController;
 use App\Http\Controllers\API\GeneralLiabilitiesDataController;
 use App\Http\Controllers\API\ToolsEquipmentController;
 use App\Http\Controllers\API\WorkersCompDataController;
+use App\Http\Controllers\AppTakerLeadsController;
+use App\Http\Controllers\CallBackController;
 use App\Http\Controllers\LeadController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserProfileController;
+use App\Models\Callback;
 use App\Models\GeneralLiabilities;
 use App\Models\Lead;
 use Illuminate\Http\Request;
@@ -60,11 +66,28 @@ Route::get('workers-comp-data/get/{id}', [WorkersCompDataController::class, 'get
 Route::post('commercial-auto-data/store', [CommercialAutoController::class, 'saveCommercialAuto'])->withoutMiddleware(['auth:sanctum']);
 Route::put('commercial-auto-data/update/{id}', [CommercialAutoController::class, 'updateCommercialAuto'])->withoutMiddleware(['auth:sanctum']);
 
+//route for excess liability
 Route::post('excess-liability-data/store', [ExcessLiabilityController::class, 'saveExcessLiability'])->withoutMiddleware(['auth:sanctum']);
 Route::put('excess-liability-data/update/{id}', [ExcessLiabilityController::class, 'updateExcessLiability'])->withoutMiddleware(['auth:sanctum']);
+
+//route for tools equipment
 Route::post('tools-equipment/store', [ToolsEquipmentController::class, 'storeToolsEquipment'])->withoutMiddleware(['auth:sanctum']);
 Route::put('tools-equipment/update/{id}', [ToolsEquipmentController::class, 'updateToolsEquipment'])->withoutMiddleware(['auth:sanctum']);
+
+//route for builders risk
 Route::post('builders-risk/store', [BuildersRiskController::class, 'storedBuildersRisk'])->withoutMiddleware(['auth:sanctum']);
 Route::put('builders-risk/update/{id}', [BuildersRiskController::class, 'updateBuildersRisk'])->withoutMiddleware(['auth:sanctum']);
+
+//route for business owners policy
 Route::post('business-owners-policy/store', [BusinessOwnersPolicyController::class, 'storeBusinessOwnersPolicy'])->withoutMiddleware(['auth:sanctum']);
 Route::put('business-owners-policy/update/{id}', [BusinessOwnersPolicyController::class, 'updateBusinessOwnersPolicy'])->withoutMiddleware(['auth:sanctum']);
+
+//route for callback
+Route::post('callback/store', [CallBackController::class, 'store'])->withoutMiddleware(['auth:sanctum']);
+
+//route for application taker leads
+Route::post('reload-data', [AppTakerLeadsController::class, 'reloadData'])->middleware(['auth:sanctum']);
+
+Route::post('/generate-auth-token', [ApiAuthController::class, 'generateAuthToken'])->withoutMiddleware(['auth:sanctum']);
+
+Route::get('get-user', [UserController::class, 'getUser'])->withoutMiddleware(['auth:sanctum']);

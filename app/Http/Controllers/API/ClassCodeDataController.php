@@ -10,12 +10,12 @@ class ClassCodeDataController extends BaseController
 {
     public function index()
     {
-        $classCodeData = ClassCodeLead::all();
+        $classCodeData = ClassCodeLead::orderBy('name', 'asc')->get();
         return $this->sendResponse($classCodeData->toArray(), 'Class Code Data retrieved successfully.');
     }
     public function show($id)
     {
-        $classCodeData = ClassCodeLead::find($id);
+        $classCodeData = ClassCodeLead::find($id)->orderBy('name', 'asc')->get();
         if (is_null($classCodeData)) {
             return $this->sendError('Class Code Data not found.');
         }
