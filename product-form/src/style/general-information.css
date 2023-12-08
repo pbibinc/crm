@@ -1,0 +1,58 @@
+/* GeneralInformationForm.css */
+.form-input {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-row {
+    margin-bottom: 20px;
+}
+
+/* Styles for the buttons */
+.form-button {
+    width: 100%; /* Ensure buttons take up the full width of their container */
+    max-width: 220px; /* Adjust the maximum button width as needed */
+    text-align: center;
+    font-size: 15px; /* Adjust font size as needed */
+    padding: 10px 15px;
+    border: 1px solid #064367; /* Button border color */
+    border-radius: 30px; /* Button border radius */
+    color: #064367; /* Button text color */
+    background-color: transparent; /* Button background color */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Transition effects */
+
+    /* Hover styles */
+    &:hover {
+        background-color: #064367; /* Hover background color */
+        color: #fff; /* Hover text color */
+        text-decoration: none;
+    }
+}
+.form-button-edit {
+    width: 100%; /* Ensure buttons take up the full width of their container */
+    max-width: 220px; /* Adjust the maximum button width as needed */
+    text-align: center;
+    font-size: 15px; /* Adjust font size as needed */
+    padding: 10px 15px;
+    border: 1px solid #0170a8; /* Button border color */
+    border-radius: 30px; /* Button border radius */
+    color: #fff; /* Button text color */
+    background-color: #0170a8; /* Button background color */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Transition effects */
+
+    /* Hover styles */
+    &:hover {
+        background-color: #fff; /* Hover background color */
+        color: #064367; /* Hover text color */
+        text-decoration: none;
+    }
+}
+
+/* Add more styles as needed */

@@ -4,7 +4,7 @@ import axiosClient from "../api/axios.client";
 const GeneralLiabilitiesData = () => {
     const [generalLiabilitiesData, setGeneralLiabilitiesData] = useState(null);
     const getLeadData = JSON.parse(sessionStorage.getItem("lead"));
-    console.log("getLeadData", getLeadData?.data?.id);
+
     useEffect(() => {
         const fetchGeneralLiabitiesData = async () => {
             try {

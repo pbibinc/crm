@@ -11,10 +11,10 @@ import { NumericFormat } from "react-number-format";
 import Button from "react-bootstrap/Button";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
 import SaveIcon from "@mui/icons-material/Save";
-import axios from "axios";
+
 import Swal from "sweetalert2";
 import axiosClient from "../api/axios.client";
-
+import "../style/general-information.css";
 const BuilderRiskForm = () => {
     //setting for getting stored buildersRiskData
     const storedBuildersRiskData = () => {
@@ -1107,140 +1107,6 @@ const BuilderRiskForm = () => {
             )}
 
             <Row
-                classValue="mb-4"
-                rowContent={[
-                    <Column
-                        key="callBackDateColumn"
-                        classValue="col-6"
-                        colContent={
-                            <>
-                                <Row
-                                    classValue="mb-1"
-                                    rowContent={
-                                        <Label labelContent="Call Back Date" />
-                                    }
-                                />
-                                <Row
-                                    rowContent={
-                                        <DatePicker
-                                            showMonthDropdown
-                                            showYearDropdown
-                                            className="form-control form-date-picker"
-                                            placeholderText="MM/DD/YYYY"
-                                            disabled={!isEditing}
-                                        />
-                                    }
-                                />
-                            </>
-                        }
-                    />,
-                    <Column
-                        key="crossSellColumn"
-                        classValue="col-6"
-                        colContent={
-                            <>
-                                <Label labelContent="Cross Sell" />
-                                <Select
-                                    className="basic=single"
-                                    classNamePrefix="select"
-                                    id="generalLiabilitiesCrossSellDropdown"
-                                    name="generalLiabilitiesCrossSellDropdown"
-                                    // options={crossSellArray}
-                                    // onChange={(e) => setCrossSell({value: e.value, label: e.label})}
-                                    isDisabled={!isEditing}
-                                    // value={crossSell}
-                                />
-                            </>
-                        }
-                    />,
-                ]}
-            />
-
-            <Row
-                classValue="mb-3"
-                rowContent={
-                    <>
-                        <Column
-                            colContent={
-                                <>
-                                    <Label labelContent="Remarks" />
-                                    <Form.Control
-                                        as={"textarea"}
-                                        rows={6}
-                                        disabled={!isEditing}
-                                    />
-                                </>
-                            }
-                        />
-                    </>
-                }
-            />
-
-            {/* <Row
-                classValue="mb-3"
-                rowContent={[
-                    <Column
-                        key="toolsEquipmentSubmmitButtonColumn"
-                        classValue="col-10"
-                        colContent={<></>}
-                    />,
-                    <Column
-                        key="toolsEquipmentEdittButtonColumn"
-                        classValue="col-2"
-                        colContent={
-                            <>
-                                <Row
-                                    rowContent={
-                                        <>
-                                            <Column
-                                                key="submitButtonColumn"
-                                                classValue="col-6"
-                                                colContent={
-                                                    <div className="d-grid gap-2">
-                                                        <Button
-                                                            variant="success"
-                                                            size="lg"
-                                                            onClick={
-                                                                submitBuilderRiskForm
-                                                            }
-                                                            disabled={
-                                                                !isEditing
-                                                            }
-                                                        >
-                                                            <SaveIcon />
-                                                        </Button>
-                                                    </div>
-                                                }
-                                            />
-                                            <Column
-                                                key="editButtonColumn"
-                                                classValue="col-6"
-                                                colContent={
-                                                    <div className="d-grid gap-2">
-                                                        <Button
-                                                            variant="primary"
-                                                            size="lg"
-                                                            disabled={isEditing}
-                                                            onClick={() =>
-                                                                setIsEditing(
-                                                                    true
-                                                                )
-                                                            }
-                                                        >
-                                                            <SaveAsIcon />
-                                                        </Button>
-                                                    </div>
-                                                }
-                                            />
-                                        </>
-                                    }
-                                />
-                            </>
-                        }
-                    />,
-                ]}
-            /> */}
-            <Row
                 classValue="mb-3"
                 rowContent={[
                     <Column
@@ -1248,26 +1114,25 @@ const BuilderRiskForm = () => {
                         classValue="col-12 d-flex justify-content-center align-items-center"
                         colContent={
                             <>
-                                <Button
-                                    variant="success"
+                                <button
                                     size="lg"
                                     onClick={submitBuilderRiskForm}
                                     disabled={!isEditing}
-                                    className="mx-2"
+                                    className="mx-2 form-button"
                                 >
                                     <SaveIcon />
                                     <span className="ms-2">Save</span>
-                                </Button>
-                                <Button
-                                    variant="primary"
+                                </button>
+
+                                <button
                                     size="lg"
                                     disabled={isEditing}
                                     onClick={() => setIsEditing(true)}
-                                    className="mx-2"
+                                    className="mx-2 form-button-edit"
                                 >
                                     <SaveAsIcon />
                                     <span className="ms-2">Edit</span>
-                                </Button>
+                                </button>
                             </>
                         }
                     />,

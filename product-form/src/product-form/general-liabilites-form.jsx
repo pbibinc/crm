@@ -3,11 +3,9 @@ import Row from "../element/row-element";
 import Column from "../element/column-element";
 import Label from "../element/label-element";
 import Select from "react-select";
-import ClassCodeData from "../data/classcode-data";
-import Input from "../element/input-element";
+
 import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import TextBox from "../element/description-element";
+
 import InputGroup from "react-bootstrap/InputGroup";
 import State from "../data/state";
 // import { event } from "jquery";
@@ -15,25 +13,26 @@ import RecreationalFacilities from "../data/recreational-facilities-data";
 import DateMonth from "../element/date-month";
 // //import { set } from "lodash";
 import DateDay from "../element/date-day";
-import DateTime from "../element/date-time";
+
 //import { set } from "lodash";
 import axios from "axios";
 import SaveIcon from "@mui/icons-material/Save";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
-import LeadDetails from "../data/lead-details";
+
 import DatePicker from "react-datepicker";
 import ClassCodeMain from "../classcode-forms/classcode_main";
 import { ContextData } from "../contexts/context-data-provider";
 import { NumericFormat } from "react-number-format";
 import Swal from "sweetalert2";
 import axiosClient from "../api/axios.client";
+import "../style/general-information.css";
 // import { FidgetSpinner } from "react-loader-spinner";
 
 // import Col from "react-bootstrap/esm/Col";
 const GeneralLiabilitiesForm = () => {
     const { classCodeArray } = useContext(ContextData);
     const { generalLiabilitiesData } = useContext(ContextData);
-    console.log("context", generalLiabilitiesData); // Use the context object
+
     const [isLoading, setIsLoading] = useState(false);
     const getLeadStoredData = () => {
         const storedData = JSON.parse(sessionStorage.getItem("lead") || "{}");
@@ -209,8 +208,11 @@ const GeneralLiabilitiesForm = () => {
     // const [classCodeFormData, setClassCodeFormData] = useState([]);
     // const [clasCodeDescription, setClassCodeDescription] = useState([]);
 
+    // const [classCodeFormData, setClassCodeFormData] = useState([]);
+    // const [clasCodeDescription, setClasCodeDescription] = useState([]);
+    // const [classCodeIdData, setClassCodeIdData] = useState([]);
+
     let classCodeFormData = [];
-    // let classCodeFormData = getGeneralLiabilitiesStoredData()?.classCodeAnswer || [];
     let clasCodeDescription = [];
     let classCodeIdData = [];
 
@@ -289,15 +291,6 @@ const GeneralLiabilitiesForm = () => {
         setAmount(numbericValue);
         setHaveLossAmount(numbericValue);
     };
-
-    // const handleLargestProjectAmountChange = (event) => {
-    //     const numbericValue = event.target.value.replace(/[^0-9]/g, "");
-    //     const formattedValue = numbericValue.replace(
-    //         /\B(?=(\d{3})+(?!\d))/g,
-    //         ","
-    //     );
-    //     setLargestProjectAmount(numbericValue);
-    // };
 
     //handle event for changing the classcode dropdown
     const handleClassCodeChange = (index, event) => {
@@ -737,6 +730,7 @@ const GeneralLiabilitiesForm = () => {
                 setIsEditing(false);
                 SetIsUpdate(true);
                 setIsLoading(true);
+                la;
                 if (method == "post") {
                     setIsLoading(false);
                     Swal.fire({
@@ -753,7 +747,6 @@ const GeneralLiabilitiesForm = () => {
             })
             .catch((error) => {
                 if (error.response.status == 409) {
-                    console.log("Error::", error);
                     Swal.fire({
                         icon: "warning",
                         title: `${error.response.data.error}`,
@@ -1791,168 +1784,6 @@ const GeneralLiabilitiesForm = () => {
                     />,
                 ]}
             />
-            {/* <Row
-                classValue="mb-4"
-                rowContent={[
-                    <Column
-                        key="callBackDateColumn"
-                        classValue="col-6"
-                        colContent={
-                            <>
-                                <Row
-                                    classValue="mb-1"
-                                    rowContent={
-                                        <Label labelContent="Call Back Date" />
-                                    }
-                                />
-                                <Row
-                                    rowContent={
-                                        <DateTime disabled={!isEditing} />
-                                    }
-                                />
-                            </>
-                        }
-                    />,
-                    <Column
-                        key="crossSellColumn"
-                        classValue="col-6"
-                        colContent={
-                            <>
-                                <Label labelContent="Cross Sell" />
-                                <Select
-                                    className="basic=single"
-                                    classNamePrefix="select"
-                                    id="generalLiabilitiesCrossSellDropdown"
-                                    name="generalLiabilitiesCrossSellDropdown"
-                                    options={generalLiabilitiesCrossSellOptions}
-                                    onChange={(e) =>
-                                        setSelectedCrossSell(e.value)
-                                    }
-                                    isDisabled={!isEditing}
-                                />
-                            </>
-                        }
-                    />,
-                ]}
-            />
-            <Row
-                classValue="mb-4"
-                rowContent={
-                    <Column
-                        colContent={
-                            <div>
-                                <Label labelContent="remarks" />
-                                <TextBox disabled={!isEditing} />
-                            </div>
-                        }
-                    />
-                }
-            /> */}
-            {/* <Row
-                classValue="mb-4"
-                rowContent={[
-                    <Column
-                        key="generalLiabilitiesAddButtonColumn"
-                        classValue="col-6"
-                        colContent={
-                            <>
-                                <div className="d-grid gap-2">
-                                    <Button
-                                        variant="success"
-                                        size="lg"
-                                        onClick={submitGeneralLiabilitiesForm}
-                                        disabled={!isEditing}
-                                    >
-                                        <SaveIcon />
-                                    </Button>
-                                </div>
-                            </>
-                        }
-                    />,
-                    <Column
-                        key="generalLiabilitiesEditButtonColumn"
-                        classValue="col-6"
-                        colContent={
-                            <>
-                                <div className="d-grid gap=2">
-                                    <Button
-                                        variant="primary"
-                                        size="lg"
-                                        disabled={isEditing}
-                                        onClick={() => setIsEditing(true)}
-                                    >
-                                        <SaveAsIcon />
-                                    </Button>
-                                </div>
-                            </>
-                        }
-                    />,
-                ]}
-            /> */}
-            {/* <Row
-                classValue="mb-3"
-                rowContent={[
-                    <Column
-                        key="generalLiabilitiesAddButtonColumn"
-                        classValue="col-10"
-                        colContent={<></>}
-                    />,
-                    <Column
-                        key="generalLiabilitiesEditButtonColumn"
-                        classValue="col-2"
-                        colContent={
-                            <>
-                                <Row
-                                    rowContent={
-                                        <>
-                                            <Column
-                                                key="submitButtonColumn"
-                                                classValue="col-6"
-                                                colContent={
-                                                    <div className="d-grid gap-2">
-                                                        <Button
-                                                            variant="success"
-                                                            size="lg"
-                                                            onClick={
-                                                                submitGeneralLiabilitiesForm
-                                                            }
-                                                            disabled={
-                                                                !isEditing
-                                                            }
-                                                        >
-                                                            <SaveIcon />
-                                                        </Button>
-                                                    </div>
-                                                }
-                                            />
-                                            <Column
-                                                key="editButtonColumn"
-                                                classValue="col-6"
-                                                colContent={
-                                                    <div className="d-grid gap-2">
-                                                        <Button
-                                                            variant="primary"
-                                                            size="lg"
-                                                            disabled={isEditing}
-                                                            onClick={() =>
-                                                                setIsEditing(
-                                                                    true
-                                                                )
-                                                            }
-                                                        >
-                                                            <SaveAsIcon />
-                                                        </Button>
-                                                    </div>
-                                                }
-                                            />
-                                        </>
-                                    }
-                                />
-                            </>
-                        }
-                    />,
-                ]}
-            /> */}
 
             <Row
                 classValue="mb-3"
@@ -1962,26 +1793,24 @@ const GeneralLiabilitiesForm = () => {
                         classValue="col-12 d-flex justify-content-center align-items-center"
                         colContent={
                             <>
-                                <Button
-                                    variant="success"
+                                <button
                                     size="lg"
                                     onClick={submitGeneralLiabilitiesForm}
                                     disabled={!isEditing}
-                                    className="mx-2"
+                                    className="mx-2 form-button"
                                 >
                                     <SaveIcon />
                                     <span className="ms-2">Save</span>
-                                </Button>
-                                <Button
-                                    variant="primary"
+                                </button>
+                                <button
                                     size="lg"
                                     disabled={isEditing}
                                     onClick={() => setIsEditing(true)}
-                                    className="mx-2"
+                                    className="mx-2 form-button-edit"
                                 >
                                     <SaveAsIcon />
                                     <span className="ms-2">Edit</span>
-                                </Button>
+                                </button>
                             </>
                         }
                     />,

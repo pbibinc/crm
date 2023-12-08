@@ -5,21 +5,23 @@ import Footer from "../partials-form/footer";
 import ProductAccordion from "./product-accordion";
 import GeneralInformationCardFooter from "../product-form/card-footer-general-information";
 import ContextDataProvider from "../contexts/context-data-provider";
+import CardElement from "../element/card-element";
 // import LeadDetailsProvider from "../data/lead-details";
 
 const GeneralInformation = () => {
     return (
         <>
-            <Card
-                headerContent="General Information"
-                bodyContent={
-                    <ContextDataProvider>
-                        <GeneralInformationForm />
-                    </ContextDataProvider>
-                }
-            />
-            <ProductAccordion />
-            <Footer />
+            <main>
+                <CardElement
+                    headerContent="General Information"
+                    bodyContent={
+                        <ContextDataProvider>
+                            <GeneralInformationForm />
+                        </ContextDataProvider>
+                    }
+                />
+                <ProductAccordion />
+            </main>
         </>
     );
 };

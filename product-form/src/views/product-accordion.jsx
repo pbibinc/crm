@@ -8,126 +8,332 @@ import ExcessLiabilitiesForm from "../product-form/excess_liability_form";
 import ToolsEquipmentForm from "../product-form/tools-equipment-form";
 import BuilderRiskForm from "../product-form/builder-risk_form";
 import BusinessOwnersPolicyForm from "../product-form/business-owners-policy_form";
-import Nav from 'react-bootstrap/Nav';
-import Card from 'react-bootstrap/Card';
-import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 
-
-
+import Card from "react-bootstrap/Card";
+import CardElement from "../element/card-element";
+// import Button from "react-bootstrap/Button";
+import "../style/product-accordion-style.css?v=2";
 function ProductAccordion() {
     const [activeTab, setActiveTab] = useState("generalLiabilities");
-    // const [isFixed, setIsFixed] = useState(false);
-    // const [originalPosition, setOriginalPosition] = useState(0);
 
-
-    // useEffect(() => {
-    //     // Store the card's original position
-    //     if (cardRef.current && originalPosition === 0) {
-    //         setOriginalPosition(cardRef.current.offsetTop);
-    //     }
-
-    //     const checkScroll = () => {
-    //         if (!cardRef.current) return;  // Safety check
-
-    //         if (window.scrollY > originalPosition && !isFixed) {
-    //             setIsFixed(true);
-    //         } else if (window.scrollY <= originalPosition && isFixed) {
-    //             setIsFixed(false);
-    //         }
-    //     };
-
-    //     window.addEventListener('scroll', checkScroll);
-
-    //     return () => {
-    //         window.removeEventListener('scroll', checkScroll);
-    //     };
-    // }, [isFixed, originalPosition]);
-
-    // const fixedCardStyle = {
-    //     position: 'fixed',
-    //     top: 70,
-    //     width: '98%',
-    //     zIndex: 1030
-    // };
-
-    // const scrollToForm = () => {
-    //     if (formRef.current) {
-    //         formRef.current.scrollIntoView({ behavior: "smooth" });
-    //     }
-    // };
-
-    // const cardRef = useRef();
-    // const formRef = useRef();
-    //ref={cardRef} style={isFixed ? fixedCardStyle : null}
     return (
         <>
-        <Card >
-            <Card.Body>
-            <div className="row mb-4">
-            <Nav justify variant="tabs">
-            <Nav.Item>
-                <Nav.Link  active={activeTab === 'generalLiabilities'}  onClick={() => setActiveTab('generalLiabilities')}>GL</Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-                <Nav.Link active={activeTab === 'workersCompensation'} onClick={() => setActiveTab('workersCompensation')}>WC</Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-                <Nav.Link active={activeTab === 'commercialAuto'} onClick={() => setActiveTab('commercialAuto')}>CA</Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-                <Nav.Link active={activeTab === 'ExcessLiability'} onClick={() => setActiveTab('ExcessLiability')}>EL</Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-                <Nav.Link active={activeTab === 'toolsEquipment'} onClick={() => setActiveTab('toolsEquipment')}>TE</Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-                <Nav.Link active={activeTab === 'buildersRisk'} onClick={() => setActiveTab('buildersRisk')}>BR</Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-                <Nav.Link active={activeTab === 'businessOwnersPolicy'} onClick={() => setActiveTab('businessOwnersPolicy')}>BOP</Nav.Link>
-            </Nav.Item>
-            </Nav>
-            </div>
+            {/* <div className="row mb-4">
+                        <Nav justify variant="tabs">
+                            <Nav.Item>
+                                <Nav.Link
+                                    active={activeTab === "generalLiabilities"}
+                                    onClick={() =>
+                                        setActiveTab("generalLiabilities")
+                                    }
+                                >
+                                    <div className="row">
+                                        General Liabilities
+                                    </div>
+                                </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link
+                                    active={activeTab === "workersCompensation"}
+                                    onClick={() =>
+                                        setActiveTab("workersCompensation")
+                                    }
+                                >
+                                    <div className="row">Work Compensation</div>
+                                </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link
+                                    active={activeTab === "commercialAuto"}
+                                    onClick={() =>
+                                        setActiveTab("commercialAuto")
+                                    }
+                                >
+                                    <div className="row"> Commercial Auto</div>
+                                </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link
+                                    active={activeTab === "ExcessLiability"}
+                                    onClick={() =>
+                                        setActiveTab("ExcessLiability")
+                                    }
+                                >
+                                    <div className="row"> Excess Liability</div>
+                                </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link
+                                    active={activeTab === "toolsEquipment"}
+                                    onClick={() =>
+                                        setActiveTab("toolsEquipment")
+                                    }
+                                >
+                                    <div className="row">Tools Equipment</div>
+                                </Nav.Link>
+                            </Nav.Item>
 
-         {activeTab === "generalLiabilities" && (
-            <ContextDataProvider>
-                <GeneralLiabilitiesForm />
-            </ContextDataProvider>
-        )}
-          {activeTab === "workersCompensation" && (
-            <ContextDataProvider>
-              <WorkersCompensationForm />
-            </ContextDataProvider>
-        )}
-          {activeTab === "commercialAuto" && (
-            <ContextDataProvider>
-             <CommercialAutoForm />
-            </ContextDataProvider>
-        )}
-        {activeTab === "ExcessLiability" && (
-            <ContextDataProvider>
-                <ExcessLiabilitiesForm />
-            </ContextDataProvider>
-        )}
-        {activeTab === "toolsEquipment" && (
-            <ContextDataProvider>
-                <ToolsEquipmentForm />
-            </ContextDataProvider>
-        )}
-        {activeTab === "buildersRisk" && (
-            <ContextDataProvider>
-                <BuilderRiskForm />
-            </ContextDataProvider>
-        )}
-        {activeTab === "businessOwnersPolicy" && (
-            <ContextDataProvider>
-                <BusinessOwnersPolicyForm />
-            </ContextDataProvider>
-        )}
-            </Card.Body>
-        </Card>
+                            <Nav.Item>
+                                <Nav.Link
+                                    active={activeTab === "buildersRisk"}
+                                    onClick={() => setActiveTab("buildersRisk")}
+                                >
+                                    <div className="row">builders risk</div>
+                                </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link
+                                    active={
+                                        activeTab === "businessOwnersPolicy"
+                                    }
+                                    onClick={() =>
+                                        setActiveTab("businessOwnersPolicy")
+                                    }
+                                >
+                                    <div className="row">
+                                        business owners policy
+                                    </div>
+                                </Nav.Link>
+                            </Nav.Item>
+                        </Nav>
+                    </div> */}
+            {/* <Card>
+                <Card.Body>
+                    <div className="row ">
+                        <div className="col-6">
+                            <div className="row">
+                                <div className="col-6">
+                                    <Button
+                                        variant="outline-primary"
+                                        size="md"
+                                        // className={`btn btn-link ${
+                                        //     activeTab === "generalLiabilities"
+                                        //         ? "active mx-2 form-button"
+                                        //         : "mx-2 form-button"
+                                        // }`}
+                                        className="form-button mb-4"
+                                    >
+                                        General Liabilities
+                                    </Button>
+                                </div>
+                                <div className="col-6">
+                                    {" "}
+                                    <Button
+                                        variant="outline-primary"
+                                        size="md"
+                                        className="form-button"
+                                        onClick={() =>
+                                            setActiveTab("workersCompensation")
+                                        }
+                                    >
+                                        Workers Comp
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-6">
+                            <div className="row">
+                                <div className="col-6">
+                                    <Button
+                                        variant="outline-primary"
+                                        size="md"
+                                        className="form-button"
+                                        onClick={() =>
+                                            setActiveTab("commercialAuto")
+                                        }
+                                    >
+                                        Commercial Auto
+                                    </Button>
+                                </div>
+                                <div className="col-6">
+                                    <Button
+                                        variant="outline-primary"
+                                        size="md"
+                                        className="form-button"
+                                        onClick={() =>
+                                            setActiveTab("ExcessLiability")
+                                        }
+                                    >
+                                        Excess Liability
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-4">
+                            <Button
+                                variant="outline-primary"
+                                size="md"
+                                className="form-button"
+                                onClick={() => setActiveTab("toolsEquipment")}
+                            >
+                                Tools Equipment
+                            </Button>
+                        </div>
+                        <div className="col-4">
+                            <Button
+                                variant="outline-primary"
+                                size="md"
+                                className="form-button"
+                                onClick={() => setActiveTab("buildersRisk")}
+                            >
+                                Builders Risk
+                            </Button>
+                        </div>
+                        <div className="col-4">
+                            {" "}
+                            <Button
+                                variant="outline-primary"
+                                size="md"
+                                className="form-button"
+                                onClick={() =>
+                                    setActiveTab("businessOwnersPolicy")
+                                }
+                            >
+                                Business Owners Policy
+                            </Button>
+                        </div>
+                    </div>
+                </Card.Body>
+            </Card> */}
+            <Card>
+                <Card.Body>
+                    <div className="button-grid">
+                        <div className="button-row">
+                            <button
+                                size="md"
+                                className="form-button"
+                                onClick={() =>
+                                    setActiveTab("generalLiabilities")
+                                }
+                            >
+                                General Liabilities
+                            </button>
+                            <button
+                                size="md"
+                                className="form-button"
+                                onClick={() =>
+                                    setActiveTab("workersCompensation")
+                                }
+                            >
+                                Workers Comp
+                            </button>
+                        </div>
+                        <div className="button-row">
+                            <button
+                                size="md"
+                                className="form-button"
+                                onClick={() => setActiveTab("commercialAuto")}
+                            >
+                                Commercial Auto
+                            </button>
+                            <button
+                                size="md"
+                                className="form-button"
+                                onClick={() => setActiveTab("ExcessLiability")}
+                            >
+                                Excess Liability
+                            </button>
+                        </div>
+                        <div className="button-row">
+                            <button
+                                size="md"
+                                className="form-button"
+                                onClick={() => setActiveTab("toolsEquipment")}
+                            >
+                                Tools Equipment
+                            </button>
 
+                            <button
+                                size="md"
+                                className="form-button"
+                                onClick={() => setActiveTab("buildersRisk")}
+                            >
+                                Builders Risk
+                            </button>
+                        </div>
+                        <button
+                            size="md"
+                            className="form-button"
+                            onClick={() => setActiveTab("businessOwnersPolicy")}
+                        >
+                            Business Owners Policy
+                        </button>
+                    </div>
+                </Card.Body>
+            </Card>
 
+            {activeTab === "generalLiabilities" && (
+                <CardElement
+                    headerContent="General Liabilities"
+                    bodyContent={
+                        <ContextDataProvider>
+                            <GeneralLiabilitiesForm />
+                        </ContextDataProvider>
+                    }
+                />
+            )}
+            {activeTab === "workersCompensation" && (
+                <CardElement
+                    headerContent="Workers Compensation"
+                    bodyContent={
+                        <ContextDataProvider>
+                            <WorkersCompensationForm />
+                        </ContextDataProvider>
+                    }
+                />
+            )}
+            {activeTab === "commercialAuto" && (
+                <CardElement
+                    headerContent="Commercial Auto"
+                    bodyContent={
+                        <ContextDataProvider>
+                            <CommercialAutoForm />
+                        </ContextDataProvider>
+                    }
+                />
+            )}
+            {activeTab === "ExcessLiability" && (
+                <CardElement
+                    headerContent="Excess Liabilitiy"
+                    bodyContent={
+                        <ContextDataProvider>
+                            <ExcessLiabilitiesForm />
+                        </ContextDataProvider>
+                    }
+                />
+            )}
+            {activeTab === "toolsEquipment" && (
+                <CardElement
+                    headerContent="Tools Equipment"
+                    bodyContent={
+                        <ContextDataProvider>
+                            <ToolsEquipmentForm />
+                        </ContextDataProvider>
+                    }
+                />
+            )}
+            {activeTab === "buildersRisk" && (
+                <CardElement
+                    headerContent="Builders Risk"
+                    bodyContent={
+                        <ContextDataProvider>
+                            <BuilderRiskForm />
+                        </ContextDataProvider>
+                    }
+                />
+            )}
+            {activeTab === "businessOwnersPolicy" && (
+                <CardElement
+                    headerContent="Business Owners Policy"
+                    bodyContent={
+                        <ContextDataProvider>
+                            <BusinessOwnersPolicyForm />
+                        </ContextDataProvider>
+                    }
+                />
+            )}
 
             {/* <div className="row mb-4">
                 <Accordion>
@@ -224,9 +430,6 @@ function ProductAccordion() {
                 </Accordion.Item>
             </Accordion>
             </div> */}
-
-
-
         </>
     );
 }

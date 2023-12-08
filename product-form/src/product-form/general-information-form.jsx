@@ -17,8 +17,7 @@ import Select from "react-select";
 // import LeadZipCodeCities from "../data/lead-city-zipcode";
 
 import Form from "react-bootstrap/Form";
-import axios from "axios";
-import Button from "react-bootstrap/Button";
+
 import SaveAsIcon from "@mui/icons-material/SaveAs";
 console;
 import SaveIcon from "@mui/icons-material/Save";
@@ -28,14 +27,7 @@ import Swal from "sweetalert2";
 import axiosClient from "../api/axios.client";
 import Input from "../element/input-element";
 import NumericFormatInput from "../element/numeric-format";
-import InputMaskElement from "../element/input-mask-element";
-import InputTextArea from "../element/input-textarea";
-import SelectDropdownElement from "../element/select-dropdown-element";
-
-import { Error } from "@mui/icons-material";
-import { AnimatePresence, motion } from "framer-motion";
-import { findInputError } from "../utils/findInputError";
-
+import "../style/general-information.css";
 const GeneralInformationForm = () => {
     const { lead, zipcodes, cities, zipCity } = useContext(ContextData);
 
@@ -361,7 +353,7 @@ const GeneralInformationForm = () => {
                         rowContent={[
                             <Column
                                 key="firstNameColumn"
-                                classValue="col-6"
+                                classValue="col-md-6 col-sm-12"
                                 colContent={
                                     <>
                                         <Label labelContent="First Name *" />
@@ -380,7 +372,7 @@ const GeneralInformationForm = () => {
                             />,
                             <Column
                                 key="lastNameColumn"
-                                classValue="col-6"
+                                classValue="col-md-6 col-sm-12"
                                 colContent={
                                     <>
                                         <Label
@@ -680,15 +672,21 @@ const GeneralInformationForm = () => {
                                 classValue="col-6"
                                 colContent={
                                     <>
-                                        <Label labelContent="Sub Out/1099 *" />
-                                        <NumericFormatInput
+                                        <Label labelContent="Sub Out/1099" />
+                                        <NumericFormat
                                             label="sub out"
                                             name="subOut"
                                             id={"subOut"}
                                             value={subOut}
+                                            prefix={"$"}
+                                            decimalScale={2}
+                                            fixedDecimalScale={true}
+                                            allowNegative={false}
                                             inputValue={subOut}
+                                            placeholder="$0.00"
                                             disabled={!isEditing}
                                             onChangeInput={(e) => setSubOUt(e)}
+                                            className="form-control"
                                         />
                                     </>
                                 }
@@ -769,27 +767,26 @@ const GeneralInformationForm = () => {
                                 classValue="col-12 d-flex justify-content-center align-items-center"
                                 colContent={
                                     <>
-                                        <Button
-                                            variant="success"
+                                        <button
                                             size="lg"
                                             // onClick={onSubmit}
                                             type="submit"
                                             disabled={!isEditing}
-                                            className="mx-2"
+                                            className="mx-2 form-button"
                                         >
                                             <SaveIcon />
                                             <span className="ms-2">Save</span>
-                                        </Button>
-                                        <Button
-                                            variant="primary"
+                                        </button>
+
+                                        <button
                                             size="lg"
                                             disabled={isEditing}
                                             onClick={() => setIsEditing(true)}
-                                            className="mx-2"
+                                            className="mx-2 form-button-edit"
                                         >
                                             <SaveAsIcon />
                                             <span className="ms-2">Edit</span>
-                                        </Button>
+                                        </button>
                                     </>
                                 }
                             />,

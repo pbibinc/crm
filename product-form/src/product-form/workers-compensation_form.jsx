@@ -4,24 +4,20 @@ import Column from "../element/column-element";
 import Label from "../element/label-element";
 import Form from "react-bootstrap/Form";
 import GeneralInformationData from "../data/general-information-data";
-import Button from "react-bootstrap/Button";
+
 import Select from "react-select";
 import InputMask from "react-input-mask";
-
-import DateTime from "../element/date-time";
-import DateDay from "../element/date-day";
 import { NumericFormat } from "react-number-format";
 //import { set } from "lodash";
-import DateMonth from "../element/date-month";
+
 import DatePicker from "react-datepicker";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
 import SaveIcon from "@mui/icons-material/Save";
-import axios from "axios";
-import WorkersCompData from "../data/workers-comp-data";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Swal from "sweetalert2";
 import axiosClient from "../api/axios.client";
-
+import "../style/general-information.css";
 // import { Audio, ThreeDots } from "react-loader-spinner";
 
 const WorkersCompensationForm = () => {
@@ -99,6 +95,15 @@ const WorkersCompensationForm = () => {
 
     const [storedWorkersCompData, setStoredWorkersCompData] = useState(null);
 
+    const [callBackDate, setCallBackDate] = useState(() => {
+        const date = getWorkersCompensationData()?.callBackDate;
+        return date && !isNaN(Date.parse(date)) ? new Date(date) : new Date();
+    });
+
+    const [isCallBack, setIsCallBack] = useState(
+        () => getWorkersCompensationData()?.isCallBack || false
+    );
+
     //function for setting up the workers compensation data
     // const workersCompensationData = WorkersCompData();
 
@@ -126,6 +131,8 @@ const WorkersCompensationForm = () => {
             isUpdate: isUpdate,
             isEditing: isEditing,
             dateofClaim: dateofClaim,
+            callBackDate: callBackDate,
+            isCallBack: isCallBack,
         };
 
         sessionStorage.setItem(
@@ -151,6 +158,8 @@ const WorkersCompensationForm = () => {
         lossAmount,
         isUpdate,
         isEditing,
+        callBackDate,
+        isCallBack,
     ]);
 
     useEffect(() => {
@@ -228,12 +237,6 @@ const WorkersCompensationForm = () => {
         setEmployeeDescription(updatedClassCode);
     };
 
-    {
-        /* End of Employee number */
-    }
-    {
-        /* Setup Computing total employee payroll*/
-    }
     const ownersPayrollOptions = [
         { value: 1, label: "Included" },
         { value: 2, label: "Excluded" },
@@ -280,16 +283,11 @@ const WorkersCompensationForm = () => {
         }
     };
 
-    {
-        /* Ending Setup Computing total employee payroll*/
-    }
-
-    {
-        /* setup for haveloss functionalies*/
-    }
-
     const handleHaveLossChange = (event) => {
         setIsHaveLossChecked(event.target.checked);
+    };
+    const handleCallBackDateSwitch = (event) => {
+        setIsCallBack(event.target.checked);
     };
 
     const dateOptions = [
@@ -300,10 +298,6 @@ const WorkersCompensationForm = () => {
     const handleDateOptionsChange = (event) => {
         setHaveLossDateOption(event.value);
     };
-
-    {
-        /* end ofsetup for haveloss functionalies*/
-    }
 
     const limitDropdownOptions = [
         { value: 300000, label: "$300,000" },
@@ -343,8 +337,9 @@ const WorkersCompensationForm = () => {
         //workers comp object data for employee description per employee
         employee_description: employeeDescription,
         number_of_employee: employeeNumber,
+        callBackDate: callBackDate,
+        isCallBack: isCallBack,
     };
-    console.log(workersCompFormData);
 
     function submitWorkersCompensationForm() {
         const generalInformationId = leadInstance?.data.id || null;
@@ -378,14 +373,19 @@ const WorkersCompensationForm = () => {
                 }
             })
             .catch((error) => {
-                console.log("Error::", error);
-                console.log("err:", error.response.data.message);
-                Swal.fire({
-                    position: "top-end",
-                    icon: "warning",
-                    title: `Error:: kindly call your IT and Refer to them this error ${error.response.data.message}`,
-                    showConfirmButton: false,
-                });
+                if (error.response.status == 409) {
+                    console.log("Error::", error);
+                    Swal.fire({
+                        icon: "warning",
+                        title: `${error.response.data.error}`,
+                    });
+                } else {
+                    console.log("Error::", error);
+                    Swal.fire({
+                        icon: "warning",
+                        title: `Error:: kindly call your IT and Refer to them this error ${error.response.data.error}`,
+                    });
+                }
             });
     }
 
@@ -512,31 +512,7 @@ const WorkersCompensationForm = () => {
                     />,
                 ]}
             />
-            {/* <Row
-                classValue="mb-3"
-                rowContent={
-                    <Column
-                        key="addEmployeeDescription"
-                        classValue="col-12"
-                        colContent={
-                            <>
-                                <Label labelContent="Specific Description of Employees" />
-                                <Form.Control
-                                    as="textarea"
-                                    rows={6}
-                                    value={specificDescriptionOfEmployee}
-                                    onChange={(e) =>
-                                        setSpecificDescriptionOfEmployee(
-                                            e.target.value
-                                        )
-                                    }
-                                    disabled={!isEditing}
-                                />
-                            </>
-                        }
-                    />
-                }
-            /> */}
+
             <Row
                 classValue="mb-3"
                 rowContent={[
@@ -837,107 +813,6 @@ const WorkersCompensationForm = () => {
                     />,
                 ]}
             />
-            <Row
-                classValue="mb-4"
-                rowContent={[
-                    <Column
-                        key="callBackDateColumn"
-                        classValue="col-6"
-                        colContent={
-                            <>
-                                <Row
-                                    classValue="mb-1"
-                                    rowContent={
-                                        <Label labelContent="Call Back Date" />
-                                    }
-                                />
-                                <Row
-                                    rowContent={
-                                        <DatePicker
-                                            showMonthDropdown
-                                            showYearDropdown
-                                            className="custom-datepicker-input"
-                                            disabled={!isEditing}
-                                        />
-                                    }
-                                />
-                            </>
-                        }
-                    />,
-                    // <Column
-                    //     key="crossSellColumn"
-                    //     classValue="col-6"
-                    //     colContent={
-                    //         <>
-                    //             <Label labelContent="Cross Sell" />
-                    //             <Select
-                    //                 className="basic=single"
-                    //                 classNamePrefix="select"
-                    //                 id="generalLiabilitiesCrossSellDropdown"
-                    //                 name="generalLiabilitiesCrossSellDropdown"
-                    //                 isDisabled={!isEditing}
-                    //             />
-                    //         </>
-                    //     }
-                    // />,
-                ]}
-            />
-            <Row
-                classValue="mb-3"
-                rowContent={
-                    <>
-                        <Label labelContent="Remarks" />
-                        <Form.Control
-                            as={"textarea"}
-                            rows={6}
-                            value={remarks}
-                            onChange={(e) => setRemarks(e.target.value)}
-                            disabled={!isEditing}
-                        />
-                    </>
-                }
-            />
-            {/* <Row
-                classValue="mb-3"
-                rowContent={[
-                    <Column
-                        key="workersCompAddButtonColumn"
-                        classValue="col-6"
-                        colContent={
-                            <>
-                                <div className="d-grid gap-2">
-                                    <Button
-                                        variant="success"
-                                        size="lg"
-                                        onClick={submitWorkersCompensationForm}
-                                        disabled={!isEditing}
-                                    >
-                                        <SaveIcon />
-                                    </Button>
-                                </div>
-                            </>
-                        }
-                    />,
-                    <Column
-                        key="workersCompEditButtonColumn"
-                        classValue="col-6"
-                        colContent={
-                            <>
-                                <div className="d-grid gap=2">
-                                    <Button
-                                        variant="primary"
-                                        size="lg"
-                                        disabled={isEditing}
-                                        onClick={() => SetIsEditing(true)}
-                                    >
-                                        <SaveAsIcon />
-                                    </Button>
-                                </div>
-                            </>
-                        }
-                    />,
-                ]}
-            /> */}
 
             <Row
                 classValue="mb-3"
@@ -947,26 +822,24 @@ const WorkersCompensationForm = () => {
                         classValue="col-12 d-flex justify-content-center align-items-center"
                         colContent={
                             <>
-                                <Button
-                                    variant="success"
+                                <button
                                     size="lg"
                                     onClick={submitWorkersCompensationForm}
                                     disabled={!isEditing}
-                                    className="mx-2"
+                                    className="mx-2 form-button"
                                 >
                                     <SaveIcon />
                                     <span className="ms-2">Save</span>
-                                </Button>
-                                <Button
-                                    variant="primary"
+                                </button>
+                                <button
                                     size="lg"
                                     disabled={isEditing}
                                     onClick={() => SetIsEditing(true)}
-                                    className="mx-2"
+                                    className="mx-2 form-button-edit"
                                 >
                                     <SaveAsIcon />
                                     <span className="ms-2">Edit</span>
-                                </Button>
+                                </button>
                             </>
                         }
                     />,
