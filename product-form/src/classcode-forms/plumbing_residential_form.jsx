@@ -18,6 +18,10 @@ const PlumbingResidentialForm = ({ setClassCodeFormData, disabled }) => {
     const questionareBoilingWork =
         "Do you perform work on fire suppression systems, boiling work or swimming pools?";
 
+    const [useHeatingDevice, setUseHeatingDevice] = useState(false);
+    const questionareUseHeatingDevices =
+        "Are you using any heating devices when performing your work?";
+
     const [questionareArray, setQuestionareArray] = useState([]);
     const [valueArray, setValueArray] = useState([]);
 
@@ -29,26 +33,36 @@ const PlumbingResidentialForm = ({ setClassCodeFormData, disabled }) => {
         setCheckedFireSuspensionBoilingWork(event.target.checked);
     };
 
+    const handleUseHeatingDeviceSwitch = (event) => {
+        setUseHeatingDevice(event.target.checked);
+    };
+
     useEffect(() => {
-        setQuestionareArray([questionareLpgSystem, questionareBoilingWork]);
+        setQuestionareArray([
+            questionareLpgSystem,
+            questionareBoilingWork,
+            questionareUseHeatingDevices,
+        ]);
     }, [setQuestionareArray]);
 
     useEffect(() => {
         setValueArray([
             checkedInstallLPGSystem,
             checkedFireSuspensionBoilingWork,
+            useHeatingDevice,
         ]);
     }, [
         setValueArray,
         checkedInstallLPGSystem,
         checkedFireSuspensionBoilingWork,
+        useHeatingDevice,
     ]);
 
     useEffect(() => {
         setClassCodeFormData({
             value: valueArray,
             description: questionareArray,
-            classcodeId: [191, 191],
+            classcodeId: [191, 191, 191],
         });
     }, [valueArray, questionareArray, setClassCodeFormData]);
 
@@ -78,7 +92,6 @@ const PlumbingResidentialForm = ({ setClassCodeFormData, disabled }) => {
                     />,
                 ]}
             />
-            ,
             <Row
                 classValue="mb-3"
                 rowContent={[
@@ -97,6 +110,32 @@ const PlumbingResidentialForm = ({ setClassCodeFormData, disabled }) => {
                                 type="switch"
                                 id="custom-switch"
                                 onChange={handleFireSuspensionBoilingWorkSwitch}
+                                disabled={disabled}
+                            />
+                        }
+                    />,
+                ]}
+            />
+            <Row
+                classValue="mb-3"
+                rowContent={[
+                    <Column
+                        key="useHeatingDeviceLableColumn"
+                        classValue="col-8"
+                        colContent={
+                            <Label
+                                labelContent={questionareUseHeatingDevices}
+                            />
+                        }
+                    />,
+                    <Column
+                        key="useHeatingDeviceCheckboxColumn"
+                        classValue="col-4"
+                        colContent={
+                            <Form.Check
+                                type="switch"
+                                id="custom-switch"
+                                onChange={handleUseHeatingDeviceSwitch}
                                 disabled={disabled}
                             />
                         }
