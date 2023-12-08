@@ -10,7 +10,9 @@ use App\Models\RecreationalFacilities;
 use App\Models\RemarksModel;
 use App\Models\Site;
 use App\Models\UnitedState;
+use App\Models\User;
 use App\Models\UserProfile;
+use App\Notifications\AppointedNotification;
 use Barryvdh\DomPDF\PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -19,7 +21,8 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
-
+use App\Notifications\CustomNotification;
+use Illuminate\Support\Facades\Notification;
 
 class AppTakerLeadsController extends Controller
 {
@@ -45,8 +48,6 @@ class AppTakerLeadsController extends Controller
         $dispositions = Disposition::orderBy('name', 'asc')->get();
         $recreationalFacilities = RecreationalFacilities::all();
         $dataCount = Lead::getLeadsAppointed($user->id);
-
-    // $cityAddress = Lead::select('city')->distinct()->get();
         if($request->ajax()){
             $query = Lead::select('id', 'company_name', 'tel_num', 'class_code', 'state_abbr')
             ->where('status', 2)
@@ -61,9 +62,7 @@ class AppTakerLeadsController extends Controller
             ->rawColumns(['company_name_action'])
             ->make(true);
         }
-
         return view('leads.apptaker_leads.index', compact('timezones', 'sites', 'states', 'sortedClassCodeLeads', 'classCodeLeads', 'dispositions', 'recreationalFacilities', 'dataCount'));
-
     }
     public function multiStateWork(Request $request)
     {
@@ -100,11 +99,15 @@ class AppTakerLeadsController extends Controller
 
     public function listLeadId(Request $request){
         $leadId = $request->input('leadId');
+        $user = Auth::user();
+        $cachedUser = Cache::get('user_id');
         $cachedLeadId = Cache::get('lead_id');
         if($leadId == $cachedLeadId){
             Cache::get('lead_id');
+            Cache::get('user_id');
         }else{
             Cache::put('lead_id', $leadId, 60 * 60);
+            Cache::put('user_id', $user->id, 60 * 360);
         }
     }
 
@@ -129,6 +132,16 @@ class AppTakerLeadsController extends Controller
             return response()->json(['error' => 'An error occurred'], 500);
         }
 
+    }
+
+    public function reloadData(Request $request)
+    {
+
+        $data = $request->all();
+        $user = User::find($data['userData']);
+
+        Notification::send($user, new AppointedNotification());
+        return response()->json(['message' => 'Reload request received'], 200);
     }
 
 }
