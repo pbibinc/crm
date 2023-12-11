@@ -26,6 +26,7 @@ import { NumericFormat } from "react-number-format";
 import Swal from "sweetalert2";
 import axiosClient from "../api/axios.client";
 import "../style/general-information.css";
+import Button from "react-bootstrap/Button";
 // import { FidgetSpinner } from "react-loader-spinner";
 
 // import Col from "react-bootstrap/esm/Col";
@@ -730,7 +731,6 @@ const GeneralLiabilitiesForm = () => {
                 setIsEditing(false);
                 SetIsUpdate(true);
                 setIsLoading(true);
-                la;
                 if (method == "post") {
                     setIsLoading(false);
                     Swal.fire({
