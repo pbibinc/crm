@@ -57,7 +57,7 @@ class GeneralInformationDataController extends BaseController
             $generalInformation->all_trade_work = $data['all_trade_work'];
             $generalInformation->leads_id = $data['lead_id'];
             $generalInformation->owners_payroll = $data['owners_payroll'];
-            $generalInformation->sub_out = $data['sub_out'] ? $data['sub_out'] : '';
+            $generalInformation->sub_out = $data['sub_out'] ? $data['sub_out'] : 0;
             $generalInformation->material_cost = $data['material_cost'];
             $generalInformationSaving =  $generalInformation->save();
             if($generalInformationSaving){
