@@ -194,7 +194,67 @@ const Footer = () => {
                 <Modal.Header closeButton>
                     <Modal.Title>Schedule A Callback</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>{/* Form elements */}</Modal.Body>
+                <Modal.Body>
+                    {" "}
+                    <Row
+                        classValue="mb-4"
+                        rowContent={[
+                            <Column
+                                key="callBackDateColumn"
+                                classValue="col-12"
+                                colContent={
+                                    <>
+                                        <Row
+                                            classValue="mb-1"
+                                            rowContent={
+                                                <Label labelContent="Call Back Date" />
+                                            }
+                                        />
+                                        <Row
+                                            rowContent={
+                                                <DatePicker
+                                                    showMonthDropdown
+                                                    showYearDropdown
+                                                    className="custom-datepicker-input"
+                                                    selected={callBackDate}
+                                                    onChange={(date) =>
+                                                        setCallBackDate(date)
+                                                    }
+                                                    showTimeSelect // Enable time selection
+                                                    timeFormat="HH:mm" // Set the time format
+                                                    timeIntervals={15} // Specify time intervals (optional)
+                                                    dateFormat="MM:dd:yyyy h:mm aa" // Date and time format
+                                                />
+                                            }
+                                        />
+                                    </>
+                                }
+                            />,
+                        ]}
+                    />
+                    <Row
+                        classValue="mb-4"
+                        rowContent={[
+                            <Column
+                                key="callBackDateColumn"
+                                classValue="col-12"
+                                colContent={
+                                    <>
+                                        <Label labelContent="Remarks" />
+                                        <Form.Control
+                                            as={"textarea"}
+                                            rows={6}
+                                            value={remarks}
+                                            onChange={(e) =>
+                                                setRemarks(e.target.value)
+                                            }
+                                        />
+                                    </>
+                                }
+                            />,
+                        ]}
+                    />
+                </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleCloseModal}>
                         Close
