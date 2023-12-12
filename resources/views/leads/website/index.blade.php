@@ -19,8 +19,8 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Name</th>
-                                            <th>Created_at</th>
-                                            <th>Updated_at</th>
+                                            {{-- <th>Created_at</th>
+                                            <th>Updated_at</th> --}}
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -83,14 +83,14 @@
                         data: 'name',
                         name: 'name'
                     },
-                    {
-                        data: 'created_at_formatted',
-                        name: 'created_at_formatted'
-                    },
-                    {
-                        data: 'updated_at_formatted',
-                        name: 'updated_at_formatted'
-                    },
+                    // {
+                    //     data: 'created_at_formatted',
+                    //     name: 'created_at_formatted'
+                    // },
+                    // {
+                    //     data: 'updated_at_formatted',
+                    //     name: 'updated_at_formatted'
+                    // },
                     {
                         data: 'action_button',
                         name: 'action_button'
