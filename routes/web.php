@@ -35,6 +35,7 @@ use App\Http\Controllers\EmailController;
 use App\Http\Controllers\EmbeddedSignatureController;
 use App\Http\Controllers\NotesController;
 use App\Http\Controllers\QuotationController;
+use App\Http\Controllers\WebsiteController;
 use Illuminate\Support\Facades\App;
 
 Route::get('/', function () {
@@ -77,6 +78,8 @@ Route::middleware(['auth'])->group(function (){
 
       //route for leads module
       Route::get('leads', [LeadController::class, 'index'])->name('leads');
+      Route::get('leads/{leads}/edit', [LeadController::class, 'edit'])->name('leads.edit');
+      Route::put('leads/{leads}/update', [LeadController::class, 'update'])->name('leads.update');
       Route::get('leads-export', [LeadController::class, 'export'])->name('leads.export');
       Route::post('leads-import', [LeadController::class, 'import'])->name('leads.import');
       Route::post('add-leads', [LeadController::class, 'store'])->name('leads.store');
@@ -88,6 +91,9 @@ Route::middleware(['auth'])->group(function (){
       Route::get('leads/archive', [LeadController::class, 'archive'])->name('leads.archive');
       Route::post('leads/{leads}/restore', [LeadController::class, 'restore'])->name('leads.restore');
       Route::post('leads/add/dnc', [LeadController::class, 'addDnc'])->name('leads.add.dnc');
+
+      //route for website creation and function
+      Route::resource('website', WebsiteController::class);
 
         //route for assigning leads
         Route::get('/', [AssignLeadController::class, 'index'])->name('assign');
