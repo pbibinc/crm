@@ -69,7 +69,6 @@ class CallBackController extends Controller
         try{
             DB::beginTransaction();
             $data = $request->all();
-
             if($data['status'] == 1){
                 $lead = Lead::find($data['leadId']);
                 $lead->disposition_id = $data['type'];
@@ -77,7 +76,6 @@ class CallBackController extends Controller
             }
             if(Callback::where('lead_id', $data['leadId'])->where('status', 2)->exists()){
                 $callback = Callback::where('lead_id', $data['leadId'])->where('status', 2)->first();
-
             }else{
                 $callback = new Callback();
             }
@@ -94,7 +92,6 @@ class CallBackController extends Controller
         }catch(\Exception $e){
             DB::rollback();
             Log::error($e->getMessage());
-
             // Handle the exception and return an appropriate error response
             return response()->json(['error' => 'An error occurred'], 500);
         }
