@@ -134,14 +134,17 @@
                     </div>
                     <div class="card">
                         <div class="card-body">
-                            <table class="table table-bordered dt-responsive nowrap" id="dataTable"
-                                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            <table class="table table-bordered dt-responsive nowrap"
+                                style="border-collapse: collapse; border-spacing: 0; width: 100%;" id="dataTable">
                                 <thead>
-                                    <th>Company Name</th>
-                                    <th>Tel Number</th>
-                                    <th>State abbr</th>
-                                    <th>Website Originated</th>
-                                    <th>Action</th>
+                                    <tr>
+                                        <th>Company Name</th>
+                                        <th>Tel Number</th>
+                                        <th>State abbr</th>
+                                        <th>Website Originated</th>
+                                        <th>Action</th>
+                                    </tr>
+
                                     {{-- <th>Class Code</th>
                                     <th>Website Originated</th> --}}
                                     {{-- <th>Status</th> --}}
@@ -326,7 +329,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <input type="submit" name="action_button" id="action_button" value="Add"
-                        class="btn btn-primary">
+                        class="btn btn-primary ladda-button" data-style="expand-right">
                 </div>
                 </form>
             </div>
@@ -341,9 +344,9 @@
             $('#dataTable').DataTable({
                 processing: true,
                 serverSide: true,
-                searching: true,
-                scrollY: 500,
-                scrollX: true,
+
+                // scrollY: 500,
+                // scrollX: true,
                 ajax: "{{ route('leads') }}",
                 columns: [{
                         data: 'company_name',
@@ -502,6 +505,8 @@
             $('#leadsForm').parsley();
             $('#leadsForm').on('submit', function(e) {
                 e.preventDefault();
+                var laddaButton = Ladda.create($('#action_button').get(0));
+                laddaButton.start();
                 if ($('#action').val() == 'Edit') {
                     $.ajax({
                         type: 'PUT',
@@ -511,6 +516,7 @@
                         url: "leads/" + $('#hidden_id').val() + "/update",
                         data: $(this).serialize(),
                         success: function(response) {
+                            laddaButton.stop();
                             Swal.fire({
                                 title: 'Success',
                                 text: 'Success the lead has been updated',
@@ -520,10 +526,12 @@
                             });
                         },
                         error: function(xhr) {
+
                             var errorMessage = 'An Error Occured';
                             if (xhr.responseJSON && xhr.responseJSON.error) {
                                 errorMessage = xhr.responseJSON.error;
                             }
+                            laddaButton.stop();
                             Swal.fire({
                                 title: 'Error',
                                 text: errorMessage,
@@ -541,6 +549,7 @@
                             url: "{{ route('leads.store') }}",
                             data: $(this).serialize(),
                             success: function(response) {
+                                laddaButton.stop();
                                 Swal.fire({
                                     title: 'Success',
                                     text: response.success,
@@ -554,6 +563,7 @@
                                 if (xhr.responseJSON && xhr.responseJSON.error) {
                                     errorMessage = xhr.responseJSON.error;
                                 }
+                                laddaButton.stop();
                                 Swal.fire({
                                     title: 'Error',
                                     text: errorMessage,
@@ -618,21 +628,8 @@
                                 $('#stateAbbreviation').val(response.lead.state_abbr);
                                 // $('#websiteOriginated').val(response.lead.website_originated);
                                 // Your initial data (e.g., coming from an AJAX response)
-                                var initialData = response.lead
-                                    .website_originated; // This would be something like "YELP."
-
-                                // Loop through each option in the dropdown
-                                $('#websiteOriginated option').each(function() {
-                                    // Get the text of the option (e.g., "YELP.com")
-                                    var optionText = $(this).text();
-
-                                    // Check if the option text starts with the initial data
-                                    if (optionText.startsWith(initialData)) {
-                                        // If it matches, set this option as selected
-                                        $(this).prop('selected', true);
-                                        return false; // Exit the loop
-                                    }
-                                });
+                                $('#websiteOriginated').val(response.website && response.website
+                                    .name ? response.website.name : '');
                                 $('#hidden_id').val(btnEditId);
                                 $('#addLeadsModal').modal('show');
                                 $('#action').val('Edit');

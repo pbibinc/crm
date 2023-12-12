@@ -215,7 +215,7 @@ class LeadController extends Controller
         $leadGenerator = $user->userProfile;
        if($request->ajax()){
            $lead->company_name = $request->companyName;
-           $lead->tel_num = $request->telNum;
+           $lead->tel_num = $request->addTelNum;
            $lead->state_abbr = $request->stateAbbreviation;
            $lead->website_originated = $request->websiteOriginated;
            $lead->class_code = $request->classCodeLead;
@@ -237,7 +237,9 @@ class LeadController extends Controller
     public function edit($id)
     {
         $lead = Lead::find($id);
-        return response()->json(['lead' => $lead]);
+
+        $website = Website::where('name', 'LIKE', "%{$lead->website_originated}%")->first();
+        return response()->json(['lead' => $lead, 'website' => $website]);
     }
 
     public function update(Request $request, $id)

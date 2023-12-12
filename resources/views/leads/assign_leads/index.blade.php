@@ -44,10 +44,8 @@
                                                     class="form-control select2">
                                                     <option value="">Select a Website</option>
                                                     <option value="">ALL</option>
-                                                    @foreach ($sites as $site)
-                                                        <option
-                                                            value="{{ substr($site->name, 0, strlen($site->name) - 4) }}">
-                                                            {{ substr($site->name, 0, strlen($site->name) - 4) }}
+                                                    @foreach ($websitesOriginated as $site)
+                                                        <option value="{{ $site }}">{{ $site }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -426,8 +424,8 @@
                 processing: true,
                 serverSide: true,
                 searching: true,
-                scrollY: 500,
-                scrollX: true,
+                // scrollY: 500,
+                // scrollX: true,
                 ajax: {
                     url: "{{ route('assign') }}",
                     data: function(d) {

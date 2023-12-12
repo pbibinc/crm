@@ -12,6 +12,7 @@ use App\Models\LeadsAssign;
 use App\Models\Site;
 use App\Models\UnitedState;
 use App\Models\UserProfile;
+use App\Models\Website;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -36,6 +37,7 @@ class AssignLeadController extends Controller
         $accounts = UserProfile::all();
         $sites = Site::all();
         $classCodeLeads = ClassCodeLead::all();
+        $websitesOriginated = Website::distinct()->orderBy('name')->pluck('name');
         $timezones = [
             'Eastern' => ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV'],
             'Central' => ['AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI'],
@@ -70,9 +72,10 @@ class AssignLeadController extends Controller
 
         if($request->ajax()){
                 $query = Lead::select('id', 'company_name', 'state_abbr', 'class_code', 'website_originated', 'created_at')->where('status', 1)->orderBy('id');
-                if ($request->filled('website_originated')) {
-                    $query->where('website_originated', $request->website_originated);
-                }
+                // if ($request->filled('website_originated')) {
+                //     $query->where('website_originated', $request->website_originated);
+                // }
+                // dd($request->website_originated);
                 if ($request->filled('timezone')) {
                     $timezoneStates = $timezones[$request->timezone];
                     $query->whereIn('state_abbr', $timezoneStates);
@@ -88,9 +91,12 @@ class AssignLeadController extends Controller
                     $query->where('prime_lead', $request->get('leadType'));
                 }
 
-                if($request->filled('websites')){
-                    $query->where('website_originated', $request->websites);
+                if($request->filled('website_originated')){
+                    $websiteParts = explode('.', $request->website_originated);
+                    $websiteName = $websiteParts[0]; // Get the first part of the domain
+                    $query->where('website_originated', 'LIKE', "%{$websiteName}%");
                 }
+                // dd($query);
 
                // Filter by states
                if ($request->filled('states')) {
@@ -104,7 +110,7 @@ class AssignLeadController extends Controller
 
             return DataTables::of($query)->addIndexColumn()
                 ->addColumn('created_at_formatted', function ($lead) {
-                    return Carbon::parse($lead->created_at)->format('Y-m-d H:i:s');
+                    return Carbon::parse($lead->created_at)->format('M d,Y');
                 })
                 ->addColumn('updated_at_formatted', function ($lead) {
                     return Carbon::parse($lead->updated_at)->format('Y-m-d H:i:s');
@@ -115,7 +121,7 @@ class AssignLeadController extends Controller
                 ->rawColumns(['checkbox'])
                 ->make(true);
         }
-        return view('leads.assign_leads.index', compact('userProfiles', 'sites','timezones', 'accounts', 'classCodeLeads', 'leadsCountByState', 'states'));
+        return view('leads.assign_leads.index', compact('userProfiles', 'sites','timezones', 'accounts', 'classCodeLeads', 'leadsCountByState', 'states', 'websitesOriginated'));
     }
 
     public function getDataTableLeads(Request $request)
