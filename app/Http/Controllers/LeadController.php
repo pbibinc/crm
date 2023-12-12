@@ -10,7 +10,9 @@ use App\Imports\LeadsImport;
 use App\Models\Classcode;
 use App\Models\ClassCodeLead;
 use App\Models\Lead;
+use App\Models\UnitedState;
 use App\Models\User;
+use App\Models\Website;
 use Carbon\Carbon;
 use EllGreen\LaravelLoadFile\Laravel\Facades\LoadFile;
 use Illuminate\Http\Request;
@@ -32,29 +34,19 @@ class LeadController extends Controller
         $this->authorize('viewImport', Lead::find(1));
         $newLeadsCount = Lead::where('status', 1)->count();
         $assignLeadsCount = Lead::where('status', 2)->count();
-        // $totalLeads = $newLeadsCount + $assignLeadsCount;
-        // $unassignedPercentage = round(($newLeadsCount / $totalLeads) * 100);
-        // if ($unassignedPercentage >= 50) {
-        //    $arrowClass = 'ri-arrow-right-up-line';
-        //    $message = "of leads haven't been assigned";
-        //    $textClass = 'text-success';
-        // } else {
-        //    $message = "Leads that haven't been assigned";
-        //    $arrowClass ='ri-arrow-right-down-line';
-        //    $textClass = 'text-danger';
-        //  }
-        //  $assignData = [
-        //     'unassignedPercentage' => $unassignedPercentage,
-        //     'arrowClass' => $arrowClass,
-        //     'message' => $message,
-        //     'textClass' => $textClass
-        // ];
+        $stateAbbr = UnitedState::distinct()->pluck('state_abbr');
         $classCodeLeads = ClassCodeLead::all();
+        $websiteOriginated = Website::distinct()->orderBy('name')->pluck('name');;
         if ($request->ajax()) {
-        $query = Lead::select('company_name', 'tel_num', 'state_abbr')->orderBy('id');
-        return DataTables::of($query)->toJson();
+        $query = Lead::select('id', 'company_name', 'website_originated','tel_num', 'state_abbr')->orderBy('id');
+        return DataTables::of($query)
+        ->addColumn('action_button', function ($query){
+            return '<button class="btn btn-outline-primary waves-effect waves-light btn-sm btnEdit" data-id="'.$query->id.'" name="edit"  type="button " ><i class="mdi mdi-pencil-outline"></i></button>';
+        })
+        ->rawColumns(['action_button'])
+        ->toJson();
         }
-        return view('leads.generate_leads.index', compact('newLeadsCount', 'assignLeadsCount', 'classCodeLeads'));
+        return view('leads.generate_leads.index', compact('newLeadsCount', 'assignLeadsCount', 'classCodeLeads', 'stateAbbr', 'websiteOriginated'));
     }
     /**
      * @return \Illuminate\Support\Collection
@@ -195,6 +187,7 @@ class LeadController extends Controller
                 return DataTables::of($data)
                        ->addIndexColumn()
                        ->addColumn('checkbox', '<input type="checkbox" name="leads_checkbox[]"  class="leads_checkbox" value="{{$id}}" />')
+
                 // ->addColumn('company_name_action', function ($data){
                 //     return '<a href="#" data-toggle="modal" id="companyLink" name="companyLinkButtonData" data-target="#leadsDataModal" data-id="'.$data->id.'" data-name="'.$data->company_name.'">'.$data->company_name.'</a>';
                 //     })
@@ -240,6 +233,31 @@ class LeadController extends Controller
         Cache::forget('leads_funnel');
         Cache::forget('apptaker_leads');
         return response()->json(['success' => 'Leads Succesfully Created']);
+    }
+    public function edit($id)
+    {
+        $lead = Lead::find($id);
+        return response()->json(['lead' => $lead]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        try{
+            DB::beginTransaction();
+            $data = $request->all();
+            $lead = Lead::find($id);
+            $lead->company_name = $data['companyName'];
+            $lead->tel_num = $data['addTelNum'];
+            $lead->state_abbr = $data['stateAbbreviation'];
+            $lead->website_originated = $data['websiteOriginated'];
+            $lead->class_code = $data['classCodeLead'];
+            $lead->prime_lead = $data['leadTypeDropdown'];
+            $lead->save();
+            DB::commit();
+        }catch(\Exception $e){
+            return response()->json(['error' => 'An error occurred'], 500);
+        }
+
     }
 
 

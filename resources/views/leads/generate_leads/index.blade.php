@@ -140,6 +140,8 @@
                                     <th>Company Name</th>
                                     <th>Tel Number</th>
                                     <th>State abbr</th>
+                                    <th>Website Originated</th>
+                                    <th>Action</th>
                                     {{-- <th>Class Code</th>
                                     <th>Website Originated</th> --}}
                                     {{-- <th>Status</th> --}}
@@ -271,7 +273,7 @@
 
                         <div class="mb-3">
                             <label for="name" class="form-label">Tel Num</label>
-                            <input type="text" class="form-control" id="telNum" name="telNum"
+                            <input type="text" class="form-control" id="addTelNum" name="addTelNum"
                                 data-parsley-length="[10,10]" data-parsley-pattern="^[0-9]*$" placeholder="Min 10 chars."
                                 autocomplete="off" required>
                         </div>
@@ -299,14 +301,22 @@
 
                         <div class="mb-3">
                             <label for="name" class="form-label">State Abbreviation</label>
-                            <input type="text" class="form-control" id="stateAbbreviation" name="stateAbbreviation"
-                                data-parsley-length="[2, 2]" autocomplete="off" required>
+                            <select class="form-control" id="stateAbbreviation" name="stateAbbreviation">
+                                <option value="">Select State</option>
+                                @foreach ($stateAbbr as $abbr)
+                                    <option value="{{ $abbr }}">{{ $abbr }}</option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <div class="mb-3">
                             <label for="name" class="form-label">Website Originated</label>
-                            <input type="text" class="form-control" id="websiteOriginated" name="websiteOriginated"
-                                autocomplete="off" required>
+                            <select name="websiteOriginated" id="websiteOriginated" class="form-control">
+                                <option value="">Select Website</option>
+                                @foreach ($websiteOriginated as $website)
+                                    <option value="{{ $website }}">{{ $website }}</option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <input type="hidden" name="action" id="action" value="add">
@@ -346,6 +356,14 @@
                     {
                         data: 'state_abbr',
                         name: 'state_abbr'
+                    },
+                    {
+                        data: 'website_originated',
+                        name: 'website_originated'
+                    },
+                    {
+                        data: 'action_button',
+                        name: 'action_button',
                     }
 
                 ]
@@ -484,18 +502,18 @@
             $('#leadsForm').parsley();
             $('#leadsForm').on('submit', function(e) {
                 e.preventDefault();
-                if ($('#leadsForm').parsley().isValid()) {
+                if ($('#action').val() == 'Edit') {
                     $.ajax({
-                        type: 'POST',
+                        type: 'PUT',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
-                        url: "{{ route('leads.store') }}",
+                        url: "leads/" + $('#hidden_id').val() + "/update",
                         data: $(this).serialize(),
                         success: function(response) {
                             Swal.fire({
                                 title: 'Success',
-                                text: response.success,
+                                text: 'Success the lead has been updated',
                                 icon: 'success'
                             }).then(function() {
                                 location.reload();
@@ -514,8 +532,40 @@
                         }
                     });
                 } else {
-                    console.log('Form is not valid');
+                    if ($('#leadsForm').parsley().isValid()) {
+                        $.ajax({
+                            type: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            url: "{{ route('leads.store') }}",
+                            data: $(this).serialize(),
+                            success: function(response) {
+                                Swal.fire({
+                                    title: 'Success',
+                                    text: response.success,
+                                    icon: 'success'
+                                }).then(function() {
+                                    location.reload();
+                                });
+                            },
+                            error: function(xhr) {
+                                var errorMessage = 'An Error Occured';
+                                if (xhr.responseJSON && xhr.responseJSON.error) {
+                                    errorMessage = xhr.responseJSON.error;
+                                }
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: errorMessage,
+                                    icon: 'error'
+                                });
+                            }
+                        });
+                    } else {
+                        console.log('Form is not valid');
+                    }
                 }
+
 
             });
 
@@ -535,45 +585,76 @@
                 $('.leads_checkbox').prop('checked', $(this).is(':checked'));
                 e.stopPropagation();
             });
+            $(document).on('click', '.btnEdit', function(e) {
+                e.preventDefault();
+                var btnEditId = $(this).data('id');
+                $.ajax({
+                    type: 'GET',
+                    url: "leads/" + btnEditId + "/edit",
+                    success: function(response) {
+                        if (response.status == 404) {
+                            Swal.fire({
+                                title: 'Error',
+                                text: response.message,
+                                icon: 'error'
+                            });
+                        } else {
+                            if (response.lead) {
+                                $('#addLeadsModalLabel').val('Edit Lead');
+                                $('#addLeadsModalLabel').text('Edit Lead');
+                                $('#action_button').val('Update');
+                                $('#companyName').val(response.lead.company_name);
+                                $('#addTelNum').val(response.lead.tel_num);
+                                var classCode = response.lead.class_code.toLowerCase().trim();
+                                $('#classCodeLeadDropdown option').each(function() {
+                                    var optionValue = $(this).text().toLowerCase()
+                                        .trim();
+                                    if (optionValue === classCode) {
+                                        $(this).prop('selected', true);
+                                        return false; // break the loop
+                                    }
+                                });
+                                $('#leadTypeDropdown').val(response.lead.prime_lead);
+                                $('#stateAbbreviation').val(response.lead.state_abbr);
+                                // $('#websiteOriginated').val(response.lead.website_originated);
+                                // Your initial data (e.g., coming from an AJAX response)
+                                var initialData = response.lead
+                                    .website_originated; // This would be something like "YELP."
+
+                                // Loop through each option in the dropdown
+                                $('#websiteOriginated option').each(function() {
+                                    // Get the text of the option (e.g., "YELP.com")
+                                    var optionText = $(this).text();
+
+                                    // Check if the option text starts with the initial data
+                                    if (optionText.startsWith(initialData)) {
+                                        // If it matches, set this option as selected
+                                        $(this).prop('selected', true);
+                                        return false; // Exit the loop
+                                    }
+                                });
+                                $('#hidden_id').val(btnEditId);
+                                $('#addLeadsModal').modal('show');
+                                $('#action').val('Edit');
+                            }
+                        }
+                    },
+                    error: function(xhr) {
+                        var errorMessage = 'An Error Occured';
+                        if (xhr.responseJSON && xhr.responseJSON.error) {
+                            errorMessage = xhr.responseJSON.error;
+                        }
+                        Swal.fire({
+                            title: 'Error',
+                            text: errorMessage,
+                            icon: 'error'
+                        });
+                    }
+                });
+
+            });
+
+
         });
-
-        // $(document).ready(function() {
-        //     $("#import-form").on("submit", function(e) {
-        //         e.preventDefault();
-
-        //         // Get form data
-        //         var formData = new FormData(this);
-
-        //         $.ajax({
-        //             url: "{{ route('leads.import') }}",
-        //             type: "POST",
-        //             data: formData,
-        //             contentType: false,
-        //             processData: false,
-        //             beforeSend: function() {
-        //                 // Show preloader
-        //                 $("#preloader").removeClass("d-none");
-
-        //                 // Disable the button to prevent multiple submissions
-        //                 $("#import").prop("disabled", true);
-        //             },
-        //             success: function(response) {
-        //                 // Handle success
-        //                 console.log(response);
-        //             },
-        //             error: function(xhr, status, error) {
-        //                 // Handle error
-        //                 console.error(xhr, status, error);
-        //             },
-        //             complete: function() {
-        //                 // Hide preloader
-        //                 $("#preloader").addClass("d-none");
-
-        //                 // Enable the button
-        //                 $("#import").prop("disabled", false);
-        //             }
-        //         });
-        //     });
-        // });
     </script>
 @endsection
