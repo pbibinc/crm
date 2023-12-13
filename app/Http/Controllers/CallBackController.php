@@ -109,7 +109,7 @@ class CallBackController extends Controller
             if($leadSaving){
                 $callback = Callback::find($id);
                 $callback->date_time = $data['dateTime'];
-                $callback->remarks = $data['callBackRemarks'] ? $data['callBackRemarks'] : ' ';
+                $callback->remarks = isset($data['callBackRemarks']) ? $data['callBackRemarks'] : ' ';
                 $callback->type = $data['dispositionId'];
                 $callback->status = $data['status'];
                 $callback->save();
@@ -183,7 +183,7 @@ class CallBackController extends Controller
             $remarksLead = RemarksModel::find($id);
             $remarksLead->lead_id = $data['leadId'];
             $remarksLead->type = $data['dispositionId'];
-            $remarksLead->remarks = $data['callBackRemarks'];
+            $remarksLead->remarks = isset($data['callBackRemarks']) ? $data['callBackRemarks'] : ' ';
             $remarksLead->save();
 
             DB::commit();

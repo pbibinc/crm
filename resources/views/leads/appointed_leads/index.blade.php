@@ -157,7 +157,6 @@
                         data: 'viewButton',
                         name: 'viewButton'
                     }
-
                 ]
             })
 

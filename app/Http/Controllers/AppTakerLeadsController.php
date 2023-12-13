@@ -113,7 +113,6 @@ class AppTakerLeadsController extends Controller
 
     public function storeLeadRemarksDisposition(Request $request)
     {
-
         try{
             DB::beginTransaction();
             $data = $request->all();
@@ -123,7 +122,7 @@ class AppTakerLeadsController extends Controller
             $remarksLead = new RemarksModel();
             $remarksLead->lead_id = $data['leadId'];
             $remarksLead->type = $data['dispositionId'];
-            $remarksLead->remarks = $data['remarks'];
+            $remarksLead->remarks = isset($data['callBackRemarks']) ? $data['callBackRemarks'] : ' ';
             $remarksLead->save();
             DB::commit();
             return response()->json(['success' => 'Lead disposition and remarks saved successfully'], 200);
@@ -131,7 +130,6 @@ class AppTakerLeadsController extends Controller
             Log::error($e->getMessage());
             return response()->json(['error' => 'An error occurred'], 500);
         }
-
     }
 
     public function reloadData(Request $request)
