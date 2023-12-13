@@ -488,7 +488,7 @@
                     }
 
                     if (selectedDisposition == '12') {
-                        $('#gateKeeperModal').modal('show');
+                        $('#callbackModal').modal('show');
                         $('#transactionLogModal').modal('hide');
                     }
 
