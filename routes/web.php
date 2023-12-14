@@ -33,6 +33,7 @@ use App\Http\Controllers\TecnickcomPdfController;
 use App\Http\Controllers\CompanyHandbookController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\EmbeddedSignatureController;
+use App\Http\Controllers\MarketListController;
 use App\Http\Controllers\NotesController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\WebsiteController;
@@ -80,8 +81,11 @@ Route::middleware(['auth'])->group(function (){
       Route::get('leads', [LeadController::class, 'index'])->name('leads');
       Route::get('leads/{leads}/edit', [LeadController::class, 'edit'])->name('leads.edit');
       Route::put('leads/{leads}/update', [LeadController::class, 'update'])->name('leads.update');
+
       Route::get('leads-export', [LeadController::class, 'export'])->name('leads.export');
+      Route::get('check-export', [LeadController::class, 'checkExport'])->name('check-export');
       Route::post('leads-import', [LeadController::class, 'import'])->name('leads.import');
+
       Route::post('add-leads', [LeadController::class, 'store'])->name('leads.store');
       Route::get('get-data-dnc', [LeadController::class, 'getDncData'])->name('get.data.dnc');
       Route::post('dnc-leads-import', [LeadController::class, 'importDnc'])->name('dnc.lead.import');
@@ -94,6 +98,9 @@ Route::middleware(['auth'])->group(function (){
 
       //route for website creation and function
       Route::resource('website', WebsiteController::class);
+
+      //route for market list
+      Route::resource('market-list', MarketListController::class);
 
         //route for assigning leads
         Route::get('/', [AssignLeadController::class, 'index'])->name('assign');

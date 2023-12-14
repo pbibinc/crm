@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpParser\Node\Expr\Cast;
+use Spatie\SimpleExcel\SimpleExcelWriter;
 use Yajra\DataTables\Facades\DataTables;
 
 use function PHPSTORM_META\type;
@@ -202,8 +203,28 @@ class LeadController extends Controller
     {
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        $fileName = 'leads ' . $startDate . ' to ' . $endDate . '.xlsx';
-        return Excel::download(new LeadExport($startDate, $endDate), $fileName);
+        Cache::put('exportToken', 'exporting', 60 * 60);
+        $fileName = 'leads ' . $startDate . ' to ' . $endDate . '.csv';
+        $query = Lead::whereBetween("created_at", [$startDate, $endDate])->select('company_name', 'tel_num', 'class_code')->get();
+        $writer = SimpleExcelWriter::streamDownload($fileName);
+        $i = 0;
+        foreach($query->lazy(50000) as $lead){
+            $writer->addRow($lead->toArray());
+            if($i % 50000 === 0){
+                flush();
+            }
+            $i++;
+        }
+        Cache::forget('exportToken');
+        return $writer->toBrowser();
+        // return Excel::download(new LeadExport($startDate, $endDate), $fileName);
+
+    }
+
+    public function checkExport(Request $request)
+    {
+        $sessionToken = Cache::get('exportToken');
+        return response()->json(['exportToken' =>  $sessionToken]);
     }
 
     public function store(Request $request)

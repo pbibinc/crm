@@ -8,6 +8,8 @@
     </style>
     <div class="page-content pt-6">
         <div class="container-fluid">
+
+
             <div class="row">
                 <div class="col-6">
                     <div class="card">
@@ -91,7 +93,7 @@
                 <div class="col-3">
                     <div class="card">
                         <div class="card-body">
-                            <form action="{{ route('leads.export') }}" method="get">
+                            <form method="get" action = "{{ route('leads.export') }}" id="export-form">
                                 @csrf
                                 <div class="row">
                                     <div class="col-6">
@@ -110,7 +112,8 @@
                                     </div>
                                 </div>
                                 <br>
-                                <button id="dated-export-button" class="btn btn-success"> <i class="ri-download-fill"></i>
+                                <button id="dated-export-button" type="submit" class="btn btn-success ladda-button"
+                                    data-style="expand-right">
                                     Export Leads</button>
 
                                 <br>
@@ -595,6 +598,7 @@
                 $('.leads_checkbox').prop('checked', $(this).is(':checked'));
                 e.stopPropagation();
             });
+
             $(document).on('click', '.btnEdit', function(e) {
                 e.preventDefault();
                 var btnEditId = $(this).data('id');
@@ -649,9 +653,30 @@
                     }
                 });
 
+
             });
+            $(document).on('submit', '#export-form', function(e) {
+                var button = $('#dated-export-button');
+                var laddaButton = Ladda.create(button[0]);
+                laddaButton.start();
 
-
+                var checkDownloadToken = setInterval(() => {
+                    $.ajax({
+                        url: '/check-export',
+                        method: 'GET',
+                        success: function(response) {
+                            console.log(response);
+                            if (!response.exportToken) {
+                                clearInterval(checkDownloadToken);
+                                laddaButton.stop();
+                            }
+                        },
+                        error: function() {
+                            // Handle error
+                        }
+                    });
+                }, 3000);
+            });
         });
     </script>
 @endsection
