@@ -10,6 +10,7 @@ use App\Imports\LeadsImport;
 use App\Models\Classcode;
 use App\Models\ClassCodeLead;
 use App\Models\Lead;
+use App\Models\TempDnc;
 use App\Models\UnitedState;
 use App\Models\User;
 use App\Models\Website;
@@ -90,15 +91,39 @@ class LeadController extends Controller
 
     public function importDnc(Request $request)
     {
-        $file = $request->file('dnc-file');
-        $import = new DncImport();
-        Excel::import($import, $file);
-        Cache::forget('leads_dnc');
-        $leads = $this->getDncData($import->getImportedData());
-        Cache::put('leads_dnc', $leads, 60 * 60);
+        // $file = $request->file('dnc-file');
+        // $import = new DncImport();
+        // Excel::import($import, $file);
+        // $leads = $this->getDncData($import->getImportedData());
+           // Validate the file
+           $request->validate([
+            'dnc-file' => 'required|mimes:xlsx,xls,csv'
+           ]);
+
+           // Store the file temporarily
+          $path = $request->file('dnc-file')->storeAs(
+             'temp', 'temp_dnc_file.csv'
+           );
+
+            $fullpath = str_replace('\\', '/', storage_path("app/{$path}"));
+
+    // Load the file into a temporary collection or table
+             LoadFile::file($fullpath, $local = true)
+             ->into('temp_dnc_table') // You might need to create a temporary table or handle this differently
+             ->columns(['tel_num']) // Assuming the first column is telephone numbers
+             ->fieldsTerminatedBy(',')
+             ->load();
+        // Process the loaded data
+        $tempDncTable = TempDnc::select('tel_num')->orderBy('id')->get();
+
+        $this->getDncData($tempDncTable);
+
+        // Cleanup
+        unlink($fullpath);
 
         return back();
     }
+
 
     public function addDnc(Request $request)
     {
@@ -112,6 +137,7 @@ class LeadController extends Controller
                 if(!is_null($leadsDnc)){
                     $leadsDncArray = $leadsDnc->toArray();
                     $telNums = array_merge($telNums, array_column($leadsDncArray, 'tel_num'));
+
                     $leads = Lead::whereIn('tel_num', $telNums)->get();
                 }else{
                     $leads = Lead::where('tel_num', $telNum)->get();
@@ -124,15 +150,14 @@ class LeadController extends Controller
 
     public function getDncData($collection)
     {
-           if($collection){
-            $dncNumbers = $collection->pluck([0])->toArray();
-            $leads = Lead::whereIn('tel_num', $dncNumbers)->get();
-           }else{
-            $leads = [];
-           }
-           return $leads;
+        $dncNumber = $collection->pluck('tel_num')->toArray();
+        $leadsId = Lead::whereIn('tel_num', $dncNumber)->pluck('id');
+        if ($leadsId->isNotEmpty()) {
+            // Update the disposition of these leads to 7
+            Lead::whereIn('id', $leadsId)->update(['status' => 7]);
+            TempDnc::truncate();
+        }
     }
-
     public function archive(Request $request)
     {
         $leads = Lead::latest();
@@ -157,16 +182,12 @@ class LeadController extends Controller
 
     public function destroy($leadsId)
     {
+
         $leadsId = explode(',', $leadsId);
-        Lead::whereIn('id', $leadsId)->delete();
-        $leadsDnc = Cache::get('leads_dnc');
-        $leadsDncArray = $leadsDnc->toArray();
-        $updatedLeadsDnc = array_filter($leadsDncArray, function($lead) use ($leadsId){
-            return !in_array($lead['id'], $leadsId);
-        });
-        $leads = Lead::whereIn('tel_num', array_column($updatedLeadsDnc, 'tel_num'))->get();
-        Cache::forget('leads_dnc');
-        Cache::put('leads_dnc', $leads, 60 * 60);
+        $leadDeletion = Lead::whereIn('id', $leadsId)->delete();
+        if($leadDeletion){
+            $lead = Lead::find($leadsId);
+        }
         return response()->json(['success' => 'Leads Succesfully Deleted']);
     }
 
@@ -174,29 +195,39 @@ class LeadController extends Controller
     {
         if($request->ajax())
         {
-            if(Cache::get('leads_dnc')){
-                $leads = Cache::get('leads_dnc');
-
-            }else{
-                $leads = collect();
-            }
-                 $data = DB::table('leads')
-                            ->whereIn('tel_num', $leads->pluck('tel_num'))
-                            ->select('id','company_name', 'tel_num', 'state_abbr')
-                            ->get();
-
+            $data = Lead::where('status', 7)->select('id','company_name', 'tel_num')->get();
                 return DataTables::of($data)
                        ->addIndexColumn()
                        ->addColumn('checkbox', '<input type="checkbox" name="leads_checkbox[]"  class="leads_checkbox" value="{{$id}}" />')
-
-                // ->addColumn('company_name_action', function ($data){
-                //     return '<a href="#" data-toggle="modal" id="companyLink" name="companyLinkButtonData" data-target="#leadsDataModal" data-id="'.$data->id.'" data-name="'.$data->company_name.'">'.$data->company_name.'</a>';
-                //     })
                 ->rawColumns(['checkbox'])
                 ->make(true);
-
         }
+    }
 
+
+    public function checkDncExport(Request $request)
+    {
+        if($request->ajax()){
+            $data = Lead::where('disposition_id', 13)->select('id','company_name', 'tel_num')->get();
+                return DataTables::of($data)
+                       ->addIndexColumn()
+                       ->addColumn('checkbox', '<input type="checkbox" name="leads_checkbox[]"  class="leads_checkbox" value="{{$id}}" />')
+                ->rawColumns(['checkbox'])
+                ->make(true);
+        }
+    }
+
+    public function viewDnc(Request $request)
+    {
+
+        if($request->ajax()){
+            $lead = new Lead();
+            $dncLead = $lead->getDncLead()->get();
+            // dd($dncLead);
+            return DataTables::of($dncLead)
+            ->make(true);
+        }
+        return view('leads.do-not-call.index');
     }
 
     public function export(Request $request)
@@ -226,6 +257,27 @@ class LeadController extends Controller
         $sessionToken = Cache::get('exportToken');
         return response()->json(['exportToken' =>  $sessionToken]);
     }
+
+    public function exportDnc(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        Cache::put('exportToken', 'exporting', 60 * 60);
+        $fileName = 'dnc leads ' . $startDate . ' to ' . $endDate . '.csv';
+        $query = Lead::withTrashed()->where('status', 7)->whereBetween('deleted_at', [$startDate, $endDate])->select('company_name', 'tel_num', 'class_code')->get();
+        $writer = SimpleExcelWriter::streamDownload($fileName);
+        $i = 0;
+        foreach($query->lazy(1000) as $lead){
+            $writer->addRow($lead->toArray());
+            if($i % 50000 === 0){
+                flush();
+            }
+            $i++;
+        }
+        Cache::forget('exportToken');
+        return $writer->toBrowser();
+    }
+
 
     public function store(Request $request)
     {
@@ -281,6 +333,41 @@ class LeadController extends Controller
             return response()->json(['error' => 'An error occurred'], 500);
         }
 
+    }
+
+    public function getCallBackAppointedLead(Request $request)
+    {
+        if($request->ajax())
+        {
+            $userProfileId = auth()->user()->userProfile->id;
+
+            $data = Lead::getDncDispositionCallbackByUserProfileId($userProfileId);
+            return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('company_name', function($data){
+                $lead = Lead::find($data->lead_id);
+
+                $companyName = '<a href="#" data-toggle="modal" id="companyLink" name="companyLinkButtonData" data-target="#leadsDataModal" data-id="'.$lead->id.'" data-name="'.$lead->company_name.'" class="companyLink">'.$lead->company_name.'</a>';
+                return $lead ? $companyName : ' ';
+
+            })
+            ->addColumn('tel_num', function($data){
+                $lead = Lead::find($data->lead_id);
+                return $lead ? $lead->tel_num : ' ';
+            })
+            ->addColumn('action', function($data){
+                $leads = Lead::find($data->lead_id);
+                $profileViewRoute = route('appointed-list-profile-view', ['leadsId' => $leads->id]);
+                return '<a href="'.$profileViewRoute.'" class="viiew btn btn-success btn-sm" id="'.$leads->id.'" name"view"><i class="ri-eye-line"></i></a>';
+            })
+            ->addColumn('date_formatted', function($data){
+                $date = date('M d, Y', strtotime($data->date_time));
+                $time =  date('h:i A', strtotime($data->date_time));
+                return $date. ' ' .$time;
+            })
+            ->rawColumns(['company_name', 'action'])
+            ->make(true);
+        }
     }
 
 
