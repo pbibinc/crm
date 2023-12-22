@@ -3,10 +3,10 @@
     <div class="page-content pt-6">
         <div class="container-fluid">
 
-            <div class="row mb-4">
-                <div class="card">
+            <div class="row">
+                <div class="card" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                     <div class="card-body">
-                        <h3>Scheduled Callbacks Overview</h3>
+                        <h5>Scheduled Callbacks Overview</h5>
                         <table id="callBackLeadsTable" class="table table-bordered dt-responsive nowrap"
                             style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead style="background-color: #f0f0f0;">
@@ -28,9 +28,10 @@
             </div>
 
             <div class="row">
-                <div class="card">
+                <div class="card"
+                    style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                     <div class="card-body">
-                        <h3>Other Leads</h3>
+                        <h5>Other Leads</h5>
                         <table class="table table-bordered dt-responsive nowrap"
                             style="border-collapse: collapse; border-spacing: 0; width: 100%;" id="otherDispositionnTable">
                             <thead style="background-color: #f0f0f0;">
@@ -154,6 +155,9 @@
                 searching: true,
                 scrollY: 300,
                 scrollX: true,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 ajax: {
                     url: "{{ route('callback-lead') }}"
                 },
@@ -219,6 +223,9 @@
                 searching: true,
                 scrollY: 300,
                 scrollX: true,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 ajax: {
                     url: "{{ route('other-dispositions-data') }}"
                 },

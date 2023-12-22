@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
@@ -20,6 +21,7 @@ class Lead extends Model
         'class_code',
         'website_originated',
         'disposition_name',
+        'status',
     ];
 
     public function dispositions()
@@ -83,6 +85,8 @@ class Lead extends Model
     {
         return $this->belongsToMany(UserProfile::class, 'quote_lead_table', 'leads_id', 'user_profiles_id');
     }
+
+
 
     public function callback()
     {
@@ -150,13 +154,40 @@ class Lead extends Model
         if($leads)
         {
             return $leads;
-        }
+    }
         return null;
     }
 
+    public static function getDncLead()
+    {
+        $leadDnc = self::withTrashed()
+        ->where('status', 7)
+        ->select('company_name', 'tel_num');
+        return $leadDnc;
+    }
 
+    public static function getDncDispositionCallbackByUserProfileId($userProfileId)
+    {
+      // Get leads based on conditions
+       $leads = self::where('disposition_id', 1)
+                 ->whereHas('userProfile', function ($query) use ($userProfileId) {
+                     $query->where('user_profile_id', $userProfileId);
+                 })->get();
 
+      // Extract the IDs from the leads collection and convert to array
+       $leadIds = $leads->pluck('id')->toArray();
 
+       // Ensure non-empty array
+       if (empty($leadIds)) {
+          return [];
+        }
 
+       // Get callbacks based on lead IDs
+        $callBack = Callback::whereIn('lead_id', $leadIds)
+                        ->select('remarks', 'date_time', 'lead_id')
+                        ->get();
 
+        // Debugging
+        return $callBack;
+    }
 }

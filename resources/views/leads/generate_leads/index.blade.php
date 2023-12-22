@@ -402,6 +402,7 @@
                 e.preventDefault();
                 $('.leads_checkbox').each(function() {
                     var id = $(this).val();
+
                     if ($(this).is(':checked')) {
                         dncLeadsId.push(id);
                     } else {
@@ -420,6 +421,7 @@
                 } else {
                     $('#deleteLeadModal').modal('show');
                 }
+                console.log(dncLeadsId);
             });
 
             $('#addDnc').on('click', function(e) {
@@ -652,8 +654,6 @@
                         });
                     }
                 });
-
-
             });
             $(document).on('submit', '#export-form', function(e) {
                 var button = $('#dated-export-button');
