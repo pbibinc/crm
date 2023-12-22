@@ -7,6 +7,7 @@ import ClassCodeData from "../data/classcode-data";
 import GeneralLiabilitiesData from "../data/general-liabilities-data";
 import getAuthToken from "../data/auth-token-data";
 import userData from "../data/user-data";
+import WorkersCompensationData from "../data/workers-compensation-data";
 
 export const ContextData = createContext();
 
@@ -17,6 +18,7 @@ const ContextDataProvider = ({ children }) => {
     const { zipCity } = LeadZipCodeCities();
     const { classCodeArray } = ClassCodeData();
     const { generalLiabilitiesData } = GeneralLiabilitiesData();
+    const { workersCompensationData } = WorkersCompensationData();
     const { authToken } = getAuthToken();
     const { user } = userData();
     return (
@@ -31,6 +33,7 @@ const ContextDataProvider = ({ children }) => {
                 zipCity,
                 classCodeArray,
                 generalLiabilitiesData,
+                workersCompensationData,
                 authToken,
                 user,
             }}

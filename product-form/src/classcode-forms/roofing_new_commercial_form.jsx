@@ -6,39 +6,20 @@ import Column from "../element/column-element";
 import Form from "react-bootstrap/Form";
 //import { set } from "lodash";
 const RoofingNewCommercialForm = ({ setClassCodeFormData, disabled }) => {
-    const [chekedHotWork, setChekedHotWork] = useState(false);
-    const questionareHotWork =
+    const [checked, setChecked] = useState(false);
+    const questionare =
         "Do you perform any of the following: hot work of any kind, hot tar, torch down, TPO, waterproofing, waterproof decks?";
-
-    const [checkedWaterproofing, setCheckedWaterproofing] = useState(false);
-    const questionareWaterproofing = "waterproofing, waterproof decks?";
-
-    const [questionareArray, setQuestionareArray] = useState([]);
-    const [valueArray, setValueArray] = useState([]);
-
-    const handleHotWorkSwitch = (event) => {
-        setChekedHotWork(event.target.checked);
+    const handleWoodWorkingSwitch = (event) => {
+        setChecked(event.target.checked);
     };
-
-    const hanldeWaterProofingSwitch = (event) => {
-        setCheckedWaterproofing(event.target.checked);
-    };
-
-    useEffect(() => {
-        setQuestionareArray([questionareHotWork, questionareWaterproofing]);
-    }, [setQuestionareArray]);
-
-    useEffect(() => {
-        setValueArray([chekedHotWork, checkedWaterproofing]);
-    }, [setValueArray, chekedHotWork, checkedWaterproofing]);
 
     useEffect(() => {
         setClassCodeFormData({
-            value: valueArray,
-            description: questionareArray,
-            classcodeId: [252, 252],
+            value: checked,
+            description: questionare,
+            classcodeId: 252,
         });
-    }, [valueArray, questionareArray, setClassCodeFormData]);
+    }, [checked, questionare, setClassCodeFormData]);
 
     return (
         <>
@@ -48,7 +29,7 @@ const RoofingNewCommercialForm = ({ setClassCodeFormData, disabled }) => {
                     <Column
                         key="questionareHotWorkLableColumn"
                         classValue="col-8"
-                        colContent={<Label labelContent={questionareHotWork} />}
+                        colContent={<Label labelContent={questionare} />}
                     />,
                     <Column
                         key="questionareHotWorkCheckboxColumn"
@@ -57,32 +38,7 @@ const RoofingNewCommercialForm = ({ setClassCodeFormData, disabled }) => {
                             <Form.Check
                                 type="switch"
                                 id="custom-switch"
-                                onChange={handleHotWorkSwitch}
-                                disabled={disabled}
-                            />
-                        }
-                    />,
-                ]}
-            />
-            ,
-            <Row
-                classValue="mb-3"
-                rowContent={[
-                    <Column
-                        key="questionareWaterproofingLableColumn"
-                        classValue="col-8"
-                        colContent={
-                            <Label labelContent={questionareWaterproofing} />
-                        }
-                    />,
-                    <Column
-                        key="questionareWaterproofingCheckboxColumn"
-                        classValue="col-4"
-                        colContent={
-                            <Form.Check
-                                type="switch"
-                                id="custom-switch"
-                                onChange={hanldeWaterProofingSwitch}
+                                onChange={handleWoodWorkingSwitch}
                                 disabled={disabled}
                             />
                         }
