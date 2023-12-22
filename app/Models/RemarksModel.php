@@ -15,4 +15,7 @@ class RemarksModel extends Model
         'lead_id',
         'remarks',
     ];
+
+
+
 }

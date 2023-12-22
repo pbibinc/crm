@@ -10,4 +10,6 @@ class QuoationMarket extends Model
     use HasFactory;
 
     protected $table = 'quotation_market_table';
+    protected $fillable = ['name'];
+    public $timestamps = false;
 }

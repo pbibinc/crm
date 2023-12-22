@@ -31,6 +31,15 @@ class Callback extends Model
         return null;
     }
 
+    public function getAppointedLead()
+    {
+        $user = auth()->user();
+        $leads = $user->userProfile->leads;
+        $callBack = self::where('status', 3)->where('type', 1)->get();
+        $leadsData = $leads->whereIn('id', $callBack->pluck('lead_id'))->get();
+        return $leadsData;
+    }
+
     public function lead()
     {
         return $this->belongsTo(Lead::class);

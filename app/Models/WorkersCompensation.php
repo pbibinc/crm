@@ -25,7 +25,7 @@ class WorkersCompensation extends Model
 
     public function classCodePerEmployee()
     {
-        return $this->hasMany(ClasscodePerEmployee::class, 'workers_compensation_id', 'id');
+       return $this->hasMany(ClasscodePerEmployee::class);
     }
 
 }
