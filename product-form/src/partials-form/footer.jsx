@@ -29,20 +29,26 @@ const Footer = () => {
     //variable for remarks and date of claim
     const [remarks, setRemarks] = useState("");
     const [callBackDate, setCallBackDate] = useState(new Date());
+    // Get the time zone offset in minutes
+    const timeZoneOffset = callBackDate.getTimezoneOffset();
+    const adjustedDate = new Date(
+        callBackDate.getTime() - timeZoneOffset * 60000
+    );
     const leadInstance = JSON.parse(sessionStorage.getItem("lead"));
-    const formattedDate = callBackDate
+    const formattedDate = adjustedDate
         .toISOString()
         .slice(0, 19)
         .replace("T", " ");
     const formData = {
         callBackRemarks: remarks,
         dateTime: formattedDate,
-        status: 2,
-        type: 2,
+        status: 1,
+        type: 1,
         leadId: leadInstance?.data?.id,
     };
 
     function submitCallback() {
+        console.log(formData);
         axiosClient
             .post("/api/callback/store", formData)
             .then((response) => {
@@ -67,102 +73,6 @@ const Footer = () => {
     };
 
     return (
-        // <div className="footerDiv">
-        //     <div>
-        //         <button
-        //             size="lg"
-        //             className="mx-2 form-button"
-        //             onClick={handleCloseButton}
-        //         >
-        //             CLOSE
-        //         </button>
-        //         <button
-        //             size="lg"
-        //             className="mx-2 form-button"
-        //             onClick={handleOpenModal}
-        //         >
-        //             Schedule A Callback
-        //         </button>
-        //     </div>
-        //     <div style={craftedWithStyle}>
-        //         Crafted with <i className="mdi mdi-heart text-danger"></i> by
-        //         InsuraPrime Dev
-        //     </div>
-
-        //     <Modal show={showModal} onHide={handleCloseModal}>
-        //         <Modal.Header closeButton>
-        //             <Modal.Title>Schedule A Callback</Modal.Title>
-        //         </Modal.Header>
-        //         <Modal.Body>
-        //             <Row
-        //                 classValue="mb-4"
-        //                 rowContent={[
-        //                     <Column
-        //                         key="callBackDateColumn"
-        //                         classValue="col-12"
-        //                         colContent={
-        //                             <>
-        //                                 <Row
-        //                                     classValue="mb-1"
-        //                                     rowContent={
-        //                                         <Label labelContent="Call Back Date" />
-        //                                     }
-        //                                 />
-        //                                 <Row
-        //                                     rowContent={
-        //                                         <DatePicker
-        //                                             showMonthDropdown
-        //                                             showYearDropdown
-        //                                             className="custom-datepicker-input"
-        //                                             selected={callBackDate}
-        //                                             onChange={(date) =>
-        //                                                 setCallBackDate(date)
-        //                                             }
-        //                                             showTimeSelect // Enable time selection
-        //                                             timeFormat="HH:mm" // Set the time format
-        //                                             timeIntervals={15} // Specify time intervals (optional)
-        //                                             dateFormat="MM:dd:yyyy h:mm aa" // Date and time format
-        //                                         />
-        //                                     }
-        //                                 />
-        //                             </>
-        //                         }
-        //                     />,
-        //                 ]}
-        //             />
-        //             <Row
-        //                 classValue="mb-4"
-        //                 rowContent={[
-        //                     <Column
-        //                         key="callBackDateColumn"
-        //                         classValue="col-12"
-        //                         colContent={
-        //                             <>
-        //                                 <Label labelContent="Remarks" />
-        //                                 <Form.Control
-        //                                     as={"textarea"}
-        //                                     rows={6}
-        //                                     value={remarks}
-        //                                     onChange={(e) =>
-        //                                         setRemarks(e.target.value)
-        //                                     }
-        //                                 />
-        //                             </>
-        //                         }
-        //                     />,
-        //                 ]}
-        //             />
-        //         </Modal.Body>
-        //         <Modal.Footer>
-        //             <Button variant="secondary" onClick={handleCloseModal}>
-        //                 Close
-        //             </Button>
-        //             <Button variant="primary" onClick={submitCallback}>
-        //                 Save Changes
-        //             </Button>
-        //         </Modal.Footer>
-        //     </Modal>
-        // </div>
         <div className="footerDiv">
             <div className="row">
                 <div className="col-5">

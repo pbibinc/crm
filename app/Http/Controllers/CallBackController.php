@@ -74,8 +74,8 @@ class CallBackController extends Controller
                 $lead->disposition_id = $data['type'];
                 $lead->save();
             }
-            if(Callback::where('lead_id', $data['leadId'])->where('status', 2)->exists()){
-                $callback = Callback::where('lead_id', $data['leadId'])->where('status', 2)->first();
+            if(Callback::where('lead_id', $data['leadId'])->exists()){
+                $callback = Callback::where('lead_id', $data['leadId'])->first();
             }else{
                 $callback = new Callback();
             }
