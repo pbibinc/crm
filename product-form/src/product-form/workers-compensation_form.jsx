@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Row from "../element/row-element";
 import Column from "../element/column-element";
 import Label from "../element/label-element";
@@ -18,13 +18,20 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Swal from "sweetalert2";
 import axiosClient from "../api/axios.client";
 import "../style/general-information.css";
+import { ContextData } from "../contexts/context-data-provider";
+import { get } from "jquery";
+import Button from "react-bootstrap/Button";
 // import { Audio, ThreeDots } from "react-loader-spinner";
 
 const WorkersCompensationForm = () => {
+    const { workersCompensationData } = useContext(ContextData);
+    console.log(workersCompensationData);
     const getWorkersCompensationData = () => {
         let storedData =
             JSON.parse(sessionStorage.getItem("storeWorkersCompData")) || {};
-        return storedData;
+        return workersCompensationData
+            ? workersCompensationData[0]
+            : storedData;
     };
 
     //loading variable
@@ -33,18 +40,46 @@ const WorkersCompensationForm = () => {
     const generalInfomrationInstance = JSON.parse(
         sessionStorage.getItem("generalInformationStoredData")
     );
-    const [totalEmployee, setTotalEmployee] = useState(0);
-    const [employeeDescription, setEmployeeDescription] = useState("");
-    const [employeeNumber, setEmployeeNumber] = useState([0]);
+    const [totalEmployee, setTotalEmployee] = useState(() =>
+        getWorkersCompensationData()?.totalEmployee
+            ? getWorkersCompensationData()?.totalEmployee
+            : 0
+    );
+    const [employeeDescription, setEmployeeDescription] = useState(() =>
+        getWorkersCompensationData()?.employeeDescription
+            ? getWorkersCompensationData()?.employeeDescription
+            : [""]
+    );
+    const [employeeNumber, setEmployeeNumber] = useState(() =>
+        getWorkersCompensationData()?.numberOfEmployee
+            ? getWorkersCompensationData()?.numberOfEmployee
+            : [0]
+    );
 
     const leadInstance = JSON.parse(sessionStorage.getItem("lead"));
     const [totalEmployeeSum, setTotalEmployeeSum] = useState(0);
-    const [employeePayroll, setEmployeePayroll] = useState(0);
-    const [ownersPayroll, setOwnersPayroll] = useState(0);
-    const [totalPayroll, setTotalPayroll] = useState(employeePayroll);
+    const [employeePayroll, setEmployeePayroll] = useState(() => {
+        const payrollValue = getWorkersCompensationData()?.employeePayroll;
+        return payrollValue ? Number(payrollValue) : 0;
+    });
+
+    const [ownersPayroll, setOwnersPayroll] = useState(() =>
+        getWorkersCompensationData()?.ownersPayroll
+            ? getWorkersCompensationData()?.ownersPayroll
+            : 0
+    );
+    const [totalPayroll, setTotalPayroll] = useState(() =>
+        getWorkersCompensationData()?.totalPayroll
+            ? getWorkersCompensationData()?.totalPayroll
+            : employeePayroll
+    );
     const [ishaveLossChecked, setIsHaveLossChecked] = useState(false);
     const [haveLossDateOption, setHaveLossDateOption] = useState(1);
-    const [payrollDropdownValue, setPayrollDropdownValue] = useState(2);
+    const [payrollDropdownValue, setPayrollDropdownValue] = useState(() =>
+        getWorkersCompensationData()?.isOwnerPayrollIncluded
+            ? getWorkersCompensationData()?.isOwnerPayrollIncluded
+            : 1
+    );
     const [specificDescriptionOfEmployee, setSpecificDescriptionOfEmployee] =
         useState("");
     const [feinValue, setFeinValue] = useState(
@@ -133,6 +168,12 @@ const WorkersCompensationForm = () => {
             dateofClaim: dateofClaim,
             callBackDate: callBackDate,
             isCallBack: isCallBack,
+
+            //payrolll for functionalities
+            totalEmployee: totalEmployee,
+            totalPayroll: totalPayroll,
+            employeePayroll: employeePayroll,
+            ownersPayroll: ownersPayroll,
         };
 
         sessionStorage.setItem(
@@ -160,6 +201,9 @@ const WorkersCompensationForm = () => {
         isEditing,
         callBackDate,
         isCallBack,
+        totalPayroll,
+        employeePayroll,
+        ownersPayroll,
     ]);
 
     useEffect(() => {
@@ -187,13 +231,17 @@ const WorkersCompensationForm = () => {
         const storedGeneralInformationInstance = JSON.parse(
             sessionStorage.getItem("generalInformationStoredData") || "{}"
         );
+        const totalEmployee = getWorkersCompensationData()?.totalEmployee;
         let fullTime =
             parseInt(storedGeneralInformationInstance.full_time_employee, 10) ||
             0;
         let partTime =
             parseInt(storedGeneralInformationInstance.part_time_employee, 10) ||
             0;
-        setTotalEmployeeSum(fullTime + partTime);
+        let allEmployeNumber = fullTime + partTime;
+        setTotalEmployeeSum(
+            allEmployeNumber ? allEmployeNumber : totalEmployee
+        );
     }, []);
 
     //script for setting the total employee
@@ -246,6 +294,7 @@ const WorkersCompensationForm = () => {
         const storedGeneralInformationInstance = JSON.parse(
             sessionStorage.getItem("generalInformationStoredData") || "{}"
         );
+        const payrollEmplyee = getWorkersCompensationData()?.employeePayroll;
         // const payrollOwnerFloat = parseFloat(
         //     storedGeneralInformationInstance.owners_payroll.replace(
         //         /[^0-9.]/g,
@@ -254,13 +303,16 @@ const WorkersCompensationForm = () => {
         // );
         const payrollOwnerFloat =
             storedGeneralInformationInstance.owners_payroll;
-        setOwnersPayroll(Math.floor(payrollOwnerFloat));
+        setOwnersPayroll(
+            payrollOwnerFloat ? Math.floor(payrollOwnerFloat) : payrollEmplyee
+        );
     }, []);
 
     useEffect(() => {
         const storedGeneralInformationInstance = JSON.parse(
             sessionStorage.getItem("generalInformationStoredData") || "{}"
         );
+        const parollEmployee = getWorkersCompensationData()?.employeePayroll;
         // const payrollEmployeeFloat = parseFloat(
         //     storedGeneralInformationInstance.employee_payroll.replace(
         //         /[^0-9.]/g,
@@ -269,12 +321,16 @@ const WorkersCompensationForm = () => {
         // );
         const payrollEmployeeFloat =
             storedGeneralInformationInstance.employee_payroll;
-        setEmployeePayroll(Math.floor(payrollEmployeeFloat));
+        setEmployeePayroll(
+            payrollEmployeeFloat
+                ? Math.floor(payrollEmployeeFloat)
+                : parollEmployee
+        );
     }, []);
 
     const handlePayrollChange = (event) => {
         const payrollDropdownChange = event.value;
-        setPayrollDropdownValue(payrollDropdownChange);
+        setPayrollDropdownValue(event);
 
         if (payrollDropdownChange === 1) {
             setTotalPayroll(employeePayroll + ownersPayroll);
@@ -308,7 +364,7 @@ const WorkersCompensationForm = () => {
     const workersCompFormData = {
         //workers comp object data common information
         lead_id: leadInstance?.data.id || null,
-        is_owner_payroll_included: payrollDropdownValue,
+        is_owner_payroll_included: payrollDropdownValue.value,
         total_payroll: totalPayroll,
         specific_employee_description: specificDescriptionOfEmployee,
         fein: feinValue,
@@ -429,6 +485,7 @@ const WorkersCompensationForm = () => {
                                                 event
                                             )
                                         }
+                                        value={employeeDescription[index]}
                                         disabled={!isEditing}
                                     />
                                 </>
@@ -448,6 +505,7 @@ const WorkersCompensationForm = () => {
                                                 event
                                             )
                                         }
+                                        value={employeeNumber[index]}
                                         disabled={!isEditing}
                                         onBlur={handleEmployeNumberInputBlur}
                                     />
@@ -489,6 +547,7 @@ const WorkersCompensationForm = () => {
                                 <Select
                                     className="basic=single"
                                     classNamePrefix="select"
+                                    value={payrollDropdownValue}
                                     options={ownersPayrollOptions}
                                     onChange={handlePayrollChange}
                                     isDisabled={!isEditing}

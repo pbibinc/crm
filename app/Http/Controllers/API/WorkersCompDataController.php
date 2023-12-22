@@ -194,7 +194,6 @@ class WorkersCompDataController extends BaseController
                  $classCodePerEmployee->number_of_employee = $classCodePerEmployeeData['number_of_employee'];
                  $classCodePerEmployee->save();
              }
-
             }
             DB::commit();
         }catch(\Exception $e){
@@ -208,16 +207,62 @@ class WorkersCompDataController extends BaseController
 
     public function getWorkersCompData($id)
     {
-        $workersCompensationData = WorkersCompensation::where('general_information_id', $id)->first();
+        $generalInformationId = GeneralInformation::where('leads_id', $id)->first()->id;
+        $workersCompensationData = WorkersCompensation::where('general_information_id', $generalInformationId)->first();
         if($workersCompensationData){
             return $this->sendResponse($workersCompensationData->toArray(), 'Workers Compensation Data retrieved successfully.');
-
         }else{
             return response()->json(null, 'Workers Compensation Data not found!');
         }
     }
 
+    public function edit($id)
+    {
+        $generalInformation = GeneralInformation::where('leads_id', $id)->first();
+        $workersCompensation = WorkersCompensation::where('general_information_id', $generalInformation->id)->first();
+        if(is_null($workersCompensation)){
+            return response()->json(['error' => 'Workers Compensation Data not found!'], 404);
+        }
+        $workersCompensationData = [
+            'feinValue' => $workersCompensation->fein_number,
+            'ssnValue' => $workersCompensation->ssin_number,
+            'expirationDate' => $workersCompensation->expiration,
+            'priorCarrier' => $workersCompensation->prior_carrier,
+            'workersCompensationAmount' => strval($workersCompensation->workers_compensation_amount),
+            'policyLimit' => [
+                'value' => $workersCompensation->policy_limit,
+                'label' => $workersCompensation->policy_limit
+            ],
+            'eachAccident' => [
+                'value' => $workersCompensation->each_accident,
+                'label' => $workersCompensation->each_accident
+            ],
+            'eachEmployee' => [
+                'value' => $workersCompensation->each_employee,
+                'label' => $workersCompensation->each_employee
+            ],
 
+            'isUpdate' => true,
+            'isEditing' => false,
+
+            'employeeDescription' => $workersCompensation->classCodePerEmployee->pluck('employee_description'),
+            'numberOfEmployee' => $workersCompensation->classCodePerEmployee->pluck('number_of_employee'),
+            'totalEmployee' => $generalInformation->full_time_employee + $generalInformation->part_time_employee,
+
+            //data for clients payroll
+            'isOwnerPayrollIncluded' => [
+                'value' => $workersCompensation->is_owners_payroll_included,
+                'label' => $workersCompensation->is_owners_payroll_included == 1 ? "Included" : "Excluded"
+            ],
+            'employeePayroll' => $generalInformation->employee_payroll,
+            'ownersPayroll' => $generalInformation->owners_payroll,
+            'totalPayroll' => $workersCompensation->payroll_amount,
+
+
+        ];
+        Log::info("Workers Compensation Data", [$workersCompensationData]);
+        return response()->json([$workersCompensationData, 'Workers Compensation Retrieved successfully']);
+    }
 }
 
 ?>
