@@ -16,7 +16,6 @@ export default function GeneralLiabilitiesFormEdit() {
     return (
         <div>
             <Header />
-
             <div className="page-content">
                 {isLoading ? <div>Loading...</div> : <GeneralLiabilitiesForm />}
             </div>
