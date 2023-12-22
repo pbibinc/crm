@@ -102,6 +102,7 @@ class WebsiteController extends Controller
         $website = Website::find($id);
         $website->name = $data['name'];
         $website->save();
+        return response()->json(['success' => 'website has been saved'], 200);
     }
 
     /**
