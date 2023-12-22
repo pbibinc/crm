@@ -27,7 +27,6 @@ use Yajra\DataTables\Facades\DataTables;
 class QuotationController extends Controller
 {
     //
-
     public function appointedLeadsView(Request $request)
     {
         $quotatationProduct = new QuotationProduct();
@@ -45,6 +44,7 @@ class QuotationController extends Controller
         return response()->json(['productId' => $productId]);
 
     }
+
     public function leadProfileView($productId)
     {
         $product = QuotationProduct::find($productId);
@@ -142,23 +142,40 @@ class QuotationController extends Controller
     {
         if($request->ajax())
         {
-            $quotationInformationId = $request->input('id');
-            $marketId = $request->input('market');
-            $fullPayment = $request->input('fullPayment');
-            $downPayment = $request->input('downPayment');
-            $monthlyPayment = $request->input('monthlyPayment');
-            $brokerFee = $request->input('brokerFee');
-            $reccomended = $request->input('reccomended');
+            try{
+                DB::beginTransaction();
 
-            $quoteComparison = new QuoteComparison();
-            $quoteComparison->quotation_product_id = $quotationInformationId;
-            $quoteComparison->quotation_market_id = $marketId;
-            $quoteComparison->full_payment = $fullPayment;
-            $quoteComparison->down_payment = $downPayment;
-            $quoteComparison->monthly_payment = $monthlyPayment;
-            $quoteComparison->broker_fee = $brokerFee;
-            $quoteComparison->recommended = $reccomended == 'true' ? 1  : 0;
-            $quoteComparison->save();
+                $quotationProductId = $request->input('id');
+                $marketId = $request->input('market');
+                $fullPayment = $request->input('fullPayment');
+                $downPayment = $request->input('downPayment');
+                $monthlyPayment = $request->input('monthlyPayment');
+                $brokerFee = $request->input('brokerFee');
+                $reccomended = $request->input('reccomended');
+
+                $exists = QuoteComparison::where('quotation_product_id', $quotationProductId)
+                ->where('quotation_market_id', $marketId)
+                ->exists();
+
+                if($exists == false){
+                    $quoteComparison = new QuoteComparison();
+                    $quoteComparison->quotation_product_id = $quotationProductId;
+                    $quoteComparison->quotation_market_id = $marketId;
+                    $quoteComparison->full_payment = $fullPayment;
+                    $quoteComparison->down_payment = $downPayment;
+                    $quoteComparison->monthly_payment = $monthlyPayment;
+                    $quoteComparison->broker_fee = $brokerFee;
+                    $quoteComparison->recommended = $reccomended == 'true' ? 1  : 0;
+                    $quoteComparison->save();
+                }else{
+                    return response()->json(['error' => 'This market is already added'], 422);
+                }
+                DB::commit();
+            }catch(\Exception $e){
+                DB::rollback();
+                Log::error('Error in saving quote comparison', [$e->getMessage()]);
+                return response()->json(['error' => $e->getMessage()]);
+            }
         }
     }
 
@@ -167,7 +184,10 @@ class QuotationController extends Controller
         if($request->ajax())
         {
             $quoteInformationId = $request->input('id');
-            $quoteComparison = QuoteComparison::where('quotation_product_id', $quoteInformationId)->get();
+            $quoteComparison = QuoteComparison::where('quotation_product_id', $quoteInformationId)
+                     ->orderBy('recommended', 'desc')
+                    ->orderByRaw('CAST(full_payment AS DECIMAL(10,2)) DESC')  // Order by full_payment descending
+                    ->get();
             $market = QuoationMarket::all();
             return response()->json(['quoteComparison' => $quoteComparison, 'market' => $market]);
         }
@@ -186,21 +206,27 @@ class QuotationController extends Controller
             $reccomended = $request->input('reccomended');
             $productId = $request->input('productId');
             $quoteComparison = QuoteComparison::find($id);
-            if($fullPayment && $downPayment && $monthlyPayment && $brokerFee && $reccomended){
-            $quoteComparison->quotation_product_id = $productId;
-            $quoteComparison->quotation_market_id = $marketId;
-            $quoteComparison->full_payment = $fullPayment;
-            $quoteComparison->down_payment = $downPayment;
-            $quoteComparison->monthly_payment = $monthlyPayment;
-            $quoteComparison->broker_fee = $brokerFee;
-            $quoteComparison->recommended = $reccomended == 'true' ? 1  : 0;
+            $exists = $quoteComparison->where('quotation_market_id', $marketId)->exists();
+            if($exists == false){
+                if($fullPayment && $downPayment && $monthlyPayment && $brokerFee && $reccomended){
+                    $quoteComparison->quotation_product_id = $productId;
+                    $quoteComparison->quotation_market_id = $marketId;
+                    $quoteComparison->full_payment = $fullPayment;
+                    $quoteComparison->down_payment = $downPayment;
+                    $quoteComparison->monthly_payment = $monthlyPayment;
+                    $quoteComparison->broker_fee = $brokerFee;
+                    $quoteComparison->recommended = $reccomended == 'true' ? 1  : 0;
+                    }else{
+                        $quoteComparison->full_payment = $fullPayment;
+                        $quoteComparison->down_payment = $downPayment;
+                        $quoteComparison->monthly_payment = $monthlyPayment;
+                        $quoteComparison->broker_fee = $brokerFee;
+                    }
+                    $quoteComparison->save();
             }else{
-                $quoteComparison->full_payment = $fullPayment;
-                $quoteComparison->down_payment = $downPayment;
-                $quoteComparison->monthly_payment = $monthlyPayment;
-                $quoteComparison->broker_fee = $brokerFee;
+                return response()->json(['error' => 'This market is already added'], 422);
             }
-            $quoteComparison->save();
+
         }
     }
 

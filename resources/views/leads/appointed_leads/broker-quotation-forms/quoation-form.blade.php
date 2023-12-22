@@ -128,12 +128,9 @@
             let fullPayment = parseFloat(fullPaymentLabel.text().split('$')[1]) || 0;
             let downPayment = parseFloat(downPaymentLabel.text().split('$')[1]) || 0;
 
-
             // Subtract last broker fee and add new broker fee
             fullPayment = fullPayment - lastBrokerFee + currentBrokerFee;
             downPayment = downPayment - lastBrokerFee + currentBrokerFee;
-
-
 
             // Update their values
             fullPaymentLabel.text(`$${fullPayment.toFixed(2)}`);

@@ -1,3 +1,9 @@
+<style>
+    .input-error {
+        border: 1px solid red;
+        /* or background-color: #ffcccc; for a red background */
+    }
+</style>
 <div class="col-6 title-card">
     <h4 class="card-title mb-0" style="color: #ffffff">General Liabilities Quoation Form</h4>
 </div>
@@ -12,10 +18,10 @@
                             <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
                         </div>
                     </div>
-                    <div>
+                    {{-- <div>
                         <button class="btn rounded-circle btn-success" id="addGLPriceComparisonButton"><i
                                 class="mdi mdi-plus-circle"></i></button>
-                    </div>
+                    </div> --}}
                 </div>
                 <hr>
                 <div class="row mb-4">
@@ -306,11 +312,8 @@
         });
         $(".input-mask").inputmask();
 
-
-
         $('#GLCardContainer').on('click', '.removeSavedGLDataButton', function() {
             var $card = $(this).closest('.card');
-
             Swal.fire({
                 title: 'Are you sure?',
                 text: 'You will not be able to recover this!',
@@ -358,6 +361,7 @@
 
         $(document).on('click', '.saveGLFormButton', function() {
             var $card = $(this).closest('.card');
+            $card.find('#fullPayment, #downPayment, .form-select').removeClass('input-error');
 
             //form
             var market = $card.find('.form-select').val();
@@ -379,38 +383,50 @@
                 id: id
             };
 
-            $.ajax({
-                url: "{{ route('save-quotation-comparison') }}",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                method: "POST",
-                data: formData,
-                success: function() {
-                    Swal.fire({
-                        title: 'Success',
-                        text: 'has been saved',
-                        icon: 'success'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            location.reload();
-                        }
-                    });
-                },
-                error: function() {
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'Something went wrong',
-                        icon: 'error'
-                    });
-                }
-            })
+            if (parseInt(fullPayment) <= parseInt(downPayment)) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Down Payment must be less than Full Payment',
+                    icon: 'error'
+                });
+                $card.find('#fullPayment, #downPayment').addClass('input-error');
+            } else {
+                $.ajax({
+                    url: "{{ route('save-quotation-comparison') }}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    method: "POST",
+                    data: formData,
+                    success: function() {
+                        Swal.fire({
+                            title: 'Success',
+                            text: 'has been saved',
+                            icon: 'success'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload();
+                            }
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
+                            .responseJSON.error : 'Something went wrong';
+                        Swal.fire({
+                            title: 'Error',
+                            text: errorMessage,
+                            icon: 'error'
+                        });
+                        $card.find('.form-select').addClass('input-error');
+                    }
+                })
+            }
+
         });
 
         $(document).on('click', '.editGLFormButton', function() {
             var $card = $(this).closest('.card');
-
-
+            $card.find('#fullPayment, #downPayment, .form-select').removeClass('input-error');
             //form
             var market = $card.find('.form-select').val();
             var fullPayment = $card.find('#fullPayment').val();
@@ -431,33 +447,58 @@
                 reccomended: reccomended,
                 id: id
             };
+            if (parseInt(fullPayment) <= parseInt(downPayment)) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Down Payment must be less than Full Payment',
+                    icon: 'error'
+                });
+                $card.find('#fullPayment, #downPayment').addClass('input-error');
 
-            $.ajax({
-                url: "{{ route('update-quotation-comparison') }}",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                method: "POST",
-                data: formData,
-                success: function() {
-                    Swal.fire({
-                        title: 'Success',
-                        text: 'has been saved',
-                        icon: 'success'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            location.reload();
+            } else {
+                $.ajax({
+                    url: "{{ route('update-quotation-comparison') }}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    method: "POST",
+                    data: formData,
+                    success: function() {
+                        Swal.fire({
+                            title: 'Success',
+                            text: 'has been saved',
+                            icon: 'success'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload();
+                            }
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(xhr.status);
+                        if (xhr.status == 422) {
+                            var errorMessage = xhr.responseJSON && xhr.responseJSON.error ?
+                                xhr
+                                .responseJSON.error : 'Something went wrong';
+                            Swal.fire({
+                                title: 'Error',
+                                text: errorMessage,
+                                icon: 'error'
+                            });
+
+                            $card.find('.form-select').addClass('input-error');
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Something went wrong',
+                                icon: 'error'
+                            });
                         }
-                    });
-                },
-                error: function() {
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'Something went wrong',
-                        icon: 'error'
-                    });
-                }
-            })
+
+                    }
+                })
+            }
+
 
         });
 
