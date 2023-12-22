@@ -737,7 +737,7 @@ const GeneralInformationForm = () => {
                                 key="materialCostLableColumn"
                                 classValue="col-2"
                                 colContent={
-                                    <Label labelContent="Material Cost *" />
+                                    <Label labelContent="Material Cost" />
                                 }
                             />,
                             <Column
@@ -745,14 +745,19 @@ const GeneralInformationForm = () => {
                                 classValue="col-10"
                                 colContent={
                                     <>
-                                        <NumericFormatInput
-                                            value={`$${amount}`}
+                                        <NumericFormat
+                                            name="samount"
+                                            id={"amount"}
+                                            value={amount}
+                                            prefix={"$"}
+                                            decimalScale={2}
+                                            fixedDecimalScale={true}
+                                            allowNegative={false}
                                             inputValue={amount}
-                                            label="material cost"
+                                            placeholder="$0.00"
                                             disabled={!isEditing}
-                                            id={"materialCost"}
-                                            name={"materialCost"}
                                             onChangeInput={(e) => setAmount(e)}
+                                            className="form-control"
                                         />
                                     </>
                                 }

@@ -18,11 +18,9 @@
 @if ($actionButtons == true)
     <div class="row mb-4">
         <div class="col-md-6">
-
             <button type="button" class="editGeneralLiabilitiesButton btn btn-primary"
                 value="{{ $generalLiabilities->generalInformation->lead->id }}"><i class="ri-edit-line"></i>
                 Edit</button>
-
         </div>
     </div>
 
@@ -299,14 +297,12 @@
         {{ $generalLiabilities->coverageLimit->deductible }}
     </div>
 </div>
-
-
 <script>
     $(document).ready(function() {
         $('.editGeneralLiabilitiesButton').on('click', function(e) {
             var url = "{{ env('APP_FORM_URL') }}";
             var id = $(this).val();
-            console.log(id);
+
             $.ajax({
                 url: "{{ route('list-lead-id') }}",
                 headers: {

@@ -120,6 +120,7 @@
                                 @can('viewAssignQuotedLeads', App\Models\Lead::find(1))
                                     <li><a href="{{ route('get-quoted-product') }}">Assign Quoted Leads</a></li>
                                 @endcan
+                                <li><a href="{{ route('market-list.index') }}">Market List</a></li>
                             </ul>
                         @endcan
                     </li>
@@ -152,6 +153,7 @@
                             @can('viewImport', App\Models\Lead::find(1))
                                 <li><a href="{{ route('leads') }}">Import Leads</a></li>
                             @endcan
+                            <li><a href="{{ route('leads-dnc-view') }}">DNC Number</a></li>
                             @can('viewLeadsFunnel', App\Models\Lead::find(1))
                                 <li><a href="{{ route('assign') }}">Assign Leads</a></li>
                             @endcan

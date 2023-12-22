@@ -89,7 +89,13 @@ Route::middleware(['auth'])->group(function (){
       Route::post('add-leads', [LeadController::class, 'store'])->name('leads.store');
       Route::get('get-data-dnc', [LeadController::class, 'getDncData'])->name('get.data.dnc');
       Route::post('dnc-leads-import', [LeadController::class, 'importDnc'])->name('dnc.lead.import');
+
       Route::get('leads-dnc', [LeadController::class, 'leadsDnc'])->name('leads.dnc');
+      Route::get('leads-dnc-view', [LeadController::class, 'viewDnc'])->name('leads-dnc-view');
+      Route::get('leads-dnc-export', [LeadController::class, 'exportDnc'])->name('leads-dnc-export');
+      Route::get('leads-dnc-request-view', [LeadController::class, 'checkDncExport'])->name('leads-dnc-request-view');
+      Route::get('leads-appointed-callback', [LeadController::class, 'getCallBackAppointedLead'])->name('leads-appointed-callback');
+
       Route::delete('leads/{leads}/delete', [LeadController::class, 'destroy'])->name('leads.destroy');
       Route::post('leads/{leads}/restore', [LeadController::class, 'restore'])->name('leads.restore');
       Route::get('leads/archive', [LeadController::class, 'archive'])->name('leads.archive');

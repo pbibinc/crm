@@ -95,7 +95,7 @@
                     </div>
                 </div>
 
-                <div class="col-12">
+                <div class="col-xl-12">
                     <div class="card"
                         style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                         <div class="card-body">
@@ -233,6 +233,7 @@
                     </div>
 
                 </div>
+
             </div>
         </div>
         @include('leads.apptaker_leads.assign-questionare')
@@ -369,9 +370,12 @@
                     processing: true,
                     serverSide: true,
                     searching: true,
-                    scrollY: 500,
-                    scrollX: true,
+                    // scrollY: 500,
+                    // scrollX: true,
                     ajax: {
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
                         url: "{{ route('apptaker-leads') }}",
                         data: function(d) {
                             d.website_originated = $('#websiteOriginatedDropdown').val(),
@@ -492,9 +496,9 @@
                         $('#transactionLogModal').modal('hide');
                     }
 
-                    if (selectedDisposition == '13') {
-                        $('#transactionLogModal').modal('hide');
-                    }
+                    // if (selectedDisposition == '13') {
+                    //     $('#transactionLogModal').modal('hide');
+                    // }
                     var remarks = $('#remarksDescription').val();
                     $.ajax({
                         url: "{{ route('list-lead-id') }}",

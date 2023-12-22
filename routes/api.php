@@ -61,6 +61,7 @@ Route::get('general-liabilities-data/edit/{id}', [GeneralLiabilitiesDataControll
 Route::post('workers-comp-data/store', [WorkersCompDataController::class, 'saveWorkersComp'])->withoutMiddleware(['auth:sanctum']);
 Route::put('workers-comp-data/{id}', [WorkersCompDataController::class, 'updateWorkersComp'])->withoutMiddleware(['auth:sanctum']);
 Route::get('workers-comp-data/get/{id}', [WorkersCompDataController::class, 'getWorkersCompData'])->withoutMiddleware(['auth:sanctum']);
+Route::get('workers-comp-data/edit/{id}', [WorkersCompDataController::class, 'edit'])->withoutMiddleware(['auth:sanctum']);
 
 //route for commercial auto
 Route::post('commercial-auto-data/store', [CommercialAutoController::class, 'saveCommercialAuto'])->withoutMiddleware(['auth:sanctum']);
