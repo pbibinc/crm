@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
 class QuotationController extends Controller
@@ -143,19 +144,32 @@ class QuotationController extends Controller
         if($request->ajax())
         {
             try{
-                DB::beginTransaction();
-
-                $quotationProductId = $request->input('id');
-                $marketId = $request->input('market');
+            DB::beginTransaction();
+                //declaring variable
+                $quotationProductId = $request->input('productId');
+                $marketId = $request->input('marketDropdown');
                 $fullPayment = $request->input('fullPayment');
                 $downPayment = $request->input('downPayment');
                 $monthlyPayment = $request->input('monthlyPayment');
                 $brokerFee = $request->input('brokerFee');
-                $reccomended = $request->input('reccomended');
+                $reccomended = $request->input('recommended');
+                $convertedFullPayment = floatval($fullPayment);
+                $convertedDownPayment = floatval($downPayment);
 
+                //validations
                 $exists = QuoteComparison::where('quotation_product_id', $quotationProductId)
                 ->where('quotation_market_id', $marketId)
                 ->exists();
+                if($convertedFullPayment < $convertedDownPayment){
+                    return response()->json(['error' => 'Down payment must be less than full payment'], 422);
+                }
+                $validator = Validator::make($request->all(), [
+                    'fullPayment' => 'required',
+                    'downPayment' => 'required',
+                    'monthlyPayment' => 'required',
+                    'brokerFee' => 'required',
+                    'marketDropdown' => 'required',
+                ]);
 
                 if($exists == false){
                     $quoteComparison = new QuoteComparison();
@@ -165,12 +179,13 @@ class QuotationController extends Controller
                     $quoteComparison->down_payment = $downPayment;
                     $quoteComparison->monthly_payment = $monthlyPayment;
                     $quoteComparison->broker_fee = $brokerFee;
-                    $quoteComparison->recommended = $reccomended == 'true' ? 1  : 0;
+                    $quoteComparison->recommended = floatval($reccomended);
                     $quoteComparison->save();
                 }else{
                     return response()->json(['error' => 'This market is already added'], 422);
                 }
                 DB::commit();
+                return response()->json(['success' => 'Quote comparison saved successfully']);
             }catch(\Exception $e){
                 DB::rollback();
                 Log::error('Error in saving quote comparison', [$e->getMessage()]);
@@ -197,25 +212,25 @@ class QuotationController extends Controller
     {
         if($request->ajax())
         {
-            $id = $request->input('id');
-            $marketId = $request->input('market');
+            $id = $request->input('hidden_id');
+            $marketId = $request->input('marketDropdown');
             $fullPayment = $request->input('fullPayment');
             $downPayment = $request->input('downPayment');
             $monthlyPayment = $request->input('monthlyPayment');
             $brokerFee = $request->input('brokerFee');
-            $reccomended = $request->input('reccomended');
+            $reccomended = $request->input('recommended');
             $productId = $request->input('productId');
             $quoteComparison = QuoteComparison::find($id);
-            $exists = $quoteComparison->where('quotation_market_id', $marketId)->exists();
-            if($exists == false){
-                if($fullPayment && $downPayment && $monthlyPayment && $brokerFee && $reccomended){
+            $exists = QuoteComparison::where('quotation_market_id', $marketId)->where('quotation_product_id', $productId)->where('id', '!=', $id)->exists();
+            if(!$exists){
+                if($fullPayment && $downPayment && $monthlyPayment && $brokerFee){
                     $quoteComparison->quotation_product_id = $productId;
                     $quoteComparison->quotation_market_id = $marketId;
                     $quoteComparison->full_payment = $fullPayment;
                     $quoteComparison->down_payment = $downPayment;
                     $quoteComparison->monthly_payment = $monthlyPayment;
                     $quoteComparison->broker_fee = $brokerFee;
-                    $quoteComparison->recommended = $reccomended == 'true' ? 1  : 0;
+                    $quoteComparison->recommended = $reccomended;
                     }else{
                         $quoteComparison->full_payment = $fullPayment;
                         $quoteComparison->down_payment = $downPayment;
@@ -223,6 +238,7 @@ class QuotationController extends Controller
                         $quoteComparison->broker_fee = $brokerFee;
                     }
                     $quoteComparison->save();
+                    return response()->json(['success' => 'Quote comparison updated successfully']);
             }else{
                 return response()->json(['error' => 'This market is already added'], 422);
             }
@@ -237,6 +253,16 @@ class QuotationController extends Controller
             $id = $request->input('id');
             $quoteComparison = QuoteComparison::find($id);
             $quoteComparison->delete();
+        }
+    }
+
+    public function editQuotationComparison(Request $request)
+    {
+        if($request->ajax())
+        {
+            $id = $request->input('id');
+            $data = QuoteComparison::find($id);
+            return response()->json(['data' => $data]);
         }
     }
 
@@ -548,6 +574,29 @@ class QuotationController extends Controller
             })
             ->rawColumns(['viewButton', 'statusColor'])
             ->make(true);
+        }
+    }
+
+    public function getGeneralLiabilitiesTable(Request $request)
+    {
+        if($request->ajax())
+        {
+         $quoteComparisson = QuoteComparison::where('quotation_product_id', $request->input('id'))->get();
+
+         return DataTables::of($quoteComparisson)->addIndexColumn()
+         ->addIndexColumn()
+         ->addColumn('market_name', function($quoteComparison){
+             $market = QuoationMarket::find($quoteComparison->quotation_market_id);
+            return $quoteComparison->recommended == 1 ? '<i class="ri-star-fill"></i>' . ' ' . $market->name : $market->name;
+
+         })
+         ->addColumn('action', function($quoteComparison){
+            $deletButton = '<button class="delete btn btn-outline-danger btn-sm deleteButton" id="' . $quoteComparison->id . '"><i class="ri-delete-bin-line"></i></button>';
+            $editButton = '<button class="edit btn btn-outline-info btn-sm editButton" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i></button>';
+            return $editButton . ' ' . $deletButton;
+         })
+         ->rawColumns(['market_name', 'action'])
+         ->make(true);
         }
     }
 
