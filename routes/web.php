@@ -150,11 +150,16 @@ Route::middleware(['auth'])->group(function (){
          Route::get('/appointed-leads', [QuotationController::class, 'appointedLeadsView'])->name('appointed-leads');
          Route::post('/lead-profile', [QuotationController::class, 'leadProfile'])->name('lead-profile');
          Route::get('/lead-profile-view/{productId}', [QuotationController::class, 'leadProfileView'])->name('lead-profile-view');
-         Route::post('/save-quotation-comparison', [QuotationController::class, 'saveQuoteComparison'])->name('save-quotation-comparison');
+
          Route::post('/save-quotation-product', [QuotationController::class, 'saveQuotationProduct'])->name('save-quotation-product');
          Route::get('/get-comparison-data', [QuotationController::class, 'getComparisonData'])->name('get-comparison-data');
+
+         //quotation comparison functionalities
+         Route::post('/save-quotation-comparison', [QuotationController::class, 'saveQuoteComparison'])->name('save-quotation-comparison');
+         Route::post('/edit-quotation-comparison', [QuotationController::class, 'editQuotationComparison'])->name('edit-quotation-comparison');
          Route::post('/update-quotation-comparison', [QuotationController::class, 'updateQuotationComparison'])->name('update-quotation-comparison');
          Route::post('/delete-quotation-comparison', [QuotationController::class, 'deleteQuotationComparison'])->name('delete-quotation-comparison');
+
          Route::post('/send-quotation-product', [QuotationController::class, 'sendQuotationProduct'])->name('send-quotation-product');
          Route::get('/get-quoted-product', [QuotationController::class, 'getQuotedProduct'])->name('get-quoted-product');
          Route::post('/assign-broker-assistant', [QuotationController::class, 'assignBrokerAssistant'])->name('assign-broker-assistant');
@@ -168,6 +173,8 @@ Route::middleware(['auth'])->group(function (){
          Route::post('/set-callback-date', [QuotationController::class, 'setCallBackDate'])->name('set-callback-date');
          Route::get('/get-confirmed-product', [QuotationController::class, 'getConfirmedProduct'])->name('get-confirmed-product');
          Route::get('/get-broker-product', [QuotationController::class, 'getBrokerProduct'])->name('get-broker-product');
+         //getting table for quotation
+         Route::get('/get-general-liabilities-quotation-table', [QuotationController::class, 'getGeneralLiabilitiesTable'])->name('get-general-liabilities-quotation-table');
 
          //route for notes
          Route::post('/create-notes', [NotesController::class, 'createNotes'])->name('create-notes');
