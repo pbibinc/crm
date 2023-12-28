@@ -4,316 +4,159 @@
         /* or background-color: #ffcccc; for a red background */
     }
 </style>
-<div class="col-6 title-card">
-    <h4 class="card-title mb-0" style="color: #ffffff">General Liabilities Quoation Form</h4>
-</div>
-<div class="row">
-    <div class="col-6">
-        <div class="card border border-primary generalLiabilitiesFirsCardForm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div class="form-check">
-                        <div class="form-check form-switch mb-3" dir="ltr">
-                            <input class="form-check-input" type="checkbox" id="reccommendedCheckBox">
-                            <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
-                        </div>
-                    </div>
-                    {{-- <div>
-                        <button class="btn rounded-circle btn-success" id="addGLPriceComparisonButton"><i
-                                class="mdi mdi-plus-circle"></i></button>
-                    </div> --}}
-                </div>
-                <hr>
-                <div class="row mb-4">
-                    <div>
-                        <select name="" id="" class="form-select">
-                            <option value="">Select Market</option>
-                            @foreach ($quationMarket as $market)
-                                <option value={{ $market->id }}>{{ $market->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group row mb-4">
-                    <div class="col-6">
-                        <label for="filterBy" class="form-label">Full Payment:</label>
-                        <input id="fullPayment" class="form-control fullPayment">
-                    </div>
-                    <div class="col-6">
-                        <label for="filterBy" class="form-label">Down Payment:</label>
-                        <input class="form-control downPayment" id="downPayment" type="text">
-                    </div>
-                </div>
-                <div class="row mb-4">
-                    <div class="col-6">
-                        <label for="filterBy" class="form-label">Montly Payment:</label>
-                        <input class="form-control" id="monthlyPayment" type="text">
-                    </div>
-                    <div class="col-6">
-                        <label for="filterBy" class="form-label">Broker Fee:</label>
-                        <input class="form-control brokerFee" id="brokerFee" type="text">
-                    </div>
-                </div>
-                <hr>
-                <div class="text-center">
-                    <button class="btn btn-primary saveGLFormButton">Save</button>
-                </div>
-                <input class="form-control" value={{ $generalInformation->lead->id }} id="leadId" type="hidden">
-            </div>
+<div class="row mb-2">
+    <div class="col-6 title-card">
+        <h4 class="card-title mb-0" style="color: #ffffff">General Liabilities Quoation Form</h4>
+    </div>
+    <div class="d-flex justify-content-between">
+        <div>
         </div>
+        <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addQuoteModal" id="create_record">
+            ADD QUOTE
+        </a>
     </div>
 </div>
 
-<div id="GLCardContainer"></div>
-
-<div class="col-12">
-    <div class="d-grid mb-3 text-center">
-        @if ($quoteProduct->status === 2)
-            <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light"
-                id="saveQuoationProduct">Save Quotation</button>
-        @else
-            {{-- <button type="button" class="btn btn-outline-success btn-lg waves-effect waves-light" id="saveQuoationProduct" disabled>Save Quotation</button> --}}
-            <span>Already Sent</span>
-        @endif
-    </div>
+<div class="row">
+    <table id="qoutation-table" class="table table-bordered dt-responsive nowrap"
+        style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+        <thead>
+            <tr>
+                <th>Market</th>
+                <th>Full Payment</th>
+                <th>Down Payment</th>
+                <th>Monthly Payment</th>
+                <th>Broker Fee</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 </div>
 
-<script>
-    $(document).ready(function() {
-        $('#saveQuoationProduct').on('click', function() {
-            var id = {{ $quoteProduct->id }};
-            $.ajax({
-                url: "{{ route('send-quotation-product') }}",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                method: "POST",
-                data: {
-                    id: id
-                },
-                success: function() {
-                    Swal.fire({
-                        title: 'Success',
-                        text: 'has been saved',
-                        icon: 'success'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            location.reload();
-                        }
-                    });
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'Something went wrong',
-                        icon: 'error'
-                    });
-                    console.log(errorThrown);
-                }
-            });
-        });
-        let quoteComparison;
-        $.ajax({
-            url: "{{ route('get-comparison-data') }}",
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            method: "GET",
-            data: {
-                id: {{ $quoteProduct->id }}
-            },
-            success: function(data) {
-                quoteComparison = data.quoteComparison;
-                market = data.market;
-                doSomethingWithQuoteComparison();
-            },
-            error: function() {
-
-            }
-        });
-
-        function doSomethingWithQuoteComparison() {
-            if (quoteComparison.length > 0) {
-                $('.generalLiabilitiesFirsCardForm').hide();
-                quoteComparison.forEach(function(data) {
-                    let selectOptions = `<option value="">Select Market</option>`;
-                    market.forEach(function(market) {
-                        selectOptions +=
-                            `<option value="${market.id}" ${market.id === data.quotation_market_id ? 'selected' : ''}>${market.name}</option>`;
-                    });
-                    let cardContent = `
-           <div class="col-6">
-            <div class="card border border-primary rounded shadow-sm">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="reccommendedCheckBox" ${data.recommended === 1 ? 'checked' : '' }>
-                            <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
-                        </div>
-                        <div>
-                            <button class="btn btn-success rounded-circle addGLPriceComparison" id="addPriceComparisonButton" title"Add""><i class="mdi mdi-plus-circle"></i></button>
-                            <button class="btn btn-danger rounded-circle removeSavedGLDataButton" title="Remove"><i class="mdi mdi-minus-circle"></i></button>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="mb-4">
-                        <label for="filterBy" class="form-label mt-2" >Select Market:</label>
-                        <select name="" id="" class="form-select">
-                            ${selectOptions}
-                        </select>
-                    </div>
-                    <div class="form-group row mb-4">
-                        <div class="col-6">
-                            <label for="filterBy" class="form-label mt-2" >Full Payment:</label>
-                            <input id="fullPayment"  class="form-control fullPayment"  type="text" value="${data.full_payment}">
-                        </div>
-                        <div class="col-6">
-                            <label for="filterBy" class="form-label mt-2">Down Payment:</label>
-                            <input class="form-control downPayment" id="downPayment" type="text" value="${data.down_payment}">
-                        </div>
-                    </div>
-                    <div class="form-group row mb-4">
-                        <div class="col-6">
-                            <label for="filterBy" class="form-label mt-2">Montly Payment:</label>
-                            <input class="form-control" id="monthlyPayment" type="text" value="${data.monthly_payment}">
-                        </div>
-                        <div class="col-6">
-                            <label for="filterBy" class="form-label mt-2">Broker Fee:</label>
-                            <input class="form-control brokerFee" id="brokerFee" type="text" value="${data.broker_fee}">
-                        </div>
-                    </div>
-                    <input type="hidden" value="${data.id}" id="quoteComparisonId"/>
-                    <hr>
-                <div class="text-center">
-                    <button class="btn btn-lg btn-success editGLFormButton">Save</button>
-                </div>
-                </div>
+<div class="modal fade" id="addQuoteModal" tabindex="-1" aria-labelledby="addQuoteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addQuoteModalLabel">Add Position</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            </div>
-           `;
-
-                    let lastRow = $('#GLCardContainer > .row:last-child');
-                    if (lastRow.length == 0 || lastRow.children().length == 2) {
-                        // Either no rows or the last row already has 2 cards, so create a new row
-                        $('#GLCardContainer').append('<div class="row">' + cardContent + '</div>');
-                    } else {
-                        // Last row exists and only has 1 card, so append the new card there
-                        lastRow.append(cardContent);
-                    }
-                    // $('#GLCardContainer').append(cardContent);
-                });
-            }
-        };
-
-        $(document).on('focus', '.brokerFee', function() {
-            // When the input gains focus, store its current value to data attribute
-            let currentBrokerFee = parseFloat($(this).val()) || 0;
-            $(this).data('lastBrokerFee', currentBrokerFee);
-        });
-
-        $(document).on('input', '.brokerFee', function() {
-            // Get the parent card
-            const card = $(this).closest('.card');
-
-            // Get the current broker fee
-            const currentBrokerFee = parseFloat($(this).val()) || 0;
-            const lastBrokerFee = $(this).data('lastBrokerFee') || 0;
-
-            // Find the related fullPayment and downPayment input fields within this card
-            const fullPaymentInput = card.find('.fullPayment');
-            const downPaymentInput = card.find('.downPayment');
-
-            // Get their current values
-            let fullPayment = parseFloat(fullPaymentInput.val()) || 0;
-            let downPayment = parseFloat(downPaymentInput.val()) || 0;
-
-            // Subtract last broker fee and add new broker fee
-            fullPayment = fullPayment - lastBrokerFee + currentBrokerFee;
-            downPayment = downPayment - lastBrokerFee + currentBrokerFee;
-
-            // Update their values
-            fullPaymentInput.val(fullPayment);
-            downPaymentInput.val(downPayment);
-
-            // Update the last broker fee for the next change
-            $(this).data('lastBrokerFee', currentBrokerFee);
-        });
-
-        $(document).on('click', '.addGLPriceComparison', function() {
-            let cardContent = `
-         <div class="col-6">
-            <div class="card border border-primary">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div class="col-8">
-                            <input class="form-check-input" type="checkbox" id="reccommendedCheckBox">
-                          <label class="form-check-label" for="formCheck1">Reccomend This Quote</label>
-                        </div>
-                        <div class="col-4 text-right">
-                            <button class="btn btn-success rounded-circle addGLPriceComparison" id="addPriceComparisonButton"><i class="mdi mdi-plus-circle"></i></button>
-                            <button class="btn btn-danger rounded-circle removeCardButton"><i class="mdi mdi-minus-circle"></i></button>
-                        </div>
-                    </div>
-                    <div class="row"><hr></div>
-                    <div class="row mb-4">
-                        <div>
-                            <label for="filterBy" class="form-label mt-2" >Select Market:</label>
-                            <select name="" id="" class="form-select">
+            <div class="modal-body">
+                <form id="quotationForm">
+                    @csrf
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label for="marketDropdown">Market</label>
+                            <select name="marketDropdown" id="marketDropdown" class="form-select">
                                 <option value="">Select Market</option>
                                 @foreach ($quationMarket as $market)
-                                   <option value={{ $market->id }}>{{ $market->name }}</option>
+                                    <option value={{ $market->id }}>{{ $market->name }}</option>
                                 @endforeach
                             </select>
                         </div>
-
                     </div>
-                    <div class="form-group row mb-4">
+                    <div class="row mb-2">
                         <div class="col-6">
-                            <label for="filterBy" class="form-label" >Full Payment:</label>
-                            <input id="fullPayment" class="form-control fullPayment">
+                            <label for="fullPayment" class="form-label">Full Payment</label>
+                            <input type="text" class="form-control" id="fullPayment" name="fullPayment" required>
                         </div>
                         <div class="col-6">
-                            <label for="filterBy" class="form-label">Down Payment:</label>
-                            <input class="form-control downPayment" id="downPayment" type="text">
-                        </div>
-                    </div>
-                    <div class="form-group row mb-4">
-                        <div class="col-6">
-                            <label for="filterBy" class="form-label">Montly Payment:</label>
-                            <input class="form-control" id="monthlyPayment" type="text">
-                        </div>
-                        <div class="col-6">
-                            <label for="filterBy" class="form-label">Broker Fee:</label>
-                            <input class="form-control brokerFee" id="brokerFee" type="text">
+                            <label for="downPayment" class="form-label">Down Payment</label>
+                            <input type="text" class="form-control" id="downPayment" name="downPayment" required>
                         </div>
                     </div>
-                    <hr>
-                <div class="text-center">
-                    <button class="btn btn-lg btn-success saveGLFormButton">Save</button>
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="monthlyPayment" class="form-label">Monthly Payment</label>
+                            <input type="text" class="form-control" id="monthlyPayment" name="monthlyPayment"
+                                required>
+                        </div>
+                        <div class="col-6">
+                            <label for="brokerFee" class="form-label">Broker Fee</label>
+                            <input type="text" class="form-control" id="brokerFee" name="brokerFee" required>
+                        </div>
+                    </div>
+                    <input type="hidden" name="action" id="action" value="add">
+                    <input type="hidden" name="hidden_id" id="hidden_id" />
+                    <input type="hidden" name="productId" id="productId" value="{{ $quoteProduct->id }}">
+                    <input type="hidden" name="recommended" id="recommended_hidden" value="1" />
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <div class="form-check form-switch mb-3">
+                    <input type="checkbox" class="form-check-input" id="reccomended" checked="">
+                    <label class="form-check-label" for="reccomended">Reccomend this Quote</label>
                 </div>
+                <div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <input type="submit" name="action_button" id="action_button" value="Add"
+                        class="btn btn-primary">
                 </div>
             </div>
+            </form>
         </div>
-        `;
-            let lastRow = $('#GLCardContainer > .row:last-child');
-            if (lastRow.length == 0 || lastRow.children().length == 2) {
-                // Either no rows or the last row already has 2 cards, so create a new row
-                $('#GLCardContainer').append('<div class="row">' + cardContent + '</div>');
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function() {
+        var id = {{ $quoteProduct->id }};
+        $('#qoutation-table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                        'content')
+                },
+                url: "{{ route('get-general-liabilities-quotation-table') }}",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    id: id
+                }
+            },
+            columns: [{
+                    data: 'market_name',
+                    name: 'market_name'
+                },
+                {
+                    data: 'full_payment',
+                    name: 'full_payment'
+                },
+                {
+                    data: 'down_payment',
+                    name: 'down_payment'
+                },
+                {
+                    data: 'monthly_payment',
+                    name: 'monthly_payment'
+                },
+                {
+                    data: 'broker_fee',
+                    name: 'broker_fee'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false
+                }
+            ]
+        });
+
+        //checkbox for recommended
+        $('#reccomended').change(function() {
+            if ($(this).is(':checked')) {
+                $('#recommended_hidden').val(1);
             } else {
-                // Last row exists and only has 1 card, so append the new card there
-                lastRow.append(cardContent);
+                $('#recommended_hidden').val(0);
             }
-            // $('#GLCardContainer').append(cardContent);
         });
 
-        $('#GLCardContainer').on('click', '.removeCardButton', function() {
-            $(this).closest('.card').remove();
-
-        });
-        $(".input-mask").inputmask();
-
-        $('#GLCardContainer').on('click', '.removeSavedGLDataButton', function() {
-            var $card = $(this).closest('.card');
+        //deletion of quote
+        $(document).on('click', '.deleteButton', function(e) {
+            e.preventDefault();
+            var id = $(this).attr('id');
             Swal.fire({
                 title: 'Are you sure?',
                 text: 'You will not be able to recover this!',
@@ -323,7 +166,6 @@
                 cancelButtonText: 'No, keep it'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    var id = $card.find('#quoteComparisonId').val();
                     $.ajax({
                         url: "{{ route('delete-quotation-comparison') }}",
                         headers: {
@@ -340,8 +182,8 @@
                                 icon: 'success'
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    location.reload();
-                                    $card.remove();
+                                    $('#qoutation-table').DataTable().ajax
+                                        .reload();
                                 }
                             })
                         },
@@ -355,155 +197,148 @@
                     })
                 }
             });
-
-            var id = $card.find('#quoteComparisonId').val();
         });
 
-        $(document).on('click', '.saveGLFormButton', function() {
-            var $card = $(this).closest('.card');
-            $card.find('#fullPayment, #downPayment, .form-select').removeClass('input-error');
-
-            //form
-            var market = $card.find('.form-select').val();
-            var fullPayment = $card.find('#fullPayment').val();
-            var downPayment = $card.find('#downPayment').val();
-            var monthlyPayment = $card.find('#monthlyPayment').val();
-            var brokerFee = $card.find('#brokerFee').val();
-            var reccomended = $card.find('#reccommendedCheckBox').is(':checked');
-            var id = {{ $quoteProduct->id }};
+        $(document).on('click', '#create_record', function(e) {
+            e.preventDefault();
+            $('#action').val('add');
+            $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
+            $('#addQuoteModal').modal('show');
+            $('#action_button').val('Add');
+        });
 
 
-            var formData = {
-                market: market,
-                fullPayment: fullPayment,
-                downPayment: downPayment,
-                monthlyPayment: monthlyPayment,
-                brokerFee: brokerFee,
-                reccomended: reccomended,
-                id: id
-            };
 
-            if (parseInt(fullPayment) <= parseInt(downPayment)) {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Down Payment must be less than Full Payment',
-                    icon: 'error'
-                });
-                $card.find('#fullPayment, #downPayment').addClass('input-error');
-            } else {
-                $.ajax({
-                    url: "{{ route('save-quotation-comparison') }}",
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    method: "POST",
-                    data: formData,
-                    success: function() {
-                        Swal.fire({
-                            title: 'Success',
-                            text: 'has been saved',
-                            icon: 'success'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                location.reload();
-                            }
-                        });
-                    },
-                    error: function(xhr, status, error) {
-                        var errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr
-                            .responseJSON.error : 'Something went wrong';
-                        Swal.fire({
-                            title: 'Error',
-                            text: errorMessage,
-                            icon: 'error'
-                        });
-                        $card.find('.form-select').addClass('input-error');
+        //edit button functionalities
+        $(document).on('click', '.editButton', function(e) {
+            e.preventDefault();
+            var id = $(this).attr('id');
+            $('#action').val('edit');
+            $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
+            $.ajax({
+                url: "{{ route('edit-quotation-comparison') }}",
+                method: "POST",
+                data: {
+                    id: id,
+                    _token: "{{ csrf_token() }}"
+                },
+                dataType: "json",
+                success: function(response) {
+                    $('#marketDropdown').val(String(response.data.quotation_market_id));
+                    $('#fullPayment').val(response.data.full_payment);
+                    $('#downPayment').val(response.data.down_payment);
+                    $('#monthlyPayment').val(response.data.monthly_payment);
+                    $('#brokerFee').val(response.data.broker_fee);
+                    $('#hidden_id').val(response.data.id);
+                    $('#productId').val(response.data.quotation_product_id);
+                    $('#action_button').val('Update');
+                    if (response.data.recommended == 1) {
+                        $('#reccomended').prop('checked', true);
+                    } else {
+                        $('#reccomended').prop('checked', false);
                     }
-                })
+                    $('#addQuoteModal').modal('show');
+                }
+            });
+
+        });
+
+
+        //SUBMISSION OF FORM WITH VALIDATION FOR FULL PAYMENT AND DOWN PAYMENT
+
+
+        //submition of form
+        $('#quotationForm').on('submit', function(event) {
+            event.preventDefault();
+            var action_url = '';
+            $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
+            let fullPayment = parseFloat($('#fullPayment').val()) || 0;
+            let downPayment = parseFloat($('#downPayment').val()) || 0;
+
+            if ($('#action').val() == 'add') {
+                action_url = "{{ route('save-quotation-comparison') }}";
             }
 
-        });
-
-        $(document).on('click', '.editGLFormButton', function() {
-            var $card = $(this).closest('.card');
-            $card.find('#fullPayment, #downPayment, .form-select').removeClass('input-error');
-            //form
-            var market = $card.find('.form-select').val();
-            var fullPayment = $card.find('#fullPayment').val();
-            var downPayment = $card.find('#downPayment').val();
-            var monthlyPayment = $card.find('#monthlyPayment').val();
-            var brokerFee = $card.find('#brokerFee').val();
-            var productId = {{ $quoteProduct->id }};
-            var reccomended = $card.find('#reccommendedCheckBox').is(':checked');
-            var id = $card.find('#quoteComparisonId').val();
-
-            var formData = {
-                market: market,
-                fullPayment: fullPayment,
-                downPayment: downPayment,
-                monthlyPayment: monthlyPayment,
-                brokerFee: brokerFee,
-                productId: productId,
-                reccomended: reccomended,
-                id: id
-            };
-            if (parseInt(fullPayment) <= parseInt(downPayment)) {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'Down Payment must be less than Full Payment',
-                    icon: 'error'
-                });
-                $card.find('#fullPayment, #downPayment').addClass('input-error');
-
+            if ($('#action').val() == 'edit') {
+                action_url = "{{ route('update-quotation-comparison') }}";
+            }
+            if (fullPayment < downPayment) {
+                $('#fullPayment').addClass('input-error');
+                $('#downPayment').addClass('input-error');
             } else {
                 $.ajax({
-                    url: "{{ route('update-quotation-comparison') }}",
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
+                    url: action_url,
                     method: "POST",
-                    data: formData,
-                    success: function() {
+                    data: $(this).serialize(),
+                    dataType: "json",
+                    success: function(response) {
                         Swal.fire({
-                            title: 'Success',
-                            text: 'has been saved',
-                            icon: 'success'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                location.reload();
-                            }
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Quotation Comparison has been saved',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            $('#addQuoteModal').modal('hide');
+                            $('#qoutation-table').DataTable().ajax.reload();
                         });
                     },
-                    error: function(xhr, status, error) {
-                        console.log(xhr.status);
-                        if (xhr.status == 422) {
-                            var errorMessage = xhr.responseJSON && xhr.responseJSON.error ?
-                                xhr
-                                .responseJSON.error : 'Something went wrong';
+                    error: function(data) {
+                        var errors = data.responseJSON.errors;
+                        console.log(data);
+                        if (data.status == 422) {
                             Swal.fire({
                                 title: 'Error',
-                                text: errorMessage,
+                                text: data.responseJSON.error,
                                 icon: 'error'
                             });
-
-                            $card.find('.form-select').addClass('input-error');
-                        } else {
-                            Swal.fire({
-                                title: 'Error',
-                                text: 'Something went wrong',
-                                icon: 'error'
+                            $('#marketDropdown').addClass('input-error');
+                        }
+                        if (errors) {
+                            $.each(errors, function(key, value) {
+                                $('#' + key).addClass('input-error');
+                                $('#' + key + '_error').html(value);
                             });
                         }
-
                     }
-                })
+                });
             }
-
-
         });
 
 
 
+        //
+        $('#brokerFee').on('focus', function() {
+            let currentBrokerFee = parseFloat($(this).val()) || 0;
+            $(this).data('lastBrokerFee', currentBrokerFee);
+        });
 
+        //code for dynami input changing the value
+        $('#brokerFee').on('input', function() {
+            const currentBrokerFee = parseFloat($(this).val()) || 0;
+            const lastBrokerFee = $(this).data('lastBrokerFee') || 0;
+
+            let fullPayment = parseFloat($('#fullPayment').val()) || 0;
+            let downPayment = parseFloat($('#downPayment').val()) || 0;
+
+            //subtract last broker fee and add new broker fee
+            fullPayment = fullPayment - lastBrokerFee + currentBrokerFee;
+            downPayment = downPayment - lastBrokerFee + currentBrokerFee;
+
+            // Update their values
+            $('#fullPayment').val(fullPayment);
+            $('#downPayment').val(downPayment);
+
+            // Update the last broker fee for the next change
+            $(this).data('lastBrokerFee', currentBrokerFee);
+        });
+
+        //function for resetting the input inside modal
+        $('#addQuoteModal').on('hide.bs.modal', function() {
+            // Reset the content of the modal
+            $(this).find('form').trigger('reset'); // Reset all form fields
+            // If there are other elements to clear, handle them here
+            $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
+        });
     });
 </script>

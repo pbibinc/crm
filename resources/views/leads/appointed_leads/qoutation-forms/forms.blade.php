@@ -62,31 +62,72 @@
 
 {{-- Qoutation Forms --}}
 
-    @if ($product->product == 'General Liabilities')
-     @include('leads.appointed_leads.qoutation-forms.quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('General Liabilities', $lead->quoteLead->QuoteInformation->id)])
-     @endif
+@if ($product->product == 'General Liabilities')
+    @include('leads.appointed_leads.qoutation-forms.quoation-form', [
+        'generalInformation' => $generalInformation,
+        'quationMarket' => $quationMarket,
+        'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+            'General Liabilities',
+            $lead->quoteLead->QuoteInformation->id),
+    ])
+@endif
 
-    @if ($product->product == 'Workers Compensation')
-       @include('leads.appointed_leads.qoutation-forms.workers-compensation-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Workers Compensation', $lead->quoteLead->QuoteInformation->id)])
-    @endif
+@if ($product->product == 'Workers Compensation')
+    @include('leads.appointed_leads.qoutation-forms.workers-compensation-quoation-form', [
+        'generalInformation' => $generalInformation,
+        'quationMarket' => $quationMarket,
+        'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+            'Workers Compensation',
+            $lead->quoteLead->QuoteInformation->id),
+    ])
+@endif
 
-    @if ($product->product == 'Commercial Auto')
-     @include('leads.appointed_leads.qoutation-forms.commercial-auto-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Commercial Auto', $lead->quoteLead->QuoteInformation->id)])
-    @endif
+@if ($product->product == 'Commercial Auto')
+    @include('leads.appointed_leads.qoutation-forms.commercial-auto-quoation-form', [
+        'generalInformation' => $generalInformation,
+        'quationMarket' => $quationMarket,
+        'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+            'Commercial Auto',
+            $lead->quoteLead->QuoteInformation->id),
+    ])
+@endif
 
-    @if ($product->product == 'Excess Liability')
-     @include('leads.appointed_leads.qoutation-forms.excess-liability-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Excess Liability', $lead->quoteLead->QuoteInformation->id)])
-    @endif
+@if ($product->product == 'Excess Liability')
+    @include('leads.appointed_leads.qoutation-forms.excess-liability-quoation-form', [
+        'generalInformation' => $generalInformation,
+        'quationMarket' => $quationMarket,
+        'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+            'Excess Liability',
+            $lead->quoteLead->QuoteInformation->id),
+    ])
+@endif
 
-    @if ($product->product == 'Tools Equipment')
-      @include('leads.appointed_leads.qoutation-forms.tools-equipment-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Tools Equipment', $lead->quoteLead->QuoteInformation->id)])
-    @endif
+@if ($product->product == 'Tools Equipment')
+    @include('leads.appointed_leads.qoutation-forms.tools-equipment-quoation-form', [
+        'generalInformation' => $generalInformation,
+        'quationMarket' => $quationMarket,
+        'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+            'Tools Equipment',
+            $lead->quoteLead->QuoteInformation->id),
+    ])
+@endif
 
-    @if ($product->product == 'Builders Risk')
-    @include('leads.appointed_leads.qoutation-forms.builders-risk-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $generalInformation->lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Builders Risk', $generalInformation->lead->quoteLead->QuoteInformation->id)])
-    @endif
+@if ($product->product == 'Builders Risk')
+    @include('leads.appointed_leads.qoutation-forms.builders-risk-quoation-form', [
+        'generalInformation' => $generalInformation,
+        'quationMarket' => $quationMarket,
+        'quoteProduct' => $generalInformation->lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+            'Builders Risk',
+            $generalInformation->lead->quoteLead->QuoteInformation->id),
+    ])
+@endif
 
-    @if ($product->product == 'Business Owners')
-    @include('leads.appointed_leads.qoutation-forms.business-owners-quoation-form', ['generalInformation' => $generalInformation, 'quationMarket' => $quationMarket, 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct('Business Owners', $lead->quoteLead->QuoteInformation->id)])
-    @endif
-
+@if ($product->product == 'Business Owners')
+    @include('leads.appointed_leads.qoutation-forms.business-owners-quoation-form', [
+        'generalInformation' => $generalInformation,
+        'quationMarket' => $quationMarket,
+        'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+            'Business Owners',
+            $lead->quoteLead->QuoteInformation->id),
+    ])
+@endif
