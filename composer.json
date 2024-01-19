@@ -12,7 +12,7 @@
         "elibyy/tcpdf-laravel": "^10.0",
         "ellgreen/laravel-loadfile": "^3.0",
         "fruitcake/laravel-cors": "^3.0",
-        "guzzlehttp/guzzle": "^7.2",
+        "guzzlehttp/guzzle": "^7.8",
         "hellosign/hellosign-php-sdk": "3.*@dev",
         "inspector-apm/inspector-laravel": "^4.7",
         "intervention/image": "^2.7",
@@ -25,6 +25,7 @@
         "psr/simple-cache": "2.0",
         "pusher/pusher-php-server": "^7.2",
         "select2/select2": "^4.0",
+        "spatie/laravel-webhook-client": "^3.2",
         "spatie/simple-excel": "^3.3",
         "yajra/laravel-datatables": "^9.0"
     },
