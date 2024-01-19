@@ -23,6 +23,10 @@ class VerifyCsrfToken extends Middleware
         'leads/disposition/*',
         'leads/classcodes/*',
         'leads/sic/*',
+
+        'api/main-line-customer-service',
+
+        'webhook-receiving-url'
     ];
 
     protected function shouldPassThrough($request)

@@ -5,6 +5,7 @@ use App\Http\Controllers\API\BuildersRiskController;
 use App\Http\Controllers\API\BusinessOwnersPolicyController;
 use App\Http\Controllers\API\ClassCodeDataController;
 use App\Http\Controllers\API\CommercialAutoController;
+use App\Http\Controllers\API\CustomerServiceController;
 use App\Http\Controllers\API\ExcessLiabilityController;
 use App\Http\Controllers\API\GeneralInformationData;
 use App\Http\Controllers\API\GeneralInformationDataController;
@@ -92,3 +93,10 @@ Route::post('reload-data', [AppTakerLeadsController::class, 'reloadData'])->midd
 Route::post('/generate-auth-token', [ApiAuthController::class, 'generateAuthToken'])->withoutMiddleware(['auth:sanctum']);
 
 Route::get('get-user', [UserController::class, 'getUser'])->withoutMiddleware(['auth:sanctum']);
+
+
+//route for dialpad
+
+Route::get('get-company', [CustomerServiceController::class, 'getCompany'])->withoutMiddleware(['auth:sanctum']);
+Route::get('get-user-list', [CustomerServiceController::class, 'getUserList'])->withoutMiddleware(['auth:sanctum']);
+Route::post('main-line-customer-service', [CustomerServiceController::class, 'mainLineCustomerService'])->withoutMiddleware(['auth:sanctum']);

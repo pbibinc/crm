@@ -26,6 +26,7 @@ use App\Http\Controllers\AssignLeadController;
 use App\Http\Controllers\AppTakerLeadsController;
 use App\Http\Controllers\AssignAppointedLeadController;
 use App\Http\Controllers\BindingController;
+use App\Http\Controllers\BoundController;
 use App\Http\Controllers\CallBackController;
 use App\Http\Controllers\DepartmentListController;
 use App\Http\Controllers\DashboardControllerNew;
@@ -34,8 +35,12 @@ use App\Http\Controllers\CompanyHandbookController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\EmbeddedSignatureController;
 use App\Http\Controllers\MarketListController;
+use App\Http\Controllers\NonCallBackDispositionController;
 use App\Http\Controllers\NotesController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PoliciesController;
 use App\Http\Controllers\QuotationController;
+use App\Http\Controllers\UploadController;
 use App\Http\Controllers\WebsiteController;
 use Illuminate\Support\Facades\App;
 
@@ -43,6 +48,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+//
+Route::webhooks('webhook-receiving-url');
 
 Route::controller(DemoController::class)->group(function () {
     Route::get('/about', 'Index')->name('about.page')->middleware('check');
@@ -62,7 +69,8 @@ Route::controller(AdminController::class)->group(function () {
 //end for Admin Configuration
 
 
-
+//route for file upload
+// Route::post('/upload', [UploadController::class, 'store'])->name('upload');
 
 Route::middleware(['auth'])->group(function (){
 
@@ -76,6 +84,19 @@ Route::middleware(['auth'])->group(function (){
      Route::get('/aux-history-data', [DashboardControllerNew::class, 'getAuxHistoryData'])->name('dashboard.aux-history-data');
      Route::get('/check-aux-status', [DashboardControllerNew::class, 'checkAuxLogoutStatus'])->name('dashboard.check-aux-status');
     });
+
+    //accounting module
+    Route::prefix('accounting')->group(function(){
+        Route::get('/accounting-payable', [PaymentController::class, 'index'])->name('accounting-payable');
+        Route::post('/save-payment-information', [PaymentController::class, 'storePaymentInformation'])->name('save-payment-information');
+        Route::get('/get-payment-information', [PaymentController::class, 'getPaymentInformation'])->name('get-payment-information');
+    });
+
+    //route for file uploading functionalities
+    Route::post('/file-upload', [UploadController::class, 'store'])->name('file-upload');
+    Route::post('/delete-quotation-file', [UploadController::class, 'deleteQuotationFile'])->name('delete-quotation-file');
+
+
 
       //route for leads module
       Route::get('leads', [LeadController::class, 'index'])->name('leads');
@@ -187,8 +208,14 @@ Route::middleware(['auth'])->group(function (){
 
         //route for customer service
         Route::prefix('customer-service')->group(function(){
+            //binding routes
             Route::get('/binding', [BindingController::class, 'index'])->name('binding');
+            Route::get('/bound/list', [BoundController::class, 'index'])->name('bound-list');
             Route::post('binding/save-general-liabilities-policy', [BindingController::class, 'saveGeneralLiabilitiesPolicy'])->name('binding.save-general-liabilities-policy');
+
+            //routes for policies
+            Route::get('/get-policy-list', [PoliciesController::class, 'getPolicyList'])->name('get-policy-list');
+
         });
 
         //email for quotation leads
@@ -199,9 +226,14 @@ Route::middleware(['auth'])->group(function (){
 
         //storiing for callback
         Route::prefix('call-back')->group(function (){
+         //callback routes
          Route::post('/store', [CallBackController::class, 'store'])->name('call-back.store');
+         Route::post('/store-appointed-callback', [CallBackController::class, 'storeAppointedCallback'])->name('call-back.store-appointed-callback');
          Route::get('/callback-lead', [CallBackController::class, 'index'])->name('callback-lead');
          Route::put('/update/{id}', [CallBackController::class, 'update'])->name('call-back.update');
+
+         Route::get('/callback-list-today', [CallBackController::class, 'callBackListToday'])->name('callback-list-today');
+
          Route::put('/update-non-callback-dispositions/{id}', [CallBackController::class, 'updateNonCallbackDispositions'])->name('update-non-callback-dispositions');
          Route::get('/other-dispositions-data', [CallBackController::class, 'otherDispositionsData'])->name('other-dispositions-data');
          Route::post('/delete/{id}', [CallBackController::class, 'deleteNonCallbackDisposition'])->name('non-call-back.destroy');
@@ -221,6 +253,9 @@ Route::middleware(['auth'])->group(function (){
          // SIC
          Route::resource('/sic', SICController::class)->except(['update']);
          Route::post('/sic/update', [SICController::class, 'update'])->name('sic.update');
+        });
+        Route::prefix('non-callback')->group(function(){
+            Route::get('/', [NonCallBackDispositionController::class, 'index'])->name('non-callback-disposition');
         });
 
         Route::prefix('hrforms')->name('hrforms.')->group(function () {
