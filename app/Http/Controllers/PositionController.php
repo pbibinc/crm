@@ -39,7 +39,6 @@ class PositionController extends Controller
                     if ($policy->delete(auth()->user(), $position)) {
                         $deleteButton = '<button class="delete btn btn-danger btn-sm" id="' . $data->id . '" name="delete"  type="button"><i class="ri-delete-bin-line"></i></button>';
                     }
-
                     return $editButton . ' ' . $deleteButton;
                 })
                 ->make(true);

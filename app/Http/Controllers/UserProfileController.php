@@ -44,15 +44,15 @@ class UserProfileController extends Controller
         // $userProfile = User
         if($request->ajax()){
             $userProfiles = UserProfile::with('position', 'department', 'user')
-            ->select('id', 'firstname', 'lastname', 'american_surname', 'is_active', 'id_num',
+            ->select('id', 'firstname', 'lastname', 'american_name', 'is_active', 'id_num',
             'position_id', 'department_id', 'user_id', 'created_at', 'updated_at')->orderBy('id', 'desc');
             return DataTables::of($userProfiles)
             ->addColumn('full_name', function ($userProfile){
                 return '<a href="#" data-toggle="modal" id="fullnameLink" name="fullNameLinkData" data-target="#leadsDataModal" data-id="'.$userProfile->id.'" data-name="'.$userProfile->company_name.'">'.$userProfile->firstname . ' ' . $userProfile->lastname.'</a>';
             })
-            ->addColumn('american_name', function ($userProfile){
-                return $userProfile->firstname . ' ' . $userProfile->american_surname;
-            })
+            // ->addColumn('american_name', function ($userProfile){
+            //     return $use;
+            // })
             ->addColumn('position_name', function ($userProfile) {
                 return $userProfile->position->name;
             })
@@ -99,7 +99,7 @@ class UserProfileController extends Controller
             $request->validate([
                 'first_name' => 'required|unique:user_profiles,firstname|regex:/^[A-Z][a-z]*/',
                 'last_name' => 'required|unique:user_profiles,lastname|regex:/^[A-Z][a-z]*/',
-                'american_surname' => 'required|regex:/^[A-Z][a-z]*/',
+                'american_name' => 'required|regex:/^[A-Z][a-z]*/',
                 'id_num' => 'required|unique:user_profiles,id_num',
                 'media' => 'required|file|max:2048|mimes:jpeg,png,jpg,gif,svg',
                 'account_id' => 'required|unique:user_profiles,user_id'
@@ -139,7 +139,7 @@ class UserProfileController extends Controller
             $userProfile = new UserProfile;
             $userProfile->firstname = ucfirst($request->input('first_name'));
             $userProfile->lastname = ucfirst($request->input('last_name'));
-            $userProfile->american_surname = ucfirst($request->input('american_surname'));
+            $userProfile->american_name = ucfirst($request->input('american_name'));
             $userProfile->id_num = $request->input('id_num');
             $userProfile->position_id = $request->input('position_id');
             $userProfile->is_active = $request->input('is_active');
@@ -178,7 +178,8 @@ class UserProfileController extends Controller
                 'result' => $data,
                 'usedAccounts'=> $usedAccounts,
                 'accountsSelected' => $accountsSelected,
-                'accounts' =>  $accounts
+                'accounts' =>  $accounts,
+                'media' => $data->media
             ]);
             return redirect()->route('index')->with('selectedAccountId', $accountsSelected);
         }
@@ -228,11 +229,12 @@ class UserProfileController extends Controller
             $userProfile = UserProfile::find($request->hidden_id);
             $userProfile->firstname = ucfirst($request->input('first_name'));
             $userProfile->lastname = ucfirst($request->input('last_name'));
-            $userProfile->american_surname = ucfirst($request->input('american_surname'));
+            $userProfile->american_name = ucfirst($request->input('american_name'));
             $userProfile->id_num = $request->input('id_num');
             $userProfile->position_id = $request->input('position_id');
             $userProfile->is_active = $request->input('is_active');
             $userProfile->department_id = $request->input('department_id');
+            $userProfile->media_id = $metadata->id;
             $userProfile->user_id = $request->input('account_id');
             $userProfile->skype_profile = $request->input('skype_profile');
             $userProfile->streams_number = $request->input('streams_number');
@@ -245,7 +247,7 @@ class UserProfileController extends Controller
             $userProfile = UserProfile::find($request->hidden_id);
             $userProfile->firstname = ucfirst($request->input('first_name'));
             $userProfile->lastname = ucfirst($request->input('last_name'));
-            $userProfile->american_surname = ucfirst($request->input('american_surname'));
+            $userProfile->american_name = ucfirst($request->input('american_name'));
             $userProfile->id_num = $request->input('id_num');
             $userProfile->position_id = $request->input('position_id');
             $userProfile->is_active = $request->input('is_active');
@@ -253,16 +255,8 @@ class UserProfileController extends Controller
             $userProfile->user_id = $request->input('account_id');
             $userProfile->skype_profile = $request->input('skype_profile');
             $userProfile->streams_number = $request->input('streams_number');
-
             $userProfile->save();
         }
-
-
-
-
-
-
-
     }
 
     public function changeStatus()
