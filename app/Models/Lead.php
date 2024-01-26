@@ -106,7 +106,6 @@ class Lead extends Model
     public static function getAppointedLeadsByUserProfileId($userProfileId)
     {
         $leads = self::where('disposition_id', 1)
-        ->where('status', 3)
         ->wherehas('userProfile', function($query) use ($userProfileId){
             $query->where('user_id', $userProfileId);
         })->select('id', 'company_name', 'tel_num', 'class_code', 'state_abbr')->orderBy('id');

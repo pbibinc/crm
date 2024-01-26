@@ -13,7 +13,7 @@ class LeadExport implements FromCollection
     public function __construct($startDate, $endDate)
     {
         $this->startDate = $startDate;
-        $this->endDate = $endDate;   
+        $this->endDate = $endDate;
     }
 
     /**
@@ -25,7 +25,6 @@ class LeadExport implements FromCollection
         return Lead::select("company_name", "tel_num")
             ->whereBetween('created_at', [$this->startDate, $this->endDate])
             ->get();
-        
     }
 
     public function headings(): array

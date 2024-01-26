@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class Callback extends Model
 {
@@ -48,5 +49,15 @@ class Callback extends Model
     public function disposition()
     {
         return Disposition::find($this->id);
+    }
+
+    public function getCallBackToday()
+    {
+        $user = auth()->user();
+        $leads = $user->userProfile->leads;
+        $callBack = self::whereDate('date_time', date('Y-m-d'))->get();
+        $leadsData = $leads->whereIn('id', $callBack->pluck('lead_id'))->unique();
+        Log::info($leadsData);
+        return $leadsData;
     }
 }

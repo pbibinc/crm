@@ -26,6 +26,12 @@ class BrokerQuotation extends Model
         return $this->belongsTo(QuotationProduct::class, 'quote_product_id');
     }
 
+    public function fullAmericanName()
+    {
+        $fullName = UserProfile::find($this->user_profile_id);
+        return $fullName->fullAmericanName();
+    }
+
     public function getAssignQoutedLead($userProfileId)
     {
     // Get the broker quotations with the given user profile ID
@@ -34,21 +40,22 @@ class BrokerQuotation extends Model
     // Collect the related QuotationProduct models
     $quotationProducts = collect();
     foreach ($brokerQuotations as $brokerQuotation) {
-        if($brokerQuotation->quotationProduct->status == 3 || $brokerQuotation->quotationProduct->status == 4) {
+        if($brokerQuotation->quotationProduct->status == 3 || $brokerQuotation->quotationProduct->status == 4 ||$brokerQuotation->quotationProduct->status == 9 || $brokerQuotation->quotationProduct->status == 10) {
             $quotationProducts->push($brokerQuotation->quotationProduct);
         }
     }
     return $quotationProducts->isEmpty() ? null : $quotationProducts;
     }
 
-    public function getApprovedProduct($userProfileId)
+    public function getProductToBind($userProfileId)
     {
         $brokerQuotations = self::where('user_profile_id', $userProfileId)->with(['quotationProduct' => function($query){
             $query->select('id', 'product', 'status', 'quote_information_id');
         }])->whereHas('quotationProduct', function($query){
-            $query->where('status', 6);
+            $query->where('status', 6 )->orWhere('status', 11);
         })->orderBy('id')->get();
         $quotationProducts = $brokerQuotations->pluck('quotationProduct');
+
         return $quotationProducts->isEmpty() ? [] : $quotationProducts;
     }
 }

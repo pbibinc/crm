@@ -24,4 +24,19 @@ class QuoteComparison extends Model
     {
         return $this->belongsTo(QuotationMarket::class, 'quotation_market_id');
     }
+
+    public function media()
+    {
+        return $this->belongsToMany(Metadata::class, 'quoatation_comparison_media_table', 'quote_comparison_id', 'metadata_id');
+    }
+
+    public function QuotationProduct()
+    {
+        return $this->belongsTo(QuotationProduct::class);
+    }
+
+    public function PaymentInformation()
+    {
+        return $this->hasOne(PaymentInformation::class, 'quote_comparison_id');
+    }
 }

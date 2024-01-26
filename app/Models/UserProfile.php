@@ -17,7 +17,7 @@ class UserProfile extends Model
         'position_id',
         'status',
         'user_id',
-
+        'is_compliance_officer'
     ];
 
     public function userProfiles()
@@ -72,7 +72,7 @@ class UserProfile extends Model
 
     public function fullAmericanName()
     {
-        return $this->firstname . ' ' . $this->american_surname;
+        return $this->american_name;
     }
 
     public static function getFullName($id)
@@ -82,6 +82,12 @@ class UserProfile extends Model
             return $userProfile->fullName();
         }
         return null;
+    }
+
+    public function complianceOfficer()
+    {
+        $userProfile = self::where('is_compliance_officer', 1)->get();
+        return $userProfile;
     }
 
     public function apptaker()
