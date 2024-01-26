@@ -14,7 +14,12 @@
         </div>
     </div>
 </footer>
+<script src="{{ mix('/js/app.js') }}"></script>
 <script>
+    Echo.channel('calls').listen('CallRinging', (e) => {
+        const leadId = e.leadId;
+        window.open(`/appointed-list/${leadId}`, '_blank');
+    });
     var yearElement = document.getElementById('year');
     if (yearElement) {
         yearElement.textContent = new Date().getFullYear();

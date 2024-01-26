@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Services\DialpadWebSocketService;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
@@ -46,10 +47,11 @@ class CustomerServiceController extends Controller
 
     public function mainLineCustomerService(Request $request)
     {
-        return response()->json([
-            'data' => $request->all(),
-            'message' => 'Inbound request received'
-        ]);
+        // return response()->json([
+        //     'data' => $request->all(),
+        //     'message' => 'Inbound request received'
+        // ]);
+        $client = DialpadWebSocketService::connectToWebSocket();
 
     }
 }
