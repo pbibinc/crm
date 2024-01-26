@@ -3,7 +3,7 @@
     <div class="page-content pt-6">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-6">
+                <div class="col-12">
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title mb-4">Appointed List</h4>
@@ -23,7 +23,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6">
+                {{-- <div class="col-6">
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title mb-4">Appointed Leads To Call Back</h4>
@@ -39,7 +39,7 @@
                             </table>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>
@@ -48,10 +48,10 @@
             $('#appointedLeadsTable').DataTable({
                 processing: true,
                 serverSide: true,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
                 ajax: {
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
                     url: "{{ route('appointed-list') }}"
                 },
                 columns: [{
@@ -68,30 +68,30 @@
                     }
                 ]
             });
-            $('#appointedCallback').DataTable({
-                processing: true,
-                serverSide: true,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                ajax: {
-                    url: "{{ route('leads-appointed-callback') }}"
-                },
-                columns: [{
-                        data: 'company_name',
-                        name: 'company_name'
-                    },
-                    {
-                        data: 'date_formatted',
-                        name: 'date_formatted'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action'
-                    },
+            // $('#appointedCallback').DataTable({
+            //     processing: true,
+            //     serverSide: true,
+            //     headers: {
+            //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //     },
+            //     ajax: {
+            //         url: "{{ route('leads-appointed-callback') }}"
+            //     },
+            //     columns: [{
+            //             data: 'company_name',
+            //             name: 'company_name'
+            //         },
+            //         {
+            //             data: 'date_formatted',
+            //             name: 'date_formatted'
+            //         },
+            //         {
+            //             data: 'action',
+            //             name: 'action'
+            //         },
 
-                ]
-            });
+            //     ]
+            // });
 
         })
     </script>

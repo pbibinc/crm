@@ -26,6 +26,7 @@
             border-right: none;
         }
     </style>
+
     <div class="page-content pt-6">
         <div class="container-fluid">
             <div class="row">
@@ -350,8 +351,8 @@
                                         'generalInformation' => $generalInformation,
                                         'quationMarket' => $quationMarket,
                                     ])
-                                </div>
 
+                                </div>
                             </div>
 
                         </div>

@@ -4,51 +4,55 @@
         <div class="container-fluid">
 
             <div class="row">
-                <div class="card" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
-                    <div class="card-body">
-                        <h5>Scheduled Callbacks Overview</h5>
-                        <table id="callBackLeadsTable" class="table table-bordered dt-responsive nowrap"
-                            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                            <thead style="background-color: #f0f0f0;">
-                                <tr>
-                                    <th>Company Name</th>
-                                    <th>Disposition</th>
-                                    <th>Callback Date</th>
-                                    <th>Tel Num</th>
-                                    <th>Class Code</th>
-                                    <th>State</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                <div class="col-6">
+                    <div class="card"
+                        style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
+                        <div class="card-body">
+                            <h5>Callbacks</h5>
+                            <table id="callBackLeadsTable" class="table table-bordered dt-responsive nowrap"
+                                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <thead style="background-color: #f0f0f0;">
+                                    <tr>
+                                        <th>Company Name</th>
+                                        <th>Disposition</th>
+                                        <th>Date</th>
+                                        <th>Tel Num</th>
+                                        <th>Class Code</th>
+                                        <th>State</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card"
+                        style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
+                        <div class="card-body">
+                            <h5>Callbacks For Today</h5>
+                            <table id="callBackToday" class="table table-bordered dt-responsive nowrap"
+                                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <thead style="background-color: #f0f0f0;">
+                                    <tr>
+                                        <th>Company Name</th>
+                                        <th>Disposition</th>
+                                        <th>TIme</th>
+                                        <th>Tel Num</th>
+                                        <th>Class Code</th>
+                                        <th>State</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="row">
-                <div class="card"
-                    style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
-                    <div class="card-body">
-                        <h5>Other Leads</h5>
-                        <table class="table table-bordered dt-responsive nowrap"
-                            style="border-collapse: collapse; border-spacing: 0; width: 100%;" id="otherDispositionnTable">
-                            <thead style="background-color: #f0f0f0;">
-                                <th>Company Name</th>
-                                <th>Disposition</th>
-                                <th>Tel Num</th>
-                                <th>Class Code</th>
-                                <th>State</th>
-                                <th>Set Disposition At</th>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
             <!--Modal for No Answer Disposition-->
             <div class="modal fade bs-example-modal-center" id="transactionModal" tabindex="-1" role="dialog"
                 aria-labelledby="mySmallModalLabel" aria-hidden="true">
@@ -135,31 +139,19 @@
     </style>
     <script>
         $(document).ready(function() {
-            // function getCurrentDateTime() {
-            //     var now = new Date();
-            //     var year = now.getFullYear();
-            //     var month = ('0' + (now.getMonth() + 1)).slice(-2);
-            //     var day = ('0' + now.getDate()).slice(-2);
-            //     var hours = ('0' + now.getHours()).slice(-2);
-            //     var minutes = ('0' + now.getMinutes()).slice(-2);
-            //     var seconds = ('0' + now.getSeconds()).slice(-2);
-
-            //     return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes + ':' + seconds;
-            // }
-
-            // $('#callBackDateTime').val(getCurrentDateTime());
-
+            $.fn.dataTable.ext.errMode = 'none';
             $('#callBackLeadsTable').DataTable({
                 processing: true,
                 serverSide: true,
                 searching: true,
-                scrollY: 300,
-                scrollX: true,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
                 ajax: {
-                    url: "{{ route('callback-lead') }}"
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: "{{ route('callback-lead') }}",
+                    'beforeSend': function(request) {
+                        request.setRequestHeader("X-CSRF-TOKEN", '{{ csrf_token() }}');
+                    }
                 },
                 columns: [{
                         data: 'company_name',
@@ -172,7 +164,6 @@
                         data: 'date',
                         name: 'date'
                     },
-
                     {
                         data: 'tel_num',
                         name: 'tel_num'
@@ -185,7 +176,6 @@
                         data: 'state_abbr',
                         name: 'state_abbr'
                     },
-
 
                 ],
                 order: [
@@ -217,26 +207,31 @@
                     }
                 }
             });
-            $('#otherDispositionnTable').DataTable({
+            $('#callBackToday').DataTable({
                 processing: true,
                 serverSide: true,
                 searching: true,
-                scrollY: 300,
-                scrollX: true,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
                 ajax: {
-                    url: "{{ route('other-dispositions-data') }}"
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: "{{ route('callback-list-today') }}",
+                    'beforeSend': function(request) {
+                        request.setRequestHeader("X-CSRF-TOKEN", '{{ csrf_token() }}');
+                    }
                 },
                 columns: [{
-                        data: 'company_name',
-                        name: 'company_name'
-                    }, {
+                        data: 'company_name_link',
+                        name: 'company_name_link'
+                    },
+                    {
                         data: 'disposition',
                         name: 'disposition'
                     },
-
+                    {
+                        data: 'callback_date',
+                        name: 'callback_date'
+                    },
                     {
                         data: 'tel_num',
                         name: 'tel_num'
@@ -249,15 +244,8 @@
                         data: 'state_abbr',
                         name: 'state_abbr'
                     },
-                    {
-                        data: 'created_at',
-                        name: 'created_at'
-                    }
+                ],
 
-                ],
-                order: [
-                    [5, 'desc']
-                ],
             });
 
             $(document).on('click', '#companyLink', function(e) {
@@ -314,7 +302,10 @@
                                 leadId: leadsId
                             },
                             success: function(response) {
-                                location.reload();
+                                $('#callBackToday').DataTable().ajax.reload();
+                                $('#callBackLeadsTable').DataTable().ajax.reload();
+
+
                             },
                             error: function(response) {
                                 alert('error');
@@ -322,7 +313,7 @@
                         });
                         window.open(`${url}/appoinnted-lead-questionare`, "s_blank",
                             "width=1000,height=849");
-                        $('#transactionModal').modal('hide');
+                        $('#transactionModal').modal('hide');;
                     } else if (selectedDisposition !== '2' && selectedDisposition !== "6" &&
                         selectedDisposition !==
                         "11" && selectedDisposition !== "12") {
@@ -359,7 +350,9 @@
                                 status: 1
                             },
                             success: function(response) {
-                                location.reload();
+                                $('#transactionModal').modal('hide');
+                                $('#callBackToday').DataTable().ajax.reload();
+                                $('#callBackLeadsTable').DataTable().ajax.reload();
                                 $.ajax({
                                     url: "{{ route('non-call-back.destroy', ':id') }}"
                                         .replace(':id',
@@ -377,7 +370,11 @@
                                         leadId: leadsId
                                     },
                                     success: function(response) {
-                                        location.reload();
+                                        $('#callBackToday').DataTable().ajax
+                                            .reload();
+                                        $('#callBackLeadsTable').DataTable().ajax
+                                            .reload();
+
                                     }
                                 });
                             },
@@ -385,8 +382,6 @@
                                 alert('error');
                             }
                         });
-
-
                     } else {
                         $.ajax({
                             url: "{{ route('call-back.update', ':id') }}"
@@ -406,7 +401,9 @@
                                 status: 1
                             },
                             success: function(response) {
-                                location.reload();
+                                $('#transactionModal').modal('hide');
+                                $('#callBackToday').DataTable().ajax.reload();
+                                $('#callBackLeadsTable').DataTable().ajax.reload();
                             },
                             error: function(response) {
                                 alert('error');
@@ -430,7 +427,9 @@
                                 dispositionId: selectedDisposition,
                             },
                             success: function(response) {
-                                location.reload();
+                                $('#transactionModal').modal('hide');
+                                $('#callBackToday').DataTable().ajax.reload();
+                                $('#callBackLeadsTable').DataTable().ajax.reload();
                             },
                             error: function(response) {
                                 alert('error');
@@ -450,7 +449,9 @@
                                 leadId: leadsId,
                             },
                             success: function(response) {
-                                location.reload();
+                                $('#transactionModal').modal('hide');
+                                $('#callBackToday').DataTable().ajax.reload();
+                                $('#callBackLeadsTable').DataTable().ajax.reload();
                             },
                             error: function(response) {
                                 alert('error');
@@ -474,7 +475,8 @@
                                 leadId: leadsId
                             },
                             success: function(response) {
-                                location.reload();
+                                $('#callBackToday').DataTable().ajax.reload();
+                                $('#callBackLeadsTable').DataTable().ajax.reload();
                             }
                         });
                     }

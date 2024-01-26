@@ -120,35 +120,51 @@
                     </div>
                 </div>
                 <div class="col-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist" style="margin-top: 0px">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-bs-toggle="tab" href="#product" role="tab">
+                                        <span class="d-none d-sm-block d-flex align-items-center justify-content-center"><i
+                                                class=" ri-shopping-cart-2-line"></i> Product</span>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#activityLog" role="tab">
+                                        <span class="d-none d-sm-block d-flex align-items-center justify-content-center"><i
+                                                class=" ri-git-merge-line"></i> History Log</span>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#messages" role="tab">
+                                        <span class="d-none d-sm-block"><i class="ri-file-edit-line"></i> Notes</span>
+                                    </a>
+                                </li>
+
+
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#bindocsPfa" role="tab">
+                                        <span class="d-none d-sm-block"><i class="ri-file-edit-line"></i> Bind
+                                            Docs/PFA</span>
+                                    </a>
+                                </li>
+
+
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#policies" role="tab">
+                                        <span class="d-none d-sm-block"><i class="ri-file-edit-line"></i> Policies</span>
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
                     <div class="card"
                         style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
-
-                        <ul class="nav nav-tabs nav-justified nav-separated" role="tablist" style="margin-top: 0px">
-                            <li class="nav-item">
-                                <a class="nav-link active" data-bs-toggle="tab" href="#product" role="tab">
-                                    <span class="d-none d-sm-block d-flex align-items-center justify-content-center"><i
-                                            class=" ri-shopping-cart-2-line"></i> Product</span>
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#activityLog" role="tab">
-                                    <span class="d-none d-sm-block d-flex align-items-center justify-content-center"><i
-                                            class=" ri-git-merge-line"></i> History Log</span>
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#messages" role="tab">
-                                    <span class="d-none d-sm-block"><i class="ri-file-edit-line"></i> Notes</span>
-                                </a>
-                            </li>
-
-                        </ul>
-
                         <div class="card-body">
                             <div class="tab-content p-3 text-muted">
-
                                 <div class="tab-pane fade show active" id="product" role="tabpanel">
                                     <ul class="nav nav-pills nav-justified" role="tablistProduct">
                                         @foreach ($products as $key => $product)
@@ -238,9 +254,14 @@
                                         'generalInformation' => $leads->generalInformation,
                                     ])
                                 </div>
+                                <div class="tab-pane fade show" id="bindocsPfa" role="tabpanel">
+                                    testicles
+                                </div>
+                                <div class="tab-pane fade show" id="policies" role="tabpanel">
+                                    @include('customer-service.policy.policy-view', ['id' => $leads->id])
+                                </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

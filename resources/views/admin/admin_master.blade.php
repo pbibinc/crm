@@ -22,7 +22,7 @@
     <script src="https://msurguy.github.io/ladda-bootstrap/dist/spin.min.js"></script>
     <script src="https://msurguy.github.io/ladda-bootstrap/dist/ladda.min.js"></script>
 
-
+    @include('partials.vendor-scripts')
 
     <!-- App favicon -->
     {{-- <link rel="shortcut icon" href="{{ asset('backend/assets/images/favicon.icon') }}"> --}}
@@ -127,7 +127,7 @@
 
 <! END layout-wrapper -->
 </div>
-@include('partials.vendor-scripts')
+
 
 
 <!-- Right Sidebar -->

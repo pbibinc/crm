@@ -2,6 +2,7 @@
 @section('admin')
     <div class="page-content pt-6">
         <div class="container-fluid">
+
             <div class="row">
                 <div class="col-4">
 
@@ -147,9 +148,13 @@
                                             <option value="4" @if ($product->status == 4) selected @endif>Follow
                                                 Up</option>
                                             <option value="6" @if ($product->status == 6) selected @endif>
-                                                Completed</option>
+                                                Request To Bind</option>
                                             <option value="5" @if ($product->status == 5) selected @endif>
                                                 Declined</option>
+                                            <option value="9" @if ($product->status == 9) selected @endif>
+                                                Make A Payment</option>
+                                            <option value="10" @if ($product->status == 10) selected @endif>
+                                                Payment Approved</option>
                                         </select>
                                     </div>
                                     <button type="button" class="btn btn-primary waves-effect waves-light"
@@ -174,7 +179,7 @@
                     </div>
                     <div class="card"
                         style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
-                        <ul class="nav nav-tabs nav-justified nav-separated" role="tablist" style="margin-top: 0px">
+                        <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist" style="margin-top: 0px">
                             <li class="nav-item">
                                 <a class="nav-link active" data-bs-toggle="tab" href="#product" role="tab">
                                     <span class="d-none d-sm-block d-flex align-items-center justify-content-center">
@@ -218,11 +223,15 @@
                                     <span class="d-none d-sm-block"><i class="fas fa-cog"></i> Quotation</span>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#accounting" role="tab">
+                                    <span class="d-none d-sm-block"><i class="fas fa-cog"></i> Accounting</span>
+                                </a>
+                            </li>
                         </ul>
                         <div class="card-body">
                             <div class="tab-content p-3 text-muted">
                                 <div class="tab-pane fade show active" id="product" role="tabpanel">
-
                                     @if ($product->product == 'General Liabilities')
                                         <div>
                                             @include(
@@ -306,13 +315,13 @@
                                         'generalInformation' => $generalInformation,
                                     ])
                                 </div>
-
                                 <div class="tab-pane" id="messages" role="tabpanel">
                                     @include('leads.appointed_leads.log-activity.notes-log', [
                                         'generalInformation' => $generalInformation,
                                     ])
                                 </div>
                                 <div class="tab-pane" id="quotation" role="tabpanel">
+
                                     <div class="quotation-form" id="generalLiabilitiesQuoationForm" role="tabpanel">
                                         @if ($product->product == 'General Liabilities')
                                             @include(
@@ -323,6 +332,7 @@
                                                     'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
                                                         'General Liabilities',
                                                         $lead->quoteLead->QuoteInformation->id),
+                                                    'complianceOfficer' => $complianceOfficer,
                                                 ]
                                             )
                                         @endif
@@ -331,7 +341,7 @@
                                     <div class="quotation-form" id="workersCompensationForm" role="tabpanel">
                                         @if ($product->product == 'Workers Compensation')
                                             @include(
-                                                'leads.appointed_leads.broker-quotation-forms.workers-compensation-quoation-form',
+                                                'leads.appointed_leads.broker-quotation-forms.quoation-form',
                                                 [
                                                     'generalInformation' => $generalInformation,
                                                     'quationMarket' => $quationMarket,
@@ -346,7 +356,7 @@
                                     <div class="quotation-form" id="commercialAutoForm" role="tabpanel">
                                         @if ($product->product == 'Commercial Auto')
                                             @include(
-                                                'leads.appointed_leads.broker-quotation-forms.commercial-auto-quoation-form',
+                                                'leads.appointed_leads.broker-quotation-forms.quoation-form',
                                                 [
                                                     'generalInformation' => $generalInformation,
                                                     'quationMarket' => $quationMarket,
@@ -361,7 +371,7 @@
                                     <div class="quotation-form" id="excessLiabilityForm" role="tabpanel">
                                         @if ($product->product == 'Excess Liability')
                                             @include(
-                                                'leads.appointed_leads.broker-quotation-forms.excess-liability-quoation-form',
+                                                'leads.appointed_leads.broker-quotation-forms.quoation-form',
                                                 [
                                                     'generalInformation' => $generalInformation,
                                                     'quationMarket' => $quationMarket,
@@ -375,7 +385,7 @@
                                     <div class="quotation-form" id="toolsEquipmentForm" role="tabpanel">
                                         @if ($product->product == 'Tools Equipment')
                                             @include(
-                                                'leads.appointed_leads.broker-quotation-forms.tools-equipment-quoation-form',
+                                                'leads.appointed_leads.broker-quotation-forms.quoation-form',
                                                 [
                                                     'generalInformation' => $generalInformation,
                                                     'quationMarket' => $quationMarket,
@@ -389,7 +399,7 @@
                                     <div class="quotation-form" id="buildersRiskForm" role="tabpanel">
                                         @if ($product->product == 'Builders Risk')
                                             @include(
-                                                'leads.appointed_leads.broker-quotation-forms.builders-risk-quoation-form',
+                                                'leads.appointed_leads.broker-quotation-forms.quoation-form',
                                                 [
                                                     'generalInformation' => $generalInformation,
                                                     'quationMarket' => $quationMarket,
@@ -403,7 +413,7 @@
                                     <div class="quotation-form" id="businessOwnersPolicyForm" role="tabpanel">
                                         @if ($product->product == 'Business Owners')
                                             @include(
-                                                'leads.appointed_leads.broker-quotation-forms.business-owners-quoation-form',
+                                                'leads.appointed_leads.broker-quotation-forms.quoation-form',
                                                 [
                                                     'generalInformation' => $generalInformation,
                                                     'quationMarket' => $quationMarket,
@@ -415,12 +425,20 @@
                                         @endif
                                     </div>
                                 </div>
+                                <div class="tab-pane" id="accounting" role="tabpanel">
+                                    @include('leads.appointed_leads.accounting-tab.index')
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
+            @include('leads.appointed_leads.request-to-bind-form.index', [
+                'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+                    $product->product,
+                    $lead->quoteLead->QuoteInformation->id),
+            ])
         </div>
     </div>
     <script>
@@ -444,36 +462,40 @@
 
             $('#saveStatusButton').on('click', function() {
                 var status = $('#statusSelect').val();
+                if (status == 6) {
+                    $('#requestToBindModal').modal('show');
+                } else {
+                    $.ajax({
+                        url: "{{ route('change-quotation-status') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        method: "POST",
+                        data: {
+                            status: status,
+                            id: {!! json_encode($product->id) !!}
+                        },
+                        success: function() {
+                            Swal.fire({
+                                title: 'Success',
+                                text: 'has been saved',
+                                icon: 'success'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.reload();
+                                }
+                            });
+                        },
+                        error: function() {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Something went wrong',
+                                icon: 'error'
+                            });
+                        }
+                    })
+                }
 
-                $.ajax({
-                    url: "{{ route('change-quotation-status') }}",
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    method: "POST",
-                    data: {
-                        status: status,
-                        id: {!! json_encode($product->id) !!}
-                    },
-                    success: function() {
-                        Swal.fire({
-                            title: 'Success',
-                            text: 'has been saved',
-                            icon: 'success'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                location.reload();
-                            }
-                        });
-                    },
-                    error: function() {
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'Something went wrong',
-                            icon: 'error'
-                        });
-                    }
-                })
             });
 
             $('#sendFollowUpEmail').on('click', function() {

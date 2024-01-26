@@ -16,7 +16,7 @@
                 <img src="{{ asset($userProfile->media->filepath) }}" alt="" class="avatar-md rounded-circle">
             </div>
             <div class="mt-3">
-                <h4 class="font-size-16 mb-1">{{ $userProfile->firstname . ' ' . $userProfile->american_surname }}</h4>
+                <h4 class="font-size-16 mb-1">{{ $userProfile->american_name }}</h4>
                 <p class="mb-0"><em>{{ $userProfile->position->name }}</em></p>
                 <span class="text-muted"><i class="ri-record-circle-line align-middle font-size-14 text-success"></i>
                     Online</span>
@@ -36,7 +36,16 @@
                 </li>
                 @can('view', App\Models\Permission::find(1))
                     <li class="menu-title">Admin</li>
-
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class=" ri-currency-line"></i>
+                            <span>Accounting</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="{{ route('accounting-payable') }}">Accounts Payable</a></li>
+                            <li><a href="{{ route('payment-for-charged') }}">Charged Payment</a></li>
+                        </ul>
+                    </li>
                     <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
                             <i class="ri-lock-line"></i>
@@ -101,6 +110,7 @@
                                 @can('viewCallBackLeadList', App\Models\Lead::find(1))
                                     <li><a href="{{ route('callback-lead') }}">Call Back</a></li>
                                 @endcan
+                                <li><a href="{{ route('non-callback-disposition') }}">Non CallBack Disposition</a></li>
                             </ul>
                         @endcan
                     </li>
@@ -174,6 +184,7 @@
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
                             <li><a href="{{ route('binding') }}">Products</a></li>
+                            <li><a href="{{ route('bound-list') }}">Policy List</a></li>
                         </ul>
                     </li>
                 @endcan

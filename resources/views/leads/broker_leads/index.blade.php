@@ -63,8 +63,8 @@
                                 <thead>
                                     <th>Product</th>
                                     <th>Company Name</th>
-                                    <th>Status</th>
                                     <th>Sent Out Date</th>
+                                    <th>Status</th>
                                     <th></th>
                                 </thead>
                                 <tbody>
@@ -82,8 +82,9 @@
                                 class="table table-bordered dt-responsive nowrap getConfimedProductTable"
                                 style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead>
-                                    <th>Product</th>
+                                    <th>Policy No</th>
                                     <th>Company Name</th>
+                                    <th></th>
                                     {{-- <th>Status</th> --}}
                                     {{-- <th>Sent Out Date</th>
                                 <th></th> --}}
@@ -165,10 +166,23 @@
                         data: 'company_name',
                         name: 'company_name'
                     },
+                    {
+                        data: 'viewButton',
+                        name: 'viewButton'
+                    }
                     // {data: 'status', name: 'status'},
                     // {data: 'sent_out_date', name: 'sent_out_date'},
                     // {data: 'action', name: 'action', orderable: false, searchable: false}
                 ],
+                createdRow: function(row, data, dataIndex) {
+                    var status = data.status;
+                    console.log(status);
+                    if (status == 11) {
+                        $(row).addClass('table-success');
+                    } else if (status == 6) {
+                        $(row).addClass('table-warning');
+                    }
+                }
                 // language: {
                 //     emptyTable: "No data available in the table"
                 // },
@@ -181,6 +195,23 @@
             })
 
             $('#assignPendingLeadsTable').on('click', '.viewButton', function() {
+                $id = $(this).attr('id');
+                $.ajax({
+                    url: "{{ route('quoted-product-profile') }}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    method: "POST",
+                    data: {
+                        id: $id
+                    },
+                    success: function(data) {
+                        window.location.href =
+                            `{{ url('quoatation/broker-profile-view/${data.leadId}/${data.generalInformationId}/${data.productId}') }}`;
+                    }
+                })
+            });
+            $('.getConfimedProductTable').on('click', '.viewButton', function() {
                 $id = $(this).attr('id');
                 $.ajax({
                     url: "{{ route('quoted-product-profile') }}",

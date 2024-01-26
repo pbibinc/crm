@@ -33,7 +33,7 @@
             </div>
 
             {{-- start of modal for creation of user --}}
-            <div class="modal fade" id="dataModal" tabindex="-1" aria-labelledby="dataModal" aria-hidden="true">
+            <div class="modal fade" id="dataModal" tabindex="-1" aria-labelledby="" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">

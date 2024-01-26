@@ -111,7 +111,7 @@
                     <div class="card"
                         style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                         <div class="card-body">
-                            <h4 class="card-title mb-4">Broker's Product List</h4>
+                            <h4 class="card-title mb-4">Product List</h4>
                             <table id="productQuotedView" class="table table-bordered dt-responsive nowrap"
                                 style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead style="background-color: #f0f0f0;">
@@ -157,7 +157,33 @@
                         data: 'viewButton',
                         name: 'viewButton'
                     }
-                ]
+                ],
+                createdRow: function(row, data, dataIndex) {
+                    var status = data.status;
+                    if (status == 1) {
+                        $(row).css('background-color', '#f0f0f0');
+                    } else if (status == 2) {
+                        $(row).css('background-color', '#f0f0f0');
+                    } else if (status == 3) {
+                        // $(row).addClass('table-warning');
+                    } else if (status == 4) {
+                        // $(row).addClass('table-warning');
+                    } else if (status == 5) {
+                        $(row).css('background-color', '#f0f0f0');
+                    } else if (status == 6) {
+                        $(row).addClass('table-primary');
+                    } else if (status == 8) {
+                        $(row).addClass('table-success');
+                    } else if (status == 9) {
+                        $(row).addClass('table-warning');
+                    } else if (status == 10) {
+                        $(row).addClass('table-warning');
+                    } else if (status == 11) {
+                        $(row).addClass('table-primary');
+                    } else if (status == 12) {
+                        $(row).addClass('table-primary');
+                    }
+                }
             })
 
             $(document).on('click', '#productQuotedView .viewButton, #appointedLeadsTable .viewButton', function() {
