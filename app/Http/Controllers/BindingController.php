@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\BrokerQuotation;
 use App\Models\GeneralLiabilitiesPolicyDetails;
+use App\Models\Insurer;
 use App\Models\Lead;
 use App\Models\Metadata;
 use App\Models\PolicyDetail;
@@ -26,7 +27,9 @@ class BindingController extends Controller
     {
         $quotationProduct = new BrokerQuotation();
         $userProfileId = Auth::user()->userProfile->id;
-        $confirmedProduct = $quotationProduct->getProductToBind($userProfileId);
+        $confirmedProduct = $quotationProduct->getProductToBind($userProfileId)->where('status','!=', 13);
+        $markets = QuoationMarket::all()->sortBy('name');
+        $carriers = Insurer::all()->sortBy('name');
         if($request->ajax())
         {
         return DataTables::of($confirmedProduct)
@@ -43,8 +46,13 @@ class BindingController extends Controller
             ->addColumn('status', function($confirmedProduct){
                 $status = $confirmedProduct->status;
                 if($status == 11){
-
                     $status = '<span class="badge bg-success">Bound</span>';
+                }else if($status == 14){
+                    $status = '<span class="badge bg-danger">Declined</span>';
+
+                }else if($status == 15){
+                    $status = '<span class="badge bg-info">Resend Request</span>';
+
                 }else{
                     $status = '<span class="badge bg-warning">Request To Bind</span>';
                 }
@@ -53,6 +61,7 @@ class BindingController extends Controller
             ->addColumn('action', function($confirmedProduct){
                 $quote = QuoteComparison::where('quotation_product_id', $confirmedProduct->id)->where('recommended', 3)->first();
                 $paymentInformation = $quote->PaymentInformation;
+                // dd($paymentInformation);
                 $paymentInformationData = $paymentInformation ? $paymentInformation->toJson() : '{}';
                 $quoteData = $quote ? $quote->toJson() : '{}';
                 $lead = $confirmedProduct->QuoteInformation->QuoteLead->leads;
@@ -71,7 +80,7 @@ class BindingController extends Controller
                 data-generalInformation = "'.htmlspecialchars(json_encode($lead->GeneralInformation), ENT_QUOTES, 'UTF-8').'"
                 data-media=  "'.htmlspecialchars(json_encode($media), ENT_QUOTES, 'UTF-8').'"
                 data-marketName = "'.$marketName->name.'"
-
+                data-status = "'.$confirmedProduct->status.'"
                 data-userProfileName = "'.$userProfile->fullAmericanName().'"
 
                 class="btn btn-sm btn-primary viewBindingButton"><i class="ri-eye-line"></i></button>';
@@ -80,8 +89,8 @@ class BindingController extends Controller
                 id="'.$confirmedProduct->id.'"
                 data-product="'.$confirmedProduct->product.'"
                 data-companyName = "'.$confirmedProduct->QuoteInformation->QuoteLead->leads->company_name.'"
-                data-paymentInformation="'.htmlspecialchars(json_encode($paymentInformation), ENT_QUOTES, 'UTF-8').'"
                 data-quote="'.htmlspecialchars(json_encode($quote), ENT_QUOTES, 'UTF-8').'"
+                data-marketName ="'.$marketName->name.'"
                 class="bindButton btn btn-sm btn-success"
                 name="bindButton"><i class="ri-share-box-line"></i></button>';
 
@@ -92,7 +101,7 @@ class BindingController extends Controller
             ->rawColumns(['action', 'status'])
             ->make(true);
         }
-        return view('customer-service.binding.index');
+        return view('customer-service.binding.index', compact('markets', 'carriers'));
     }
 
     public function saveGeneralLiabilitiesPolicy(Request $request)
@@ -100,34 +109,45 @@ class BindingController extends Controller
         if($request->ajax())
         {  try{
                 $data = $request->all();
+                $mediaIds = [];
                 DB::beginTransaction();
+
+                //policy details saving
                 $policyDetails = new PolicyDetail();
                 $policyDetails->quotation_product_id = $data['hiddenInputId'];
                 $policyDetails->policy_number = $data['policyNumber'];
                 $policyDetails->carrier = $data['carriersInput'];
-                $policyDetails->insurer = $data['insurerInput'];
-                $policyDetails->payment_mode = $data['paymentModeInput'];
+                $policyDetails->market = $data['marketInput'];
+                $policyDetails->payment_mode = $data['paymentTermInput'];
                 $policyDetailSaving = $policyDetails->save();
+
                 if($policyDetailSaving){
-                    $file = $data['attachedFile'];
-                    $basename = $file->getClientOriginalName();
-                    $directoryPath = public_path('backend/assets/attacedFiles/binding/general-liability-insurance');
-                    $type = $file->getClientMimeType();
-                    $size = $file->getSize();
-                    if(!File::isDirectory($directoryPath)){
-                        File::makeDirectory($directoryPath, 0777, true, true);
+
+                    //file uploading
+                    $files = $data['attachedFiles'];
+                    foreach($files as $file){
+                        $basename = $file->getClientOriginalName();
+                        $directoryPath = public_path('backend/assets/attacedFiles/binding/general-liability-insurance');
+                        $type = $file->getClientMimeType();
+                        $size = $file->getSize();
+                        if(!File::isDirectory($directoryPath)){
+                            File::makeDirectory($directoryPath, 0777, true, true);
+                        }
+                        $file->move($directoryPath, $basename);
+                        $filepath = 'backend/assets/attacedFiles/binding/general-liability-insurance/' . $basename;
+
+
+                        $metadata = new Metadata();
+                        $metadata->basename = $basename;
+                        $metadata->filename = $basename;
+                        $metadata->filepath = $filepath;
+                        $metadata->type = $type;
+                        $metadata->size = $size;
+                        $metadata->save();
+                        $mediaIds[] = $metadata->id;
                     }
-                    $file->move($directoryPath, $basename);
-                    $filepath = 'backend/assets/attacedFiles/binding/general-liability-insurance/' . $basename;
 
-                    $metadata = new Metadata();
-                    $metadata->basename = $basename;
-                    $metadata->filename = $basename;
-                    $metadata->filepath = $filepath;
-                    $metadata->type = $type;
-                    $metadata->size = $size;
-                    $metadata->save();
-
+                    //general liabilities policy details saving
                     $generalLiabilitiesDetails = new GeneralLiabilitiesPolicyDetails();
                     $generalLiabilitiesDetails->policy_details_id  = $policyDetails->id;
                     $generalLiabilitiesDetails->is_commercial_gl = isset($data['commercialGl']) && $data['commercialGl'] ? 1 : 0;
@@ -146,19 +166,29 @@ class BindingController extends Controller
                     $generalLiabilitiesDetails->effective_date = $data['effectiveDate'];
                     $generalLiabilitiesDetails->expiry_date = $data['expirationDate'];
                     $generalLiabilitiesDetails->status = $data['statusDropdowm'];
-                    $generalLiabilitiesDetails->media_id = $metadata->id;
                     $generalLiabilitiesDetails->save();
 
+
+                    //code for saving product
                     $quotationProduct = QuotationProduct::find($data['hiddenInputId']);
                     $quotationProduct->status = 8;
                     $quotationProduct->save();
+                    $quotationProduct->medias()->attach($mediaIds);
 
+                    //code for quotation
+                    $quotationComparison = QuoteComparison::find($data['hiddenQuoteId']);
+                    $quotationComparison->quote_no = $data['policyNumber'];
+                    $quotationComparison->save();
+
+                    //code for saving lead status
                     $leadId = $quotationProduct->QuoteInformation->QuoteLead->leads->id;
                     $lead = Lead::find($leadId);
                     $lead->status = 10;
                     $lead->save();
+
                 }
                 DB::commit();
+                return response()->json(['success' => 'File uploaded successfully']);
             }catch(ValidationException $e){
                 return response()->json([
                     'errors' => $e->validator->errors(),
@@ -167,6 +197,5 @@ class BindingController extends Controller
             }
         }
     }
-
 
 }
