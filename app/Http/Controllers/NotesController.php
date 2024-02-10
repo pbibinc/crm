@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\DeclinedRequest;
+use App\Events\LeadNotesNotificationEvent;
 use App\Http\Controllers\Controller;
+use App\Models\GeneralInformation;
 use App\Models\LeadNotes;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class NotesController extends Controller
@@ -15,6 +20,7 @@ class NotesController extends Controller
     public function createNotes(Request $request)
     {
         try{
+            DB::beginTransaction();
             $validateData = $request->validate([
                 'noteTitle' => 'required',
                 'noteDescription' => 'required',
@@ -23,17 +29,37 @@ class NotesController extends Controller
 
             $noteTitle = $request->input('noteTitle');
             $noteDescription = $request->input('noteDescription');
+            $status = $request->input('status');
             $userProfileId = User::find(auth()->user()->id)->userProfile->id;
             $leadId = $request->input('leadId');
+            $generalInformationId = GeneralInformation::where('leads_id', $leadId)->first()->id;
+            $productId = $request->input('productId');
+            $notifyUserIds = $request->input('userToNotify');
 
             $leadNotes = new LeadNotes();
             $leadNotes->lead_id = $leadId;
             $leadNotes->user_profile_id = $userProfileId;
             $leadNotes->title = $noteTitle;
             $leadNotes->description = $noteDescription;
+            $leadNotes->status = $status;
             $leadNotes->save();
+
+            if($notifyUserIds !== null){
+              foreach($notifyUserIds as $notifyUserId){
+                $user = User::find($notifyUserId);
+                $user->sendNoteNotification($user, $noteTitle, $userProfileId,  $noteDescription, $leadId);
+                broadcast(new LeadNotesNotificationEvent($noteTitle, $noteDescription, $notifyUserId, $leadId, $userProfileId));
+              }
+            }
+            if($status == 'declined-make-payment'){
+                broadcast(new DeclinedRequest($leadId, $generalInformationId, $productId));
+            }
+            DB::commit();
+
             return response()->json(['message' => 'Data stored successfully']);
         }catch (ValidationException $e){
+            DB::rollBack();
+            Log::error('Notes Error', [$e->validator->errors()]);
             return response()->json([
                 'errors' => $e->validator->errors(),
                 'message' => 'Validation failed'
@@ -49,5 +75,10 @@ class NotesController extends Controller
             $fullamericanName = $leadNotes->userProfile->fullAmericanName();
             return response()->json(['result' => $leadNotes, 'fullamericanName' => $fullamericanName]);
         }
+    }
+
+    public function getGeneralInformation($id)
+    {
+
     }
 }

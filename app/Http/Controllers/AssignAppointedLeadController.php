@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AssignAppointedLeadEvent;
+use App\Events\ReassignedAppointedLead;
 use App\Http\Controllers\Controller;
 use App\Models\GeneralInformation;
 use App\Models\Lead;
 use App\Models\QuotationProduct;
 use App\Models\QuoteInformation;
 use App\Models\QuoteLead;
+use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
@@ -94,13 +97,22 @@ class AssignAppointedLeadController extends Controller
             $marketingSpecialistId = $request->input('marketSpecialistUserProfileId');
             $agentId = $request->input('agentUserProfileId');
             $userProfileId = $marketingSpecialistId ? $marketingSpecialistId : $agentId;
+            $userProfile = UserProfile::find($userProfileId);
+            $user =  User::find($userProfile->user_id);
+            $productCount = 0;
             if($userProfileId || $products){
                 foreach($products as $product){
                     $QuotationProduct = QuotationProduct::find($product);
                     $QuotationProduct->user_profile_id = $userProfileId;
                     $QuotationProduct->status = 2;
                     $QuotationProduct->save();
+                    $productCount++;
+                    $leadData = $QuotationProduct->quoteInformation->quoteLead->leads;
+                    $leadId  = $leadData->id;
+                    event(new AssignAppointedLeadEvent($leadId, $userProfile->id, $product, $user->id));
                 }
+                $user->sendAppointedNotification($user, $productCount);
+
             }else{
                 return response()->json(['error' => 'Please select a user profile']);
             }
@@ -167,13 +179,26 @@ class AssignAppointedLeadController extends Controller
     {
         try{
             DB::beginTransaction();
+
             $productId = $request->input('productId');
             $userProfileId = $request->input('userProfileId');
+            $oldProductOwnerUserProfileId = $request->input('oldProductOwnerUserProfileId');
+            $userProfileData = UserProfile::find($oldProductOwnerUserProfileId);
+            $newUserProfileData = UserProfile::find($userProfileId);
+            $oldUser = User::find($userProfileData->user_id);
+            $newUser = User::find($newUserProfileData->user_id);
+            $productCount = 0;
             foreach($productId as $id){
                 $QuotationProduct = QuotationProduct::find($id);
                 $QuotationProduct->user_profile_id = $userProfileId;
                 $QuotationProduct->save();
+                $Lead = $QuotationProduct->quoteInformation->quoteLead->leads;
+                $ReceivableName = UserProfile::find($userProfileId)->fullAmericanName();
+                $oldOwnerName = UserProfile::find($oldProductOwnerUserProfileId)->fullAmericanName();
+                event (new ReassignedAppointedLead($Lead->id, $Lead->company_name , $ReceivableName, $QuotationProduct->product, $oldOwnerName, $id, $userProfileId, $oldUser->id, $newUser->id));
+                $productCount++;
             }
+            $oldUser->sendReassignAppointedNotification($oldUser, $productCount, $ReceivableName);
             DB::commit();
         }catch(\Exception $e){
             DB::rollBack();
