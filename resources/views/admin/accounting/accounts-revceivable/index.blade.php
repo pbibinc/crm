@@ -137,10 +137,10 @@
                         </div>
                         <div class="row mb-2">
                             <div class="col-3">
-                                <label for="cardType">Card Type</label>
+                                <label for="paymentMethod">Payment Method</label>
                             </div>
                             <div class="col-9">
-                                <h6 id="cardType"></h6>
+                                <h6 id="paymentMethod"></h6>
                             </div>
                         </div>
                         <div class="row mb-2">
@@ -183,6 +183,7 @@
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-warning" type="button" id="declinedPaymentButton">Declined</button>
                         <button class="btn btn-info" type="" id="paymentFormButton">Open Payment Form</button>
                     </div>
 
@@ -219,10 +220,42 @@
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button"
                             id="backToPaymentInformationButton">Back</button>
+
                         <input type="submit" class="btn btn-success">
 
                     </div>
                     </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="declinedPaymentForm" tabindex="-1" aria-labelledby="declinedPaymentForm"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="declinedPaymentFormTitle">Declined Payment</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            {{-- <label for="notesDescription">Description:</label> --}}
+                            <div>
+                                <textarea required="" class="form-control" rows="5" placeholder="Type a note..." id="noteDescription"
+                                    required></textarea>
+                                <div class="invalid-feedback" id="noteDescriptionError"></div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="declinedHiddenTitle" name="declinedHiddenTitle">
+                        <input type="hidden" name="declinedHiddenProductId" id="declinedHiddenProductId">
+                        <input type="hidden" name="declinedLeadId" id="declinedLeadId">
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" id="bactkToViewInforationButton">Back</button>
+                        <button type="button" class="btn btn-outline-primary waves-effect waves-light" id="logNote"><i
+                                class="ri-send-plane-fill"></i>Log Note</button>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -274,7 +307,14 @@
                         data: 'action',
                         name: 'action'
                     }
-                ]
+                ],
+                createdRow: function(row, data, dataIndex) {
+                    var status = data.status;
+                    if (status == 13) {
+                        $(row).addClass('table-danger');
+                    }
+                }
+
             });
 
             myDropzone = new Dropzone(".dropzone", {
@@ -352,6 +392,7 @@
                     },
                     success: function(response) {
                         var files = response.medias;
+                        console.log(response);
                         $('#paymentInformationId').val(response.paymentInformation.id);
                         $('#quoteComparisonId').val(response.quoteComparison.id);
                         $('#quotationProductId').val(response.quotationProduct.id);
@@ -364,12 +405,17 @@
                         $('#productType').text(response.quotationProduct.product);
                         $('#emailAddress').text(response.generalInformation.email_address);
                         $('#effectiveDate').text(response.quoteComparison.effective_date);
-                        $('#cardType').text(response.paymentInformation.credit_type);
+                        $('#paymentMethod').text(response.paymentInformation.payment_method);
                         $('#totalPremium').text(response.quoteComparison.full_payment);
                         $('#amountToCharged').text(response.paymentInformation
                             .amount_to_charged);
                         $('#paymentInformationNote').text(response.paymentInformation.note);
                         addExistingFiles(files);
+                        $('#declinedHiddenTitle').val('Declined Payment For ' + response
+                            .quotationProduct.product);
+                        $('#declinedHiddenProductId').val(response.quotationProduct.id);
+                        $('#declinedLeadId').val(response.lead
+                            .id);
                         $('#dataModal').modal('show');
                     }
                 })
@@ -448,6 +494,78 @@
                         $('#dataModal').modal('show');
                     }
                 })
+            });
+
+            $('#declinedPaymentButton').on('click', function(e) {
+                e.preventDefault();
+                $('#declinedPaymentForm').modal('show');
+                $('#dataModal').modal('hide');
+            });
+
+            $('#bactkToViewInforationButton').on('click', function(e) {
+                e.preventDefault();
+                $('#declinedPaymentForm').modal('hide');
+                $('#dataModal').modal('show');
+            });
+
+            $('#logNote').on('click', function(e) {
+                e.preventDefault();
+                var noteTitle = $('#declinedHiddenTitle').val();
+                var status = 'declined-make-payment';
+                var productId = $('#declinedHiddenProductId').val();
+                var leadId = $('#declinedLeadId').val();
+                var noteDescription = $('#noteDescription').val();
+                $.ajax({
+                    url: "{{ route('create-notes') }}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                            'content')
+                    },
+                    method: "POST",
+                    data: {
+                        noteTitle: noteTitle,
+                        noteDescription: noteDescription,
+                        leadId: leadId,
+                        status: status,
+                        productId: productId
+                    },
+                    success: function(data) {
+                        $.ajax({
+                            url: "{{ route('change-quotation-status') }}",
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                    'content')
+                            },
+                            method: "POST",
+                            data: {
+                                id: productId,
+                                status: 13,
+                            },
+                            success: function() {
+                                Swal.fire({
+                                    title: 'Success',
+                                    text: 'has been saved',
+                                    icon: 'success'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        $('#account-payable-table')
+                                            .DataTable().ajax.reload();
+                                    }
+                                });
+                            },
+                            error: function() {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: 'Something went wrong',
+                                    icon: 'error'
+                                });
+                            }
+                        })
+                    },
+                    error: function(jqXHR, testStatus, errorThrown) {
+
+                    }
+                });
             });
 
         })

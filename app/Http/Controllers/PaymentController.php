@@ -16,14 +16,13 @@ class PaymentController extends Controller
 {
     public function index(Request $request)
     {
+        $paymentInformation = new PaymentInformation();
+        // $paymentInformationInstance = ;
+        // dd($paymentInformationInstance);
+        $paymentInformationData = $paymentInformation->AccountsForPayable();
+        // $generalInformation = $paymentInformationData->QuoteComparison->QuotationProduct->QuoteInformation->QuoteLead->leads->GeneralInformation;
         if($request->ajax())
-    {
-            $paymentInformation = new PaymentInformation();
-            // $paymentInformationInstance = ;
-            // dd($paymentInformationInstance);
-            $paymentInformationData = $paymentInformation->AccountsForPayable();
-
-            // dd($paymentInformationData);
+        {
             return DataTables::of($paymentInformationData)
             ->addIndexColumn()
             ->addColumn('payment_type', function($paymentInformationData){
@@ -42,6 +41,10 @@ class PaymentController extends Controller
                 $product = $paymentInformationData['data']->QuoteComparison->QuotationProduct->product;
                 return $product;
             })
+            ->addColumn('status', function($paymentInformationData){
+                $status = $paymentInformationData['data']->QuoteComparison->QuotationProduct->status;
+                return $status;
+            })
             ->addColumn('requested_date', function($paymentInformationData){
                 $requestedDate = $paymentInformationData['data']->created_at->format('M-d-Y H:i:s');
                 return $requestedDate;
@@ -56,7 +59,7 @@ class PaymentController extends Controller
             })
             ->make(true);
         }
-        return view('admin.accounting.accounts-payable.index');
+        return view('admin.accounting.accounts-revceivable.index');
     }
 
     public function storePaymentInformation(Request $request)
@@ -96,12 +99,16 @@ class PaymentController extends Controller
             //Saving Payment Information
             $paymentInformation->quote_comparison_id = $request->quoteComparisonId;
             $paymentInformation->payment_type = $request->paymentType;
-            $paymentInformation->payment_method = $request->paymentMethod;
-            if($request->cardType == 'Other'){
-                $paymentInformation->credit_type = $request->otherCardType;
+            if($request->paymentMethod == 'Credit Card'){
+                if($request->cardType == 'Other'){
+                    $paymentInformation->payment_method = $request->otherCard;
+                }else{
+                    $paymentInformation->payment_method = $request->cardType;
+                }
             }else{
-                $paymentInformation->credit_type = $request->cardType;
+                $paymentInformation->payment_method = $request->paymentMethod;
             }
+            $paymentInformation->payment_term = $request->paymentTerm;
             $paymentInformation->compliance_by = $request->insuranceCompliance;
             $paymentInformation->amount_to_charged = $request->chargedAmount;
             $paymentInformation->note = $request->note;

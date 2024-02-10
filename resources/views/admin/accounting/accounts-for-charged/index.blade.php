@@ -52,7 +52,7 @@
                                             <th>Date</th>
                                             <th>Product</th>
                                             <th>Company Name</th>
-                                            <th>Type Card</th>
+                                            <th>Payment Method</th>
                                             <th>Amount</th>
                                             <th>Compliance</th>
                                             <th>Type</th>
@@ -110,8 +110,8 @@
                         name: 'company_name'
                     },
                     {
-                        data: 'card_type',
-                        name: 'card_type'
+                        data: 'payment_method',
+                        name: 'payment_method'
                     },
                     {
                         data: 'amount_to_charged',

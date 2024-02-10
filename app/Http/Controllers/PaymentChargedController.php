@@ -34,9 +34,9 @@ class PaymentChargedController extends Controller
                 $lead = $paymentChargedData->paymentInformation->QuoteComparison->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name;
                 return $lead;
             })
-            ->addColumn('card_type', function($paymentChargedData){
-                $cardType = $paymentChargedData->paymentInformation->credit_type;
-                return $cardType;
+            ->addColumn('payment_method', function($paymentChargedData){
+                $paymentMethod = $paymentChargedData->paymentInformation->payment_method;
+                return $paymentMethod;
             })
             ->addColumn('amount_to_charged', function($paymentChargedData){
                 $amountToCharged = $paymentChargedData->paymentInformation->amount_to_charged;
@@ -264,7 +264,7 @@ class PaymentChargedController extends Controller
                 $paymentDataExport = [
                     'Company Name' => $data->paymentInformation->QuoteComparison->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name,
                     'Product' => $data->paymentInformation->QuoteComparison->QuotationProduct->product,
-                    'Card Type' => $data->paymentInformation->credit_type,
+                    'Payment Method' => $data->paymentInformation->payment_method,
                     'Amount' => $data->paymentInformation->amount_to_charged,
                     'Compliance' => $data->paymentInformation->compliance_by,
                     'Type of Payment' => $data->paymentInformation->payment_type,
