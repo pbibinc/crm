@@ -16,7 +16,7 @@ class PolicyDetail extends Model
         'quotation_product_id',
         'policy_number',
         'carrier',
-        'insurer',
+        'market',
         'payment_mode'
     ];
 

@@ -14,15 +14,19 @@ class QuoteComparison extends Model
     protected $fillable = [
         'quotation_product_id',
         'quotation_market_id',
+        'pricing_breakdown_id',
+        'qoute_no',
         'full_payment',
         'down_payment',
         'monthly_payment',
         'broker_fee',
+        'recommended',
+        'effective_date'
     ];
 
     public function QuotationMarket()
     {
-        return $this->belongsTo(QuotationMarket::class, 'quotation_market_id');
+        return $this->belongsTo(QuoationMarket::class, 'quotation_market_id');
     }
 
     public function media()
@@ -38,5 +42,10 @@ class QuoteComparison extends Model
     public function PaymentInformation()
     {
         return $this->hasOne(PaymentInformation::class, 'quote_comparison_id');
+    }
+
+    public function PricingBreakdown()
+    {
+        return $this->belongsTo(PricingBreakdown::class, 'pricing_breakdown_id');
     }
 }
