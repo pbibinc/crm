@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::table('payment_information_table', function (Blueprint $table) {
             //
-            $table->string('credit_type')->after('payment_method');
+            $table->renameColumn('credit_type', 'payment_term');
         });
     }
 
@@ -28,7 +28,7 @@ return new class extends Migration
     {
         Schema::table('payment_information_table', function (Blueprint $table) {
             //
-            $table->dropColumn('credit_type');
+            $table->renameColumn('payment_term', 'credit_type');
         });
     }
 };

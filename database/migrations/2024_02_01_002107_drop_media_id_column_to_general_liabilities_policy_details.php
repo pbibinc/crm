@@ -13,12 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('payment_information_table', function (Blueprint $table) {
+        Schema::table('general_liabilities_policy_details', function (Blueprint $table) {
             //
-            $table->string('credit_type')->after('payment_method');
+
+            $table->dropColumn('media_id');
         });
     }
-
     /**
      * Reverse the migrations.
      *
@@ -26,9 +26,9 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('payment_information_table', function (Blueprint $table) {
+        Schema::table('general_liabilities_policy_details', function (Blueprint $table) {
             //
-            $table->dropColumn('credit_type');
+            $table->integer('media_id')->unsigned()->nullable()->after('status');
         });
     }
 };

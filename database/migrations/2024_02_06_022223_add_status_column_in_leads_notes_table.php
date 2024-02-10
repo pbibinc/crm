@@ -13,9 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('payment_information_table', function (Blueprint $table) {
-            //
-            $table->string('credit_type')->after('payment_method');
+        Schema::table('lead_notes_table', function (Blueprint $table) {
+            $table->string('status')->default('regular')->after('description');
         });
     }
 
@@ -26,9 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('payment_information_table', function (Blueprint $table) {
-            //
-            $table->dropColumn('credit_type');
+        Schema::table('lead_notes_table', function (Blueprint $table) {
+            $table->dropColumn('status');
         });
     }
 };

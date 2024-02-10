@@ -13,9 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('payment_information_table', function (Blueprint $table) {
-            //
-            $table->string('credit_type')->after('payment_method');
+        Schema::create('market_product_table', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('market_id')->constrained('quotation_market_table');
+            $table->string('name');
         });
     }
 
@@ -26,9 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('payment_information_table', function (Blueprint $table) {
-            //
-            $table->dropColumn('credit_type');
-        });
+        Schema::dropIfExists('market_product_table');
     }
 };

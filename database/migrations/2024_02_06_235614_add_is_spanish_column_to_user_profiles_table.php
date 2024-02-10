@@ -13,9 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('payment_information_table', function (Blueprint $table) {
-            //
-            $table->string('credit_type')->after('payment_method');
+        Schema::table('user_profiles', function (Blueprint $table) {
+            $table->boolean('is_spanish')->default(false)->after('is_compliance_officer');
         });
     }
 
@@ -26,9 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('payment_information_table', function (Blueprint $table) {
-            //
-            $table->dropColumn('credit_type');
+        Schema::table('user_profiles', function (Blueprint $table) {
+            $table->dropColumn('is_spanish');
         });
     }
 };
