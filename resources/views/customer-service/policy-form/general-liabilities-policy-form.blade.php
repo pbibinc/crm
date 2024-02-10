@@ -16,7 +16,6 @@
                                 <input type="text" class="form-control" id="policyNumber" name="policyNumber"
                                     required>
                             </div>
-
                         </div>
                         <div class="col-6">
                             <div class="form-group">
@@ -29,25 +28,37 @@
                     <div class="row mb-2">
                         <div class="col-6">
                             <div class="form-group">
-                                <label class="form-label" for="carriersInput">Carriers</label>
-                                <input type="text" class="form-control" id="carriersInput" name="carriersInput"
-                                    required>
+                                <label class="form-label" for="marketInput">Market</label>
+                                <select name="marketInput" id="marketInput" class="form-select">
+                                    <option value="">Select Market</option>
+                                    @foreach ($markets as $market)
+                                        <option value="{{ $market->name }}">{{ $market->name }}</option>
+                                    @endforeach
+
+                                </select>
+                                {{-- <input type="text" class="form-control" id="marketInput" name="marketInput" required> --}}
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
-                                <label class="form-label" for="insurerInput">Insurer</label>
-                                <input type="text" class="form-control" id="insurerInput" name="insurerInput"
-                                    required>
+                                <label class="form-label" for="carrierInput">Carrier</label>
+                                <select name="carriersInput" id="carriersInput" class="form-select">
+                                    <option value="">Select Carrier</option>
+                                    @foreach ($carriers as $carrier)
+                                        <option value="{{ $carrier->name }}">{{ $carrier->name }}</option>
+                                    @endforeach
+                                </select>
+                                {{-- <input type="text" class="form-control" id="insurerInput" name="carrierInput"
+                                    required> --}}
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-2">
+                    <div class="row mb-3">
                         <div class="col-6">
                             <div class="form-group">
-                                <label class="form-label" for="paymentMethod">Payment Method</label>
-                                <select class="form-select" aria-label="Default select example" id="paymentModeInput"
-                                    name="paymentModeInput">
+                                <label class="form-label" for="paymentTermInput">Payment Term</label>
+                                <select class="form-select" aria-label="Default select example" id="paymentTermInput"
+                                    name="paymentTermInput">
                                     <option selected="">Open this select menu</option>
                                     <option value="PIF">PIF</option>
                                     <option value="Low down">Low down</option>
@@ -58,7 +69,7 @@
                         </div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-3">
+                        <div class="col-2">
                             <div class="form-group">
                                 <label class="form-label">Commercial GL</label>
                                 <div class="square-switch">
@@ -67,7 +78,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-2">
                             <div class="form-group">
                                 <label class="form-label">Claims Made</label>
                                 <div class="square-switch">
@@ -76,7 +87,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-2">
                             <div class="form-group">
                                 <label class="form-label">Occur</label>
                                 <div class="square-switch">
@@ -85,38 +96,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-3">
-                            <div class="form-group">
-                                <label class="form-label">Policy</label>
-                                <div class="square-switch">
-                                    <input type="checkbox" id="policy" switch="info" name="policy">
-                                    <label for="policy" data-on-label="Yes" data-off-label="No"></label>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-3">
-                            <div class="form-group">
-                                <label class="form-label">Project</label>
-                                <div class="square-switch">
-                                    <input type="checkbox" id="project" switch="info" name="project">
-                                    <label for="project" data-on-label="Yes" data-off-label="No"></label>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="col-3">
-                            <div class="form-group">
-                                <label class="form-label">Loc</label>
-                                <div class="square-switch">
-                                    <input type="checkbox" id="loc" switch="info" name="loc">
-                                    <label for="loc" data-on-label="Yes" data-off-label="No"></label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-3">
+                        <div class="col-2">
                             <div class="form-group">
                                 <label class="form-label">Addl Insd</label>
                                 <div class="square-switch">
@@ -124,9 +104,8 @@
                                     <label for="addlInsd" data-on-label="Yes" data-off-label="No"></label>
                                 </div>
                             </div>
-
                         </div>
-                        <div class="col-3">
+                        <div class="col-2">
                             <div class="form-group">
                                 <label class="form-label">Subr Wvd</label>
                                 <div class="square-switch">
@@ -136,17 +115,55 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <label for="">GEN'L AGGREGATE LIMIT APPLIES PER:</label>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label class="form-label">Policy</label>
+                                <div class="square-switch">
+                                    <input type="checkbox" id="policy" switch="info" name="policy">
+                                    <label for="policy" data-on-label="Yes" data-off-label="No"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label class="form-label">Project</label>
+                                <div class="square-switch">
+                                    <input type="checkbox" id="project" switch="info" name="project">
+                                    <label for="project" data-on-label="Yes" data-off-label="No"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label class="form-label">Loc</label>
+                                <div class="square-switch">
+                                    <input type="checkbox" id="loc" switch="info" name="loc">
+                                    <label for="loc" data-on-label="Yes" data-off-label="No"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row mb-2">
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label" for="eachOccurence">Each Occurence</label>
-                                <input type="text" class="form-control" id="eachOccurence" name="eachOccurence">
+                                <input type="text" class="form-control input-mask text-left"
+                                    data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                    inputmode="decimal" style="text-align: right;" id="eachOccurence"
+                                    name="eachOccurence">
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label" for="rentedDmg">DMG To Rented</label>
-                                <input type="text" class="form-control" id="rentedDmg" name="rentedDmg">
+                                <input type="text" class="form-control input-mask text-left"
+                                    data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                    inputmode="decimal" style="text-align: right;" id="rentedDmg" name="rentedDmg">
                             </div>
                         </div>
                     </div>
@@ -154,13 +171,18 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label" for="medExp">Med Exp</label>
-                                <input type="text" class="form-control" id="medExp" name="medExp">
+                                <input type="text" class="form-control input-mask text-left"
+                                    data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                    inputmode="decimal" style="text-align: right;" id="medExp" name="medExp">
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label" for="perAdvInjury">Per & Adv Injury</label>
-                                <input type="text" class="form-control" id="perAdvInjury" name="perAdvInjury">
+                                <input type="text" class="form-control input-mask text-left"
+                                    data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                    inputmode="decimal" style="text-align: right;" id="perAdvInjury"
+                                    name="perAdvInjury">
                             </div>
                         </div>
                     </div>
@@ -168,13 +190,18 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label" for="genAggregate">Gen Aggregate</label>
-                                <input type="text" class="form-control" id="genAggregate" name="genAggregate">
+                                <input type="text" class="form-control input-mask text-left"
+                                    data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                    inputmode="decimal" style="text-align: right;" id="genAggregate"
+                                    name="genAggregate">
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label" for="medExp">Comp/OP</label>
-                                <input type="text" class="form-control" id="comp" name="comp">
+                                <input type="text" class="form-control input-mask text-left"
+                                    data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                    inputmode="decimal" style="text-align: right;" id="comp" name="comp">
                             </div>
                         </div>
                     </div>
@@ -200,7 +227,8 @@
                             <div class="form-group">
                                 <label class="form-label" for="expirationDate">Attached File <i
                                         class="ri-attachment-line"></i></label>
-                                <input type="file" class="form-control" id="attachedFile" name="attachedFile">
+                                <input type="file" class="form-control" id="attachedFiles" name="attachedFiles[]"
+                                    multiple>
                             </div>
                         </div>
                         <div class="col-6">
@@ -222,6 +250,7 @@
                         </div>
                     </div>
                     <input type="hidden" id="hiddenInputId" name="hiddenInputId">
+                    <input type="hidden" name="hiddenQuoteId" id="hiddenQuoteId">
                 </div>
                 <div class="modal-footer">
                     <input type="submit" name="saveGeneralLiabilitiesPolicyForm"
@@ -243,6 +272,22 @@
             var formattedExpirationDate = expirationDate.toISOString().split('T')[0];
             $('#expirationDate').val(formattedExpirationDate);
         });
+
+        function updateCheckboxStates() {
+            var isAnyChecked = $('#policy').is(':checked') || $('#project').is(':checked') || $('#loc').is(
+                ':checked');
+            $('#policy').prop('disabled', isAnyChecked && !$('#policy').is(':checked'));
+            $('#project').prop('disabled', isAnyChecked && !$('#project').is(':checked'));
+            $('#loc').prop('disabled', isAnyChecked && !$('#loc').is(':checked'));
+        }
+
+        // Attach change event listeners to the checkboxes
+        $('#policy, #project, #loc').change(function() {
+            updateCheckboxStates();
+        });
+
+        updateCheckboxStates();
+
         $('#generalLiabilitiesForm').on('submit', function(e) {
             e.preventDefault();
             var formData = new FormData(this);

@@ -27,6 +27,6 @@ class DatabaseSeeder extends Seeder
         $this->call(UserProfileSeeder::class);
         $this->call(QuotationMarketSeeder::class);
         $this->call(WebsiteOriginatedSeeder::class);
-
+        $this->call(InsurerSeeder::class);
     }
 }

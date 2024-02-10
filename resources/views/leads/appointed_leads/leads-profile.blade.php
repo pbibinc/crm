@@ -1,32 +1,5 @@
 @extends('admin.admin_master')
 @section('admin')
-    <style>
-        .nav-tabs .nav-link.active {
-            color: var(--bs-primary);
-            border-top: 3px solid var(--bs-primary);
-            /* adds a top border */
-            border-bottom-color: transparent;
-            /* to remove the default bottom border */
-        }
-
-        /* Adjust the hover effects if desired */
-        .nav-tabs .nav-link.active:hover {
-            color: darken(var(--bs-primary), 10%);
-            /* darkens the color a bit on hover */
-        }
-
-        /* Add a right border to each nav item */
-        .nav-separated .nav-item {
-            border-right: 1px solid #dee2e6;
-            /* Adjust the color as needed */
-        }
-
-        /* Remove the right border from the last nav item */
-        .nav-separated .nav-item:last-child {
-            border-right: none;
-        }
-    </style>
-
     <div class="page-content pt-6">
         <div class="container-fluid">
             <div class="row">
@@ -162,7 +135,7 @@
                         style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
 
                         <!-- Nav tabs -->
-                        <ul class="nav nav-tabs nav-justified nav-separated" role="tablist" style="margin-top: 0px">
+                        <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist" style="margin-top: 0px">
                             <li class="nav-item">
                                 <a class="nav-link active" data-bs-toggle="tab" href="#product" role="tab">
                                     <span class="d-none d-sm-block d-flex align-items-center justify-content-center"><i
@@ -338,30 +311,24 @@
                                         'generalInformation' => $generalInformation,
                                     ])
                                 </div>
-
                                 <div class="tab-pane" id="messages" role="tabpanel">
                                     @include('leads.appointed_leads.log-activity.notes-log', [
                                         'generalInformation' => $generalInformation,
                                     ])
                                 </div>
-
                                 <div class="tab-pane" id="quotation" role="tabpanel">
                                     @include('leads.appointed_leads.qoutation-forms/forms', [
                                         'product' => $product,
                                         'generalInformation' => $generalInformation,
                                         'quationMarket' => $quationMarket,
                                     ])
-
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
-
     </div>
 
     <script>

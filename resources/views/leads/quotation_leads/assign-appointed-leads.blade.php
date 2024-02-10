@@ -247,6 +247,9 @@
                 processing: true,
                 serverSide: true,
                 ajax: {
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
                     url: "{{ route('get-data-table') }}",
                     data: function(f) {
                         f.marketSpecialistId = $('#marketSpecialistDropDown').val()
@@ -276,6 +279,7 @@
                     $('#agentDropDown').prop('disabled', false);
                 }
             });
+
             $('#agentDropDown').on('change', function() {
                 let agentDropDownId = $(this).val();
                 $('#datatableLeads').DataTable().ajax.reload();
@@ -285,6 +289,7 @@
                     $('#marketSpecialistDropDown').prop('disabled', false);
                 }
             });
+
             $('#assignAppointedLead').on('click', function() {
                 var id = [];
                 var productsArray = [];
@@ -318,9 +323,9 @@
                                         text: 'Leads has been assigned',
                                         icon: 'success'
                                     });
-                                    // $('#assignAppointedLeadsTable').DataTable().ajax.reload();
-                                    // $('#datatableLeads').DataTable().ajax.reload();
-                                    location.reload();
+                                    $('#assignAppointedLeadsTable').DataTable().ajax.reload();
+                                    $('#datatableLeads').DataTable().ajax.reload();
+                                    // location.reload();
                                 },
                                 error: function(data) {
                                     Swal.fire({
@@ -422,6 +427,7 @@
                     $('#agentDropDownReassign').prop('disabled', false);
                 }
             });
+
             $('#agentDropDownReassign').on('change', function() {
                 let agentDropDownId = $(this).val();
                 if (agentDropDownId != "") {
@@ -434,6 +440,10 @@
             $('#submitReassign').on('click', function() {
                 var marketSpecialistUserProfileDropdownId = $('#marketSpecialistDropDownReassign').val();
                 var agentUserProfileDropdownId = $('#agentDropDownReassign').val();
+                var marketSpecialistDropDownId = $('#marketSpecialistDropDown').val();
+                var agentDropDownId = $('#agentDropDown').val();
+                var oldProductOwnerUserProfileId = marketSpecialistDropDownId ?
+                    marketSpecialistDropDownId : agentDropDownId;
                 var userProfileId = marketSpecialistUserProfileDropdownId ?
                     marketSpecialistUserProfileDropdownId : agentUserProfileDropdownId;
 
@@ -446,7 +456,8 @@
                         method: "POST",
                         data: {
                             productId: productId,
-                            userProfileId: userProfileId
+                            userProfileId: userProfileId,
+                            oldProductOwnerUserProfileId: oldProductOwnerUserProfileId
                         },
                         success: function(data) {
                             Swal.fire({

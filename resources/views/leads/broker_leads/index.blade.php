@@ -176,11 +176,12 @@
                 ],
                 createdRow: function(row, data, dataIndex) {
                     var status = data.status;
-                    console.log(status);
                     if (status == 11) {
                         $(row).addClass('table-success');
-                    } else if (status == 6) {
+                    } else if (status == 6 || status == 15) {
                         $(row).addClass('table-warning');
+                    } else if (status == 13 || status == 14) {
+                        $(row).addClass('table-danger');
                     }
                 }
                 // language: {

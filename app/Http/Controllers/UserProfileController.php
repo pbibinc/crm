@@ -117,6 +117,9 @@ class UserProfileController extends Controller
 
             DB::beginTransaction();
 
+            $isComplianceOfficer = $request->input('isComplianceOfficer') == 'on' ? 1 : 0;
+            $isSpanish = $request->input('isSpanish') == 'on' ? 1 : 0;
+
             $file = $request->file('media');
             $basename = $file->getClientOriginalName();
             $directoryPath =  public_path('backend/assets/images/users');
@@ -147,6 +150,8 @@ class UserProfileController extends Controller
             $userProfile->user_id = $request->input('account_id');
             $userProfile->skype_profile = $request->input('skype_profile');
             $userProfile->streams_number = $request->input('streams_number');
+            $userProfile->is_compliance_officer = $isComplianceOfficer;
+            $userProfile->is_spanish = $isSpanish;
             $userProfile->media()->associate($metadata->id);
             $userProfile->save();
             DB::commit();
@@ -187,10 +192,10 @@ class UserProfileController extends Controller
 
     public function update(Request $request)
     {
-        // $file = $request->file('media');
-        // $basename = $file->getBasename();
-        // $filename = $file->getClientOriginalName();
-        // $filepath = public_path('backend/assets/images/users/' . $basename);
+        //
+        $isComplianceOfficer = $request->input('isComplianceOfficer') == 'on' ? 1 : 0;
+        $isSpanish = $request->input('isSpanish') == 'on' ? 1 : 0;
+
         if($request->hasFile('media')) {
             $file = $request->file('media');
             $basename = $file->getClientOriginalName();
@@ -238,6 +243,8 @@ class UserProfileController extends Controller
             $userProfile->user_id = $request->input('account_id');
             $userProfile->skype_profile = $request->input('skype_profile');
             $userProfile->streams_number = $request->input('streams_number');
+            $userProfile->is_compliance_officer = $isComplianceOfficer;
+            $userProfile->is_spanish = $isSpanish;
             $userProfile->media()->associate($metadata);
 
             $userProfile->save();
@@ -255,6 +262,8 @@ class UserProfileController extends Controller
             $userProfile->user_id = $request->input('account_id');
             $userProfile->skype_profile = $request->input('skype_profile');
             $userProfile->streams_number = $request->input('streams_number');
+            $userProfile->is_compliance_officer = $isComplianceOfficer;
+            $userProfile->is_spanish = $isSpanish;
             $userProfile->save();
         }
     }

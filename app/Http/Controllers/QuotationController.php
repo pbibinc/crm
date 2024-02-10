@@ -10,6 +10,7 @@ use App\Models\GeneralLiabilities;
 use App\Models\Lead;
 use App\Models\Metadata;
 use App\Models\PaymentInformation;
+use App\Models\PricingBreakdown;
 use App\Models\QuoationMarket;
 use App\Models\QuotationProduct;
 use App\Models\QuoteComparison;
@@ -40,7 +41,8 @@ class QuotationController extends Controller
         $groupedProducts = collect($products)->groupBy('company')->toArray();
         $quotedProductCount = $quotatationProduct->getQuotedProductByUserProfile(Auth::user()->userProfile->id)->count();
         $quotationdProductCount = $quotatationProduct->getQuotingProductByUserProfile(Auth::user()->userProfile->id)->count();
-        return view('leads.appointed_leads.index', compact('products', 'groupedProducts', 'quotedProductCount', 'quotationdProductCount'));
+        $quotationProduct = new QuotationProduct();
+        return view('leads.appointed_leads.index', compact('products', 'groupedProducts', 'quotedProductCount', 'quotationdProductCount', 'quotationProduct'));
     }
 
     public function leadProfile(Request $request)
@@ -73,8 +75,9 @@ class QuotationController extends Controller
             'Hawaii-Aleutian' => 'Pacific/Honolulu'
         ];
         $timezoneForState = null;
-        $quationMarket = QuoationMarket::all();
-
+        // $quationMarket = QuoationMarket::all()->sortBy('name');
+        $quationMarket = new QuoationMarket();
+        // dd($quationMarket->generalLiabilityMarket);
         if(!$lead || !$generalInformation){
             return redirect()->route('leads.appointed-leads')->withErrors('No DATA found');
             // dd($lead, $generalInformation );
@@ -149,9 +152,13 @@ class QuotationController extends Controller
     {
         if($request->ajax())
         {
-            //declaring variable
+
+
+
+            //declaring variable for quocte comparison
             $quotationProductId = $request->input('productId');
             $marketId = $request->input('marketDropdown');
+
             $fullPayment = $request->input('fullPayment');
             $downPayment = $request->input('downPayment');
             $monthlyPayment = $request->input('monthlyPayment');
@@ -159,6 +166,7 @@ class QuotationController extends Controller
             $reccomended = $request->input('recommended');
             $quoteNo = $request->input('quoteNo');
             $effectiveDate = $request->input('effectiveDate');
+
             // $media = $request->input('media');
             $convertedFullPayment = floatval($fullPayment);
             $convertedDownPayment = floatval($downPayment);
@@ -208,9 +216,23 @@ class QuotationController extends Controller
                     $mediaIds[] = $metadata->id;
                 }
 
+                //saving pricing breakdown
+                $pricingBreakdown = new PricingBreakdown();
+                $pricingBreakdown->premium = $request->input('premium');
+                $pricingBreakdown->endorsements = $request->input('endorsements');
+                $pricingBreakdown->policy_fee = $request->input('policyFee');
+                $pricingBreakdown->inspection_fee = $request->input('inspectionFee');
+                $pricingBreakdown->stamping_fee = $request->input('stampingFee');
+                $pricingBreakdown->surplus_lines_tax = $request->input('surplusLinesTax');
+                $pricingBreakdown->placement_fee = $request->input('placementFee');
+                $pricingBreakdown->broker_fee = $request->input('brokerFee');
+                $pricingBreakdown->miscellaneous_fee = $request->input('miscellaneousFee');
+                $pricingBreakdown->save();
+
                 $quoteComparison = new QuoteComparison();
                 $quoteComparison->quotation_product_id = $quotationProductId;
                 $quoteComparison->quotation_market_id = $marketId;
+                $quoteComparison->pricing_breakdown_id = $pricingBreakdown->id;
                 $quoteComparison->quote_no = $quoteNo;
                 $quoteComparison->full_payment = $fullPayment;
                 $quoteComparison->down_payment = $downPayment;
@@ -220,6 +242,7 @@ class QuotationController extends Controller
                 $quoteComparison->effective_date = $effectiveDate;
                 $quoteComparison->save();
                 $quoteComparison->media()->sync($mediaIds);
+
                 DB::commit();
                 return response()->json(['success' => 'Quote comparison saved successfully']);
             }catch(\Exception $e){
@@ -249,46 +272,95 @@ class QuotationController extends Controller
 
     public function updateQuotationComparison(Request $request)
     {
+
         if($request->ajax())
         {
-            $id = $request->input('product_hidden_id');
-            $marketId = $request->input('marketDropdown');
-            $quotationNo = $request->input('quoteNo');
-            $fullPayment = $request->input('fullPayment');
-            $downPayment = $request->input('downPayment');
-            $monthlyPayment = $request->input('monthlyPayment');
-            $brokerFee = $request->input('brokerFee');
-            $reccomended = $request->input('recommended');
-            $productId = $request->input('productId');
-            $currentMarketId = $request->input('currentMarketId');
-            $effectiveDate = $request->input('effectiveDate');
-            $quoteComparison = QuoteComparison::find($id);
-            $exists = QuoteComparison::where('quotation_market_id', $marketId)->where('quotation_product_id', $productId)->where('id', '!=', $id)->exists();
-            if(!$exists || $currentMarketId == $marketId){
-                if($fullPayment && $downPayment && $monthlyPayment && $brokerFee){
-                    $quoteComparison->quotation_product_id = $productId;
-                    $quoteComparison->quotation_market_id = $marketId;
-                    $quoteComparison->full_payment = $fullPayment;
-                    $quoteComparison->down_payment = $downPayment;
-                    $quoteComparison->monthly_payment = $monthlyPayment;
-                    $quoteComparison->broker_fee = $brokerFee;
-                    $quoteComparison->recommended = $reccomended;
-                    $quoteComparison->quote_no = $quotationNo;
-                    $quoteComparison->effective_date = $effectiveDate;
+            try{
+                DB::beginTransaction();
+
+                 //declaring variable for quocte comparison
+                 $id = $request->input('product_hidden_id');
+                 $marketId = $request->input('marketDropdown');
+                 $quotationNo = $request->input('quoteNo');
+                 $fullPayment = $request->input('fullPayment');
+                 $downPayment = $request->input('downPayment');
+                 $monthlyPayment = $request->input('monthlyPayment');
+                 $brokerFee = $request->input('brokerFee');
+                 $reccomended = $request->input('recommended');
+                 $productId = $request->input('productId');
+                 $currentMarketId = $request->input('currentMarketId');
+                 $effectiveDate = $request->input('effectiveDate');
+                 $sender = $request->input('sender');
+
+                //declaring variable for pricing breakdown
+                $premmium = $request->input('premium');
+                $endorsements = $request->input('endorsements');
+                $policyFee = $request->input('policyFee');
+                $inspectionFee = $request->input('inspectionFee');
+                $stampingFee = $request->input('stampingFee');
+                $surplusLinesTax = $request->input('surplusLinesTax');
+                $placementFee = $request->input('placementFee');
+                // $brokerFee = $request->input('brokerFee');
+                $miscellaneousFee = $request->input('miscellaneousFee');
+
+                $quoteComparison = QuoteComparison::find($id);
+                $pricingBreakDown = PricingBreakdown::find($quoteComparison->pricing_breakdown_id);
+                $exists = QuoteComparison::where('quotation_market_id', $marketId)->where('quotation_product_id', $productId)->where('id', '!=', $id)->exists();
+
+                if(!$exists || $currentMarketId == $marketId){
+                    if($sender == 'broker'){
+                        $quoteComparison->full_payment = $request->hiddenFullpayment;
+                        $quoteComparison->down_payment = $request->hiddenDownpayment;
+                        $quoteComparison->broker_fee = $request->brokerFee;
+                        $quoteComparison->save();
+
+                        $pricingBreakDown->broker_fee = $brokerFee;
+                        $pricingBreakDown->save();
                     }else{
+                     if($fullPayment && $downPayment && $monthlyPayment && $brokerFee){
+                        $quoteComparison->quotation_product_id = $productId;
+                        $quoteComparison->quotation_market_id = $marketId;
+                        $quoteComparison->full_payment = $fullPayment;
+                        $quoteComparison->down_payment = $downPayment;
+                        $quoteComparison->monthly_payment = $monthlyPayment;
+                        $quoteComparison->broker_fee = $brokerFee;
+                        $quoteComparison->recommended = $reccomended;
+                        $quoteComparison->quote_no = $quotationNo;
+                        $quoteComparison->effective_date = $effectiveDate;
+                     }else{
                         $quoteComparison->full_payment = $fullPayment;
                         $quoteComparison->down_payment = $downPayment;
                         $quoteComparison->monthly_payment = $monthlyPayment;
                         $quoteComparison->broker_fee = $brokerFee;
                         $quoteComparison->quote_no = $quotationNo;
                         $quoteComparison->effective_date = $effectiveDate;
-                    }
-                    $quoteComparison->save();
-                    return response()->json(['success' => 'Quote comparison updated successfully']);
-            }else{
-                return response()->json(['error' => 'This market is already added'], 422);
-            }
+                     }
+                     $quoteComparison->save();
 
+
+                     $pricingBreakDown->premium = $premmium;
+                     $pricingBreakDown->endorsements = $endorsements;
+                     $pricingBreakDown->policy_fee = $policyFee;
+                     $pricingBreakDown->inspection_fee = $inspectionFee;
+                     $pricingBreakDown->stamping_fee = $stampingFee;
+                     $pricingBreakDown->broker_fee = $brokerFee;
+                     $pricingBreakDown->surplus_lines_tax = $surplusLinesTax;
+                     $pricingBreakDown->placement_fee = $placementFee;
+                     $pricingBreakDown->miscellaneous_fee = $miscellaneousFee;
+                     $pricingBreakDown->save();
+
+                    }
+                DB::commit();
+                return response()->json(['success' => 'Quote comparison updated successfully']);
+                }else{
+                    return response()->json(['error' => 'This market is already added'], 422);
+                }
+
+            }catch(\Exception $e){
+                DB::rollback();
+                Log::error('Error in updating quote comparison', [$e->getMessage()]);
+                return response()->json(['error' => $e->getMessage()]);
+            }
         }
     }
 
@@ -310,7 +382,9 @@ class QuotationController extends Controller
             $id = $request->input('id');
             $data = QuoteComparison::find($id);
             $media= $data->media;
-            return response()->json(['data' => $data, 'media' => $media]);
+            $pricingBreakdown = $data->PricingBreakdown;
+            $market = QuoationMarket::find($data->quotation_market_id);
+            return response()->json(['data' => $data, 'media' => $media, 'pricingBreakdown' => $pricingBreakdown, 'market' => $market]);
         }
     }
 
@@ -594,19 +668,19 @@ class QuotationController extends Controller
             return DataTables::of($pendingProduct)
             ->addIndexColumn()
             ->addColumn('company_name', function($pendingProduct){
-                $lead = $pendingProduct->QuoteInformation->QuoteLead->leads->company_name;
-                return $lead;
+                $companyName = $pendingProduct->QuoteInformation->QuoteLead->leads->company_name;
+                $companyLink = '<a href="lead-profile-view/'.$pendingProduct->id.'" data-toggle="modal" id="companyLink" name="companyLinkButtonData" data-target="#leadsDataModal" data-id="68" data-name="'.$companyName.'">'.$companyName.'</a>';
+                return $companyLink;
             })
             ->addColumn('viewButton', function($pendingProduct){
                 $viewButton = '<button class="btn btn-outline-info btn-sm viewButton" id="' . $pendingProduct->id . '"><i class="ri-eye-line"></i></button>';
                 return $viewButton;
             })
-
             ->addColumn('brokerAssistant', function($pendingProduct){
                 $brokerAssistant = BrokerQuotation::where('quote_product_id', $pendingProduct->id)->first();
                 return $brokerAssistant->user_profile_id ? UserProfile::find($brokerAssistant->user_profile_id)->fullAmericanName() : 'N/A';
             })
-            ->rawColumns(['viewButton', 'statusColor'])
+            ->rawColumns(['viewButton', 'statusColor', 'company_name'])
             ->make(true);
         }
     }
@@ -644,7 +718,11 @@ class QuotationController extends Controller
             ->quoting_lead_id)->leads;
             $paymentInformation = PaymentInformation::where('quote_comparison_id', $quoteComparison->id)->first();
             $generalInformation = $leads->GeneralInformation;
+
             $uploadFileButton = '<button class="btn btn-outline-success btn-sm uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i></button>';
+
+            $editButton = '<button class="edit btn btn-outline-info btn-sm editButton" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i></button>';
+
             if($paymentInformation){
                 $makePaymentButton = '<button class="btn btn-outline-secondary btn-sm makePaymentButton" id="' . $quoteComparison->id .'" data-quoteNo="'.$quoteComparison->quote_no.'" data-market="'.$market->name.'" data-company-name="'.$leads->company_name.'" data-insured-firstname="'.$generalInformation->firstname.'"
                 data-insured-lastname="'.$generalInformation->lastname.'" data-email="'.$generalInformation->email_address.'" data-broker-fee="'.$quoteComparison->broker_fee.'" data-total-premium="'.$quoteComparison->full_payment.'" data-lead-id="'.$leads->id.'" data-general-information-id="'.$generalInformation->id.'" data-effective-date = "'.$quoteComparison->effective_date.'" data-payment-information="'.htmlspecialchars(json_encode($paymentInformation), ENT_QUOTES, 'UTF-8').'"><i class="ri-money-dollar-circle-line"></i></button>';
@@ -652,7 +730,7 @@ class QuotationController extends Controller
                 $makePaymentButton = '<button class="btn btn-outline-secondary btn-sm makePaymentButton" id="' . $quoteComparison->id .'" data-quoteNo="'.$quoteComparison->quote_no.'" data-market="'.$market->name.'" data-company-name="'.$leads->company_name.'" data-insured-firstname="'.$generalInformation->firstname.'"
                 data-insured-lastname="'.$generalInformation->lastname.'" data-email="'.$generalInformation->email_address.'" data-broker-fee="'.$quoteComparison->broker_fee.'" data-total-premium="'.$quoteComparison->full_payment.'" data-lead-id="'.$leads->id.'" data-general-information-id="'.$generalInformation->id.'" data-effective-date = "'.$quoteComparison->effective_date.'"><i class="ri-money-dollar-circle-line"></i></button>';
             }
-            return $makePaymentButton . ' ' . $uploadFileButton;
+            return $editButton . ' ' . $makePaymentButton . ' ' . $uploadFileButton;
          })
 
          ->rawColumns(['market_name', 'action', 'broker_action'])

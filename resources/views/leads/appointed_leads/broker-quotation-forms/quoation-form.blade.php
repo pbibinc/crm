@@ -45,7 +45,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form class="dropzone mt-4 border-dashed" id="dropzone" action="{{ url('/file-upload') }}"
+                <form class="dropzone mt-4 border-dashed" id="dropzoneBrokerQuoation" action="{{ url('/file-upload') }}"
                     method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="_token" value="{{ csrf_token() }}" />
@@ -58,93 +58,184 @@
 </div>
 
 <div class="modal fade " id="addQuoteModal" tabindex="-1" aria-labelledby="addQuoteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered " role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addQuoteModalLabel">Add Quotation</h5>
+                <h5 class="modal-title" id="addQuoteModalLabel"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="quotationForm" enctype="multipart/form-data">
                     @csrf
                     <div class="row mb-2">
-                        <div class="col-12">
-                            <label for="marketDropdown">Market</label>
-                            <select name="marketDropdown" id="marketDropdown" class="form-select">
-                                <option value="">Select Market</option>
-                                @foreach ($quationMarket as $market)
-                                    <option value={{ $market->id }}>{{ $market->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12">
-                            <label for="quoteNo" class="form-label">Policy No/Quote No:</label>
-                            <input type="text" class="form-control" id="quoteNo" name="quoteNo" required>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
                         <div class="col-6">
-                            <label for="fullPayment" class="form-label">Full Payment</label>
-                            <input type="text" class="form-control input-mask text-left"
-                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
-                                inputmode="decimal" style="text-align: right;" id="fullPayment" name="fullPayment"
-                                required>
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="quoteNo" class="form-label">Policy No/Quote No:</label>
+                                </div>
+                                <div class="col-6">
+                                    <h6 id="quoteNo"></h6>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-6">
-                            <label for="downPayment" class="form-label">Down Payment</label>
-                            <input type="text" class="form-control input-mask text-left" id="downPayment"
-                                name="downPayment"
-                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
-                                inputmode="decimal" style="text-align: right;" required>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-6">
-                            <label for="monthlyPayment" class="form-label">Monthly Payment</label>
-                            <input type="text" class="form-control input-mask text-left" id="monthlyPayment"
-                                name="monthlyPayment"
-                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
-                                inputmode="decimal" style="text-align: right;" required>
-                        </div>
-                        <div class="col-6">
-                            <label for="brokerFee" class="form-label">Broker Fee</label>
-                            <input type="text" class="form-control input-mask text-left" id="brokerFee"
-                                name="brokerFee"
-                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
-                                inputmode="decimal" style="text-align: right;" required>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-6">
-                            <label for="effectiveDate">Effective Date</label>
-                            <input type="date" class="form-control" id="effectiveDate" name="effectiveDate"
-                                required>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div>
-                            <label for="medias" id="mediaLabelId">Attached File</label>
-                            <input type="file" class="form-control" name="photos[]" id="medias" multiple />
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="effectiveDate">Effective Date:</label>
+                                </div>
+                                <div class="col-6">
+                                    <h6 id="effectiveDate"></h6>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
+                    <div class="row mb-2">
+
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="premium">Total Premium:</label>
+                                </div>
+                                <div class="col-6">
+                                    <h6 id="premium"></h6>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="endorsements">Endorsments:</label>
+                                </div>
+                                <div class="col-6">
+                                    <h6 id="endorsements"></h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="policyFee">Policy Fee:</label>
+                                </div>
+                                <div class="col-6">
+                                    <h6 id="policyFee"></h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="inspectionFee">Inspection Fee:</label>
+                                </div>
+                                <div class="col-6">
+                                    <h6 id="inspectionFee"></h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="stampingFee">Stamping Fee:</label>
+                                </div>
+                                <div class="col-6">
+                                    <h6 id="stampingFee"></h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="suplusLinesTax">Surplus Lines Tax:</label>
+                                </div>
+                                <div class="col-6">
+                                    <h6 id="suplusLinesTax"></h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="placementFee">Placement Fee:</label>
+                                </div>
+                                <div class="col-6">
+                                    <h6 id="placementFee"></h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="miscellaneousFee">Miscellaneous Fee:</label>
+                                </div>
+                                <div class="col-6">
+                                    <h6 id="miscellaneousFee"></h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="fullPayment">Full Payment:</label>
+                                </div>
+                                <div class="col-6">
+                                    <h6 id="fullPayment" name="fullPayment"></h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="downPayment">Down Payment:</label>
+                                </div>
+                                <div class="col-6">
+                                    <h6 id="downPayment" name="downPayment"></h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="monthlyPayment">Monthly Payment:</label>
+                                </div>
+                                <div class="col-6">
+                                    <h6 id="monthlyPayment" name="monthlyPayment"></h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label for="brokerFee">Broker Fee</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="brokerFee" name="brokerFee"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" required autocomplete="off">
+                        </div>
+
+                    </div>
                     {{-- <div class="my-dropzone mt-4 border-dashed">
                         <div class="dz-message" data-dz-message><span>Drop files here or click to upload.</span></div>
                     </div> --}}
 
-                    <input type="hidden" name="action" id="action" value="add">
                     <input type="hidden" name="product_hidden_id" id="product_hidden_id" />
-                    <input type="hidden" name="productId" id="productId" value="{{ $quoteProduct->id }}">
-                    <input type="hidden" name="recommended" id="recommended_hidden" value="1" />
+                    <input type="hidden" id="hiddenFullpayment" name="hiddenFullpayment">
+                    <input type="hidden" id="hiddenDownpayment" name="hiddenDownpayment">
+                    <input type="hidden" id="sender" name="sender" value="broker">
                     <input type="hidden" name="currentMarketId" id="currentMarketId">
+
             </div>
-            <div class="modal-footer d-flex justify-content-between">
-                <div class="form-check form-switch mb-3">
-                    <input type="checkbox" class="form-check-input" id="reccomended" checked="">
-                    <label class="form-check-label" for="reccomended">Reccomend this Quote</label>
-                </div>
+            <div class="modal-footer">
                 <div>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <input type="submit" name="action_button" id="action_button" value="Add"
@@ -155,14 +246,15 @@
         </div>
     </div>
 </div>
+
 @include('leads.appointed_leads.broker-forms.make-payment-form', compact('complianceOfficer'))
 
 <script>
     Dropzone.autoDiscover = false;
-    var myDropzone;
+    var myDropzoneBroker;
     $(document).ready(function() {
         var url = "{{ env('APP_FORM_URL') }}" + "/upload";
-        myDropzone = new Dropzone(".dropzone", {
+        myDropzoneBroker = new Dropzone("#dropzoneBrokerQuoation", {
             clickable: true,
             init: function() {
                 this.on("sending", function(file, xhr, formData) {
@@ -264,8 +356,6 @@
                 return false;
             }
         });
-
-
         var id = {{ $quoteProduct->id }};
         $('#qoutation-table').DataTable({
             processing: true,
@@ -393,7 +483,8 @@
             reader.readAsDataURL(file);
         })
 
-        function addExistingFiles(files) {
+        function addExistingQuotationFiles(files) {
+
             files.forEach(file => {
                 var mockFile = {
                     id: file.id,
@@ -403,15 +494,15 @@
                     status: Dropzone.ADDED,
                     url: file.filepath // URL to the file's location
                 };
-                myDropzone.emit("addedfile", mockFile);
-                // myDropzone.emit("thumbnail", mockFile, file.filepath); // If you have thumbnails
-                myDropzone.emit("complete", mockFile);
+                myDropzoneBroker.emit("addedfile", mockFile);
+                // myDropzoneBroker.emit("thumbnail", mockFile, file.filepath); // If you have thumbnails
+                myDropzoneBroker.emit("complete", mockFile);
             });
         };
 
         $('#uploadFileModal').on('hide.bs.modal', function() {
             $(".dropzone .dz-preview").remove(); // This removes file previews from the DOM
-            myDropzone.files.length = 0;
+            myDropzoneBroker.files.length = 0;
         });
 
         //upload file button functionalities
@@ -429,7 +520,7 @@
                 success: function(response) {
                     $('#hidden_id').val(response.data.id);
                     var files = response.media;
-                    addExistingFiles(files);
+                    addExistingQuotationFiles(files);
                     $('#uploadFileModal').modal('show');
                 }
             });
@@ -453,14 +544,30 @@
                     // console.log(response.data.id)
                     var url = `{{ asset('${response.media.filepath}') }}`;
                     var filename = response.data.basename;
-                    $('#marketDropdown').val(String(response.data.quotation_market_id));
-                    $('#fullPayment').val(response.data.full_payment);
-                    $('#downPayment').val(response.data.down_payment);
-                    $('#monthlyPayment').val(response.data.monthly_payment);
+
+                    //pricing breakdown inputs
+                    $('#premium').text(response.pricingBreakdown.premium);
+                    $('#endorsements').text(response.pricingBreakdown.endorsements);
+                    $('#policyFee').text(response.pricingBreakdown.policy_fee);
+                    $('#inspectionFee').text(response.pricingBreakdown.inspection_fee);
+                    $('#stampingFee').text(response.pricingBreakdown.stamping_fee);
+                    $('#suplusLinesTax').text(response.pricingBreakdown.surplus_lines_tax);
+                    $('#placementFee').text(response.pricingBreakdown.placement_fee);
+                    $('#miscellaneousFee').text(response.pricingBreakdown
+                        .miscellaneous_fee);
+
+                    $('#market').text(response.market.name);
+                    $('#addQuoteModalLabel').text(response.market.name);
+                    $('#effectiveDate').text(response.data.effective_date);
+                    $('#fullPayment').text(response.data.full_payment);
+                    $('#hiddenFullpayment').val(response.data.full_payment);
+                    $('#downPayment').text(response.data.down_payment);
+                    $('#hiddenDownpayment').val(response.data.down_payment);
+                    $('#monthlyPayment').text(response.data.monthly_payment);
                     $('#brokerFee').val(response.data.broker_fee);
                     $('#product_hidden_id').val(response.data.id);
-                    $('#productId').val(response.data.quotation_product_id);
-                    $('#quoteNo').val(response.data.quote_no);
+                    $('#productId').text(response.data.quotation_product_id);
+                    $('#quoteNo').text(response.data.quote_no);
                     $('#currentMarketId').val(response.data.quotation_market_id);
                     $('#medias').hide();
                     $('#mediaLabelId').hide();
@@ -476,70 +583,52 @@
 
         });
 
-
-        //SUBMISSION OF FORM WITH VALIDATION FOR FULL PAYMENT AND DOWN PAYMENT
-
-
         //submition of form
         $('#quotationForm').on('submit', function(event) {
             event.preventDefault();
-            var formData = new FormData(this);
-
-            var action_url = '';
-            $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
-            let fullPayment = parseFloat($('#fullPayment').val()) || 0;
-            let downPayment = parseFloat($('#downPayment').val()) || 0;
-
-            if ($('#action').val() == 'add') {
-                action_url = "{{ route('save-quotation-comparison') }}";
-            }
-
-            if ($('#action').val() == 'edit') {
-                action_url = "{{ route('update-quotation-comparison') }}";
-            }
-            if (fullPayment < downPayment) {
-                $('#fullPayment').addClass('input-error');
-                $('#downPayment').addClass('input-error');
-            } else {
-                $.ajax({
-                    url: action_url,
-                    method: "POST",
-                    processData: false, // Prevent jQuery from processing the data
-                    contentType: false,
-                    data: formData,
-                    dataType: "json",
-                    success: function(response) {
+            $.ajax({
+                url: "{{ route('update-quotation-comparison') }}",
+                method: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                        'content')
+                },
+                processData: false, // Prevent jQuery from processing the data
+                contentType: false,
+                data: new FormData(this),
+                dataType: "json",
+                success: function(response) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Quotation Comparison has been saved',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        $('#addQuoteModal').modal('hide');
+                        $('#qoutation-table').DataTable().ajax.reload();
+                    });
+                },
+                error: function(data) {
+                    var errors = data.responseJSON.errors;
+                    console.log(data);
+                    if (data.status == 422) {
                         Swal.fire({
-                            position: 'center',
-                            icon: 'success',
-                            title: 'Quotation Comparison has been saved',
-                            showConfirmButton: false,
-                            timer: 1500
-                        }).then(() => {
-                            $('#addQuoteModal').modal('hide');
-                            $('#qoutation-table').DataTable().ajax.reload();
+                            title: 'Error',
+                            text: data.responseJSON.error,
+                            icon: 'error'
                         });
-                    },
-                    error: function(data) {
-                        var errors = data.responseJSON.errors;
-                        console.log(data);
-                        if (data.status == 422) {
-                            Swal.fire({
-                                title: 'Error',
-                                text: data.responseJSON.error,
-                                icon: 'error'
-                            });
-                            $('#marketDropdown').addClass('input-error');
-                        }
-                        if (errors) {
-                            $.each(errors, function(key, value) {
-                                $('#' + key).addClass('input-error');
-                                $('#' + key + '_error').html(value);
-                            });
-                        }
+                        $('#marketDropdown').addClass('input-error');
                     }
-                });
-            }
+                    if (errors) {
+                        $.each(errors, function(key, value) {
+                            $('#' + key).addClass('input-error');
+                            $('#' + key + '_error').html(value);
+                        });
+                    }
+                }
+            });
+
         });
 
         //function for parsing
@@ -556,17 +645,22 @@
             const currentBrokerFee = parseCurrency($(this).val()) || 0;
             const lastBrokerFee = $(this).data('lastBrokerFee') || 0;
 
-            let fullPayment = parseCurrency($('#fullPayment').val()) || 0;
-            let downPayment = parseCurrency($('#downPayment').val()) || 0;
+            let fullPayment = parseCurrency($('#fullPayment').text()) || 0;
+            let downPayment = parseCurrency($('#downPayment').text()) || 0;
 
             // Subtract last broker fee and add new broker fee
             fullPayment = fullPayment - lastBrokerFee + currentBrokerFee;
             downPayment = downPayment - lastBrokerFee + currentBrokerFee;
 
             // Format and update their values
-            $('#fullPayment').val('$ ' + fullPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
+            $('#fullPayment').text('$ ' + fullPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
                 '$&,'));
-            $('#downPayment').val('$ ' + downPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
+            $('#downPayment').text('$ ' + downPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
+                '$&,'));
+
+            $('#hiddenFullpayment').val('$ ' + fullPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
+                '$&,'));
+            $('#hiddenDownpayment').val('$ ' + downPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
                 '$&,'));
 
             // Update the last broker fee for the next change

@@ -5,14 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserProfileContactInformation extends Model
+class Insurer extends Model
 {
     use HasFactory;
+    protected $table = 'insurer_table';
 
     protected $fillable = [
-        'skype_profile',
-        'streams_number',
+        'name',
     ];
-
-    protected $table = 'user_porfile_contact_information_table';
 }

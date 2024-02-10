@@ -163,6 +163,22 @@
                                 {!! Form::select('account_id', $accounts->pluck('name', 'id'), null, ['class' => 'form-control account_id']) !!}
                                 <div class="invalid-feedback" id="account_idError"></div>
                             </div>
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <div class="form-check form-switch mb-3">
+                                        <input type="checkbox" class="form-check-input" id="isComplianceOfficer"
+                                            name="isComplianceOfficer">
+                                        <label class="form-check-label" for="isComplianceOfficer">Compliance
+                                            Officer</label>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-check form-switch mb-3">
+                                        <input type="checkbox" class="form-check-input" id="isSpanish" name="isSpanish">
+                                        <label class="form-check-label" for="isSpanish">Spanish Moderator</label>
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="form-group">
                                 {{-- <label for="media">User's Image</label>
@@ -483,6 +499,16 @@
                     $('#account_id').val(data.result.user_id);
                     $('#streams_number').val(data.result.streams_number);
                     $('#skype_profile').val(data.result.skype_profile);
+                    if (data.result.is_compliance_officer == 1) {
+                        $('#isComplianceOfficer').prop('checked', true);
+                    } else {
+                        $('#isComplianceOfficer').prop('checked', false);
+                    }
+                    if (data.result.is_spanish == 1) {
+                        $('#isSpanish').prop('checked', true);
+                    } else {
+                        $('#isSpanish').prop('checked', false);
+                    }
                     $('#currentImage').attr('src', url).show();
                     $('#media').attr('required', false);
                     $('#hidden_id').val(id);

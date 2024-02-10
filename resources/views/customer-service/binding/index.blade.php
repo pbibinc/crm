@@ -29,7 +29,9 @@
                     </div>
                 </div>
             </div>
-            @include('customer-service.policy-form.general-liabilities-policy-form')
+            @include(
+                'customer-service.policy-form.general-liabilities-policy-form',
+                compact('carriers', 'markets'))
             @include('customer-service.policy-form.commercial-auto-policy-form')
             @include('customer-service.binding.view-binding-information')
         </div>
@@ -79,7 +81,6 @@
             });
         });
 
-
         $(document).on('click', '.bindButton', function(e) {
             e.preventDefault();
             var id = $(this).attr('id');
@@ -88,20 +89,21 @@
             // var payementInformationData = paymentInformation ? JSON.parse(paymentInformation) : '{}';
             var quote = $(this).attr('data-quote');
             var quoteData = quote ? JSON.parse(quote) : '{}';
-            console.log(quoteData);
+            var marketName = $(this).attr('data-marketName');
             var company_name = $(this).attr('data-companyname');
+            console.log(quoteData);
             $('#insuredInput').val(company_name);
             $('#policyNumber').val(quoteData.quote_no);
-            $('#paymentModeInput').val(quoteData.payment_information.payment_method);
+            $('#paymentTermInput').val(quoteData.payment_information.payment_term);
             $('#hiddenInputId').val(id);
-
+            $('#hiddenQuoteId').val(quoteData.id);
+            $('#marketInput').val(marketName);
             if (product == 'General Liabilities') {
                 $('#generalLiabilitiesPolicyForm').modal('show');
             }
             if (product == 'Commercial Auto') {
                 $('#commercialAutoPolicyForm').modal('show');
             }
-
         });
 
         myDropzone = new Dropzone(".dropzone", {
@@ -177,7 +179,7 @@
 
             var paymentCharged = $(this).attr('data-paymentCharged');
             var paymentChargedData = paymentCharged ? JSON.parse(paymentCharged) : '{}';
-            console.log(paymentChargedData);
+
             var generalInformation = $(this).attr('data-generalInformation');
             var generalInformationData = generalInformation ? JSON.parse(generalInformation) : '{}';
 
@@ -187,6 +189,7 @@
             var marketName = $(this).attr('data-marketName');
             var product = $(this).attr('data-product');
             var name = $(this).attr('data-userProfileName');
+            var status = $(this).attr('data-status');
 
             $('#companyName').text(leadData.company_name);
             $('#insuredName').text(generalInformationData.firstname + ' ' + generalInformationData.lastname);
@@ -202,7 +205,23 @@
             $('#paymentAprrovedDate').text(paymentChargedData.charged_date);
             $('#hiddenId').val(id);
             addExistingFiles(mediaData);
+            if (status == 11) {
+                $('#boundButton').hide();
+                $('#declinedButton').hide();
+            } else if (status == 6) {
+                $('#boundButton').show();
+                $('#declinedButton').show();
+            };
+            $('#declinedLeadId').val(leadData.id);
+            $('#declinedHiddenProductId').val(id);
+            $('#declinedHiddenTitle').val('Declined Binding for' + ' ' + product);
             $('#dataModal').modal('show');
         });
+
+        $('#declinedButton').on('click', function(e) {
+            e.preventDefault();
+            $('#declinedBindingModal').modal('show');
+            $('#dataModal').modal('hide');
+        })
     </script>
 @endsection

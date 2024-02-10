@@ -73,8 +73,8 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-6">
-                            <label for="paymentMethod">Payment Method</label>
-                            <select name="paymentMethod" id="paymentMethod" class="form-control">
+                            <label for="paymentTerm">Payment Term</label>
+                            <select name="paymentTerm" id="paymentTerm" class="form-control">
                                 <option value="">Select Payment Method</option>
                                 <option value="PIF">PIF</option>
                                 <option value="Low down">Low down</option>
@@ -83,8 +83,19 @@
                             </select>
                         </div>
                         <div class="col-6">
-                            <label for="cardType">Card Type</label>
-                            <select name="cardType" id="cardType" class="form-control">
+                            <label for="paymentMethod">Payment Method</label>
+                            <select name="paymentMethod" id="paymentMethod" class="form-control">
+                                <option value="">Select Payment Method</option>
+                                <option value="Checking">Checking</option>
+                                <option value="Credit Card">Credit Card</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label for="cardType" id="cardTypeLabel" hidden>Card Type</label>
+                            <select name="cardType" id="cardType" class="form-control" hidden>
                                 <option value="">Select Card Type</option>
                                 <option value="Visa">Visa</option>
                                 <option value="Master Card">Master Card</option>
@@ -93,15 +104,17 @@
                                 <option value="Other">Other</option>
                             </select>
                         </div>
+                        <div class="col-6">
+                            <label for="otherCard" id="otherCardLabel" hidden>Input Card Type</label>
+                            <input type="text" name="otherCard" class="form-control" id="otherCard" hidden>
+                        </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-6">
 
                         </div>
                         <div class="col-6">
-                            <label for="otherCardType" id="otherCardTypeLabel" hidden>Input Card Type</label>
-                            <input type="text" name="otherCardType" class="form-control" id="otherCardType"
-                                hidden>
+
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -151,11 +164,22 @@
     $(document).ready(function() {
         $('#cardType').on('change', function() {
             if ($(this).val() == 'Other') {
-                $('#otherCardType').attr('hidden', false);
-                $('#otherCardTypeLabel').attr('hidden', false);
+                $('#otherCardLabel').attr('hidden', false);
+                $('#otherCard').attr('hidden', false);
             } else {
-                $('#otherCardType').attr('hidden', true);
-                $('#otherCardTypeLabel').attr('hidden', true);
+                $('#otherCardLabel').attr('hidden', true);
+                $('#otherCard').attr('hidden', true);
+            }
+        })
+        $('#paymentMethod').on('change', function() {
+            if ($(this).val() == 'Credit Card') {
+                $('#cardTypeLabel').attr('hidden', false);
+                $('#cardType').attr('hidden', false);
+            } else {
+                $('#cardType').attr('hidden', true);
+                $('#cardTypeLabel').attr('hidden', true);
+                $('#otherCardLabel').attr('hidden', true);
+                $('#otherCard').attr('hidden', true);
             }
         })
 

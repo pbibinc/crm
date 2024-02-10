@@ -40,6 +40,14 @@
         overflow-x: hidden;
         max-height: 600px;
     }
+
+    .message-box.sender.declined-payment {
+        margin-left: auto;
+        background-color: #f8d7da;
+        color: black;
+        border-radius: 10px 0px 10px 10px !important;
+
+    }
 </style>
 <div id="notesDiv">
     <div class="card">
@@ -50,6 +58,8 @@
                 $id = $user->id;
                 $adminData = App\Models\User::find($id);
                 $userProfileId = $user->userProfile->id;
+                $users = App\Models\User::get();
+                $userProfiles = App\Models\UserProfile::get();
             @endphp
 
             <div class="row">
@@ -58,7 +68,8 @@
                         @foreach ($generalInformation->lead->notes as $index => $note)
                             @if ($userProfileId == $note->userProfile->id)
                                 <!-- Sender's Message -->
-                                <div class="message-box sender p-3 rounded">
+                                <div
+                                    class="message-box sender p-3 rounded {{ $note->status == 'declined-make-payment' ? 'declined-payment' : '' }}">
                                     <div> <strong>{{ $note->title }}</strong></div>
                                     <div class="message-content">
                                         {{ $note->description }}
@@ -90,11 +101,23 @@
             <div class="row">
                 <hr>
             </div>
-            <div class="row">
+            <div class="row mb-3">
                 <label for="notes" class="form-label">Title:</label>
                 <div>
                     <input type="text" class="form-control" id="noteTitle" placeholder="Title" required>
                     <div class="invalid-feedback" id="noteTitleError"></div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="userToNotifyDropdown" class="form-label">User To Notify</label>
+                <div>
+                    <select class="form-select" name="userToNotifyDropdown[]" id="userToNotifyDropdown"
+                        data-placeholder="Choosee..." multiple="multiple" required>
+                        @foreach ($userProfiles as $userProfile)
+                            <option value="{{ $userProfile->user_id }}">{{ $userProfile->fullAmericanName() }}</option>
+                        @endforeach
+                    </select>
+                    <div class="invalid-feedback" id="userToNotifyDropdownError"></div>
                 </div>
             </div>
             <div class="row mb-3">
@@ -118,6 +141,7 @@
             var noteTitle = $('#noteTitle').val();
             var noteDescription = $('#noteDescription').val();
             var leadId = {!! json_encode($generalInformation->lead->id) !!};
+            var userToNotify = $('#userToNotifyDropdown').val();
             $.ajax({
                 url: "{{ route('create-notes') }}",
                 headers: {
@@ -127,15 +151,16 @@
                 data: {
                     noteTitle: noteTitle,
                     noteDescription: noteDescription,
-                    leadId: leadId
+                    leadId: leadId,
+                    status: 'regular',
+                    userToNotify: userToNotify
                 },
                 success: function(data) {
-                    location.reload();
+                    // location.reload();
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     if (jqXHR.status == 422) {
                         const errors = jqXHR.responseJSON.errors;
-
                         // Remove any existing errors
                         $('.is-invalid').removeClass('is-invalid');
                         $('.invalid-feedback').empty();
@@ -149,6 +174,11 @@
                     }
                 },
             });
+        });
+
+        $('#userToNotifyDropdown').select2({
+            placeholder: "Select User",
+            allowClear: true
         });
     });
 </script>

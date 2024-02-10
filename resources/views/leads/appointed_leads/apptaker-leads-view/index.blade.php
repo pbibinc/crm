@@ -255,7 +255,10 @@
                                     ])
                                 </div>
                                 <div class="tab-pane fade show" id="bindocsPfa" role="tabpanel">
-                                    testicles
+                                    @include('customer-service.binding-docs-pfa.index', [
+                                        'generalInformation' => $leads->generalInformation,
+                                        'leadId' => $leads->id,
+                                    ])
                                 </div>
                                 <div class="tab-pane fade show" id="policies" role="tabpanel">
                                     @include('customer-service.policy.policy-view', ['id' => $leads->id])

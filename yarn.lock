@@ -4532,6 +4532,11 @@ punycode@^2.1.0:
   resolved "https://registry.npmjs.org/punycode/-/punycode-2.3.0.tgz"
   integrity sha512-rRV+zQD8tVFys26lAGR9WUuS4iUAngJScM+ZRSKtvl5tKeZ2t5bvdNFdNHBW9FWR4guGHlgmsZ1G7BSm2wTbuA==
 
+push.js@^1.0.12:
+  version "1.0.12"
+  resolved "https://registry.npmjs.org/push.js/-/push.js-1.0.12.tgz"
+  integrity sha512-Mo/zkrPD58hcbMvC/9WveUPGz0PJ4T5UwQJP6DnMYbyxe7b1xM/9qqmJTMmDcprbZjCtLzf9wWtek7gA8O9QBw==
+
 pusher-js@^8.0.2:
   version "8.3.0"
   resolved "https://registry.npmjs.org/pusher-js/-/pusher-js-8.3.0.tgz"

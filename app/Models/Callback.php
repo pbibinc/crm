@@ -57,7 +57,6 @@ class Callback extends Model
         $leads = $user->userProfile->leads;
         $callBack = self::whereDate('date_time', date('Y-m-d'))->get();
         $leadsData = $leads->whereIn('id', $callBack->pluck('lead_id'))->unique();
-        Log::info($leadsData);
         return $leadsData;
     }
 }

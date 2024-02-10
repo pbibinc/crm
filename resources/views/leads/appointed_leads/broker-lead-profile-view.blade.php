@@ -143,22 +143,50 @@
                                     <div class="form-group" style="margin-bottom: 10px;">
                                         <select class="form-control select2-search-disable" id="statusSelect"
                                             style="border: 1px solid #ccc; border-radius: 4px; padding: 6px;">
-                                            <option value="3" @if ($product->status == 3) selected @endif>Pending
-                                            </option>
-                                            <option value="4" @if ($product->status == 4) selected @endif>Follow
-                                                Up</option>
-                                            <option value="6" @if ($product->status == 6) selected @endif>
-                                                Request To Bind</option>
-                                            <option value="5" @if ($product->status == 5) selected @endif>
-                                                Declined</option>
-                                            <option value="9" @if ($product->status == 9) selected @endif>
-                                                Make A Payment</option>
-                                            <option value="10" @if ($product->status == 10) selected @endif>
-                                                Payment Approved</option>
+                                            @if ($product->status == 3 || $product->status == 4 || $product->status == 5)
+                                                <option value="3" @if ($product->status == 3) selected @endif>
+                                                    Pending
+                                                </option>
+                                                <option value="4" @if ($product->status == 4) selected @endif>
+                                                    Follow
+                                                    Up</option>
+                                                <option value="5" @if ($product->status == 5) selected @endif>
+                                                    Declined</option>
+                                            @endif
+                                            @if ($product->status == 11)
+                                                <option value="11" @if ($product->status == 11) selected @endif>
+                                                    Bound</option>
+                                            @endif
+                                            @if ($product->status == 9)
+                                                <option value="9" @if ($product->status == 9) selected @endif>
+                                                    Make A Payment</option>
+                                            @endif
+                                            @if ($product->status == 10 || $product->status == 6)
+                                                <option value="6" @if ($product->status == 6) selected @endif>
+                                                    Request To Bind</option>
+                                                <option value="10" @if ($product->status == 10) selected @endif>
+                                                    Payment Approved</option>
+                                            @endif
+                                            @if ($product->status == 13)
+                                                <option value="13" @if ($product->status == 13) selected @endif>
+                                                    Payment Declined</option>
+                                            @endif
+                                            @if ($product->status == 14)
+                                                <option value="14" @if ($product->status == 14) selected @endif>
+                                                    Binding Declined</option>
+                                                <option value="15" @if ($product->status == 15) selected @endif>
+                                                    Resend RTB</option>
+                                            @endif
+                                            @if ($product->status == 15)
+                                                <option value="15" @if ($product->status == 15) selected @endif>
+                                                    Resend RTB</option>
+                                            @endif
                                         </select>
                                     </div>
-                                    <button type="button" class="btn btn-primary waves-effect waves-light"
-                                        style="padding: 6px 12px; font-size: 14px;" id="saveStatusButton">Save</button>
+                                    @if ($product->status !== 13 && $product->status !== 9)
+                                        <button type="button" class="btn btn-primary waves-effect waves-light"
+                                            style="padding: 6px 12px; font-size: 14px;" id="saveStatusButton">Save</button>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -221,6 +249,11 @@
                             <li class="nav-item">
                                 <a class="nav-link" data-bs-toggle="tab" href="#quotation" role="tab">
                                     <span class="d-none d-sm-block"><i class="fas fa-cog"></i> Quotation</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#bindingDocs" role="tab">
+                                    <span class="d-none d-sm-block"><i class="fas fa-cog"></i> Binding Docs</span>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -318,6 +351,13 @@
                                 <div class="tab-pane" id="messages" role="tabpanel">
                                     @include('leads.appointed_leads.log-activity.notes-log', [
                                         'generalInformation' => $generalInformation,
+                                    ])
+                                </div>
+                                <div class="tab-pane" id="bindingDocs">
+                                    @include('customer-service.binding-docs-pfa.index', [
+                                        'generalInformation' => $generalInformation,
+                                        'product' => $product,
+                                        'leadId' => $generalInformation->lead->id,
                                     ])
                                 </div>
                                 <div class="tab-pane" id="quotation" role="tabpanel">

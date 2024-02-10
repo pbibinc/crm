@@ -50,4 +50,11 @@ class ProductController extends Controller
         DB::rollback();
        }
     }
+
+    // public function getProductInformation(Request $request)
+    // {
+
+    // }
+
+
 }

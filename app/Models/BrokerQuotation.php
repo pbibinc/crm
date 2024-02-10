@@ -52,7 +52,7 @@ class BrokerQuotation extends Model
         $brokerQuotations = self::where('user_profile_id', $userProfileId)->with(['quotationProduct' => function($query){
             $query->select('id', 'product', 'status', 'quote_information_id');
         }])->whereHas('quotationProduct', function($query){
-            $query->where('status', 6 )->orWhere('status', 11);
+            $query->where('status', 6 )->orWhere('status', 11)->orWhere('status', 13)->orWhere('status', 14)->orWhere('status', 15);
         })->orderBy('id')->get();
         $quotationProducts = $brokerQuotations->pluck('quotationProduct');
 

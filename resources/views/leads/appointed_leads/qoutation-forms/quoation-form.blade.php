@@ -65,7 +65,7 @@
 </div>
 
 <div class="modal fade " id="addQuoteModal" tabindex="-1" aria-labelledby="addQuoteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered " role="document">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addQuoteModalLabel">Add Quotation</h5>
@@ -75,7 +75,7 @@
                 <form id="quotationForm" enctype="multipart/form-data">
                     @csrf
                     <div class="row mb-2">
-                        <div class="col-12">
+                        <div class="col-6">
                             <label for="marketDropdown">Market</label>
                             <select name="marketDropdown" id="marketDropdown" class="form-select">
                                 <option value="">Select Market</option>
@@ -84,27 +84,102 @@
                                 @endforeach
                             </select>
                         </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12">
+                        <div class="col-6">
                             <label for="quoteNo" class="form-label">Policy No/Quote No:</label>
                             <input type="text" class="form-control" id="quoteNo" name="quoteNo" required>
                         </div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">
+                            <label for="premium">Premium</label>
+                            <input type="text" class="form-control calculateInput input-mask text-left"
+                                id="premium" name="premium"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" required autocomplete="off">
+                        </div>
+                        <div class="col-6">
+                            <label for="endorsements">Endorsements</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="endorsements" name="endorsements"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label for="policyFee">Policy Fee</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="policyFee" name="policyFee"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" autocomplete="off">
+                        </div>
+                        <div class="col-6">
+                            <label for="inspectionFee">Inspection Fee</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="inspectionFee" name="inspectionFee"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label for="stampingFee">Stamping Fee</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="stampingFee" name="stampingFee"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" autocomplete="off">
+                        </div>
+                        <div class="col-6">
+                            <label for="surplusLinesTax">Surplus lines Tax</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="surplusLinesTax" name="surplusLinesTax"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label for="placementFee">Placement Fee</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="placementFee" name="placementFee"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" required autocomplete="off">
+                        </div>
+                        <div class="col-6">
+                            <label for="brokerFee">Broker Fee</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="brokerFee" name="brokerFee"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" required autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label for="miscellaneousFee">Miscellaneous Fee</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="miscellaneousFee" name="miscellaneousFee"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" required autocomplete="off">
+                        </div>
+                    </div>
+
+                    {{-- <div class="row mb-2">
+
+                    </div> --}}
+                    <div class="row mb-2">
+                        <div class="col-6">
                             <label for="fullPayment" class="form-label">Full Payment</label>
                             <input type="text" class="form-control input-mask text-left"
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
                                 inputmode="decimal" style="text-align: right;" id="fullPayment" name="fullPayment"
-                                required>
+                                required readonly>
                         </div>
                         <div class="col-6">
                             <label for="downPayment" class="form-label">Down Payment</label>
                             <input type="text" class="form-control input-mask text-left" id="downPayment"
                                 name="downPayment"
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
-                                inputmode="decimal" style="text-align: right;" required>
+                                inputmode="decimal" style="text-align: right;" required autocomplete="off">
                         </div>
                     </div>
                     <div class="row mb-2">
@@ -113,15 +188,9 @@
                             <input type="text" class="form-control input-mask text-left" id="monthlyPayment"
                                 name="monthlyPayment"
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
-                                inputmode="decimal" style="text-align: right;" required>
+                                inputmode="decimal" style="text-align: right;" required autocomplete="off">
                         </div>
-                        <div class="col-6">
-                            <label for="brokerFee" class="form-label">Broker Fee</label>
-                            <input type="text" class="form-control input-mask text-left" id="brokerFee"
-                                name="brokerFee"
-                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
-                                inputmode="decimal" style="text-align: right;" required>
-                        </div>
+
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">
@@ -136,16 +205,12 @@
                             <input type="file" class="form-control" name="photos[]" id="medias" multiple />
                         </div>
                     </div>
-
-                    {{-- <div class="my-dropzone mt-4 border-dashed">
-                        <div class="dz-message" data-dz-message><span>Drop files here or click to upload.</span></div>
-                    </div> --}}
-
                     <input type="hidden" name="action" id="action" value="add">
                     <input type="hidden" name="product_hidden_id" id="product_hidden_id" />
                     <input type="hidden" name="productId" id="productId" value="{{ $quoteProduct->id }}">
                     <input type="hidden" name="recommended" id="recommended_hidden" value="1" />
                     <input type="hidden" name="currentMarketId" id="currentMarketId">
+                    <input type="hidden" name="sender" id="sender" value="marketSpecialist">
             </div>
             <div class="modal-footer d-flex justify-content-between">
                 <div class="form-check form-switch mb-3">
@@ -170,6 +235,7 @@
     $(document).ready(function() {
         var url = "{{ env('APP_FORM_URL') }}" + "/upload";
         myDropzone = new Dropzone(".dropzone", {
+            clickable: true,
             init: function() {
                 this.on("sending", function(file, xhr, formData) {
 
@@ -220,6 +286,35 @@
                         }
                     })
 
+                });
+
+                this.on("addedfile", function(file) {
+                    file.previewElement.addEventListener("click", function() {
+                        var url = "{{ env('APP_FORM_LINK') }}";
+                        var fileUrl = url + file.url;
+
+                        Swal.fire({
+                            title: 'File Options',
+                            text: 'Choose an action for the file',
+                            showDenyButton: true,
+                            confirmButtonText: `Download`,
+                            denyButtonText: `View`,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                var downloadLink = document.createElement(
+                                    "a");
+                                downloadLink.href = fileUrl;
+                                downloadLink.download = file.name;
+                                document.body.appendChild(downloadLink);
+                                downloadLink.click();
+                                document.body.removeChild(downloadLink);
+                            } else if (result.isDenied) {
+                                window.open(fileUrl, '_blank');
+                            }
+                        });
+
+
+                    });
                 });
             },
             renameFile: function(file) {
@@ -417,6 +512,18 @@
                     // console.log(response.data.id)
                     var url = `{{ asset('${response.media.filepath}') }}`;
                     var filename = response.data.basename;
+
+                    //pricing breakdown inputs
+                    $('#premium').val(response.pricingBreakdown.premium);
+                    $('#endorsements').val(response.pricingBreakdown.endorsements);
+                    $('#policyFee').val(response.pricingBreakdown.policy_fee);
+                    $('#inspectionFee').val(response.pricingBreakdown.inspection_fee);
+                    $('#stampingFee').val(response.pricingBreakdown.stamping_fee);
+                    $('#suplusLinesTax').val(response.pricingBreakdown.surplus_lines_tax);
+                    $('#placementFee').val(response.pricingBreakdown.placement_fee);
+                    $('#miscellaneousFee').val(response.pricingBreakdown.miscellaneous_fee);
+
+                    //quote comparison inputs
                     $('#marketDropdown').val(String(response.data.quotation_market_id));
                     $('#fullPayment').val(response.data.full_payment);
                     $('#downPayment').val(response.data.down_payment);
@@ -427,6 +534,7 @@
                     $('#quoteNo').val(response.data.quote_no);
                     $('#currentMarketId').val(response.data.quotation_market_id);
                     $('#effectiveDate').val(response.data.effective_date);
+
                     $('#medias').hide();
                     $('#mediaLabelId').hide();
                     $('#action_button').val('Update');
@@ -547,39 +655,37 @@
     });
 
 
-
     //function for parsing
     function parseCurrency(num) {
+        if (num === undefined || num === null || num.trim() === "") {
+            return 0;
+        }
         return parseFloat(num.replace(/[^0-9-.]/g, ''));
     }
 
+    //calculate total premium
+    function calculateFullPayment() {
+        let premium = parseCurrency($('#premium').val()) || 0;
+        let endorsements = parseCurrency($('#endorsements').val()) || 0;
+        let policyFee = parseCurrency($('#policyFee').val()) || 0;
+        let inspectionFee = parseCurrency($('#inspectionFee').val()) || 0;
+        let stampingFee = parseCurrency($('#stampingFee').val()) || 0;
+        let suplusLinesTax = parseCurrency($('#suplusLinesTax').val()) || 0;
+        let placementFee = parseCurrency($('#placementFee').val()) || 0;
+        let brokerFee = parseCurrency($('#brokerFee').val()) || 0;
+        let miscellaneousFee = parseCurrency($('#miscellaneousFee').val()) || 0;
+
+        let fullPayment = premium + endorsements + policyFee + inspectionFee + stampingFee + suplusLinesTax +
+            placementFee + brokerFee + miscellaneousFee;
+        $('#fullPayment').val('$ ' + fullPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+    }
 
 
-    $('#brokerFee').on('focus', function() {
-        let currentBrokerFee = parseCurrency($(this).val()) || 0;
-        $(this).data('lastBrokerFee', currentBrokerFee);
+    $('.calculateInput').on('input', function() {
+        calculateFullPayment();
     });
 
-    $('#brokerFee').on('input', function() {
-        const currentBrokerFee = parseCurrency($(this).val()) || 0;
-        const lastBrokerFee = $(this).data('lastBrokerFee') || 0;
 
-        let fullPayment = parseCurrency($('#fullPayment').val()) || 0;
-        let downPayment = parseCurrency($('#downPayment').val()) || 0;
-
-        // Subtract last broker fee and add new broker fee
-        fullPayment = fullPayment - lastBrokerFee + currentBrokerFee;
-        downPayment = downPayment - lastBrokerFee + currentBrokerFee;
-
-        // Format and update their values
-        $('#fullPayment').val('$ ' + fullPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
-            '$&,'));
-        $('#downPayment').val('$ ' + downPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
-            '$&,'));
-
-        // Update the last broker fee for the next change
-        $(this).data('lastBrokerFee', currentBrokerFee);
-    });
 
 
     //function for resetting the input inside modal

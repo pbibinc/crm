@@ -15,7 +15,7 @@
                                 <th>Product</th>
                                 <th>Payment Mode</th>
                                 <th>Insurer</th>
-                                <th>Bind Status</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </thead>
                         </table>
@@ -51,8 +51,8 @@
                         name: 'payment_mode'
                     },
                     {
-                        data: 'insurer',
-                        name: 'insurer'
+                        data: 'carrier',
+                        name: 'carrier'
                     },
                     // {
                     //     data: 'requestedBy',
