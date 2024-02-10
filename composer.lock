@@ -1381,8 +1381,6 @@
             "time": "2023-12-11T17:09:12+00:00"
         },
         {
-<<<<<<< HEAD
-=======
             "name": "cboden/ratchet",
             "version": "v0.4.4",
             "source": {
@@ -1446,7 +1444,6 @@
             "time": "2021-12-14T00:20:41+00:00"
         },
         {
->>>>>>> b35da833c952dacb9d07609da96c6a9b0e2b6651
             "name": "composer/semver",
             "version": "3.4.0",
             "source": {
@@ -4483,17 +4480,6 @@
             "time": "2023-10-17T14:13:20+00:00"
         },
         {
-<<<<<<< HEAD
-            "name": "maatwebsite/excel",
-            "version": "3.1.52",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/SpartnerNL/Laravel-Excel.git",
-                "reference": "4471416045dbb869d0a218d2e88441adc362e2b0"
-            },
-            "dist": {
-                "type": "zip",
-=======
             "name": "league/uri",
             "version": "7.4.0",
             "source": {
@@ -4759,7 +4745,6 @@
             },
             "dist": {
                 "type": "zip",
->>>>>>> b35da833c952dacb9d07609da96c6a9b0e2b6651
                 "url": "https://api.github.com/repos/SpartnerNL/Laravel-Excel/zipball/4471416045dbb869d0a218d2e88441adc362e2b0",
                 "reference": "4471416045dbb869d0a218d2e88441adc362e2b0",
                 "shasum": ""
@@ -6990,8 +6975,6 @@
                 }
             ],
             "time": "2023-11-08T05:53:05+00:00"
-<<<<<<< HEAD
-=======
         },
         {
             "name": "ratchet/pawl",
@@ -7626,7 +7609,6 @@
                 "source": "https://github.com/revoltphp/event-loop/tree/v1.0.6"
             },
             "time": "2023-11-30T05:34:44+00:00"
->>>>>>> b35da833c952dacb9d07609da96c6a9b0e2b6651
         },
         {
             "name": "sabberworm/php-css-parser",
