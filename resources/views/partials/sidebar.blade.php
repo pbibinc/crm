@@ -42,8 +42,8 @@
                             <span>Accounting</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
-                            <li><a href="{{ route('accounting-payable') }}">Accounts Payable</a></li>
-                            <li><a href="{{ route('payment-for-charged') }}">Charged Payment</a></li>
+                            <li><a href="{{ route('accounting-payable') }}">Accounts Receivable</a></li>
+                            <li><a href="{{ route('payment-for-charged') }}">Accounts Payable</a></li>
                         </ul>
                     </li>
                     <li>
@@ -55,7 +55,6 @@
                             <li><a href="{{ route('admin.users.index') }}">Accounts</a></li>
                             <li><a href="{{ route('admin.roles.index') }}">Role</a></li>
                             <li><a href="{{ route('admin.permissions.index') }}">Permission</a></li>
-
                         </ul>
                     </li>
                     <li>
@@ -131,6 +130,7 @@
                                     <li><a href="{{ route('get-quoted-product') }}">Assign Quoted Leads</a></li>
                                 @endcan
                                 <li><a href="{{ route('market-list.index') }}">Market List</a></li>
+                                <li><a href="{{ route('insurer') }}">Insurer List</a></li>
                             </ul>
                         @endcan
                     </li>

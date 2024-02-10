@@ -26,6 +26,7 @@ use App\Http\Controllers\AssignLeadController;
 use App\Http\Controllers\AppTakerLeadsController;
 use App\Http\Controllers\AssignAppointedLeadController;
 use App\Http\Controllers\BindingController;
+use App\Http\Controllers\BindingDocsController;
 use App\Http\Controllers\BoundController;
 use App\Http\Controllers\CallBackController;
 use App\Http\Controllers\DepartmentListController;
@@ -34,16 +35,19 @@ use App\Http\Controllers\TecnickcomPdfController;
 use App\Http\Controllers\CompanyHandbookController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\EmbeddedSignatureController;
+use App\Http\Controllers\InsurerController;
 use App\Http\Controllers\MarketListController;
 use App\Http\Controllers\NonCallBackDispositionController;
 use App\Http\Controllers\NotesController;
 use App\Http\Controllers\PaymentChargedController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PoliciesController;
+use App\Http\Controllers\PricingBreakdownController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\WebsiteController;
+use App\Models\PricingBreakdown;
 use Faker\Provider\ar_EG\Payment;
 use Illuminate\Support\Facades\App;
 
@@ -144,6 +148,9 @@ Route::middleware(['auth'])->group(function (){
       //route for market list
       Route::resource('market-list', MarketListController::class);
 
+      //route for pricing breakdown
+      Route::resource('pricing-breakdown', PricingBreakdownController::class);
+
         //route for assigning leads
         Route::get('/', [AssignLeadController::class, 'index'])->name('assign');
         Route::get('/getDataTableLeads', [AssignLeadController::class, 'getDataTableLeads'])->name('getDataTableLeads');
@@ -222,10 +229,25 @@ Route::middleware(['auth'])->group(function (){
 
         });
 
+        //route for insurer module
+        Route::prefix('insurer')->group(function(){
+            Route::get('', [InsurerController::class, 'index'])->name('insurer');
+            Route::post('/store', [InsurerController::class, 'store'])->name('insurer.store');
+            Route::get('/{id}/edit', [InsurerController::class, 'edit'])->name('insurer.edit');
+            Route::put('/{id}', [InsurerController::class, 'update'])->name('insurer.update');
+            Route::delete('/{id}', [InsurerController::class, 'destroy'])->name('insurer.destroy');
+        });
+
+
+        Route::prefix('note')->group(function(){
+           Route::get('/{id}/get-general-information', [NotesController::class, 'getGeneralInformation'])->name('get-general-information');
+        });
+
         //route for customer service
         Route::prefix('customer-service')->group(function(){
             //binding routes
             Route::get('/binding', [BindingController::class, 'index'])->name('binding');
+
             Route::get('/bound/list', [BoundController::class, 'index'])->name('bound-list');
             Route::post('binding/save-general-liabilities-policy', [BindingController::class, 'saveGeneralLiabilitiesPolicy'])->name('binding.save-general-liabilities-policy');
 
@@ -234,6 +256,12 @@ Route::middleware(['auth'])->group(function (){
 
             //routes for bound
             Route::post('/save-bound-information', [BoundController::class, 'saveBoundInformation'])->name('save-bound-information');
+
+
+            //routes for binding docs
+            Route::get('/binding-docs', [BindingDocsController::class, 'index'])->name('binding-docs');
+            Route::post('/upload-file-binding-docs', [BindingDocsController::class, 'uploadFile'])->name('upload-file-binding-docs');
+            Route::post('/delete-binding-docs', [BindingDocsController::class, 'deleteBindingDocs'])->name('delete-binding-docs');
 
         });
 
