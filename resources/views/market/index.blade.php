@@ -17,6 +17,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Name</th>
+                                    <th>Products</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -44,6 +45,20 @@
                                     <input type="text" class="form-control" id="name" name="name"
                                         placeholder="Name">
                                     <div class="invalid-feedback" id="nameError"></div>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="product" class="form-label">Product</label>
+                                    <select class="select2 form-control select2-multiple" id="product" name="product"
+                                        data-placeholder="Choosee..." multiple="multiple">
+                                        {{-- <option value="">Select Product</option> --}}
+                                        <option value="General Liability">General Liability</option>
+                                        <option value="Workers Compensation">Workers Compensation</option>
+                                        <option value="Commercial Auto">Commercial Auto</option>
+                                        <option value="Tools Equipment">Tools Equipment</option>
+                                        <option value="Excess Liability">Excess Liability</option>
+                                        <option value="Builders Risk">Builders Risk</option>
+                                        <option value="Business Owners Policy">Business Owners Policy</option>
+                                    </select>
                                 </div>
 
                                 <input type="hidden" name="action" id="action" value="add">
@@ -76,11 +91,20 @@
                         name: 'name'
                     },
                     {
+                        data: 'products',
+                        name: 'products'
+                    },
+                    {
                         data: 'action_button',
                         name: 'action_button',
                     }
                 ]
             });
+
+            $('#product').select2({
+                dropdownParent: $('#dataModal'),
+            });
+
             $('#dataModal').on('submit', function(e) {
                 e.preventDefault();
                 var id = $('#hidden_id').val();
@@ -96,12 +120,11 @@
                         data: {
                             "_token": "{{ csrf_token() }}",
                             name: name,
+                            products: $('#product').val(),
                         },
                         dataType: "json",
                         success: function(data) {
-                            $('#dataModalForm')[0].reset();
-                            $('#dataModal').modal('hide');
-                            $('#dataTable').DataTable().ajax.reload();
+
                             laddaButton.stop();
                             Swal.fire({
                                 position: 'center',
@@ -111,7 +134,9 @@
                                 timer: 1500
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    location.reload();
+                                    $('#dataModalForm')[0].reset();
+                                    $('#dataModal').modal('hide');
+                                    $('#dataTable').DataTable().ajax.reload();
                                 }
                             })
                         },
@@ -133,12 +158,11 @@
                         data: {
                             "_token": "{{ csrf_token() }}",
                             name: name,
+                            products: $('#product').val(),
                         },
                         dataType: "json",
                         success: function(data) {
-                            $('#dataModalForm')[0].reset();
-                            $('#dataModal').modal('hide');
-                            $('#dataTable').DataTable().ajax.reload();
+
                             laddaButton.stop();
                             Swal.fire({
                                 position: 'center',
@@ -148,7 +172,9 @@
                                 timer: 1500
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    location.reload();
+                                    $('#dataModalForm')[0].reset();
+                                    $('#dataModal').modal('hide');
+                                    $('#dataTable').DataTable().ajax.reload();
                                 }
                             })
                         },
@@ -165,13 +191,24 @@
                     })
                 }
             });
+
             $(document).on('click', '.btnEdit', function() {
                 var id = $(this).data('id');
                 $.ajax({
                     url: "/market-list/" + id + "/edit",
                     dataType: "json",
                     success: function(html) {
+
+                        // Clear previous selections in the select field
+                        $('#product').val(null).trigger('change');
+
+                        // Set the selected options based on the data received
+                        var selectedProducts = html.products.map(function(product) {
+                            return product.name;
+                        });
+                        $('#product').val(selectedProducts).trigger('change');
                         $('#name').val(html.data.name);
+
                         $('#hidden_id').val(html.data.id);
                         $('.modal-title').text("Edit Market");
                         $('#action_button').val("Edit");

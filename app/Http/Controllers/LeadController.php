@@ -249,7 +249,6 @@ class LeadController extends Controller
         Cache::forget('exportToken');
         return $writer->toBrowser();
         // return Excel::download(new LeadExport($startDate, $endDate), $fileName);
-
     }
 
     public function checkExport(Request $request)

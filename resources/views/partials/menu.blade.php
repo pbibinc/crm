@@ -1,6 +1,3 @@
+@include('partials.header')
 
-@include("partials.header")
-
-@include("partials.sidebar")
-
-{{--@include("horizontal.html")--}}
+@include('partials.sidebar')

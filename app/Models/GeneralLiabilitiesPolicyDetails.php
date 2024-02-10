@@ -9,7 +9,7 @@ class GeneralLiabilitiesPolicyDetails extends Model
 {
     use HasFactory;
 
-    protected $table = 'general_liabilities_policy_details_table';
+    protected $table = 'general_liabilities_policy_details';
 
     protected $fillable = [
         'policy_details_id',
@@ -26,9 +26,14 @@ class GeneralLiabilitiesPolicyDetails extends Model
         'per_adv_injury',
         'gen_aggregate',
         'product_comp',
-    'effective_date',
+        'effective_date',
         'expiry_date',
         'status',
         'media_id',
     ];
+
+    public function policyDetails()
+    {
+        return $this->belongsTo(PolicyDetail::class, 'policy_details_id');
+    }
 }

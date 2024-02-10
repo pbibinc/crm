@@ -15,11 +15,13 @@ mix
   .js("resources/js/app.js", "public/js")
   .js("resources/js/bootstrap.js", "public/js")
   .sourceMaps(false)
+  .copy("node_modules/push.js/bin/push.min.js", "public/js/push.min.js")
   .postCss("resources/css/app.css", "public/css", [
     require("postcss-import"),
     require("tailwindcss"),
     require("autoprefixer"),
   ]);
+
 if (mix.inProduction()) {
   mix.version();
 }

@@ -1,5 +1,27 @@
 @extends('admin.admin_master')
 @section('admin')
+    <style>
+        .custom-file-input-container {
+            position: relative;
+            width: 100%;
+        }
+
+        #media {
+            opacity: 5;
+            /* Make the actual input transparent */
+        }
+
+        .img-inside-input {
+            position: absolute;
+            top: 50%;
+            left: 30%;
+            transform: translate(-70%, -50%);
+            max-width: 50px;
+            max-height: 40px;
+            display: none;
+            /* Hide initially */
+        }
+    </style>
     <div class="page-content">
         <div class="container-fluid">
 
@@ -87,12 +109,11 @@
                                 <div class="invalid-feedback" id="last_nameError"></div>
                             </div>
                             <div class="form-group">
-                                {{-- {!! Form::label('american_surname', 'American Surname') !!}
-                                {!! Form::text('american_surname', null, ['class' => 'form-control', 'autocomplete' => 'off']) !!} --}}
-                                <label for="american_surname" class="form-label">American Surname:</label>
-                                <input type="text" class="form-control" id="american_surname" name="american_surname"
-                                    required>
-                                <div class="invalid-feedback" id="american_surnameError"></div>
+                                {{-- {!! Form::label('american_name', 'American Surname') !!}
+                                {!! Form::text('american_name', null, ['class' => 'form-control', 'autocomplete' => 'off']) !!} --}}
+                                <label for="american_name" class="form-label">American Name:</label>
+                                <input type="text" class="form-control" id="american_name" name="american_name" required>
+                                <div class="invalid-feedback" id="american_nameError"></div>
                             </div>
                             <div class="form-group">
                                 {{-- {!! Form::label('id_num', 'ID Number') !!}
@@ -107,6 +128,7 @@
                                 <label for="skype_profile" class="form-label">Skype Profile:</label>
                                 <input type="text" class="form-control" id="skype_profile" name="skype_profile" required>
                             </div>
+
                             <div class="form-group">
                                 {!! Form::label('streams_number', 'Streams Number') !!}
                                 {!! Form::text('streams_number', null, [
@@ -116,12 +138,12 @@
                                     'data-parsley-maxlength' => 11,
                                 ]) !!}
                             </div>
+
                             <div class="form-group">
                                 {!! Form::label('position_id', 'Select Designation', ['class' => 'form-label']) !!}
                                 <div class="input-group">
                                     {!! Form::select('position_id', $positions->pluck('name', 'id'), null, ['class' => 'form-control']) !!}
                                 </div>
-
                             </div>
 
                             <div class="form-group">
@@ -136,22 +158,50 @@
                                 <div class="invalid-feedback" id="noteDescriptionError"></div>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group mb-3">
                                 {!! Form::label('account_id', 'Account') !!}
                                 {!! Form::select('account_id', $accounts->pluck('name', 'id'), null, ['class' => 'form-control account_id']) !!}
                                 <div class="invalid-feedback" id="account_idError"></div>
                             </div>
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <div class="form-check form-switch mb-3">
+                                        <input type="checkbox" class="form-check-input" id="isComplianceOfficer"
+                                            name="isComplianceOfficer">
+                                        <label class="form-check-label" for="isComplianceOfficer">Compliance
+                                            Officer</label>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-check form-switch mb-3">
+                                        <input type="checkbox" class="form-check-input" id="isSpanish" name="isSpanish">
+                                        <label class="form-check-label" for="isSpanish">Spanish Moderator</label>
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="form-group">
-                                <label for="media">Users Image</label>
-                                <input type="file" class="form-control" id="media" name="media" required>
-                                <div class="invalid-feedback" id="mediaError"></div>
+                                {{-- <label for="media">User's Image</label>
+                                <div class="form-group">
+                                    <label for="media">Users Image</label>
+                                    <input type="file" class="form-control" id="media" name="media" required>
+                                    <img id="currentImage" src="" alt="Current Image"
+                                        style="max-width: 100px; max-height: 100px;">
+                                    <div class="invalid-feedback" id="mediaError"></div>
+                                </div> --}}
+                                <div class="custom-file-input-container">
+                                    <input type="file" class="form-control" id="media" name="media" required>
+                                    <img id="currentImage" src="" alt="Current Image" class="img-inside-input">
+                                </div>
+
+
                             </div>
 
                             {{-- <input type="text" class="form-control" id="name" name="name" required> --}}
                         </div>
                         <input type="hidden" name="action" id="action" value="add">
                         <input type="hidden" name="hidden_id" id="hidden_id" />
+
 
                 </div>
                 <div class="modal-footer">
@@ -387,6 +437,7 @@
             $('#dataModalForm').parsley();
             $('#dataModal').on('hidden.bs.modal', function(e) {
                 $('#dataModalForm')[0].reset();
+                $('#currentImage').hide();
             });
         });
 
@@ -415,6 +466,15 @@
             disabled: true
         }));
 
+        $(document).on('change', '#media', function() {
+            var file = $(this)[0].files[0];
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#currentImage').attr('src', e.target.result).show();
+            }
+            reader.readAsDataURL(file);
+        })
+
         // script for configuring edit modal
         $(document).on('click', '.edit', function(event) {
             event.preventDefault();
@@ -427,10 +487,11 @@
                 },
                 dataType: "json",
                 success: function(data) {
+                    var url = `{{ asset('${data.media.filepath}') }}`;
                     //   console.log(data.accountsSelected);
                     $('#first_name').val(data.result.firstname);
                     $('#last_name').val(data.result.lastname);
-                    $('#american_surname').val(data.result.american_surname);
+                    $('#american_name').val(data.result.american_name);
                     $('#id_num').val(data.result.id_num);
                     $('#position_id').val(data.result.position_id);
                     $('#is_active').val(data.result.is_active);
@@ -438,6 +499,18 @@
                     $('#account_id').val(data.result.user_id);
                     $('#streams_number').val(data.result.streams_number);
                     $('#skype_profile').val(data.result.skype_profile);
+                    if (data.result.is_compliance_officer == 1) {
+                        $('#isComplianceOfficer').prop('checked', true);
+                    } else {
+                        $('#isComplianceOfficer').prop('checked', false);
+                    }
+                    if (data.result.is_spanish == 1) {
+                        $('#isSpanish').prop('checked', true);
+                    } else {
+                        $('#isSpanish').prop('checked', false);
+                    }
+                    $('#currentImage').attr('src', url).show();
+                    $('#media').attr('required', false);
                     $('#hidden_id').val(id);
                     $('.modal-title').text('Edit Record');
                     $('#action_button').val('Update');
@@ -448,7 +521,6 @@
                     var errors = data.responseJSON;
                     console.log(errors);
                 }
-
             })
 
 

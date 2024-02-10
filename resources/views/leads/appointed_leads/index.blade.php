@@ -81,12 +81,18 @@
                                             <td><strong><b>Product</b></strong></td>
                                             <td><strong><b>Telemarketer</b></strong></td>
                                             <td><strong><b>Status</b></strong></td>
-                                            <td><strong><b>Action</b></strong></td>
+                                            {{-- <td><strong><b>Action</b></strong></td> --}}
                                         </tr>
                                         @foreach ($groupedProduct as $product)
                                             <tr>
                                                 <td></td>
-                                                <td>{{ $product['product']->product }}</td>
+
+                                                <td>
+                                                    <a href="lead-profile-view/{{ $product['product']->id }}"
+                                                        id="viewButton" name="viewButton" class="viewButton"
+                                                        id="{{ $product['product']->id }}">
+                                                        {{ $product['product']->product }}</a>
+                                                </td>
                                                 <td>{{ $product['telemarketer'] }}</td>
                                                 <td>
                                                     @if ($product['product']->status == 1)
@@ -95,10 +101,10 @@
                                                         <span class="badge bg-warning">Quoting</span>
                                                     @endif
                                                 </td>
-                                                <td><button class="viewButton btn btn-info btn-sm"
+                                                {{-- <td><button class="viewButton btn btn-info btn-sm"
                                                         id={{ $product['product']->id }}><i
                                                             class="ri-eye-line"></i></button>
-                                                </td>
+                                                </td> --}}
                                             </tr>
                                         @endforeach
                                     @endforeach
@@ -111,14 +117,14 @@
                     <div class="card"
                         style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                         <div class="card-body">
-                            <h4 class="card-title mb-4">Broker's Product List</h4>
+                            <h4 class="card-title mb-4">Product List</h4>
                             <table id="productQuotedView" class="table table-bordered dt-responsive nowrap"
                                 style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <thead style="background-color: #f0f0f0;">
                                     <th>Company Name</th>
                                     <th>Product</th>
                                     <th>Broker Assistant</th>
-                                    <th>Action</th>
+                                    {{-- <th>Action</th> --}}
                                 </thead>
                                 <tbody>
 
@@ -141,10 +147,6 @@
                         data: 'company_name',
                         name: 'company_name'
                     },
-                    // {
-                    //     data: '',
-                    //     name: 'tel_num'
-                    // },
                     {
                         data: 'product',
                         name: 'product'
@@ -152,32 +154,54 @@
                     {
                         data: 'brokerAssistant',
                         name: 'brokerAssistant'
-                    },
-                    {
-                        data: 'viewButton',
-                        name: 'viewButton'
                     }
-                ]
+                ],
+                createdRow: function(row, data, dataIndex) {
+                    var status = data.status;
+                    if (status == 1) {
+                        $(row).css('background-color', '#f0f0f0');
+                    } else if (status == 2) {
+                        $(row).css('background-color', '#f0f0f0');
+                    } else if (status == 3) {
+                        // $(row).addClass('table-warning');
+                    } else if (status == 4) {
+                        // $(row).addClass('table-warning');
+                    } else if (status == 5) {
+                        $(row).css('background-color', '#f0f0f0');
+                    } else if (status == 6) {
+                        $(row).addClass('table-primary');
+                    } else if (status == 8) {
+                        $(row).addClass('table-success');
+                    } else if (status == 9) {
+                        $(row).addClass('table-warning');
+                    } else if (status == 10) {
+                        $(row).addClass('table-warning');
+                    } else if (status == 11) {
+                        $(row).addClass('table-primary');
+                    } else if (status == 12) {
+                        $(row).addClass('table-primary');
+                    }
+                }
             })
 
-            $(document).on('click', '#productQuotedView .viewButton, #appointedLeadsTable .viewButton', function() {
-                var productId = $(this).attr('id');
-                console.log('test this code');
-                $.ajax({
-                    url: "{{ route('lead-profile') }}",
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    method: "POST",
-                    data: {
-                        productId: productId
-                    },
-                    success: function(data) {
-                        window.location.href =
-                            `{{ url('quoatation/lead-profile-view/${data.productId}') }}`;
-                    }
-                })
-            })
+            // $(document).on('click', '#productQuotedView .viewButton, #appointedLeadsTable .viewButton', function() {
+            //     var productId = $(this).attr('id');
+            //     console.log('test this code');
+            //     $.ajax({
+            //         url: "{{ route('lead-profile') }}",
+            //         headers: {
+            //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //         },
+            //         method: "POST",
+            //         data: {
+            //             productId: productId
+            //         },
+            //         success: function(data) {
+            //             window.location.href =
+            //                 `{{ url('quoatation/lead-profile-view/${data.productId}') }}`;
+            //         }
+            //     })
+            // })
         })
     </script>
 @endsection

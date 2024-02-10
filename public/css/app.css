@@ -1088,6 +1088,9 @@ select {
 .border-t-0 {
   border-top-width: 0px;
 }
+.border-dashed {
+  border-style: dashed;
+}
 .border-gray-100 {
   --tw-border-opacity: 1;
   border-color: rgb(243 244 246 / var(--tw-border-opacity));

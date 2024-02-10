@@ -2,10 +2,15 @@
 
 namespace App\Models;
 
+use App\Events\ReassignedAppointedLead;
+use App\Notifications\AssignAppointedLead;
+use App\Notifications\LeadNotesNotification;
+use App\Notifications\ReassignAppointedLeadNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Notification;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -43,6 +48,22 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    //notification function
+    public function sendAppointedNotification($user, $productCount)
+    {
+        Notification::send($user, new AssignAppointedLead($productCount));
+    }
+
+    public function sendReassignAppointedNotification($user, $productCount, $newOwnerName)
+    {
+        Notification::send($user, new ReassignAppointedLeadNotification($productCount, $newOwnerName));
+    }
+
+    public function sendNoteNotification($user, $noteTitle, $senderUserProfileId, $noteDescription, $leadId)
+    {
+        Notification::send($user, new LeadNotesNotification($noteTitle, $senderUserProfileId, $noteDescription, $leadId));
+    }
+
     public function role()
     {
         return $this->belongsTo(Role::class);
@@ -58,8 +79,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(UserProfile::class);
 
     }
-
-
 
 
 }

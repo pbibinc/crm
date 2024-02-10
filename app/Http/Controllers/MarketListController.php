@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\MarketProduct;
 use App\Models\QuoationMarket;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -25,7 +26,21 @@ class MarketListController extends Controller
                 $deleteButton = '<button class="btn btn-outline-danger waves-effect waves-light btn-sm btnDelete" data-id="'.$data->id.'" name="delete"  type="button " ><i class="mdi mdi-trash-can-outline"></i></button>';
                 return $editButton . ' ' . $deleteButton;
             })
-            ->rawColumns(['action_button'])
+            ->addColumn('products', function($data){
+                $marketProducts = MarketProduct::where('market_id', $data->id)->get();
+                $productHtml = '';
+                $count = 0;
+                foreach($marketProducts as $product){
+                    $productHtml .= '<span class="badge bg-primary">' . $product->name . '</span> ';
+                    $count++;
+
+                    if ($count % 3 == 0) {
+                        $productHtml .= '<br>';
+                    }
+                }
+                return $productHtml;
+            })
+            ->rawColumns(['action_button', 'products'])
             ->toJson();
         }
         return view('market.index');
@@ -54,7 +69,14 @@ class MarketListController extends Controller
         $quotationMarket = new QuoationMarket();
         $quotationMarket->name = $data['name'];
         $quotationMarket->save();
-        return response()->json(['success' => 'website has been saved'], 200);
+        foreach($data['products'] as $product){
+            $marketProduct = new MarketProduct();
+            $marketProduct->market_id = $quotationMarket->id;
+            $marketProduct->name = $product;
+            $marketProduct->save();
+        }
+
+        return response()->json(['success' => 'market has been saved'], 200);
     }
 
     /**
@@ -78,7 +100,8 @@ class MarketListController extends Controller
     {
         //
         $market = QuoationMarket::find($id);
-        return response()->json(['data' => $market], 200);
+        $marketProduct = $market->products;
+        return response()->json(['data' => $market, 'products' => $marketProduct], 200);
     }
 
     /**
@@ -90,11 +113,24 @@ class MarketListController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //update market
         $data = $request->all();
         $quotationMarket = QuoationMarket::find($id);
         $quotationMarket->name = $data['name'];
         $quotationMarket->save();
+
+        $marketProducts = MarketProduct::where('market_id', $id)->pluck('name')->toArray();
+
+        if($marketProducts != $data['products']){
+            MarketProduct::where('market_id', $id)->delete();
+            foreach($data['products'] as $product){
+                $marketProductModel = new MarketProduct();
+                $marketProductModel->market_id = $quotationMarket->id;
+                $marketProductModel->name = $product;
+                $marketProductModel->save();
+            }
+        }
+
         return response()->json(['success' => 'website has been updated'], 200);
     }
 

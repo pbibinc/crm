@@ -472,7 +472,7 @@
                             },
                             success: function(response) {}
                         });
-                        window.open(`${url}/appoinnted-lead-questionare`, "s_blank",
+                        window.open(`${url}appoinnted-lead-questionare`, "s_blank",
                             "width=1000,height=849");
                         $('#transactionLogModal').modal('hide');
                     }
@@ -568,7 +568,6 @@
                         leadId: leadsId
                     },
                     success: function(response) {
-                        console.log(response);
                         $('#transactionLogModal').modal('hide');
                         location.reload();
                     },

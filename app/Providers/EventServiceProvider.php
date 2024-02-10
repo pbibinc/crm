@@ -3,15 +3,19 @@
 namespace App\Providers;
 
 use App\Events\AppointmentTaken;
+use App\Events\AssignAppointedLeadEvent;
 use App\Events\LeadAssignEvent;
 use App\Events\LeadImportEvent;
 use App\Events\LeadReassignEvent;
+use App\Events\ReassignedAppointedLead;
 use App\Listeners\BroadcastUserLoginNotification;
 use App\Listeners\BroadcastUserLogoutNotification;
 use App\Listeners\LogAppointmentTaken;
+use App\Listeners\LogAssignAppointedLeadListener;
 use App\Listeners\LogLeadAssignListener;
 use App\Listeners\LogLeadImportListener;
 use App\Listeners\LogLeadReassignListener;
+use App\Listeners\LogReassignAppointedLeadListner;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Auth\Events\Registered;
@@ -79,6 +83,29 @@ class EventServiceProvider extends ServiceProvider
         Event::listen(queueable(function(LeadImportEvent $event){
 
         }));
+
+
+        //event for assigning appointed lead
+        Event::listen(queueable(function(AssignAppointedLeadEvent $event){
+
+        }));
+
+        Event::listen(
+            AssignAppointedLeadEvent::class,
+            [LogAssignAppointedLeadListener::class, 'handle']
+        );
+
+        //event listener for reassigning appointed lead
+        Event::listen(queueable(function(ReassignedAppointedLead $event){
+
+        }));
+
+        Event::listen(
+            ReassignedAppointedLead::class,
+            [LogReassignAppointedLeadListner::class, 'handle']
+        );
+
+
     }
 
     /**

@@ -2,11 +2,16 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "amphp/websocket-client": "^2.0",
         "barryvdh/laravel-dompdf": "^2.0",
+        "cboden/ratchet": "^0.4.4",
         "dgvai/laravel-adminlte-components": "^2.1",
         "doctrine/dbal": "^3.7",
         "elibyy/tcpdf-laravel": "^10.0",
@@ -24,6 +29,7 @@
         "protonemedia/laravel-splade": "^1.4",
         "psr/simple-cache": "2.0",
         "pusher/pusher-php-server": "^7.2",
+        "ratchet/pawl": "^0.4.1",
         "select2/select2": "^4.0",
         "spatie/laravel-webhook-client": "^3.2",
         "spatie/simple-excel": "^3.3",

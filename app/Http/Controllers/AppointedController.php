@@ -35,7 +35,7 @@ class AppointedController extends Controller
             })
             ->rawColumns(['company_name_action', 'action'])
             ->make(true);
-        }
+    }
         return view('leads.appointed_leads.appointed.index');
     }
 
