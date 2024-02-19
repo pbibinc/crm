@@ -94,7 +94,7 @@ class GeneralInformation extends Model
 
         $product = [];
         if($generalInfo->generalLiabilities){
-            array_push($product, 'General Liabilities');
+            array_push($product, 'General Liability');
         }
         if($generalInfo->workersCompensation){
             array_push($product, 'Workers Compensation');

@@ -31,7 +31,7 @@ class LogAssignAppointedLeadListener
         LeadHistory::create([
             'lead_id' => $event->leadId,
             'user_profile_id' => $event->userProfileId,
-            'changes' => json_encode(['user_profile_id' => $event->userProfileId, 'product_id' => $event->productId, 'reassign_appointed_at' => now()]),
+            'changes' => json_encode(['user_profile_id' => $event->userProfileId, 'product_id' => $event->productId, 'assign_appointed_at' => now()]),
         ]);
     }
 }

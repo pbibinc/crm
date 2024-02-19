@@ -225,7 +225,7 @@
 
                                     <div class="row">
 
-                                        @if ($product->product == 'General Liabilities')
+                                        @if ($product->product == 'General Liability')
                                             {{-- <div class="tab-pane active" id="generalLiabilites" role="tabpanel"> --}}
                                             @include(
                                                 'leads.appointed_leads.product-view.general-liability-profile',

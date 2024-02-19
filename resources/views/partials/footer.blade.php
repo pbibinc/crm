@@ -61,7 +61,6 @@
     });
 
     Echo.channel('reassign-appointed-lead').listen('ReassignedAppointedLead', (e) => {
-
         if (e.oldUserId = userId) {
             Push.create(`Product Reassign to ${e.receivableName}`, {
                 body: `Your Product Has been reassigned to ${e.receivableName}`,

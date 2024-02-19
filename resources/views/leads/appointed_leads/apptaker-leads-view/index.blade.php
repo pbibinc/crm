@@ -184,7 +184,7 @@
                                             <div class="tab-pane fade show  {{ $key === 0 ? 'show active' : '' }}"
                                                 id="{{ str_replace(' ', '', $product->product) }}" role="tabpanel">
                                                 @includeWhen(
-                                                    $product->product == 'General Liabilities',
+                                                    $product->product == 'General Liability',
                                                     'leads.appointed_leads.product-view.general-liability-profile',
                                                     [
                                                         'generalLiabilities' =>

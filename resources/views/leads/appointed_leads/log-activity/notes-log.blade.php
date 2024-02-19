@@ -21,6 +21,13 @@
         border-radius: 0px 10px 10px 10px !important;
     }
 
+    .message-box.receiver.danger {
+        background-color: #f8d7da;
+        color: black;
+        padding: 10px;
+        border-radius: 0px 10px 10px 10px !important;
+    }
+
     .message-timestamp {
         font-size: 0.8rem;
         text-align: right;
@@ -35,13 +42,12 @@
         text-align: right;
     }
 
-    .scrollable {
+    /* .scrollable {
         overflow-y: auto;
-        overflow-x: hidden;
-        max-height: 600px;
-    }
+        max-height: 350px;
+    } */
 
-    .message-box.sender.declined-payment {
+    .message-box.sender.danger {
         margin-left: auto;
         background-color: #f8d7da;
         color: black;
@@ -60,16 +66,26 @@
                 $userProfileId = $user->userProfile->id;
                 $users = App\Models\User::get();
                 $userProfiles = App\Models\UserProfile::get();
+
             @endphp
 
             <div class="row">
                 <div class="container mt-5 d-flex flex-column">
-                    <div class="scrollable">
+                    <div class="scrollable" style="height: 500px; overflow-y: auto;">
                         @foreach ($generalInformation->lead->notes as $index => $note)
+                            @php
+                                $class = '';
+                                if ($note->status == 'declined-make-payment') {
+                                    $class = 'danger';
+                                } elseif ($note->status == 'Declined Binding') {
+                                    $class = 'danger';
+                                } elseif ($note->status == 'yet-another-status') {
+                                    $class = 'yet-another-class';
+                                }
+                            @endphp
                             @if ($userProfileId == $note->userProfile->id)
                                 <!-- Sender's Message -->
-                                <div
-                                    class="message-box sender p-3 rounded {{ $note->status == 'declined-make-payment' ? 'declined-payment' : '' }}">
+                                <div class="message-box sender p-3 rounded {{ $class }}">
                                     <div> <strong>{{ $note->title }}</strong></div>
                                     <div class="message-content">
                                         {{ $note->description }}
@@ -82,7 +98,7 @@
                                 </div>
                             @else
                                 <!-- Receiver's Message -->
-                                <div class="message-box receiver p-3 rounded">
+                                <div class="message-box receiver p-3 rounded {{ $class }}">
                                     <div> <strong>{{ $note->title }}</strong></div>
                                     <div class="message-content">
                                         {{ $note->description }}
@@ -114,7 +130,8 @@
                     <select class="form-select" name="userToNotifyDropdown[]" id="userToNotifyDropdown"
                         data-placeholder="Choosee..." multiple="multiple" required>
                         @foreach ($userProfiles as $userProfile)
-                            <option value="{{ $userProfile->user_id }}">{{ $userProfile->fullAmericanName() }}</option>
+                            <option value="{{ $userProfile->user_id }}">{{ $userProfile->fullAmericanName() }}
+                            </option>
                         @endforeach
                     </select>
                     <div class="invalid-feedback" id="userToNotifyDropdownError"></div>
@@ -137,6 +154,7 @@
 
 <script>
     $(document).ready(function() {
+        $('.scrollable').scrollTop($('.scrollable')[0].scrollHeight);
         $('#logNote').on('click', function() {
             var noteTitle = $('#noteTitle').val();
             var noteDescription = $('#noteDescription').val();

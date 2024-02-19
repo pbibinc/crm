@@ -29,7 +29,7 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="myLargeModalLabel">General Liabilities</h5>
+                    <h5 class="modal-title" id="myLargeModalLabel">General Liability</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -123,7 +123,7 @@
 <div class="row">
     <div class="col-5 title-card">
         <i class="ri-umbrella-line title-icon"></i> <!-- An example icon; adjust as necessary -->
-        <h4 class="card-title mb-0" style="color: #ffffff">General Liabilities Information</h4>
+        <h4 class="card-title mb-0" style="color: #ffffff">General Liability Information</h4>
         <!-- mb-0 removes default margin at the bottom -->
     </div>
 
@@ -251,7 +251,7 @@
 <div class="row">
     <div class="col-5 title-card">
         <i class="ri-calendar-event-line title-icon"></i> <!-- An example icon; adjust as necessary -->
-        <h4 class="card-title mb-0" style="color: #ffffff">Previous General Liabilities</h4>
+        <h4 class="card-title mb-0" style="color: #ffffff">Previous General Liability</h4>
         <!-- mb-0 removes default margin at the bottom -->
     </div>
 </div>

@@ -36,13 +36,30 @@
                 </div>
             @elseif (isset($changes->appointed_by))
                 <div class="cd-timeline-img cd-success">
-                    <i class="mdi mdi-book-edit"></i>
+                    {{-- <i class="mdi mdi-book-edit"></i> --}}
+                    <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
+                        class="me-3 rounded-circle avatar-xs" alt="user-pic">
                 </div>
                 <div class="cd-timeline-content">
                     <p class="mb-0 text-muted font-14">Application Taken by:
                         {{ $leadHistory->userProfile->fullName() }}.</p>
                     <span
                         class="cd-date">{{ \Carbon\Carbon::parse($changes->appointed_by)->format('M-j-Y g:iA') }}</span>
+                </div>
+            @elseif(isset($changes->assign_appointed_at))
+                @php
+                    $product = $leadHistory->getProductByProductId($changes->product_id);
+                @endphp
+                <div class="cd-timeline-img">
+                    {{-- <i class="mdi mdi-book-edit"></i> --}}
+                    <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
+                        class="me-1 mt-0 rounded-circle avatar-xs" alt="user-pic">
+                </div>
+                <div class="cd-timeline-content">
+                    <p class="mb-0 text-muted font-14"> {{ $product->product }} Has Been assigned to:
+                        {{ $leadHistory->userProfile->fullName() }}.</p>
+                    <span
+                        class="cd-date">{{ \Carbon\Carbon::parse($changes->assign_appointed_at)->format('M-j-Y g:iA') }}</span>
                 </div>
             @endif
 

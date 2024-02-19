@@ -31,4 +31,10 @@ class LeadHistory extends Model
 
         return $leadHistory ? $leadHistory->userProfile : null;
     }
+
+    public function getProductByProductId($id)
+    {
+        $product = QuotationProduct::find($id);
+        return $product;
+    }
 }

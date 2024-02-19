@@ -208,9 +208,10 @@
                     <input type="hidden" name="action" id="action" value="add">
                     <input type="hidden" name="product_hidden_id" id="product_hidden_id" />
                     <input type="hidden" name="productId" id="productId" value="{{ $quoteProduct->id }}">
-                    <input type="hidden" name="recommended" id="recommended_hidden" value="1" />
+                    <input type="hidden" name="recommended" id="recommended_hidden" />
                     <input type="hidden" name="currentMarketId" id="currentMarketId">
                     <input type="hidden" name="sender" id="sender" value="marketSpecialist">
+
             </div>
             <div class="modal-footer d-flex justify-content-between">
                 <div class="form-check form-switch mb-3">
@@ -467,6 +468,15 @@
             });
         };
 
+        $('#addQuoteModal').on('hidden.bs.modal', function() {
+            $('#quotationForm select').val('');
+            $('#quotationForm input[type="text"], #quotationForm textarea')
+                .val('');
+
+            $('#quotationForm input[type="file"]').val('');
+            $('#quotationForm .input-mask').trigger('input');
+        });
+
         $('#uploadFileModal').on('hide.bs.modal', function() {
             $(".dropzone .dz-preview").remove(); // This removes file previews from the DOM
             myDropzone.files.length = 0;
@@ -493,6 +503,8 @@
                 }
             });
         });
+
+
 
         //edit button functionalities
         $(document).on('click', '.editButton', function(e) {
@@ -540,8 +552,10 @@
                     $('#action_button').val('Update');
                     if (response.data.recommended == 1) {
                         $('#reccomended').prop('checked', true);
+                        $('#recommended_hidden').val('checked', true);
                     } else {
                         $('#reccomended').prop('checked', false);
+                        $('#recommended_hidden').val('checked', true);
                     }
                     $('#addQuoteModal').modal('show');
                 }
@@ -590,8 +604,14 @@
                             timer: 1500
                         }).then(() => {
                             $('#addQuoteModal').modal('hide');
-                            $('.modal-backdrop').remove();
                             $('#qoutation-table').DataTable().ajax.reload();
+                            $('.modal-backdrop').remove();
+                            $('#quotationForm select').val('');
+                            $('#quotationForm input[type="text"], #quotationForm textarea')
+                                .val('');
+                            $('#quotationForm input[type="file"]').val('');
+                            $('#quotationForm .input-mask').trigger('input');
+
                         });
                     },
                     error: function(data) {
@@ -615,6 +635,8 @@
                 });
             }
         });
+
+
 
         //send quote button functionalities
         $('#sendQuoteButton').on('click', function() {
@@ -644,6 +666,7 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             }).then(() => {
+                                console.log('test this code');
                                 location.reload();
                             });
                         }
@@ -685,14 +708,5 @@
         calculateFullPayment();
     });
 
-
-
-
     //function for resetting the input inside modal
-    $('#addQuoteModal').on('hide.bs.modal', function() {
-        // Reset the content of the modal
-        $(this).find('form').trigger('reset'); // Reset all form fields
-        // If there are other elements to clear, handle them here
-        $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
-    });
 </script>

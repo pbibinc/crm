@@ -470,11 +470,13 @@
                             data: {
                                 leadId: leadsId
                             },
-                            success: function(response) {}
+                            success: function(response) {
+                                window.open(`${url}appoinnted-lead-questionare`, "s_blank",
+                                    "width=1000,height=849");
+                                $('#transactionLogModal').modal('hide');
+                            }
                         });
-                        window.open(`${url}appoinnted-lead-questionare`, "s_blank",
-                            "width=1000,height=849");
-                        $('#transactionLogModal').modal('hide');
+
                     }
                     if (selectedDisposition == '2') {
                         $('#callbackModal').modal('show');

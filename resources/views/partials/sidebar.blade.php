@@ -184,7 +184,7 @@
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
                             <li><a href="{{ route('binding') }}">Products</a></li>
-                            <li><a href="{{ route('bound-list') }}">Policy List</a></li>
+                            <li><a href="{{ route('policy-list') }}">Policy List</a></li>
                         </ul>
                     </li>
                 @endcan

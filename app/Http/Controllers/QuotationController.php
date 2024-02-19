@@ -397,6 +397,7 @@ class QuotationController extends Controller
             $quoteProduct->status = 1;
             $quoteProduct->sent_out_date = Carbon::now();
             $quoteProduct->save();
+            return response()->json(['success' => 'Quotation product sent successfully']);
         }
     }
 

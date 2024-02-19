@@ -35,7 +35,7 @@ class GeneralLiabilitiesDataController extends BaseController
             return response()->json(['error' => 'General Information Data is not yet saved.'], 409);
         }
         if(GeneralLiabilities::where('general_information_id', $dataGeneralInformationId)->exists()){
-            return response()->json(['error' => 'General Liabilities Data has been already saved.'], 409);
+            return response()->json(['error' => 'General Liability Data has been already saved.'], 409);
         }
         try{
             $token = $request->input('token');
@@ -95,7 +95,7 @@ class GeneralLiabilitiesDataController extends BaseController
                if($quoteInformation){
                    $quoteProduct->quote_information_id = $quoteInformation->id;
                }
-               $quoteProduct->product = 'General Liabilities';
+               $quoteProduct->product = 'General Liability';
                $quoteProduct->status = 7;
                $quoteProduct->save();
 
@@ -347,7 +347,7 @@ class GeneralLiabilitiesDataController extends BaseController
             }
 
         }catch(\Exception $e){
-            Log::error('Error updating general liabilities data: '.$e->getMessage());
+            Log::error('Error updating General Liability data: '.$e->getMessage());
             return response()->json(['error' => 'Failed to update data.'], 500);
         }
     }
@@ -357,7 +357,7 @@ class GeneralLiabilitiesDataController extends BaseController
 
         $leads = Lead::find($id);
         if(is_null($leads)){
-            return $this->sendError('General Liabilities not found.');
+            return $this->sendError('General Liability not found.');
         }
         $generalLiabilities = $leads->generalInformation->generalLiabilities;
         $multipleStates = $generalLiabilities->multiStates;
