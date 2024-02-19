@@ -7,123 +7,181 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="commercialAutoForm">
+                <form id="commercialAutoForm" enctype="multipart/form-data">
                     <div class="row mb-2">
                         <div class="col-6">
-                            <label class="form-label" for="policyNumber">Policy Number</label>
-                            <input type="text" class="form-control" id="policyNumber">
+                            <label class="form-label" for="commerciarlAutoPolicyNumber">Policy Number</label>
+                            <input type="text" class="form-control" id="commerciarlAutoPolicyNumber"
+                                name="commerciarlAutoPolicyNumber">
                         </div>
                         <div class="col-6">
-                            <label class="form-label" for="insuredInput">Insured</label>
-                            <input type="text" class="form-control" id="insuredInput">
+                            <label class="form-label" for="commercialAutoInsuredInput">Insured</label>
+                            <input type="text" class="form-control" id="commercialAutoInsuredInput"
+                                name="commercialAutoInsuredInput">
                         </div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">
-                            <label class="form-label" for="carriersInput">Carriers</label>
-                            <input type="text" class="form-control" id="carriersInput">
+                            <label class="form-label" for="commercialAutoMarketInput">Market</label>
+                            <select name="commercialAutoMarketInput" id="commercialAutoMarketInput" class="form-select">
+                                <option value="">Select Market</option>
+                                @foreach ($markets as $market)
+                                    <option value="{{ $market->name }}">{{ $market->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="col-6">
-                            <label class="form-label" for="insurerInput">Insurer</label>
-                            <input type="text" class="form-control" id="insurerInput">
+                            <label class="form-label" for="commercialAutoCarrierInput">Carrier</label>
+                            <select name="commercialAutoCarrierInput" id="commercialAutoCarrierInput"
+                                class="form-select">
+                                <option value="">Select Carrier</option>
+                                @foreach ($carriers as $carrier)
+                                    <option value="{{ $carrier->name }}">{{ $carrier->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-3">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="form-label" for="commercialAutoPaymentTermInput">Payment Term</label>
+                                <select class="form-select" aria-label="Default select example"
+                                    id="commercialAutoPaymentTermInput" name="commercialAutoPaymentTermInput">
+                                    <option selected="">Open this select menu</option>
+                                    <option value="PIF">PIF</option>
+                                    <option value="Low down">Low down</option>
+                                    <option value="Split PIF">Split PIF</option>
+                                    <option value="Split low down">Split low down</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4">
                             <label class="form-label">Any Auto</label>
                             <div class="square-switch">
-                                <input type="checkbox" id="anyAuto" switch="info">
+                                <input type="checkbox" id="anyAuto" switch="info" name="anyAuto">
                                 <label for="anyAuto" data-on-label="Yes" data-off-label="No"></label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-4">
                             <label class="form-label">Owned Autos Only</label>
                             <div class="square-switch">
-                                <input type="checkbox" id="ownedAuto" switch="info">
+                                <input type="checkbox" id="ownedAuto" switch="info" name="ownedAuto">
                                 <label for="ownedAuto" data-on-label="Yes" data-off-label="No"></label>
                             </div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-4">
                             <label class="form-label">Scheduled Auto</label>
                             <div class="square-switch">
-                                <input type="checkbox" id="scheduledAuto" switch="info">
+                                <input type="checkbox" id="scheduledAuto" switch="info" name="scheduledAuto">
                                 <label for="scheduledAuto" data-on-label="Yes" data-off-label="No"></label>
                             </div>
                         </div>
-                        <div class="col-3">
+
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-4">
                             <label class="form-label">Hired Autos Only</label>
                             <div class="square-switch">
-                                <input type="checkbox" id="hiredAutos" switch="info">
+                                <input type="checkbox" id="hiredAutos" switch="info" name="hiredAutos">
                                 <label for="hiredAutos" data-on-label="Yes" data-off-label="No"></label>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label">Non-Owned Autos</label>
+                            <div class="square-switch">
+                                <input type="checkbox" id="nonOwned" switch="info" name="nonOwned">
+                                <label for="nonOwned" data-on-label="Yes" data-off-label="No"></label>
                             </div>
                         </div>
                     </div>
 
                     <div class="row mb-2">
-                        <div class="col-4">
-                            <label class="form-label">Non-Owned Autos</label>
-                            <div class="square-switch">
-                                <input type="checkbox" id="nonOwned" switch="info">
-                                <label for="nonOwned" data-on-label="Yes" data-off-label="No"></label>
-                            </div>
-                        </div>
+
                         <div class="col-4">
                             <label class="form-label">Addl Insd:</label>
                             <div class="square-switch">
-                                <input type="checkbox" id="addlInsd" switch="info">
-                                <label for="addlInsd" data-on-label="Yes" data-off-label="No"></label>
+                                <input type="checkbox" id="commercialAddlInsd" switch="info"
+                                    name="commercialAddlInsd">
+                                <label for="commercialAddlInsd" data-on-label="Yes" data-off-label="No"></label>
                             </div>
                         </div>
                         <div class="col-4">
                             <label class="form-label">Subr Wvd:</label>
                             <div class="square-switch">
-                                <input type="checkbox" id="subrWvd" switch="info">
-                                <label for="subrWvd" data-on-label="Yes" data-off-label="No"></label>
+                                <input type="checkbox" id="commercialAutoSubrWvd" switch="info"
+                                    name="commercialAutoSubrWvd">
+                                <label for="commercialAutoSubrWvd" data-on-label="Yes" data-off-label="No"></label>
                             </div>
                         </div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">
-                            <label class="form-label" for="biPerPerson">BI per Person</label>
-                            <input type="text" class="form-control" id="biPerPerson">
+                            <label class="form-label" for="biPerPerson">Bodily Injury (Per Person)</label>
+                            <input type="text" class="form-control input-mask text-left"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" id="biPerPerson" name="biPerPerson">
                         </div>
                         <div class="col-6">
-                            <label class="form-label" for="biPerAccident">BI per accident</label>
-                            <input type="text" class="form-control" id="biPerAccident">
+                            <label class="form-label" for="biPerAccident">Bodily Injury (Per accident)</label>
+                            <input type="text" class="form-control input-mask text-left"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" id="biPerAccident"
+                                name="biPerAccident">
                         </div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">
                             <label class="form-label" for="combineUnit">Combine S Unit</label>
-                            <input type="text" class="form-control" id="combineUnit">
+                            <input type="text" class="form-control input-mask text-left"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" id="combineUnit" name="combineUnit">
                         </div>
                         <div class="col-6">
-                            <label class="form-label" for="combineUnit">Property Damage</label>
-                            <input type="text" class="form-control" id="combineUnit">
+                            <label class="form-label" for="propertyDamage">Property Damage</label>
+                            <input type="text" class="form-control input-mask text-left"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" id="propertyDamage"
+                                name="propertyDamage">
                         </div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">
                             <label class="form-label" for="blankLimits">Blank Limits</label>
-                            <input type="text" class="form-control" id="blankLimits">
+                            <input type="text" class="form-control" id="blankLimits" name="newBlankLimits[]">
                         </div>
                         <div class="col-6">
                             <label class="form-label" for="blankValue">Blank Value</label>
-                            <input type="text" class="form-control" id="blankValue">
+                            <div class="input-group">
+                                <input type="text" class="form-control input-mask text-left"
+                                    data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                    inputmode="decimal" style="text-align: right;" id="blankValue"
+                                    name="newBlankValue[]">
+                                <button class="btn btn-outline-success addMore" type="button"
+                                    id="addMore">+</button>
+                            </div>
                         </div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">
                             <label class="form-label" for="commercialAutoEffectiveDate">Effective Date</label>
                             <input class="form-control" type="date" value="2011-08-19"
-                                id="commercialAutoEffectiveDate">
+                                id="commercialAutoEffectiveDate" name="commercialAutoEffectiveDate">
                         </div>
                         <div class="col-6">
                             <label class="form-label" for="expirationDate">Expiration Date</label>
                             <input class="form-control" type="date" value="2011-08-19"
-                                id="commercialAutoExpirationDate">
+                                id="commercialAutoExpirationDate" name="commercialAutoExpirationDate">
                         </div>
                     </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <input type="file" name="file" id="file" class="form-control">
+                        </div>
+                    </div>
+                    <input type="hidden" name="commercialAutoHiddenInputId" id="commercialAutoHiddenInputId">
+                    <input type="hidden" name="commercialAutoHiddenQuoteId" id="commercialAutoHiddenQuoteId">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Close</button>
@@ -136,7 +194,12 @@
 </div>
 <script>
     $(document).ready(function() {
+        var today = new Date();
 
+        var formattedDate = today.getFullYear() + '-' +
+            ('0' + (today.getMonth() + 1)).slice(-2) + '-' +
+            ('0' + today.getDate()).slice(-2);
+        $('#commercialAutoEffectiveDate').val(formattedDate);
         $('#commercialAutoEffectiveDate').on('change', function() {
             var effectiveDate = new Date($(this).val());
             var expirationDate = new Date(effectiveDate);
@@ -148,7 +211,74 @@
 
         $('#commercialAutoForm').on('submit', function(e) {
             e.preventDefault();
-            console.log($(this).serialize());
+            var formData = new FormData(this);
+            $.ajax({
+                url: "{{ route('commercial-auto-policy.store') }}",
+                type: "POST",
+                data: formData,
+                processData: false, // Prevent jQuery from processing the data
+                contentType: false,
+                dataType: "json",
+                success: function(data) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Commercial Auto Policy has been added!',
+                        icon: 'success',
+                        confirmButtonText: 'Ok'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                },
+                error: function(data) {
+                    console.log(data);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Something went wrong!',
+                        icon: 'error',
+                        confirmButtonText: 'Ok'
+                    })
+                }
+            })
+
+        });
+
+        $(document).on('click', '.addMore', function() {
+            var newRowHtml = `
+            <div class="row mb-2">
+                <div class="col-6">
+                    <label class="form-label">New Blank Limits</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="newBlankLimits[]">
+                    </div>
+                </div>
+                <div class="col-6">
+                    <label class="form-label">New Blank Value</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control input-mask text-left"  data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                    inputmode="decimal" style="text-align: right;" name="newBlankValue[]">
+                            <button class="btn btn-outline-success addMore" type="button">+</button>
+                            <button class="btn btn-outline-danger deleteRow" type="button">-</button>
+                    </div>
+                </div>
+            </div>
+           `;
+            // Append the new row to the container
+            $(this).closest('.row.mb-2').after(newRowHtml);
+            // Re-initialize input masks for new inputs, if necessary
+            // $(".input-mask").inputmask();
+            $(".input-mask").inputmask({
+                'alias': 'numeric',
+                'groupSeparator': ',',
+                'digits': 2,
+                'digitsOptional': false,
+                'prefix': '$ ',
+                'placeholder': '0'
+            });
+        });
+        $(document).on('click', '.deleteRow', function() {
+            $(this).closest('.row.mb-2').remove();
         });
     });
 </script>

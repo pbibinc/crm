@@ -39,8 +39,8 @@
                     name: 'product'
                 },
                 {
-                    data: 'insurer',
-                    name: 'insurer'
+                    data: 'market',
+                    name: 'market'
                 },
                 {
                     data: 'carrier',

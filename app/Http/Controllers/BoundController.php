@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\BoundInformation;
 use App\Models\GeneralLiabilitiesPolicyDetails;
 use App\Models\PolicyDetail;
+use App\Models\QuoationMarket;
+use App\Models\QuotationProduct;
+use App\Models\QuoteComparison;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,35 +21,42 @@ class BoundController extends Controller
     //
     public function index(Request $request)
     {
-        $policyDetail = new PolicyDetail();
-        $policyDetailData = $policyDetail->get();
+        $product = new QuotationProduct();
+        $data = $product->getBoundList();
         if($request->ajax())
         {
-           return DataTables::of($policyDetailData)
-           ->addColumn('product', function($policyDetailData){
-               $product = $policyDetailData->QuotationProduct->product;
-               return $product ? $product : '';
-           })
-           ->addColumn('bind_status', function($policyDetailData){
-                $status = GeneralLiabilitiesPolicyDetails::where('policy_details_id', $policyDetailData->id)->first()->status;
-                return $status ? $status : '';
-            })
-           ->addColumn('company_name', function($policyDetailData){
-               $companyName = $policyDetailData->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name;
-               return $companyName ? $companyName : '';
-           })
-           ->addColumn('effective_date', function($policyDetailData){
-            $effectiveDate = GeneralLiabilitiesPolicyDetails::where('policy_details_id', $policyDetailData->id)->first()->effective_date;
-            return $effectiveDate ? Carbon::createFromFormat('Y-m-d', $effectiveDate)->format('F d Y') : '';
-           })
-           ->addColumn('action', function($policyDetailData){
-            $profileViewRoute = route('appointed-list-profile-view', [$policyDetailData->QuotationProduct->QuoteInformation->QuoteLead->leads->id]);
-            $viewButton = '<a href="'.$profileViewRoute.'" class="btn btn-success btn-sm" id="viewButton" name="viewButton"><i class="ri-eye-line"></i></a>';
-            return $viewButton;
-           })
-           ->make(true);
+            return DataTables::of($data)
+                ->addColumn('company_name', function($data){
+                    $company_name = $data->QuoteInformation->QuoteLead->leads->company_name;
+                    return $company_name;
+                })
+                ->addColumn('policy_number', function($data){
+                    $quoteComparison = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
+                    $policyNumber = '<a href="" id="'.$data->id.'" name="showPolicyForm" class="showPolicyForm" data-product='.$data->product.'>'.$quoteComparison->quote_no.'</a>';
+                    return $policyNumber;
+                })
+                ->addColumn('total_cost', function($data){
+                    $totalCost = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first()->full_payment;
+                    return $totalCost;
+                })
+                ->addColumn('effective_date', function($data){
+                    $quote_information = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
+                    return $quote_information->effective_date;
+                })
+                ->rawColumns(['action', 'policy_number'])
+                ->make(true);
         }
         return view('customer-service.policy.index');
+    }
+
+    public function getBoundInformation(Request $request)
+    {
+        $product = QuotationProduct::find($request->id);
+        $lead = $product->QuoteInformation->QuoteLead->leads;
+        $quoteComparison = QuoteComparison::where('quotation_product_id', $request->id)->where('recommended', 3)->first();
+        $marketName = QuoationMarket::find($quoteComparison->quotation_market_id);
+        $paymentInformation = $quoteComparison->PaymentInformation;
+        return response()->json(['product' => $product, 'lead' => $lead, 'quoteComparison' => $quoteComparison, 'marketName' => $marketName, 'paymentInformation' => $paymentInformation]);
     }
 
     public function saveBoundInformation(Request $request)

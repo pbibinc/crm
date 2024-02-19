@@ -13,10 +13,9 @@
                                 <th>Policy Number</th>
                                 <th>Company Name</th>
                                 <th>Product</th>
-                                <th>Payment Mode</th>
+                                <th>Market</th>
                                 <th>Insurer</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                                <th>Total Cost</th>
                             </thead>
                         </table>
                     </div>
@@ -29,7 +28,7 @@
             $('#bound-list-data-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('bound-list') }}",
+                ajax: "{{ route('policy-list') }}",
                 columns: [{
                         data: 'effective_date',
                         name: 'effective_date'
@@ -47,24 +46,16 @@
                         name: 'product'
                     },
                     {
-                        data: 'payment_mode',
-                        name: 'payment_mode'
+                        data: 'market',
+                        name: 'market'
                     },
                     {
                         data: 'carrier',
                         name: 'carrier'
                     },
-                    // {
-                    //     data: 'requestedBy',
-                    //     name: 'requestedBy'
-                    // },
                     {
-                        data: 'bind_status',
-                        name: 'bind_status'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action'
+                        data: 'total_cost',
+                        name: 'total_cost'
                     }
                 ],
                 // "order": [

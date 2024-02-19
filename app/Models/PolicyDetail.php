@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use League\CommonMark\Extension\SmartPunct\Quote;
@@ -28,6 +29,20 @@ class PolicyDetail extends Model
     public function QuotationProduct()
     {
         return $this->belongsTo(QuotationProduct::class, 'quotation_product_id');
+    }
+
+    public function NewPoicyList()
+    {
+        $dateRange = Carbon::now()->subMonths(3)->format('Y-m-d');
+        $recentPolicies = self::where('effective_date', '>=', $dateRange)->get();
+        return $recentPolicies;
+    }
+
+    public function NewlyBoundList()
+    {
+        $dateRange = Carbon::now()->subMonths(3)->format('Y-m-d');
+        $recentBound = self::where('effective_date', '>=', $dateRange)->get();
+        return $recentBound;
     }
 
 
