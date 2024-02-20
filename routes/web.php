@@ -39,6 +39,7 @@ use App\Http\Controllers\CompanyHandbookController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\EmbeddedSignatureController;
 use App\Http\Controllers\ExcessLiabilityInsurancePolicyController;
+use App\Http\Controllers\FinancingCompanyController;
 use App\Http\Controllers\InsurerController;
 use App\Http\Controllers\MarketListController;
 use App\Http\Controllers\NonCallBackDispositionController;
@@ -295,6 +296,11 @@ Route::middleware(['auth'])->group(function (){
             Route::get('/binding-docs', [BindingDocsController::class, 'index'])->name('binding-docs');
             Route::post('/upload-file-binding-docs', [BindingDocsController::class, 'uploadFile'])->name('upload-file-binding-docs');
             Route::post('/delete-binding-docs', [BindingDocsController::class, 'deleteBindingDocs'])->name('delete-binding-docs');
+
+            //route financing
+            Route::prefix('financing')->group(function(){
+                Route::resource('/financing-company', FinancingCompanyController::class);
+            });
 
         });
 
