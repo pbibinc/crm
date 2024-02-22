@@ -47,9 +47,11 @@ use App\Http\Controllers\NotesController;
 use App\Http\Controllers\PaymentChargedController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PoliciesController;
+use App\Http\Controllers\PolicyForRenewalController;
 use App\Http\Controllers\PricingBreakdownController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\QuotationController;
+use App\Http\Controllers\RenewalController;
 use App\Http\Controllers\ToolsEquipmentPolicyController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\WebsiteController;
@@ -300,6 +302,15 @@ Route::middleware(['auth'])->group(function (){
             //route financing
             Route::prefix('financing')->group(function(){
                 Route::resource('/financing-company', FinancingCompanyController::class);
+            });
+
+            //route for renewal
+            Route::prefix('renewal')->group(function(){
+                Route::resource('/renewal', RenewalController::class);
+                Route::post('/assign-policy-for-renewal', [RenewalController::class, 'assignPolicyForRenewal'])->name('renewal.assign-policy-for-renewal');
+                Route::post('/reassign-policy-for-renewal', [RenewalController::class, 'reassignPolicyForRenewal'])->name('renewal.reassign-policy-for-renewal');
+                Route::post('/void-policy-for-renewal', [RenewalController::class, 'voidPolicyForRenewal'])->name('renewal.void-policy-for-renewal');
+                Route::resource('/for-renewal', PolicyForRenewalController::class);
             });
 
         });

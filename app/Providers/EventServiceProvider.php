@@ -4,10 +4,12 @@ namespace App\Providers;
 
 use App\Events\AppointmentTaken;
 use App\Events\AssignAppointedLeadEvent;
+use App\Events\AssignPolicyForRenewalEvent;
 use App\Events\LeadAssignEvent;
 use App\Events\LeadImportEvent;
 use App\Events\LeadReassignEvent;
 use App\Events\ReassignedAppointedLead;
+use App\Listeners\AssignPolicyForRenewalListener;
 use App\Listeners\BroadcastUserLoginNotification;
 use App\Listeners\BroadcastUserLogoutNotification;
 use App\Listeners\LogAppointmentTaken;
@@ -103,6 +105,15 @@ class EventServiceProvider extends ServiceProvider
         Event::listen(
             ReassignedAppointedLead::class,
             [LogReassignAppointedLeadListner::class, 'handle']
+        );
+
+        Event::listen(queueable(function(AssignPolicyForRenewalListener $event){
+
+        }));
+
+        Event::listen(
+            AssignPolicyForRenewalEvent::class,
+            [AssignPolicyForRenewalListener::class, 'handle']
         );
 
 

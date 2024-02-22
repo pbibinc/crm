@@ -719,6 +719,7 @@ class QuotationController extends Controller
             ->quoting_lead_id)->leads;
             $paymentInformation = PaymentInformation::where('quote_comparison_id', $quoteComparison->id)->first();
             $generalInformation = $leads->GeneralInformation;
+            $quoteProduct = $quoteComparison->QuotationProduct;
 
             $uploadFileButton = '<button class="btn btn-outline-success btn-sm uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i></button>';
 
@@ -726,10 +727,10 @@ class QuotationController extends Controller
 
             if($paymentInformation){
                 $makePaymentButton = '<button class="btn btn-outline-secondary btn-sm makePaymentButton" id="' . $quoteComparison->id .'" data-quoteNo="'.$quoteComparison->quote_no.'" data-market="'.$market->name.'" data-company-name="'.$leads->company_name.'" data-insured-firstname="'.$generalInformation->firstname.'"
-                data-insured-lastname="'.$generalInformation->lastname.'" data-email="'.$generalInformation->email_address.'" data-broker-fee="'.$quoteComparison->broker_fee.'" data-total-premium="'.$quoteComparison->full_payment.'" data-lead-id="'.$leads->id.'" data-general-information-id="'.$generalInformation->id.'" data-effective-date = "'.$quoteComparison->effective_date.'" data-payment-information="'.htmlspecialchars(json_encode($paymentInformation), ENT_QUOTES, 'UTF-8').'"><i class="ri-money-dollar-circle-line"></i></button>';
+                data-insured-lastname="'.$generalInformation->lastname.'" data-email="'.$generalInformation->email_address.'" data-broker-fee="'.$quoteComparison->broker_fee.'" data-total-premium="'.$quoteComparison->full_payment.'" data-lead-id="'.$leads->id.'" data-general-information-id="'.$generalInformation->id.'" data-effective-date = "'.$quoteComparison->effective_date.'" data-status="'.$quoteProduct->status.'" data-productId="'.$quoteProduct->id.'" data-payment-information="'.htmlspecialchars(json_encode($paymentInformation), ENT_QUOTES, 'UTF-8').'"><i class="ri-money-dollar-circle-line"></i></button>';
             }else{
                 $makePaymentButton = '<button class="btn btn-outline-secondary btn-sm makePaymentButton" id="' . $quoteComparison->id .'" data-quoteNo="'.$quoteComparison->quote_no.'" data-market="'.$market->name.'" data-company-name="'.$leads->company_name.'" data-insured-firstname="'.$generalInformation->firstname.'"
-                data-insured-lastname="'.$generalInformation->lastname.'" data-email="'.$generalInformation->email_address.'" data-broker-fee="'.$quoteComparison->broker_fee.'" data-total-premium="'.$quoteComparison->full_payment.'" data-lead-id="'.$leads->id.'" data-general-information-id="'.$generalInformation->id.'" data-effective-date = "'.$quoteComparison->effective_date.'"><i class="ri-money-dollar-circle-line"></i></button>';
+                data-insured-lastname="'.$generalInformation->lastname.'" data-email="'.$generalInformation->email_address.'" data-broker-fee="'.$quoteComparison->broker_fee.'" data-total-premium="'.$quoteComparison->full_payment.'" data-lead-id="'.$leads->id.'" data-general-information-id="'.$generalInformation->id.'" data-effective-date = "'.$quoteComparison->effective_date.'" data-product><i class="ri-money-dollar-circle-line"></i></button>';
             }
             return $editButton . ' ' . $makePaymentButton . ' ' . $uploadFileButton;
          })

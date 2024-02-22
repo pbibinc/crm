@@ -483,22 +483,7 @@
     </div>
     <script>
         $(document).ready(function() {
-            // var product ={!! json_encode($product->product) !!};
-            // if(product == 'General Liabilties'){
-            //     $('#brokerGeneralLiabilites').show();
-            // }else if(product == 'Workers Compensation'){
-            //     $('#brokerWorkersCompensation').show();
-            // }else if(product == 'Commercial Auto'){
-            //     $('#brokerCommercialAuto').show();
-            // }else if(product == 'Tools Equipment'){
-            //     $('#brokerToolsEquipment').show();
-            // }else if(product == 'Excess Liability'){
-            //     $('#brokerExcessLiabiliy').show();
-            // }else if(product == 'Builders Risk'){
-            //     $('#brokerBuildersRisk').show();
-            // }else if(product == 'Business Owners'){
-            //     $('#brokerBop').show();
-            // }
+
 
             $('#saveStatusButton').on('click', function() {
                 var status = $('#statusSelect').val();

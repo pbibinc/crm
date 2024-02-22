@@ -1,37 +1,27 @@
 @extends('admin.admin_master')
 @section('admin')
-    <style>
-        .permission-badge {
-            margin-right: 5px;
-            /* adjust as needed */
-            margin-bottom: 5px;
-            /* adjust as needed */
-        }
-    </style>
-
-
-    <div class="page-content pt-6">
+    <div class="page-content">
         <div class="container-fluid">
 
             <div class="row">
-                <div class="col-7">
+                <div class="col-6">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h3 class="card-title mb-4"
                             style="display: flex; align-items: center; background-color: #2c3e50; color: #ecf0f1; padding: 10px 20px; border-radius: 5px;">
                             <i class="ri-file-list-3-line" style="font-size: 26px; margin-right: 15px;"></i>
-                            <span style="font-weight: 600; letter-spacing: 1px;">LIST OF APPOINTED LEADS</span>
+                            <span style="font-weight: 600; letter-spacing: 1px;">FOR RENEWAL POLICIES</span>
                         </h3>
                         <div>
-                            <button type="button" id="assignAppointedLead"
+                            <button type="button" id="assignPolicy"
                                 class="btn btn-primary btn-rounded waves-effect waves-light mb-4" data-bs-toggle="tooltip"
                                 data-bs-placement="top" title="Button to assign checked Leads to a selected user"
                                 style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);"> <i class="ri-user-received-2-line"></i>
-                                Assign Lead</button>
+                                Assign Policy</button>
                             <button type="button" id="reassignAppointedLead"
                                 class="btn btn-light btn-rounded waves-effect waves-light mb-4" data-bs-toggle="tooltip"
                                 data-bs-placement="top" title="Button to reassign checked Leads to a selected user"
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);"> <i
-                                    class="ri-user-shared-2-line"></i> Reasign Lead</button>
+                                    class="ri-user-shared-2-line"></i> Reasign Policy</button>
                             <button type="button" id="voidAppointedLeads"
                                 class="btn btn-outline-danger btn-rounded waves-effect waves-light mb-4"
                                 data-bs-toggle="tooltip" data-bs-placement="top" title="Button To Void Leads to a user"
@@ -41,98 +31,54 @@
 
                     </div>
                     <div class="card"
-                        style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
+                        style=" box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                         <div class="card-body">
-                            <table id="assignAppointedLeadsTable" class="table table-bordered dt-responsive nowrap"
-                                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            <table id="dataTable" class="table table-bordered dt-responsive nowrap" style="width: 100%;">
                                 <thead>
                                     <tr>
-                                        {{-- <th></th> --}}
                                         <th>Company Name</th>
-                                        {{-- <th>State</th> --}}
-                                        {{-- <th>Products</th>
-                                    <th>Telemarketer</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($groupedProducts as $companyName => $groupedProduct)
+                                    @foreach ($groupedPolicy as $company => $policies)
                                         <tr style="background-color: #f0f0f0;">
-                                            <td><strong><b>{{ $companyName }}</b></strong></td>
+                                            <td><strong>{{ $company }}</strong></td>
                                             <td><input type="checkbox" class="companyCheckAllBox"
-                                                    data-company="{{ $companyName }}" name="company[]"></td>
-                                            <td><strong><b>Product</b></strong></td>
-                                            <td><strong><b>Telemarketer</b></strong></td>
-                                            {{-- <td><strong><b>Sent Out Date</b></strong></td> --}}
+                                                    data-company="{{ $company }}" name="company[]"></td>
+                                            <th>Policy Number</th>
+                                            <th>Product</th>
+                                            <th>Previous Policy Price</th>
+                                            <th>Renewal Date</th>
                                         </tr>
-                                        @foreach ($groupedProduct as $product)
-                                            <tr class="productRow {{ $companyName }}">
+                                        @foreach ($policies as $policy)
+                                            <tr class="policyRow {{ $company }}">
                                                 <td></td>
                                                 <td><input type="checkbox" class="companyCheckBox"
-                                                        value="{{ $product['product']->id }}"
-                                                        data-company="{{ $companyName }}" name="company[]"></td>
-                                                <td>{{ $product['product']->product }}</td>
-                                                <td>{{ $product['telemarketer'] }}</td>
+                                                        value="{{ $policy['policies']->id }}"
+                                                        data-company="{{ $company }}" name="company[]"></td>
+                                                <td>{{ $policy['policies']->policy_number }}</td>
+                                                <td>{{ $policy['product']->product }}</td>
+                                                <td>{{ $policy['quote']->full_payment }}</td>
+                                                <td>{{ $policy['policies']->expiration_date }}</td>
                                             </tr>
                                         @endforeach
                                     @endforeach
-
                                 </tbody>
                             </table>
                         </div>
                     </div>
-
                 </div>
-
-                <div class="col-5">
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="card"
-                                style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
-                                <div class="card-body">
-                                    <div class="d-flex">
-                                        <div class="flex-grow-1">
-                                            <p class="text-truncate font-size-14 mb-2">Appointed Leads</p>
-                                            <h4 class="mb-2">{{ $appointedLeadCount }}</h4>
-                                        </div>
-                                        <div class="avatar-sm">
-                                            <span class="avatar-title bg-light text-primary rounded-3">
-                                                <i class="ri-file-edit-line font-size-24"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div><!-- end cardbody -->
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="card bg-info text-white-50"
-                                style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
-                                <div class="card-body">
-                                    <div class="d-flex">
-                                        <div class="flex-grow-1">
-                                            <p class="text-truncate font-size-14 mb-2" style="color: white">Quoting Product
-                                            </p>
-                                            <h4 class="mb-2" style="color: white">{{ $qoutingCount }}</h4>
-                                        </div>
-                                        <div class="avatar-sm">
-                                            <span class="avatar-title bg-light text-primary rounded-3">
-                                                <i class="ri-umbrella-line font-size-24" style="color: #17a2b8;"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div><!-- end cardbody -->
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-6">
                     <div class="card"
                         style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                         <div class="card-body">
                             <div class="row mb-4">
                                 <div class="col-6">
-                                    <label for="filterBy" class="form-label">Market Specialist:</label>
-                                    <select id="marketSpecialistDropDown" class="form-select">
-                                        <option value="">Select Market Specialist</option>
-                                        @foreach ($quoters as $quoter)
-                                            <option value="{{ $quoter->id }}">{{ $quoter->fullAmericanName() }}</option>
+                                    <label for="filterBy" class="form-label">Renewal:</label>
+                                    <select id="renewalAgentDropdown" class="form-select">
+                                        <option value="">Select Renewal Agent</option>
+                                        @foreach ($renewals as $renewal)
+                                            <option value="{{ $renewal->id }}">{{ $renewal->fullAmericanName() }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -154,11 +100,12 @@
                         style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                         <div class="card-body">
                             <div class="row mb-4">
-                                <table id="datatableLeads" class="table table-bordered dt-responsive nowrap"
+                                <table id="datatablePolicy" class="table table-bordered dt-responsive nowrap"
                                     style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead style="background-color: #f0f0f0;">
                                         <tr>
                                             <th></th>
+                                            <th>Policy No</th>
                                             <th>Product</th>
                                             <th>Company Name</th>
                                             {{-- <th>Action</th> --}}
@@ -172,23 +119,23 @@
                 </div>
             </div>
 
+
             <div class="modal fade bs-example-modal-center" tabindex="-1" role="dialog"
                 aria-labelledby="mySmallModalLabel" aria-hidden="true" id="userDropdownModal">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Center modal</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <div class="row mb-4">
                                 <div class="col-6">
-                                    <label for="filterBy" class="form-label">Market Specialist:</label>
-                                    <select id="marketSpecialistDropDownReassign" class="form-select">
-                                        <option value="">Select Market Specialist</option>
-                                        @foreach ($quoters as $quoter)
-                                            <option value="{{ $quoter->id }}">{{ $quoter->fullAmericanName() }}
+                                    <label for="filterBy" class="form-label">Renewal:</label>
+                                    <select id="renewwalAgentDropDownReassign" class="form-select">
+                                        <option value="">Select Renewal Agent</option>
+                                        @foreach ($renewals as $renewal)
+                                            <option value="{{ $renewal->id }}">{{ $renewal->fullAmericanName() }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -214,11 +161,77 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 
     <script>
         $(document).ready(function() {
+            $('#datatablePolicy').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: "{{ route('renewal.index') }}",
+                    data: function(f) {
+                        f.marketSpecialistId = $('#renewalAgentDropdown').val()
+                        f.accountProfileId = $('#agentDropDown').val()
+                    }
+                },
+                columns: [{
+                        data: 'checkBox',
+                        name: 'checkBox'
+                    },
+                    {
+                        data: 'policy_number',
+                        name: 'policy_number'
+                    },
+                    {
+                        data: 'product',
+                        name: 'product'
+                    },
+                    {
+                        data: 'company_name',
+                        name: 'company_name'
+                    },
+                ]
+            });
+            // $('.dataTable').DataTable({
+            //     processing: true,
+            //     serverSide: true,
+            //     ajax: "{{ route('renewal.index') }}",
+            //     columns: [{
+            //             data: 'policy_number',
+            //             name: 'policy_number'
+            //         },
+            //         {
+            //             data: 'company_name',
+            //             name: 'company_name'
+            //         },
+            //         {
+            //             data: 'product',
+            //             name: 'product'
+            //         },
+            //         {
+            //             data: 'previous_policy_cost',
+            //             name: 'previous_policy_cost'
+            //         },
+            //         {
+            //             data: 'expiration_date',
+            //             name: 'expiration_date'
+            //         }
+            //     ],
+            //     language: {
+            //         emptyTable: "No data available in the table"
+            //     },
+            //     initComplete: function(settings, json) {
+            //         if (json.recordsTotal === 0) {
+            //             $('.dataTable').parent().hide();
+            //         }
+            //     }
+            // });
             $('.companyCheckAllBox').on('change', function() {
                 // Get the company name from the clicked checkbox
                 var companyName = $(this).data('company');
@@ -230,36 +243,10 @@
                 relatedCheckboxes.prop('checked', $(this).is(':checked'));
             });
 
-            $('#datatableLeads').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: {
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    url: "{{ route('get-data-table') }}",
-                    data: function(f) {
-                        f.marketSpecialistId = $('#marketSpecialistDropDown').val()
-                        f.accountProfileId = $('#agentDropDown').val()
-                    }
-                },
-                columns: [{
-                        data: 'checkbox',
-                        name: 'checkbox'
-                    },
-                    {
-                        data: 'product',
-                        name: 'product'
-                    },
-                    {
-                        data: 'company',
-                        name: 'company'
-                    },
-                ]
-            });
-            $('#marketSpecialistDropDown').on('change', function() {
+
+            $('#renewalAgentDropdown').on('change', function() {
                 let marketSpecialistUserProfileId = $(this).val();
-                $('#datatableLeads').DataTable().ajax.reload();
+                $('#datatablePolicy').DataTable().ajax.reload();
                 if (marketSpecialistUserProfileId != "") {
                     $('#agentDropDown').prop('disabled', true);
                 } else {
@@ -269,31 +256,29 @@
 
             $('#agentDropDown').on('change', function() {
                 let agentDropDownId = $(this).val();
-                $('#datatableLeads').DataTable().ajax.reload();
+                $('#datatablePolicy').DataTable().ajax.reload();
                 if (agentDropDownId != "") {
-                    $('#marketSpecialistDropDown').prop('disabled', true);
+                    $('#renewalAgentDropdown').prop('disabled', true);
                 } else {
-                    $('#marketSpecialistDropDown').prop('disabled', false);
+                    $('#renewalAgentDropdown').prop('disabled', false);
                 }
             });
 
-            $('#assignAppointedLead').on('click', function() {
+
+            $('#assignPolicy').on('click', function() {
                 var id = [];
                 var productsArray = [];
-
-
                 $('.companyCheckBox:checked').each(function() {
                     productsArray.push($(this).val());
                 });
-
-
-                var marketSpecialistUserProfileId = $('#marketSpecialistDropDown').val();
+                console.log(productsArray);
+                var renewalAgentId = $('#renewalAgentDropdown').val();
                 var agentUserProfileId = $('#agentDropDown').val();
                 if (productsArray.length > 0) {
-                    if (marketSpecialistUserProfileId || agentUserProfileId) {
+                    if (renewalAgentId || agentUserProfileId) {
                         if (confirm("Are you sure you want to assign this leads?")) {
                             $.ajax({
-                                url: "{{ route('assign-leads-market-specialist') }}",
+                                url: "{{ route('renewal.assign-policy-for-renewal') }}",
                                 headers: {
                                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                                 },
@@ -301,7 +286,7 @@
                                 data: {
                                     // id:id,
                                     product: productsArray,
-                                    marketSpecialistUserProfileId: marketSpecialistUserProfileId,
+                                    renewalAgentId: renewalAgentId,
                                     agentUserProfileId: agentUserProfileId
                                 },
                                 success: function(data) {
@@ -310,9 +295,9 @@
                                         text: 'Leads has been assigned',
                                         icon: 'success'
                                     });
-                                    $('#assignAppointedLeadsTable').DataTable().ajax.reload();
-                                    $('#datatableLeads').DataTable().ajax.reload();
-                                    // location.reload();
+                                    // $('#assignAppointedLeadsTable').DataTable().ajax.reload();
+                                    // $('#datatableLeads').DataTable().ajax.reload();
+                                    location.reload();
                                 },
                                 error: function(data) {
                                     Swal.fire({
@@ -338,29 +323,29 @@
                         icon: 'error'
                     });
                 }
-
             });
-            var productId = [];
-            $('#voidAppointedLeads').on('click', function() {
-                // var productsArray = [];
-                // $('.companyCheckBox:checked').each(function(){
-                //     productsArray.push($(this).val());
-                // });
 
-                $('.leads_checkbox:checked').each(function() {
-                    productId.push($(this).val());
+            var policyId = [];
+
+            $('#voidAppointedLeads').on('click', function() {
+                $('.policy_checkbox:checked').each(function() {
+                    policyId.push($(this).val());
                 });
 
-                if (productId.length > 0) {
+                var userProfileId = $('#renewalAgentDropdown').val() ? $('#renewalAgentDropdown').val() : $(
+                    '#agentDropDown').val();
+
+                if (policyId.length > 0) {
                     if (confirm("Are you sure you want to void this leads?")) {
                         $.ajax({
-                            url: "{{ route('void-appointed-leads') }}",
+                            url: "{{ route('renewal.void-policy-for-renewal') }}",
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                             },
                             method: "POST",
                             data: {
-                                productId: productId
+                                policyId: policyId,
+                                userProfileId: userProfileId
                             },
                             success: function(data) {
                                 Swal.fire({
@@ -392,10 +377,11 @@
 
             $('#reassignAppointedLead').on('click', function() {
 
-                $('.leads_checkbox:checked').each(function() {
-                    productId.push($(this).val());
+                $('.policy_checkbox:checked').each(function() {
+                    policyId.push($(this).val());
                 });
-                if (productId.length > 0) {
+
+                if (policyId.length > 0) {
                     $('#userDropdownModal').modal('show');
                 } else {
                     Swal.fire({
@@ -404,11 +390,11 @@
                         icon: 'error'
                     });
                 }
-            })
+            });
 
-            $('#marketSpecialistDropDownReassign').on('change', function() {
-                let marketSpecialistUserProfileId = $(this).val();
-                if (marketSpecialistUserProfileId != "") {
+            $('#renewwalAgentDropDownReassign').on('change', function() {
+                let renewalAgentDropdownReassignId = $(this).val();
+                if (renewalAgentDropdownReassignId != "") {
                     $('#agentDropDownReassign').prop('disabled', true);
                 } else {
                     $('#agentDropDownReassign').prop('disabled', false);
@@ -418,42 +404,42 @@
             $('#agentDropDownReassign').on('change', function() {
                 let agentDropDownId = $(this).val();
                 if (agentDropDownId != "") {
-                    $('#marketSpecialistDropDownReassign').prop('disabled', true);
+                    $('#renewwalAgentDropDownReassign').prop('disabled', true);
                 } else {
-                    $('#marketSpecialistDropDownReassign').prop('disabled', false);
+                    $('#renewwalAgentDropDownReassign').prop('disabled', false);
                 }
             });
 
             $('#submitReassign').on('click', function() {
-                var marketSpecialistUserProfileDropdownId = $('#marketSpecialistDropDownReassign').val();
+                var renewalAgentDropdownReassignId = $('#renewwalAgentDropDownReassign').val();
                 var agentUserProfileDropdownId = $('#agentDropDownReassign').val();
-                var marketSpecialistDropDownId = $('#marketSpecialistDropDown').val();
+                var renewalAgentDropdownId = $('#renewalAgentDropdown').val();
                 var agentDropDownId = $('#agentDropDown').val();
-                var oldProductOwnerUserProfileId = marketSpecialistDropDownId ?
-                    marketSpecialistDropDownId : agentDropDownId;
-                var userProfileId = marketSpecialistUserProfileDropdownId ?
-                    marketSpecialistUserProfileDropdownId : agentUserProfileDropdownId;
+                var oldProductOwnerUserProfileId = renewalAgentDropdownId ?
+                    renewalAgentDropdownId : agentDropDownId;
+                var userProfileId = renewalAgentDropdownReassignId ?
+                    renewalAgentDropdownReassignId : agentUserProfileDropdownId;
 
                 if (userProfileId > 0) {
                     $.ajax({
-                        url: "{{ route('redeploy-appointed-leads') }}",
+                        url: "{{ route('renewal.reassign-policy-for-renewal') }}",
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         method: "POST",
                         data: {
-                            productId: productId,
+                            policyId: policyId,
                             userProfileId: userProfileId,
                             oldProductOwnerUserProfileId: oldProductOwnerUserProfileId
                         },
                         success: function(data) {
                             Swal.fire({
                                 title: 'Success',
-                                text: 'Leads has been voided',
+                                text: 'Policy Successfully Reassigned',
                                 icon: 'success'
                             }).then(() => {
-                                $('#datatableLeads').DataTable().ajax.reload();
                                 $('#userDropdownModal').modal('hide');
+                                location.reload();
                             });
                         },
                         error: function(data) {
@@ -472,8 +458,6 @@
                     });
                 }
             });
-
-
         })
     </script>
 @endsection

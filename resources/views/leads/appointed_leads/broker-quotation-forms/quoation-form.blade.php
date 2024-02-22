@@ -678,6 +678,7 @@
 
         //broker side make payment button
         $(document).on('click', '.makePaymentButton', function() {
+
             var id = $(this).attr('id');
             var market = $(this).attr('data-market');
             var quoteNo = $(this).attr('data-quoteNo');
@@ -692,39 +693,62 @@
             var effectiveDate = $(this).attr('data-effective-date');
             var paymentInformation = $(this).attr('data-payment-information') ? JSON.parse($(this).attr(
                 'data-payment-information')) : {};
-            if (paymentInformation.credit_type != 'Visa' && paymentInformation.credit_type !=
-                'Master Card' && paymentInformation.credit_type != 'American Express' &&
-                paymentInformation.credit_type != 'Discover' && paymentInformation.credit_type !=
-                'Other') {
-                $('#otherCardType').attr('hidden', false);
-                $('#otherCardTypeLabel').attr('hidden', false);
-                $('#otherCardType').val(paymentInformation.credit_type);
-                $('#cardType').val('Other');
+
+            if (paymentInformation.payment_method == 'Visa' || paymentInformation.payment_method ==
+                'Master Card' || paymentInformation.payment_method == 'American Express' ||
+                paymentInformation
+                .payment_method == 'Discover') {
+                $('#paymentMethodMakePayment').val('Credit Card');
+                $('#cardType').attr('hidden', false);
+                $('#cardTypeLabel').attr('hidden', false);
+                $('#cardType').val(paymentInformation.payment_method);
+            } else if (paymentInformation.method == 'Checking') {
+                $('#paymentMethodMakePayment').val('Checking');
+
             } else {
-                $('#otherCardType').attr('hidden', true);
-                $('#otherCardTypeLabel').attr('hidden', true);
-                $('#cardType').val(paymentInformation.credit_type);
+                $('#paymentMethodMakePayment').val('Credit Card');
+                $('#cardType').attr('hidden', false);
+                $('#cardType').val('Other');
+                $('#cardTypeLabel').attr('hidden', false);
+                $('#otherCardLabel').attr('hidden', false);
+                $('#otherCard').attr('hidden', false);
+                $('#otherCard').val(paymentInformation.payment_method);
+            }
+            if (paymentInformation) {
+                $('#paymentTerm').val(paymentInformation.payment_term);
             }
             $('#quoteNumber').val(quoteNo);
             $('#market').val(market);
             $('#companyName').val(companyName);
-            $('#firstName').val(firstname);
+            $(
+                '#firstName').val(firstname);
             $('#lastName').val(lastname);
-            $('#emailAddress').val(email);
+            $('#emailAddress').val(
+                email);
             $('#totalPremium').val(totalPremium);
             $('#brokerFeeAmount').val(brokerFee);
-            $('#generalInformationId').val(generalInformationId);
+            $(
+                '#generalInformationId').val(generalInformationId);
             $('#leadsId').val(leadsId);
-            $('#quoteComparisonId').val(id);
+            $(
+                '#quoteComparisonId').val(id);
             $('#makePaymentEffectiveDate').val(effectiveDate);
-            $('#paymentType').val(paymentInformation.payment_type);
-            $('#insuranceCompliance').val(paymentInformation.compliance_by);
-            $('#paymentMethod').val(paymentInformation.payment_method);
+            $(
+                '#paymentType').val(paymentInformation.payment_type);
+            $('#insuranceCompliance').val(
+                paymentInformation.compliance_by);
+            $('#paymentMethod').val(paymentInformation
+                .payment_method);
+            $('#statusInput').val($(this).attr('data-status'));
+            $(
+                '#quotationProductId').val($(this).attr('data-productId'));
 
             $('#chargedAmount').val(paymentInformation.amount_to_charged);
-            $('#note').val(paymentInformation.note);
+            $('#note').val(paymentInformation
+                .note);
             $('#paymentInformationId').val(paymentInformation.id);
-            $('#makePaymentModal').modal('show');
+            $('#makePaymentModal').modal(
+                'show');
             // $('#makePaymentModalTitle').text(
             //     `Make A Payment For Market' ${market} 'With Quote No'  ${quoteNo}`);
         });

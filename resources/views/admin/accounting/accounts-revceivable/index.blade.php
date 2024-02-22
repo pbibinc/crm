@@ -312,6 +312,8 @@
                     var status = data.status;
                     if (status == 13) {
                         $(row).addClass('table-danger');
+                    } else if (status == 16) {
+                        $(row).addClass('table-warning');
                     }
                 }
 
