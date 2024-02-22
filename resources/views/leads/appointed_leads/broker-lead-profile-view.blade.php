@@ -211,8 +211,8 @@
                             <li class="nav-item">
                                 <a class="nav-link active" data-bs-toggle="tab" href="#product" role="tab">
                                     <span class="d-none d-sm-block d-flex align-items-center justify-content-center">
-                                        @if ($product->product == 'General Liabilities')
-                                            <i class="ri-umbrella-fill"></i> General Liabilities
+                                        @if ($product->product == 'General Liability')
+                                            <i class="ri-umbrella-fill"></i> General Liability
                                         @endif
                                         @if ($product->product == 'Workers Compensation')
                                             <i class="ri-admin-fill"></i> Workers Compensation
@@ -265,7 +265,7 @@
                         <div class="card-body">
                             <div class="tab-content p-3 text-muted">
                                 <div class="tab-pane fade show active" id="product" role="tabpanel">
-                                    @if ($product->product == 'General Liabilities')
+                                    @if ($product->product == 'General Liability')
                                         <div>
                                             @include(
                                                 'leads.appointed_leads.product-view.general-liability-profile',
@@ -363,14 +363,14 @@
                                 <div class="tab-pane" id="quotation" role="tabpanel">
 
                                     <div class="quotation-form" id="generalLiabilitiesQuoationForm" role="tabpanel">
-                                        @if ($product->product == 'General Liabilities')
+                                        @if ($product->product == 'General Liability')
                                             @include(
                                                 'leads.appointed_leads.broker-quotation-forms.quoation-form',
                                                 [
                                                     'generalInformation' => $generalInformation,
                                                     'quationMarket' => $quationMarket,
                                                     'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
-                                                        'General Liabilities',
+                                                        'General Liability',
                                                         $lead->quoteLead->QuoteInformation->id),
                                                     'complianceOfficer' => $complianceOfficer,
                                                 ]
@@ -483,22 +483,7 @@
     </div>
     <script>
         $(document).ready(function() {
-            // var product ={!! json_encode($product->product) !!};
-            // if(product == 'General Liabilties'){
-            //     $('#brokerGeneralLiabilites').show();
-            // }else if(product == 'Workers Compensation'){
-            //     $('#brokerWorkersCompensation').show();
-            // }else if(product == 'Commercial Auto'){
-            //     $('#brokerCommercialAuto').show();
-            // }else if(product == 'Tools Equipment'){
-            //     $('#brokerToolsEquipment').show();
-            // }else if(product == 'Excess Liability'){
-            //     $('#brokerExcessLiabiliy').show();
-            // }else if(product == 'Builders Risk'){
-            //     $('#brokerBuildersRisk').show();
-            // }else if(product == 'Business Owners'){
-            //     $('#brokerBop').show();
-            // }
+
 
             $('#saveStatusButton').on('click', function() {
                 var status = $('#statusSelect').val();

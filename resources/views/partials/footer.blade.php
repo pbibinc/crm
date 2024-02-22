@@ -61,7 +61,6 @@
     });
 
     Echo.channel('reassign-appointed-lead').listen('ReassignedAppointedLead', (e) => {
-
         if (e.oldUserId = userId) {
             Push.create(`Product Reassign to ${e.receivableName}`, {
                 body: `Your Product Has been reassigned to ${e.receivableName}`,
@@ -99,6 +98,66 @@
                     this.close();
                 }
             });
+        }
+    });
+
+    let notificationQueue = [];
+    let processingQueue = false;
+
+    function displayToast(notification) {
+        return new Promise((resolve) => {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 6000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                }
+            });
+
+            Toast.fire({
+                icon: "success",
+                title: "Policy " + notification.policy + " is due for renewal"
+            }).then(() => {
+                resolve();
+            });
+        });
+    }
+
+    function processNotificationQueue() {
+        if (notificationQueue.length > 0) {
+            const notification = notificationQueue.shift(); // Get the first notification from the queue
+            processingQueue = true;
+
+            displayToast(notification).then(() => {
+                processingQueue = false; // Reset the processing flag
+                processNotificationQueue(); // Attempt to process the next notification
+            });
+            Push.create('Policy For Renewal', {
+                body: `Policy ${notification.policy} is due for renewal`,
+                onClick: function() {
+                    window.focus();
+                    window.open(`/customer-service/renewal/renewal`, '_blank');
+                    this.close();
+                }
+            });
+        }
+    }
+
+    Echo.channel('assign-policy-for-renewal').listen('AssignPolicyForRenewalEvent', (e) => {
+        var notifyId = e.userId;
+        var policy = e.policy;
+        if (userId == notifyId) {
+            notificationQueue.push({
+                policy: policy
+            });
+
+            if (!processingQueue) {
+                processNotificationQueue();
+            }
         }
     });
 

@@ -41,10 +41,9 @@ class CommercialAutoController extends BaseController
             DB::beginTransaction();
             $data = $request->all();
             $comercialAuto = new CommercialAuto();
-
             $generalInformationId = GeneralInformation::getIdByLeadId($data['leadId']);
             if(CommercialAuto::where('general_information_id', $generalInformationId)->exists()){
-                return response()->json(['error' => 'General Liabilities Data has been already saved.'], 409);
+                return response()->json(['error' => 'General Liability Data has been already saved.'], 409);
             }
             if($generalInformationId){
                 $comercialAuto->general_information_id = $generalInformationId;

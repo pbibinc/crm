@@ -82,7 +82,6 @@ class BindingController extends Controller
                 data-marketName = "'.$marketName->name.'"
                 data-status = "'.$confirmedProduct->status.'"
                 data-userProfileName = "'.$userProfile->fullAmericanName().'"
-
                 class="btn btn-sm btn-primary viewBindingButton"><i class="ri-eye-line"></i></button>';
 
                 $bindButton = '<button type="button"
@@ -104,25 +103,118 @@ class BindingController extends Controller
         return view('customer-service.binding.index', compact('markets', 'carriers'));
     }
 
+    public function requestToBind(Request $request)
+    {
+        if($request->ajax())
+        {
+            $quoationProduct = new QuotationProduct();
+            $broker = new BrokerQuotation();
+            $data = $quoationProduct->getRequestToBind();
+            return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('policy_number', function($data){
+                $quote_comparison = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
+                $policy_number = '<a href="" id="'.$data->id.'" name="viewButton" class="viewBindingButton">'.$quote_comparison->quote_no.'</a>';
+                return $policy_number;
+            })
+            ->addColumn('company_name', function($data){
+                $company_name = $data->QuoteInformation->QuoteLead->leads->company_name;
+                return $company_name;
+            })
+            ->addColumn('total_cost', function($data){
+                $quote_information = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
+                return $quote_information->full_payment;
+            })
+            ->addColumn('requested_by', function($data) use($broker){
+                $requested_by = $broker->where('quote_product_id', $data->id)->first();
+                $userProfile = UserProfile::find($requested_by->user_profile_id)->fullAmericanName();
+                return $userProfile;
+            })
+            ->addColumn('effective_date', function($data){
+                $quote_information = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
+                return $quote_information->effective_date;
+            })
+            ->rawColumns(['policy_number'])
+            ->make(true);
+        }
+        return view('customer-service.binding.request-to-bind-view');
+    }
+
+    public function requestToBindInformation(Request $request)
+    {
+       $product = QuotationProduct::find($request->id);
+       $market = $product->QouteComparison->where('recommended', 3)->first();
+       $lead = $product->QuoteInformation->QuoteLead->leads;
+       $paymentInformation = $market->PaymentInformation;
+       $paymentCharged = $paymentInformation->paymentCharged;
+       $marketName = QuoationMarket::find($market->quotation_market_id);
+       $generalInformation = $lead->GeneralInformation;
+       $userProfile = UserProfile::find($paymentCharged->user_profile_id);
+       $mediaIds = $product->medias()->pluck('metadata_id')->toArray();
+       $medias = Metadata::whereIn('id', $mediaIds)->get();
+       return response()->json(['product' => $product, 'market' => $market, 'lead' => $lead, 'paymentInformation' => $paymentInformation, 'paymentCharged' => $paymentCharged, 'marketName' => $marketName, 'generalInformation' => $generalInformation, 'userProfile' => $userProfile, 'medias' => $medias]);
+    }
+
+    public function incompleteBindingList(Request $request)
+    {
+        $quoationProduct = new QuotationProduct();
+        $data = $quoationProduct->getIncompleteBinding();
+        if($request->ajax())
+        {
+            return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('company_name', function($data){
+                $company_name = $data->QuoteInformation->QuoteLead->leads->company_name;
+                return $company_name;
+            })
+            ->addColumn('requested_by', function($data){
+                $broker = new BrokerQuotation();
+                $requested_by = $broker->where('quote_product_id', $data->id)->first();
+                $userProfile = UserProfile::find($requested_by->user_profile_id)->fullAmericanName();
+                return $userProfile;
+            })
+            ->addColumn('policy_number', function($data){
+                $quotationComparison = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
+                $policyNumber = '<a href="/appointed-list/'.$data->QuoteInformation->QuoteLead->leads->id.'"  id="'.$data->id.'" >'.$quotationComparison->quote_no.'</a>';
+                return $policyNumber;
+
+            })
+            ->addColumn('total_cost', function($data){
+                $quote_information = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
+                return $quote_information->full_payment;
+            })
+            ->addColumn('effective_date', function($data){
+                $quote_information = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
+                return $quote_information->effective_date;
+            })
+            ->addColumn('market', function($data){
+                $quote_information = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
+                $market = QuoationMarket::find($quote_information->quotation_market_id);
+                return $market->name;
+            })
+            ->rawColumns(['policy_number'])
+            ->make(true);
+        }
+    }
+
     public function saveGeneralLiabilitiesPolicy(Request $request)
     {
         if($request->ajax())
         {  try{
+;
                 $data = $request->all();
                 $mediaIds = [];
                 DB::beginTransaction();
 
                 //policy details saving
                 $policyDetails = new PolicyDetail();
-                $policyDetails->quotation_product_id = $data['hiddenInputId'];
-                $policyDetails->policy_number = $data['policyNumber'];
+                $policyDetails->quotation_product_id = $data['glHiddenInputId'];
+                $policyDetails->policy_number = $data['glPolicyNumber'];
                 $policyDetails->carrier = $data['carriersInput'];
-                $policyDetails->market = $data['marketInput'];
-                $policyDetails->payment_mode = $data['paymentTermInput'];
+                $policyDetails->market = $data['glMarketInput'];
+                $policyDetails->payment_mode = $data['glPaymentTermInput'];
                 $policyDetailSaving = $policyDetails->save();
-
                 if($policyDetailSaving){
-
                     //file uploading
                     $files = $data['attachedFiles'];
                     foreach($files as $file){
@@ -145,6 +237,8 @@ class BindingController extends Controller
                         $metadata->size = $size;
                         $metadata->save();
                         $mediaIds[] = $metadata->id;
+
+
                     }
 
                     //general liabilities policy details saving
@@ -155,8 +249,8 @@ class BindingController extends Controller
                     $generalLiabilitiesDetails->is_policy = isset($data['policy']) && $data['policy'] ? 1 : 0;
                     $generalLiabilitiesDetails->is_project = isset($data['project']) && $data['project']  ? 1 : 0;
                     $generalLiabilitiesDetails->is_loc = isset($data['loc']) && $data['loc'] ? 1 : 0;
-                    $generalLiabilitiesDetails->is_additional_insd = isset($data['addlInsdL']) && $data['addlInsdL'] ? 1 : 0;
-                    $generalLiabilitiesDetails->is_subr_wvd = isset($data['subrWvd']) && $data['subrWvd'] ? 1 : 0;
+                    $generalLiabilitiesDetails->is_additional_insd = isset($data['glAddlInsd']) && $data['glAddlInsd'] ? 1 : 0;
+                    $generalLiabilitiesDetails->is_subr_wvd = isset($data['glSubrWvd']) && $data['glSubrWvd'] ? 1 : 0;
                     $generalLiabilitiesDetails->each_occurence = $data['eachOccurence'];
                     $generalLiabilitiesDetails->damage_to_rented = $data['rentedDmg'];
                     $generalLiabilitiesDetails->medical_expenses = $data['medExp'];
@@ -170,21 +264,15 @@ class BindingController extends Controller
 
 
                     //code for saving product
-                    $quotationProduct = QuotationProduct::find($data['hiddenInputId']);
+                    $quotationProduct = QuotationProduct::find($data['glHiddenInputId']);
                     $quotationProduct->status = 8;
                     $quotationProduct->save();
                     $quotationProduct->medias()->attach($mediaIds);
 
                     //code for quotation
-                    $quotationComparison = QuoteComparison::find($data['hiddenQuoteId']);
-                    $quotationComparison->quote_no = $data['policyNumber'];
+                    $quotationComparison = QuoteComparison::find($data['glHiddenQuoteId']);
+                    $quotationComparison->quote_no = $data['glPolicyNumber'];
                     $quotationComparison->save();
-
-                    //code for saving lead status
-                    $leadId = $quotationProduct->QuoteInformation->QuoteLead->leads->id;
-                    $lead = Lead::find($leadId);
-                    $lead->status = 10;
-                    $lead->save();
 
                 }
                 DB::commit();

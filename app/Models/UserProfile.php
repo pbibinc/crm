@@ -105,6 +105,11 @@ class UserProfile extends Model
         return self::where('position_id', 15)->get();
     }
 
+    public function renewal()
+    {
+        return self::where('position_id', 10)->get();
+    }
+
     public function quoationLeads()
     {
         return $this->hasMany(quoationLeads::class);
@@ -115,5 +120,9 @@ class UserProfile extends Model
         return $this->hasMany(QuotationProduct::class);
     }
 
+    public function renewalPolicy()
+    {
+        return $this->belongsToMany(PolicyDetail::class, 'renewal_user_profile', 'user_profile_id', 'policy_details_id')->withTimestamps();
+    }
 
 }

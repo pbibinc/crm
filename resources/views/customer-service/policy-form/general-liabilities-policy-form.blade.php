@@ -12,15 +12,15 @@
                     <div class="row mb-2">
                         <div class="col-6">
                             <div class="form-group">
-                                <label class="form-label" for="policyNumber">Policy Number</label>
-                                <input type="text" class="form-control" id="policyNumber" name="policyNumber"
+                                <label class="form-label" for="glPolicyNumber">Policy Number</label>
+                                <input type="text" class="form-control" id="glPolicyNumber" name="glPolicyNumber"
                                     required>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
-                                <label class="form-label" for="insuredInput">Insured</label>
-                                <input type="text" class="form-control" id="insuredInput" name="insuredInput"
+                                <label class="form-label" for="glInsuredInput">Insured</label>
+                                <input type="text" class="form-control" id="glInsuredInput" name="glInsuredInput"
                                     required>
                             </div>
                         </div>
@@ -28,13 +28,12 @@
                     <div class="row mb-2">
                         <div class="col-6">
                             <div class="form-group">
-                                <label class="form-label" for="marketInput">Market</label>
-                                <select name="marketInput" id="marketInput" class="form-select">
+                                <label class="form-label" for="glMarketInput">Market</label>
+                                <select name="glMarketInput" id="glMarketInput" class="form-select">
                                     <option value="">Select Market</option>
                                     @foreach ($markets as $market)
                                         <option value="{{ $market->name }}">{{ $market->name }}</option>
                                     @endforeach
-
                                 </select>
                                 {{-- <input type="text" class="form-control" id="marketInput" name="marketInput" required> --}}
                             </div>
@@ -56,9 +55,9 @@
                     <div class="row mb-3">
                         <div class="col-6">
                             <div class="form-group">
-                                <label class="form-label" for="paymentTermInput">Payment Term</label>
-                                <select class="form-select" aria-label="Default select example" id="paymentTermInput"
-                                    name="paymentTermInput">
+                                <label class="form-label" for="glPaymentTermInput">Payment Term</label>
+                                <select class="form-select" aria-label="Default select example" id="glPaymentTermInput"
+                                    name="glPaymentTermInput">
                                     <option selected="">Open this select menu</option>
                                     <option value="PIF">PIF</option>
                                     <option value="Low down">Low down</option>
@@ -100,8 +99,8 @@
                             <div class="form-group">
                                 <label class="form-label">Addl Insd</label>
                                 <div class="square-switch">
-                                    <input type="checkbox" id="addlInsd" switch="info" name="addlInsd">
-                                    <label for="addlInsd" data-on-label="Yes" data-off-label="No"></label>
+                                    <input type="checkbox" id="glAddlInsd" switch="info" name="v">
+                                    <label for="glAddlInsd" data-on-label="Yes" data-off-label="No"></label>
                                 </div>
                             </div>
                         </div>
@@ -109,8 +108,8 @@
                             <div class="form-group">
                                 <label class="form-label">Subr Wvd</label>
                                 <div class="square-switch">
-                                    <input type="checkbox" id="subrWvd" switch="info" name="subrWvd">
-                                    <label for="subrWvd" data-on-label="Yes" data-off-label="No"></label>
+                                    <input type="checkbox" id="glSubrWvd" switch="info" name="glSubrWvd">
+                                    <label for="glSubrWvd" data-on-label="Yes" data-off-label="No"></label>
                                 </div>
                             </div>
                         </div>
@@ -249,8 +248,8 @@
                             </div>
                         </div>
                     </div>
-                    <input type="hidden" id="hiddenInputId" name="hiddenInputId">
-                    <input type="hidden" name="hiddenQuoteId" id="hiddenQuoteId">
+                    <input type="hidden" id="glHiddenInputId" name="glHiddenInputId">
+                    <input type="hidden" name="glHiddenQuoteId" id="hiddenQuoteId">
                 </div>
                 <div class="modal-footer">
                     <input type="submit" name="saveGeneralLiabilitiesPolicyForm"
@@ -265,6 +264,14 @@
 </div>
 <script>
     $(document).ready(function() {
+        var today = new Date();
+
+        var formattedDate = today.getFullYear() + '-' +
+            ('0' + (today.getMonth() + 1)).slice(-2) + '-' +
+            ('0' + today.getDate()).slice(-2);
+
+        $('#effectiveDate').val(formattedDate);
+
         $('#effectiveDate').on('change', function() {
             var effectiveDate = new Date($(this).val());
             var expirationDate = new Date(effectiveDate);
@@ -305,11 +312,11 @@
                 success: function(data) {
                     Swal.fire({
                         title: 'Success!',
-                        text: 'General Liabilities Policy Form has been saved.',
+                        text: 'General Liability Policy Form has been saved.',
                         icon: 'success',
                     }).then(function() {
                         $('#generalLiabilitiesPolicyForm').modal('hide');
-                        $('.getConfimedProductTable').DataTable().ajax.reload();
+                        $('.showPolicyForm').DataTable().ajax.reload();
                     });
                 },
                 error: function(data) {

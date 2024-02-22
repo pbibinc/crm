@@ -84,7 +84,7 @@
                         </div>
                         <div class="col-6">
                             <label for="paymentMethod">Payment Method</label>
-                            <select name="paymentMethod" id="paymentMethod" class="form-control">
+                            <select name="paymentMethod" id="paymentMethodMakePayment" class="form-control">
                                 <option value="">Select Payment Method</option>
                                 <option value="Checking">Checking</option>
                                 <option value="Credit Card">Credit Card</option>
@@ -149,6 +149,8 @@
                     <input type="hidden" id="leadsId" name="leadsId">
                     <input type="hidden" id="generalInformationId" name="generalInformationId">
                     <input type="hidden" name="paymentInformationId" id="paymentInformationId">
+                    <input type="hidden" name="statusInput" id="statusInput">
+                    <input type="hidden" name="quotationProductId" id="quotationProductId">
 
             </div>
             <div class="modal-footer">
@@ -186,6 +188,8 @@
         $('#makePaymentForm').on('submit', function(e) {
             e.preventDefault();
             var button = $('#savePaymentInformation');
+            var status = $('#statusInput').val();
+            var productId = $('#quotationProductId').val();
             var laddaButton = Ladda.create(button[0]);
             laddaButton.start();
             $.ajax({
@@ -197,15 +201,51 @@
                 url: "{{ route('save-payment-information') }}",
                 data: $(this).serialize(),
                 success: function(response) {
-                    laddaButton.stop();
-                    Swal.fire({
-                        title: 'Success',
-                        text: 'Payment Information Saved Successfully',
-                        icon: 'success'
-                    }).then(function() {
-                        $('#makePaymentModal').modal('hide');
-                        location.reload();
-                    });
+                    if (status == 13) {
+                        $.ajax({
+                            type: "POST",
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                    'content')
+                            },
+                            url: "{{ route('change-quotation-status') }}",
+                            data: {
+                                id: productId,
+                                status: 16,
+                            },
+                            success: function(response) {
+                                laddaButton.stop();
+                                Swal.fire({
+                                    title: 'Success',
+                                    text: 'Payment Information Re Send Successfully',
+                                    icon: 'success'
+                                }).then(function() {
+                                    $('#makePaymentModal').modal(
+                                        'hide');
+                                    location.reload();
+                                });
+                            },
+                            error: function(jqXHR, xhr, status, error) {
+                                laddaButton.stop();
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: 'Something Went Wrong',
+                                    icon: 'error'
+                                });
+                            }
+                        })
+                    } else {
+                        laddaButton.stop();
+                        Swal.fire({
+                            title: 'Success',
+                            text: 'Payment Information Send Successfully',
+                            icon: 'success'
+                        }).then(function() {
+                            $('#makePaymentModal').modal('hide');
+                            location.reload();
+                        });
+                    }
+
                 },
                 error: function(jqXHR, xhr, status, error) {
                     laddaButton.stop();

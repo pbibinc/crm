@@ -111,7 +111,7 @@ class AssignAppointedLeadController extends Controller
                     $leadId  = $leadData->id;
                     event(new AssignAppointedLeadEvent($leadId, $userProfile->id, $product, $user->id));
                 }
-                $user->sendAppointedNotification($user, $productCount);
+                $user->sendAppointedNotification($user, $productCount, $userProfile->fullAmericanName(), );
 
             }else{
                 return response()->json(['error' => 'Please select a user profile']);

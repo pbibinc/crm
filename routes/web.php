@@ -28,13 +28,18 @@ use App\Http\Controllers\AssignAppointedLeadController;
 use App\Http\Controllers\BindingController;
 use App\Http\Controllers\BindingDocsController;
 use App\Http\Controllers\BoundController;
+use App\Http\Controllers\BuildersRiskPolicyDetailsController;
+use App\Http\Controllers\BussinessOwnersPolicyDetailsController;
 use App\Http\Controllers\CallBackController;
+use App\Http\Controllers\CommercialAutoPolicyController;
 use App\Http\Controllers\DepartmentListController;
 use App\Http\Controllers\DashboardControllerNew;
 use App\Http\Controllers\TecnickcomPdfController;
 use App\Http\Controllers\CompanyHandbookController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\EmbeddedSignatureController;
+use App\Http\Controllers\ExcessLiabilityInsurancePolicyController;
+use App\Http\Controllers\FinancingCompanyController;
 use App\Http\Controllers\InsurerController;
 use App\Http\Controllers\MarketListController;
 use App\Http\Controllers\NonCallBackDispositionController;
@@ -42,11 +47,15 @@ use App\Http\Controllers\NotesController;
 use App\Http\Controllers\PaymentChargedController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PoliciesController;
+use App\Http\Controllers\PolicyForRenewalController;
 use App\Http\Controllers\PricingBreakdownController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\QuotationController;
+use App\Http\Controllers\RenewalController;
+use App\Http\Controllers\ToolsEquipmentPolicyController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\WebsiteController;
+use App\Http\Controllers\WorkersCompPolicyController;
 use App\Models\PricingBreakdown;
 use Faker\Provider\ar_EG\Payment;
 use Illuminate\Support\Facades\App;
@@ -247,12 +256,39 @@ Route::middleware(['auth'])->group(function (){
         Route::prefix('customer-service')->group(function(){
             //binding routes
             Route::get('/binding', [BindingController::class, 'index'])->name('binding');
+            Route::get('/binding/request-to-bind', [BindingController::class, 'requestToBind'])->name('request-to-bind');
+            Route::post('binding/request-to-bind-information', [BindingController::class, 'requestToBindInformation'])->name('request-to-bind-information');
+            Route::get('/binding/incomplete-binding-list', [BindingController::class, 'incompleteBindingList'])->name('incomplete-binding-list');
 
             Route::get('/bound/list', [BoundController::class, 'index'])->name('bound-list');
+            Route::post('/bound/get-bound-information', [BoundController::class, 'getBoundInformation'])->name('get-bound-information');
+
+            //saving of product policies
             Route::post('binding/save-general-liabilities-policy', [BindingController::class, 'saveGeneralLiabilitiesPolicy'])->name('binding.save-general-liabilities-policy');
+
+
+            //route for commercial auto policies
+            Route::resource('/commercial-auto-policy', CommercialAutoPolicyController::class);
+
+            //route for workers compensation policies
+            Route::resource('/workers-compensation-policy', WorkersCompPolicyController::class);
+
+            //route for tools and equipment policies
+            Route::resource('/tools-equipment-policy', ToolsEquipmentPolicyController::class);
+
+            //route for bussiness owner policy
+            Route::resource('/business-owner-policy', BussinessOwnersPolicyDetailsController::class);
+
+            //route for builders risk policy
+            Route::resource('/builders-risk-policy', BuildersRiskPolicyDetailsController::class);
+
+            //route for excess liability insurance policy
+            Route::resource('/excess-insurance-policy', ExcessLiabilityInsurancePolicyController::class);
 
             //routes for policies
             Route::get('/get-policy-list', [PoliciesController::class, 'getPolicyList'])->name('get-policy-list');
+            Route::get('/policy-list', [PoliciesController::class, 'index'])->name('policy-list');
+            Route::get('/new-policy-list', [PoliciesController::class, 'newPolicyList'])->name('new-policy-list');
 
             //routes for bound
             Route::post('/save-bound-information', [BoundController::class, 'saveBoundInformation'])->name('save-bound-information');
@@ -262,6 +298,20 @@ Route::middleware(['auth'])->group(function (){
             Route::get('/binding-docs', [BindingDocsController::class, 'index'])->name('binding-docs');
             Route::post('/upload-file-binding-docs', [BindingDocsController::class, 'uploadFile'])->name('upload-file-binding-docs');
             Route::post('/delete-binding-docs', [BindingDocsController::class, 'deleteBindingDocs'])->name('delete-binding-docs');
+
+            //route financing
+            Route::prefix('financing')->group(function(){
+                Route::resource('/financing-company', FinancingCompanyController::class);
+            });
+
+            //route for renewal
+            Route::prefix('renewal')->group(function(){
+                Route::resource('/renewal', RenewalController::class);
+                Route::post('/assign-policy-for-renewal', [RenewalController::class, 'assignPolicyForRenewal'])->name('renewal.assign-policy-for-renewal');
+                Route::post('/reassign-policy-for-renewal', [RenewalController::class, 'reassignPolicyForRenewal'])->name('renewal.reassign-policy-for-renewal');
+                Route::post('/void-policy-for-renewal', [RenewalController::class, 'voidPolicyForRenewal'])->name('renewal.void-policy-for-renewal');
+                Route::resource('/for-renewal', PolicyForRenewalController::class);
+            });
 
         });
 

@@ -146,4 +146,22 @@ class QuotationProduct extends Model
         return null;
     }
 
+    public function getRequestToBind()
+    {
+        $query = $this->where('status', 6)->get();
+        return $query ? $query : null;
+    }
+
+    public function getBoundList()
+    {
+        $query = $this->where('status', 11)->get();
+        return $query ? $query : null;
+    }
+
+    public function getIncompleteBinding()
+    {
+        $query = $this->where('status', 14)->get();
+        return $query ? $query : null;
+    }
+
 }

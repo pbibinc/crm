@@ -75,6 +75,7 @@ class GeneralInformationDataController extends BaseController
                 $quoteInformation->remarks = ' ';
                 $quoteInformation->save();
             }
+
             $Lead = Lead::getLeads($data['lead_id']);
             $Lead->disposition_id = 1;
             $Lead->status= 3;

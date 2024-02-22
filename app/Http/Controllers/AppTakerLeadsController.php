@@ -109,6 +109,7 @@ class AppTakerLeadsController extends Controller
             Cache::put('lead_id', $leadId, 60 * 60);
             Cache::put('user_id', $user->id, 60 * 360);
         }
+        return response()->json(['success' => 'Lead id added to cache']);
     }
 
     public function storeLeadRemarksDisposition(Request $request)

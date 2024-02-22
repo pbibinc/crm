@@ -154,7 +154,6 @@
                 <button type="button" class="btn btn-outline-primary waves-effect waves-light" id="logNote"><i
                         class="ri-send-plane-fill"></i>Log Note</button>
             </div>
-
         </div>
     </div>
 </div>
@@ -162,7 +161,6 @@
     $(document).ready(function() {
         $('#boundButton').on('click', function(e) {
             e.preventDefault();
-            console.log('test this code');
             var id = $('#hiddenId').val();
 
             $.ajax({
@@ -234,6 +232,7 @@
                     noteTitle: noteTitle,
                     noteDescription: noteDescription,
                     leadId: leadId,
+                    status: 'Declined Binding'
                 },
                 success: function(data) {
                     $.ajax({

@@ -74,7 +74,7 @@ class AssignAppointedLead extends Notification implements ShouldQueue
     {
         return [
             'message' => 'You have'. ' ' . $this->productCount . ' ' .'new products to quote on.',
-            'type' => 'Assigned Appointed Lead',
+            'apointee_message' => 'Your Appointed Lead has been assigned to ',
             'data' => $this->productCount
         ];
     }

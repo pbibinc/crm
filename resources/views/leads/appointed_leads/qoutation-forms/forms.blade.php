@@ -62,12 +62,12 @@
 
 {{-- Qoutation Forms --}}
 
-@if ($product->product == 'General Liabilities')
+@if ($product->product == 'General Liability')
     @include('leads.appointed_leads.qoutation-forms.quoation-form', [
         'generalInformation' => $generalInformation,
         'quationMarket' => $quationMarket->getMarketByProduct('General Liability'),
         'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
-            'General Liabilities',
+            'General Liability',
             $lead->quoteLead->QuoteInformation->id),
     ])
 @endif

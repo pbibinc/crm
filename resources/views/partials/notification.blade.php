@@ -106,6 +106,26 @@
                             </div>
                         </div>
                     </a>
+                @elseif($notification->type == 'App\Notifications\AssignPolicyForRenewalNotification')
+                    {{-- <pre>{{ dump($imagePath) }}</pre> --}}
+                    <a href="" class="text-reset notification-item ">
+                        <div class="d-flex">
+                            <div class="avatar-xs me-3">
+                                <span class="avatar-title bg-success rounded-circle font-size-16">
+                                    <i class="mdi mdi mdi-autorenew"></i>
+                                </span>
+                            </div>
+
+                            <div class="flex-1">
+                                <h6 class="mb-1">
+                                    {{ 'Policy Renewal' }}
+                                </h6>
+                                <div class="font-size-12 text-muted">
+                                    {{ $notification->data['message'] ?? 'Default message' }}
+                                </div>
+                            </div>
+                        </div>
+                    </a>
                 @endif
             @endforeach
         </div>

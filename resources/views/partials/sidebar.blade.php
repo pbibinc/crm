@@ -184,7 +184,28 @@
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
                             <li><a href="{{ route('binding') }}">Products</a></li>
-                            <li><a href="{{ route('bound-list') }}">Policy List</a></li>
+                            <li><a href="{{ route('policy-list') }}">Policy List</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class=" ri-hand-heart-line
+                            "></i>
+                            <span>Financing</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="{{ route('financing-company.index') }}">Financing Companies</a></li>
+                            <li><a href="{{ route('financing-company.index') }}">Financing Angreement</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-autorenew"></i>
+                            <span>Renewal</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="{{ route('renewal.index') }}">Assign Policy For Renewal</a></li>
+                            <li><a href="{{ route('for-renewal.index') }}">Policy For Renewal</a></li>
                         </ul>
                     </li>
                 @endcan

@@ -219,19 +219,6 @@
 
     <script>
         $(document).ready(function() {
-            // $('#assignAppointedLeadsTable').DataTable({
-            //     processing: true,
-            //     serverSide: true,
-            //     ajax: "{{ route('assign-appointed-lead') }}",
-            //     columns: [
-            //         {data: 'checkbox', name: 'checkbox'},
-            //         {data: 'id', name: 'id'},
-            //         {data: 'company_name', name: 'company_name'},
-            //         {data: 'products', name: 'products'},
-            //         {data: 'current_user', name: 'current_user'},
-            //     ]
-            // })
-
             $('.companyCheckAllBox').on('change', function() {
                 // Get the company name from the clicked checkbox
                 var companyName = $(this).data('company');

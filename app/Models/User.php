@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Events\ReassignedAppointedLead;
 use App\Notifications\AssignAppointedLead;
+use App\Notifications\AssignPolicyForRenewalNotification;
 use App\Notifications\LeadNotesNotification;
 use App\Notifications\ReassignAppointedLeadNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -62,6 +63,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendNoteNotification($user, $noteTitle, $senderUserProfileId, $noteDescription, $leadId)
     {
         Notification::send($user, new LeadNotesNotification($noteTitle, $senderUserProfileId, $noteDescription, $leadId));
+    }
+
+    public function sendRenewalPolicyNotification($user, $policy, $count)
+    {
+        Notification::send($user, new AssignPolicyForRenewalNotification($policy, $count));
     }
 
     public function role()
