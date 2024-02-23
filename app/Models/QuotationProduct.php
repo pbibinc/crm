@@ -148,7 +148,7 @@ class QuotationProduct extends Model
 
     public function getRequestToBind()
     {
-        $query = $this->where('status', 6)->get();
+        $query = $this->whereIn('status', [6, 15])->get();
         return $query ? $query : null;
     }
 
@@ -160,7 +160,7 @@ class QuotationProduct extends Model
 
     public function getIncompleteBinding()
     {
-        $query = $this->whereIn('status', [14, 15])->get();
+        $query = $this->where('status', 14)->get();
         return $query ? $query : null;
     }
 
