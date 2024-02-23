@@ -256,11 +256,11 @@ Route::middleware(['auth'])->group(function (){
         Route::prefix('customer-service')->group(function(){
             //binding routes
             Route::get('/binding', [BindingController::class, 'index'])->name('binding');
-            Route::get('/binding/request-to-bind', [BindingController::class, 'requestToBind'])->name('request-to-bind');
-            Route::post('binding/request-to-bind-information', [BindingController::class, 'requestToBindInformation'])->name('request-to-bind-information');
-            Route::get('/binding/incomplete-binding-list', [BindingController::class, 'incompleteBindingList'])->name('incomplete-binding-list');
+            Route::get('/binding/request-to-bind', [BindingController::class, 'requestToBind'])->name('request-to-bind')->withoutMiddleware(['auth:sanctum']);
+            Route::post('binding/request-to-bind-information', [BindingController::class, 'requestToBindInformation'])->withoutMiddleware(['auth:sanctum'])->name('request-to-bind-information');
+            Route::get('/binding/incomplete-binding-list', [BindingController::class, 'incompleteBindingList'])->withoutMiddleware(['auth:sanctum'])->name('incomplete-binding-list');
 
-            Route::get('/bound/list', [BoundController::class, 'index'])->name('bound-list');
+            Route::get('/bound/list', [BoundController::class, 'index'])->withoutMiddleware(['auth:sanctum'])->name('bound-list');
             Route::post('/bound/get-bound-information', [BoundController::class, 'getBoundInformation'])->name('get-bound-information');
 
             //saving of product policies
@@ -288,7 +288,7 @@ Route::middleware(['auth'])->group(function (){
             //routes for policies
             Route::get('/get-policy-list', [PoliciesController::class, 'getPolicyList'])->name('get-policy-list');
             Route::get('/policy-list', [PoliciesController::class, 'index'])->name('policy-list');
-            Route::get('/new-policy-list', [PoliciesController::class, 'newPolicyList'])->name('new-policy-list');
+            Route::get('/new-policy-list', [PoliciesController::class, 'newPolicyList'])->withoutMiddleware(['auth:sanctum'])->name('new-policy-list');
 
             //routes for bound
             Route::post('/save-bound-information', [BoundController::class, 'saveBoundInformation'])->name('save-bound-information');
