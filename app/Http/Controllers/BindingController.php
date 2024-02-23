@@ -26,9 +26,6 @@ class BindingController extends Controller
 //
     public function index(Request $request)
     {
-        $quotationProduct = new BrokerQuotation();
-        $userProfileId = Auth::user()->userProfile->id;
-        $confirmedProduct = $quotationProduct->getProductToBind($userProfileId)->where('status','!=', 13);
         $markets = QuoationMarket::all()->sortBy('name');
         $carriers = Insurer::all()->sortBy('name');
         // if($request->ajax())
