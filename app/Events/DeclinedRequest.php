@@ -16,6 +16,7 @@ class DeclinedRequest implements ShouldBroadcast
     public $leadId;
     public $generalInformationId;
     public $productId;
+    public $userId;
     /**
      * Create a new event instance.
      *
@@ -24,11 +25,12 @@ class DeclinedRequest implements ShouldBroadcast
      * @param $productId
      * @return void
      */
-    public function __construct($leadId, $generalInformationId, $productId)
+    public function __construct($leadId, $generalInformationId, $productId, $userId)
     {
         $this->leadId = $leadId;
         $this->generalInformationId = $generalInformationId;
         $this->productId = $productId;
+        $this->userId = $userId;
     }
 
     /**

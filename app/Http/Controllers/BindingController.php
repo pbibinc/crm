@@ -12,6 +12,7 @@ use App\Models\PolicyDetail;
 use App\Models\QuoationMarket;
 use App\Models\QuotationProduct;
 use App\Models\QuoteComparison;
+use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,7 +23,7 @@ use Illuminate\Validation\ValidationException;
 
 class BindingController extends Controller
 {
-    //
+//
     public function index(Request $request)
     {
         $quotationProduct = new BrokerQuotation();
@@ -150,9 +151,10 @@ class BindingController extends Controller
        $marketName = QuoationMarket::find($market->quotation_market_id);
        $generalInformation = $lead->GeneralInformation;
        $userProfile = UserProfile::find($paymentCharged->user_profile_id);
+       $userId = User::find($userProfile->user_id)->id;
        $mediaIds = $product->medias()->pluck('metadata_id')->toArray();
        $medias = Metadata::whereIn('id', $mediaIds)->get();
-       return response()->json(['product' => $product, 'market' => $market, 'lead' => $lead, 'paymentInformation' => $paymentInformation, 'paymentCharged' => $paymentCharged, 'marketName' => $marketName, 'generalInformation' => $generalInformation, 'userProfile' => $userProfile, 'medias' => $medias]);
+       return response()->json(['product' => $product, 'market' => $market, 'lead' => $lead, 'paymentInformation' => $paymentInformation, 'paymentCharged' => $paymentCharged, 'marketName' => $marketName, 'generalInformation' => $generalInformation, 'userProfile' => $userProfile, 'medias' => $medias, 'userId' => $userId]);
     }
 
     public function incompleteBindingList(Request $request)
@@ -206,6 +208,26 @@ class BindingController extends Controller
                 $mediaIds = [];
                 DB::beginTransaction();
 
+                //file uploading
+                $file = $data['attachedFiles'];
+                $basename = $file->getClientOriginalName();
+                $directoryPath = public_path('backend/assets/attacedFiles/binding/general-liability-insurance');
+                $type = $file->getClientMimeType();
+                $size = $file->getSize();
+                if(!File::isDirectory($directoryPath)){
+                    File::makeDirectory($directoryPath, 0777, true, true);
+                }
+                $file->move($directoryPath, $basename);
+                $filepath = 'backend/assets/attacedFiles/binding/general-liability-insurance/' . $basename;
+
+                $metadata = new Metadata();
+                $metadata->basename = $basename;
+                $metadata->filename = $basename;
+                $metadata->filepath = $filepath;
+                $metadata->type = $type;
+                $metadata->size = $size;
+                $metadata->save();
+
                 //policy details saving
                 $policyDetails = new PolicyDetail();
                 $policyDetails->quotation_product_id = $data['glHiddenInputId'];
@@ -213,68 +235,40 @@ class BindingController extends Controller
                 $policyDetails->carrier = $data['carriersInput'];
                 $policyDetails->market = $data['glMarketInput'];
                 $policyDetails->payment_mode = $data['glPaymentTermInput'];
+                $policyDetails->effective_date = $data['effectiveDate'];
+                $policyDetails->expiration_date = $data['expirationDate'];
+                $policyDetails->media_id =  $metadata->id;
                 $policyDetailSaving = $policyDetails->save();
-                if($policyDetailSaving){
-                    //file uploading
-                    $files = $data['attachedFiles'];
-                    foreach($files as $file){
-                        $basename = $file->getClientOriginalName();
-                        $directoryPath = public_path('backend/assets/attacedFiles/binding/general-liability-insurance');
-                        $type = $file->getClientMimeType();
-                        $size = $file->getSize();
-                        if(!File::isDirectory($directoryPath)){
-                            File::makeDirectory($directoryPath, 0777, true, true);
-                        }
-                        $file->move($directoryPath, $basename);
-                        $filepath = 'backend/assets/attacedFiles/binding/general-liability-insurance/' . $basename;
 
+                //general liabilities policy details saving
+                $generalLiabilitiesDetails = new GeneralLiabilitiesPolicyDetails();
+                $generalLiabilitiesDetails->policy_details_id  = $policyDetails->id;
+                $generalLiabilitiesDetails->is_commercial_gl = isset($data['commercialGl']) && $data['commercialGl'] ? 1 : 0;
+                $generalLiabilitiesDetails->is_occur = isset($data['occur']) && $data['occur'] ? 1 : 0;
+                $generalLiabilitiesDetails->is_policy = isset($data['policy']) && $data['policy'] ? 1 : 0;
+                $generalLiabilitiesDetails->is_project = isset($data['project']) && $data['project']  ? 1 : 0;
+                $generalLiabilitiesDetails->is_loc = isset($data['loc']) && $data['loc'] ? 1 : 0;
+                $generalLiabilitiesDetails->is_additional_insd = isset($data['glAddlInsd']) && $data['glAddlInsd'] ? 1 : 0;
+                $generalLiabilitiesDetails->is_subr_wvd = isset($data['glSubrWvd']) && $data['glSubrWvd'] ? 1 : 0;
+                $generalLiabilitiesDetails->each_occurence = $data['eachOccurence'];
+                $generalLiabilitiesDetails->damage_to_rented = $data['rentedDmg'];
+                $generalLiabilitiesDetails->medical_expenses = $data['medExp'];
+                $generalLiabilitiesDetails->per_adv_injury = $data['perAdvInjury'];
+                $generalLiabilitiesDetails->gen_aggregate = $data['genAggregate'];
+                $generalLiabilitiesDetails->product_comp = $data['comp'];
+                $generalLiabilitiesDetails->status = $data['statusDropdowm'];
+                $generalLiabilitiesDetails->save();
 
-                        $metadata = new Metadata();
-                        $metadata->basename = $basename;
-                        $metadata->filename = $basename;
-                        $metadata->filepath = $filepath;
-                        $metadata->type = $type;
-                        $metadata->size = $size;
-                        $metadata->save();
-                        $mediaIds[] = $metadata->id;
+                //code for saving product
+                $quotationProduct = QuotationProduct::find($data['glHiddenInputId']);
+                $quotationProduct->status = 8;
+                $quotationProduct->save();
 
+                //code for quotation
+                $quotationComparison = QuoteComparison::find($data['glHiddenQuoteId']);
+                $quotationComparison->quote_no = $data['glPolicyNumber'];
+                $quotationComparison->save();
 
-                    }
-
-                    //general liabilities policy details saving
-                    $generalLiabilitiesDetails = new GeneralLiabilitiesPolicyDetails();
-                    $generalLiabilitiesDetails->policy_details_id  = $policyDetails->id;
-                    $generalLiabilitiesDetails->is_commercial_gl = isset($data['commercialGl']) && $data['commercialGl'] ? 1 : 0;
-                    $generalLiabilitiesDetails->is_occur = isset($data['occur']) && $data['occur'] ? 1 : 0;
-                    $generalLiabilitiesDetails->is_policy = isset($data['policy']) && $data['policy'] ? 1 : 0;
-                    $generalLiabilitiesDetails->is_project = isset($data['project']) && $data['project']  ? 1 : 0;
-                    $generalLiabilitiesDetails->is_loc = isset($data['loc']) && $data['loc'] ? 1 : 0;
-                    $generalLiabilitiesDetails->is_additional_insd = isset($data['glAddlInsd']) && $data['glAddlInsd'] ? 1 : 0;
-                    $generalLiabilitiesDetails->is_subr_wvd = isset($data['glSubrWvd']) && $data['glSubrWvd'] ? 1 : 0;
-                    $generalLiabilitiesDetails->each_occurence = $data['eachOccurence'];
-                    $generalLiabilitiesDetails->damage_to_rented = $data['rentedDmg'];
-                    $generalLiabilitiesDetails->medical_expenses = $data['medExp'];
-                    $generalLiabilitiesDetails->per_adv_injury = $data['perAdvInjury'];
-                    $generalLiabilitiesDetails->gen_aggregate = $data['genAggregate'];
-                    $generalLiabilitiesDetails->product_comp = $data['comp'];
-                    $generalLiabilitiesDetails->effective_date = $data['effectiveDate'];
-                    $generalLiabilitiesDetails->expiry_date = $data['expirationDate'];
-                    $generalLiabilitiesDetails->status = $data['statusDropdowm'];
-                    $generalLiabilitiesDetails->save();
-
-
-                    //code for saving product
-                    $quotationProduct = QuotationProduct::find($data['glHiddenInputId']);
-                    $quotationProduct->status = 8;
-                    $quotationProduct->save();
-                    $quotationProduct->medias()->attach($mediaIds);
-
-                    //code for quotation
-                    $quotationComparison = QuoteComparison::find($data['glHiddenQuoteId']);
-                    $quotationComparison->quote_no = $data['glPolicyNumber'];
-                    $quotationComparison->save();
-
-                }
                 DB::commit();
                 return response()->json(['success' => 'File uploaded successfully']);
             }catch(ValidationException $e){

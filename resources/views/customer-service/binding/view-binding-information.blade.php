@@ -147,6 +147,7 @@
                     <input type="hidden" name="declinedLeadId" id="declinedLeadId">
                     <input type="hidden" name="declinedHiddenProductId" id="declinedHiddenProductId">
                     <input type="hidden" id="declinedHiddenTitle" name="declinedHiddenTitle">
+                    <input type="hidden" id="userToNotify" name="userToNotify">
                 </div>
             </div>
             <div class="modal-footer">
@@ -191,7 +192,11 @@
                                 icon: 'success'
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    location.reload();
+                                    $('.boundProductTable').DataTable()
+                                        .ajax.reload();
+                                    $('.getConfimedProductTable')
+                                        .DataTable().ajax.reload();
+                                    $('#dataModal').modal('hide');
                                 }
                             });
                         },
@@ -221,6 +226,7 @@
             var productId = $('#declinedHiddenProductId').val();
             var leadId = $('#declinedLeadId').val();
             var noteDescription = $('#noteDescription').val();
+            var userToNotify = $('#userToNotify').val();
             $.ajax({
                 url: "{{ route('create-notes') }}",
                 headers: {
@@ -229,6 +235,8 @@
                 },
                 method: "POST",
                 data: {
+                    icon: 'error',
+                    userToNotify: [userToNotify],
                     noteTitle: noteTitle,
                     noteDescription: noteDescription,
                     leadId: leadId,
@@ -253,7 +261,12 @@
                                 icon: 'success'
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    location.reload();
+                                    $('.getConfimedProductTable')
+                                        .DataTable().ajax.reload();
+                                    $('.incompleteBindingTable')
+                                        .DataTable().ajax.reload();
+                                    $('#declinedBindingModal').modal(
+                                        'hide')
                                 }
                             });
                         },

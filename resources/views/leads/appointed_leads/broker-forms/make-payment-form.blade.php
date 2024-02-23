@@ -173,7 +173,7 @@
                 $('#otherCard').attr('hidden', true);
             }
         })
-        $('#paymentMethod').on('change', function() {
+        $('#paymentMethodMakePayment').on('change', function() {
             if ($(this).val() == 'Credit Card') {
                 $('#cardTypeLabel').attr('hidden', false);
                 $('#cardType').attr('hidden', false);

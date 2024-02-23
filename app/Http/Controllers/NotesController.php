@@ -35,6 +35,7 @@ class NotesController extends Controller
             $generalInformationId = GeneralInformation::where('leads_id', $leadId)->first()->id;
             $productId = $request->input('productId');
             $notifyUserIds = $request->input('userToNotify');
+            $icon = $request->input('icon') ? $request->input('icon') : 'info';
 
             $leadNotes = new LeadNotes();
             $leadNotes->lead_id = $leadId;
@@ -48,12 +49,13 @@ class NotesController extends Controller
               foreach($notifyUserIds as $notifyUserId){
                 $user = User::find($notifyUserId);
                 $user->sendNoteNotification($user, $noteTitle, $userProfileId,  $noteDescription, $leadId);
-                broadcast(new LeadNotesNotificationEvent($noteTitle, $noteDescription, $notifyUserId, $leadId, $userProfileId));
+                broadcast(new LeadNotesNotificationEvent($noteTitle, $noteDescription, $notifyUserId, $leadId, $userProfileId, $icon));
               }
             }
-            if($status == 'declined-make-payment'){
-                broadcast(new DeclinedRequest($leadId, $generalInformationId, $productId));
-            }
+
+            // if($status == 'declined-make-payment'){
+            //     broadcast(new DeclinedRequest($leadId, $generalInformationId, $productId, $user->id));
+            // }
             DB::commit();
 
             return response()->json(['message' => 'Data stored successfully']);

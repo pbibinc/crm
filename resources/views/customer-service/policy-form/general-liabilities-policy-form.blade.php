@@ -226,7 +226,7 @@
                             <div class="form-group">
                                 <label class="form-label" for="expirationDate">Attached File <i
                                         class="ri-attachment-line"></i></label>
-                                <input type="file" class="form-control" id="attachedFiles" name="attachedFiles[]"
+                                <input type="file" class="form-control" id="attachedFiles" name="attachedFiles"
                                     multiple>
                             </div>
                         </div>
@@ -316,7 +316,8 @@
                         icon: 'success',
                     }).then(function() {
                         $('#generalLiabilitiesPolicyForm').modal('hide');
-                        $('.showPolicyForm').DataTable().ajax.reload();
+                        $('.boundProductTable').DataTable().ajax.reload();
+                        $('.newPolicyList').DataTable().ajax.reload();
                     });
                 },
                 error: function(data) {

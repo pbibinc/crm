@@ -18,18 +18,20 @@ class LeadNotesNotificationEvent implements ShouldBroadcast
     public $userId;
     public $leadId;
     public $senderId;
+    public $icon;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($noteTitle, $noteDescription, $userId, $leadId, $senderId)
+    public function __construct($noteTitle, $noteDescription, $userId, $leadId, $senderId, $icon)
     {
         $this->noteTitle = $noteTitle;
         $this->noteDescription = $noteDescription;
         $this->userId = $userId;
         $this->leadId = $leadId;
         $this->senderId = $senderId;
+        $this->icon = $icon;
     }
 
     /**

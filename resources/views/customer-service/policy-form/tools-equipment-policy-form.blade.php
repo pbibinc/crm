@@ -150,6 +150,7 @@
                 contentType: false,
                 dataType: "json",
                 success: function(data) {
+
                     Swal.fire({
                         title: 'Success!',
                         text: 'Tools Equipment Policy has been added!',
@@ -157,7 +158,9 @@
                         confirmButtonText: 'Ok'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            location.reload();
+                            $('#toolsEquipmentPolicyFormModal').modal('hide');
+                            $('.boundProductTable').DataTable().ajax.reload();
+                            $('.newPolicyList').DataTable().ajax.reload();
                         }
                     });
                 },

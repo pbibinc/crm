@@ -290,14 +290,14 @@
                                     agentUserProfileId: agentUserProfileId
                                 },
                                 success: function(data) {
-                                    Swal.fire({
-                                        title: 'Success',
-                                        text: 'Leads has been assigned',
-                                        icon: 'success'
-                                    });
+                                    // Swal.fire({
+                                    //     title: 'Success',
+                                    //     text: 'Leads has been assigned',
+                                    //     icon: 'success'
+                                    // });
                                     // $('#assignAppointedLeadsTable').DataTable().ajax.reload();
                                     // $('#datatableLeads').DataTable().ajax.reload();
-                                    location.reload();
+                                    // location.reload();
                                 },
                                 error: function(data) {
                                     Swal.fire({

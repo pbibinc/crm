@@ -197,6 +197,7 @@
                 contentType: false,
                 dataType: "json",
                 success: function(data) {
+
                     Swal.fire({
                         title: 'Success!',
                         text: 'Workers Compensation Policy has been added!',
@@ -204,7 +205,9 @@
                         confirmButtonText: 'Ok'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            location.reload();
+                            $('#workersCompensationModalForm').modal('hide');
+                            $('.boundProductTable').DataTable().ajax.reload();
+                            $('.newPolicyList').DataTable().ajax.reload();
                         }
                     });
                 },
