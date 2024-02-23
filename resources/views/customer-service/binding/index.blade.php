@@ -76,64 +76,6 @@
         Dropzone.autoDiscover = false;
         var myDropzone;
 
-
-
-
-
-
-        // $(document).on('click', '.viewBindingButton', function(e) {
-        //     e.preventDefault();
-        //     var id = $(this).attr('id');
-        //     var quote = $(this).attr('data-quote');
-        //     var quoteData = quote ? JSON.parse(quote) : '{}';
-
-        //     var paymentInformation = $(this).attr('data-paymentInformation');
-        //     var payementInformationData = paymentInformation ? JSON.parse(paymentInformation) : '{}';
-
-        //     var lead = $(this).attr('data-lead');
-        //     var leadData = lead ? JSON.parse(lead) : '{}';
-
-        //     var paymentCharged = $(this).attr('data-paymentCharged');
-        //     var paymentChargedData = paymentCharged ? JSON.parse(paymentCharged) : '{}';
-
-        //     var generalInformation = $(this).attr('data-generalInformation');
-        //     var generalInformationData = generalInformation ? JSON.parse(generalInformation) : '{}';
-
-        //     var media = $(this).attr('data-media');
-        //     var mediaData = media ? JSON.parse(media) : '{}';
-
-        //     var marketName = $(this).attr('data-marketName');
-        //     var product = $(this).attr('data-product');
-        //     var name = $(this).attr('data-userProfileName');
-        //     var status = $(this).attr('data-status');
-
-        //     $('#companyName').text(leadData.company_name);
-        //     $('#insuredName').text(generalInformationData.firstname + ' ' + generalInformationData.lastname);
-        //     $('#state').text(leadData.state_abbr);
-        //     $('#market').text(marketName);
-        //     $('#product').text(product);
-        //     $('#totalPolicyCost').text(quoteData.full_payment);
-        //     $('#policyNum').text(quoteData.quote_no);
-        //     $('#bindingEffectiveDate').text(quoteData.effective_date);
-        //     $('#paymentType').text(payementInformationData.payment_type);
-        //     $('#paymentApprovedBy').text(name);
-        //     $('#inovoiceNumber').text(paymentChargedData.invoice_number);
-        //     $('#paymentAprrovedDate').text(paymentChargedData.charged_date);
-        //     $('#hiddenId').val(id);
-        //     addExistingFiles(mediaData);
-        //     if (status == 11) {
-        //         $('#boundButton').hide();
-        //         $('#declinedButton').hide();
-        //     } else if (status == 6) {
-        //         $('#boundButton').show();
-        //         $('#declinedButton').show();
-        //     };
-        //     $('#declinedLeadId').val(leadData.id);
-        //     $('#declinedHiddenProductId').val(id);
-        //     $('#declinedHiddenTitle').val('Declined Binding for' + ' ' + product);
-        //     $('#dataModal').modal('show');
-        // });
-
         $('#declinedButton').on('click', function(e) {
             e.preventDefault();
             $('#declinedBindingModal').modal('show');
