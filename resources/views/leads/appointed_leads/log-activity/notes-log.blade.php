@@ -174,7 +174,7 @@
                     userToNotify: userToNotify
                 },
                 success: function(data) {
-                    // location.reload();
+                    location.reload();
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     if (jqXHR.status == 422) {

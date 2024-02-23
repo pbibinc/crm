@@ -156,7 +156,9 @@
                         confirmButtonText: 'Ok'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            location.reload();
+                            $('#businessOwnersPolicyFormModal').modal('hide');
+                            $('.boundProductTable').DataTable().ajax.reload();
+                            $('.newPolicyList').DataTable().ajax.reload();
                         }
                     });
                 },

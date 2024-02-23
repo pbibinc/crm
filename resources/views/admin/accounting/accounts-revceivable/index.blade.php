@@ -249,6 +249,7 @@
                         <input type="hidden" id="declinedHiddenTitle" name="declinedHiddenTitle">
                         <input type="hidden" name="declinedHiddenProductId" id="declinedHiddenProductId">
                         <input type="hidden" name="declinedLeadId" id="declinedLeadId">
+                        <input type="hidden" name="userToNotify" id="userToNotify">
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" id="bactkToViewInforationButton">Back</button>
@@ -394,6 +395,7 @@
                     },
                     success: function(response) {
                         var files = response.medias;
+                        // var userId = respinse.
                         console.log(response);
                         $('#paymentInformationId').val(response.paymentInformation.id);
                         $('#quoteComparisonId').val(response.quoteComparison.id);
@@ -418,6 +420,7 @@
                         $('#declinedHiddenProductId').val(response.quotationProduct.id);
                         $('#declinedLeadId').val(response.lead
                             .id);
+                        $('#userToNotify').val(response.userId);
                         $('#dataModal').modal('show');
                     }
                 })
@@ -517,6 +520,7 @@
                 var productId = $('#declinedHiddenProductId').val();
                 var leadId = $('#declinedLeadId').val();
                 var noteDescription = $('#noteDescription').val();
+                var userToNotify = $('#userToNotify').val();
                 $.ajax({
                     url: "{{ route('create-notes') }}",
                     headers: {
@@ -525,6 +529,8 @@
                     },
                     method: "POST",
                     data: {
+                        icon: 'error',
+                        userToNotify: [userToNotify],
                         noteTitle: noteTitle,
                         noteDescription: noteDescription,
                         leadId: leadId,

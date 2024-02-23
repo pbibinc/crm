@@ -292,7 +292,9 @@
                         confirmButtonText: 'Ok'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            location.reload();
+                            $('#excessInsurancePolicyFormModal').modal('hide');
+                            $('.boundProductTable').DataTable().ajax.reload();
+                            $('.newPolicyList').DataTable().ajax.reload();
                         }
                     });
                 },

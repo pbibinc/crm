@@ -8,6 +8,7 @@ use App\Models\Lead;
 use App\Models\PaymentInformation;
 use App\Models\QuoationMarket;
 use App\Models\QuoteComparison;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
@@ -54,7 +55,7 @@ class PaymentController extends Controller
                 return $requestedBy;
             })
             ->addColumn('action', function($paymentInformationData){
-                $viewButton = '<button type="button" id="'.$paymentInformationData['data']->id.'" class="btn btn-sm btn-primary viewPaymentInformationButton"><i class="ri-eye-line"></i></button>';
+                $viewButton = '<button type="button" id="'.$paymentInformationData['data']->id.'" data-user-id="'. $paymentInformationData['data']->QuoteComparison->QuotationProduct->brokerQuotation->user_profile_id.'" class="btn btn-sm btn-primary viewPaymentInformationButton"><i class="ri-eye-line"></i></button>';
                 return $viewButton;
             })
             ->make(true);
@@ -145,6 +146,7 @@ class PaymentController extends Controller
         $fullName = $generalInformation->customerFullName();
         $market = QuoationMarket::find($quoteComparison->quotation_market_id);
         $quotationProduct = $quoteComparison->QuotationProduct;
-        return response()->json(['paymentInformation' => $paymentInformation, 'lead' => $lead, 'generalInformation' => $generalInformation, 'quoteComparison' => $quoteComparison, 'market' => $market, 'fullName' => $fullName, 'quotationProduct' => $quotationProduct, 'medias' => $medias], 200);
+        $userId = User::find($quotationProduct->brokerQuotation->user_profile_id)->id;
+        return response()->json(['paymentInformation' => $paymentInformation, 'lead' => $lead, 'generalInformation' => $generalInformation, 'quoteComparison' => $quoteComparison, 'market' => $market, 'fullName' => $fullName, 'quotationProduct' => $quotationProduct, 'medias' => $medias, 'userId' => $userId], 200);
     }
 }

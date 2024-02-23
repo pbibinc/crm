@@ -694,28 +694,28 @@
             var paymentInformation = $(this).attr('data-payment-information') ? JSON.parse($(this).attr(
                 'data-payment-information')) : {};
 
-            if (paymentInformation.payment_method == 'Visa' || paymentInformation.payment_method ==
-                'Master Card' || paymentInformation.payment_method == 'American Express' ||
-                paymentInformation
-                .payment_method == 'Discover') {
-                $('#paymentMethodMakePayment').val('Credit Card');
-                $('#cardType').attr('hidden', false);
-                $('#cardTypeLabel').attr('hidden', false);
-                $('#cardType').val(paymentInformation.payment_method);
-            } else if (paymentInformation.method == 'Checking') {
-                $('#paymentMethodMakePayment').val('Checking');
-
-            } else {
-                $('#paymentMethodMakePayment').val('Credit Card');
-                $('#cardType').attr('hidden', false);
-                $('#cardType').val('Other');
-                $('#cardTypeLabel').attr('hidden', false);
-                $('#otherCardLabel').attr('hidden', false);
-                $('#otherCard').attr('hidden', false);
-                $('#otherCard').val(paymentInformation.payment_method);
-            }
-            if (paymentInformation) {
+            if (Object.keys(paymentInformation).length !== 0) {
                 $('#paymentTerm').val(paymentInformation.payment_term);
+                if (paymentInformation.payment_method == 'Visa' || paymentInformation.payment_method ==
+                    'Master Card' || paymentInformation.payment_method == 'American Express' ||
+                    paymentInformation
+                    .payment_method == 'Discover') {
+                    $('#paymentMethodMakePayment').val('Credit Card');
+                    $('#cardType').attr('hidden', false);
+                    $('#cardTypeLabel').attr('hidden', false);
+                    $('#cardType').val(paymentInformation.payment_method);
+                } else if (paymentInformation.method == 'Checking') {
+                    $('#paymentMethodMakePayment').val('Checking');
+
+                } else {
+                    $('#paymentMethodMakePayment').val('Credit Card');
+                    $('#cardType').attr('hidden', false);
+                    $('#cardType').val('Other');
+                    $('#cardTypeLabel').attr('hidden', false);
+                    $('#otherCardLabel').attr('hidden', false);
+                    $('#otherCard').attr('hidden', false);
+                    $('#otherCard').val(paymentInformation.payment_method);
+                }
             }
             $('#quoteNumber').val(quoteNo);
             $('#market').val(market);

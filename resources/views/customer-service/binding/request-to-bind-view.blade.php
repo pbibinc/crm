@@ -48,11 +48,13 @@
                     data: 'effective_date',
                     name: 'effective_date'
                 }
-
-                // {data: 'status', name: 'status'},
-                // {data: 'sent_out_date', name: 'sent_out_date'},
-                // {data: 'action', name: 'action', orderable: false, searchable: false}
             ],
+            createdRow: function(row, data, dataIndex) {
+                var status = data.status;
+                if (status == 15) {
+                    $(row).addClass('table-warning');
+                }
+            },
             language: {
                 emptyTable: "No data available in the table"
             },
@@ -162,6 +164,7 @@
                     $('#declinedHiddenProductId').val(id);
                     $('#declinedHiddenTitle').val('Declined Binding for' + ' ' + data
                         .product.product);
+                    $('#userToNotify').val(data.userId);
                     $('#dataModal').modal('show');
                 },
                 error: function(data) {
