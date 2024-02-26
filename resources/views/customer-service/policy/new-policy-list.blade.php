@@ -17,6 +17,7 @@
 </div>
 <script>
     $(document).ready(function() {
+        var token = '{{ csrf_token() }}';
         $('.newPolicyList').DataTable({
             processing: true,
             serverSide: true,
@@ -24,8 +25,7 @@
                 url: "{{ route('new-policy-list') }}",
                 type: "POST",
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                        'content')
+                    '_token': token
                 },
             },
             columns: [{

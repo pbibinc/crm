@@ -23,6 +23,7 @@
 @include('customer-service.policy-form.excess-insurance-liability-form', compact('carriers', 'markets'))
 <script>
     $(document).ready(function() {
+        var token = '{{ csrf_token() }}';
         $('.boundProductTable').DataTable({
             processing: true,
             serverSide: true,
@@ -30,8 +31,7 @@
                 url: "{{ route('bound-list') }}",
                 type: "POST",
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                        'content')
+                    '_token': token
                 },
             },
             columns: [{

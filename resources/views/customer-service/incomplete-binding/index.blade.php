@@ -15,6 +15,7 @@
 
 <script>
     $(document).ready(function() {
+        var token = '{{ csrf_token() }}';
         $('.incompleteBindingTable').DataTable({
             processing: true,
             serverSide: true,
@@ -22,8 +23,7 @@
                 url: "{{ route('incomplete-binding-list') }}",
                 type: "POST",
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                        'content')
+                    '_token': token
                 },
             },
             columns: [{
