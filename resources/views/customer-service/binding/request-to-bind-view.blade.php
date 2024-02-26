@@ -27,9 +27,7 @@
             ajax: {
                 url: "{{ route('request-to-bind') }}",
                 type: "POST",
-                headers: {
-                    'X-CSRF-TOKEN': token // Changed from '_token' to 'X-CSRF-TOKEN'
-                },
+
             },
             columns: [{
                     data: 'policy_number',

@@ -30,9 +30,7 @@
             ajax: {
                 url: "{{ route('bound-list') }}",
                 type: "POST",
-                headers: {
-                    'X-CSRF-TOKEN': token // Changed from '_token' to 'X-CSRF-TOKEN'
-                },
+
             },
             columns: [{
                     data: 'policy_number',
