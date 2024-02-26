@@ -22,7 +22,7 @@ class AuthServiceProvider extends ServiceProvider
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
         Lead::class => LeadPolicy::class,
         Attendance::class => AttendancePolicy::class,
-       
+
     ];
 
     /**

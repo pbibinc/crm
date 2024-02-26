@@ -20,7 +20,14 @@
         $('.newPolicyList').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('new-policy-list') }}",
+            ajax: {
+                url: "{{ route('new-policy-list') }}",
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                        'content')
+                },
+            },
             columns: [{
                     data: 'policy_number',
                     name: 'policy_number'

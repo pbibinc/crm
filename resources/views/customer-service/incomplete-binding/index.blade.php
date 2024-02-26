@@ -18,7 +18,14 @@
         $('.incompleteBindingTable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('incomplete-binding-list') }}",
+            ajax: {
+                url: "{{ route('incomplete-binding-list') }}",
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                        'content')
+                },
+            },
             columns: [{
                     data: 'policy_number',
                     name: 'policy_number'

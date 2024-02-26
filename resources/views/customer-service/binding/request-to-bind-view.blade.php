@@ -23,7 +23,14 @@
         $('.getConfimedProductTable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('request-to-bind') }}",
+            ajax: {
+                url: "{{ route('request-to-bind') }}",
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                        'content')
+                },
+            },
             columns: [{
                     data: 'policy_number',
                     name: 'policy_number'
@@ -65,6 +72,7 @@
                 }
             }
         });
+
         myDropzone = new Dropzone(".dropzone", {
             url: "#",
             autoProcessQueue: false, // Prevent automatic upload
