@@ -163,9 +163,6 @@
                         </div>
                     </div>
 
-                    {{-- <div class="row mb-2">
-
-                    </div> --}}
                     <div class="row mb-2">
                         <div class="col-6">
                             <label for="fullPayment" class="form-label">Full Payment</label>
@@ -182,6 +179,7 @@
                                 inputmode="decimal" style="text-align: right;" required autocomplete="off">
                         </div>
                     </div>
+
                     <div class="row mb-2">
                         <div class="col-6">
                             <label for="monthlyPayment" class="form-label">Monthly Payment</label>
@@ -190,8 +188,13 @@
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
                                 inputmode="decimal" style="text-align: right;" required autocomplete="off">
                         </div>
+                        <div class="col-6">
+                            <label for="numberOfPayment" class="form-label">Number of Paymment</label>
+                            <input type="number" class="form-control" id="numberOfPayment" name="numberOfPayment">
+                        </div>
 
                     </div>
+
                     <div class="row mb-2">
                         <div class="col-6">
                             <label for="effectiveDate">Effective Date</label>
@@ -199,6 +202,7 @@
                                 required>
                         </div>
                     </div>
+
                     <div class="row">
                         <div>
                             <label for="medias" id="mediaLabelId">Attached File</label>
@@ -208,7 +212,7 @@
                     <input type="hidden" name="action" id="action" value="add">
                     <input type="hidden" name="product_hidden_id" id="product_hidden_id" />
                     <input type="hidden" name="productId" id="productId" value="{{ $quoteProduct->id }}">
-                    <input type="hidden" name="recommended" id="recommended_hidden" />
+                    <input type="hidden" name="recommended" id="recommended_hidden" value="0" />
                     <input type="hidden" name="currentMarketId" id="currentMarketId">
                     <input type="hidden" name="sender" id="sender" value="marketSpecialist">
 
@@ -228,6 +232,8 @@
         </div>
     </div>
 </div>
+
+
 
 
 <script>
@@ -302,6 +308,7 @@
                             denyButtonText: `View`,
                         }).then((result) => {
                             if (result.isConfirmed) {
+                                // console.log('download');
                                 var downloadLink = document.createElement(
                                     "a");
                                 downloadLink.href = fileUrl;
@@ -310,6 +317,7 @@
                                 downloadLink.click();
                                 document.body.removeChild(downloadLink);
                             } else if (result.isDenied) {
+                                // console.log('view');
                                 window.open(fileUrl, '_blank');
                             }
                         });
@@ -540,6 +548,7 @@
                     $('#fullPayment').val(response.data.full_payment);
                     $('#downPayment').val(response.data.down_payment);
                     $('#monthlyPayment').val(response.data.monthly_payment);
+                    $('#numberOfPayment').val(response.data.number_of_payments);
                     $('#brokerFee').val(response.data.broker_fee);
                     $('#product_hidden_id').val(response.data.id);
                     $('#productId').val(response.data.quotation_product_id);
@@ -552,20 +561,16 @@
                     $('#action_button').val('Update');
                     if (response.data.recommended == 1) {
                         $('#reccomended').prop('checked', true);
-                        $('#recommended_hidden').val('checked', true);
+                        $('#recommended_hidden').val(1);
                     } else {
                         $('#reccomended').prop('checked', false);
-                        $('#recommended_hidden').val('checked', true);
+                        $('#recommended_hidden').val(0);
                     }
                     $('#addQuoteModal').modal('show');
                 }
             });
 
         });
-
-
-        //SUBMISSION OF FORM WITH VALIDATION FOR FULL PAYMENT AND DOWN PAYMENT
-
 
         //submition of form
         $('#quotationForm').on('submit', function(event) {
@@ -611,7 +616,6 @@
                                 .val('');
                             $('#quotationForm input[type="file"]').val('');
                             $('#quotationForm .input-mask').trigger('input');
-
                         });
                     },
                     error: function(data) {
@@ -635,7 +639,6 @@
                 });
             }
         });
-
 
 
         //send quote button functionalities
@@ -675,6 +678,47 @@
             });
         });
 
+        $(document).on('click', '.renewQuotation', function() {
+            var id = $(this).attr('id');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You are about to renew this quote',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, renew it!',
+                cancelButtonText: 'No, keep it'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('renewal-quote.store') }}",
+                        method: "POST",
+                        data: {
+                            id: id,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: 'Quotation Comparison has been renewed',
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function(data) {
+                            Swal.fire({
+                                title: 'Error',
+                                text: data.responseJSON.error,
+                                icon: 'error'
+                            });
+                        }
+                    });
+                }
+            });
+        });
     });
 
 
@@ -707,6 +751,10 @@
     $('.calculateInput').on('input', function() {
         calculateFullPayment();
     });
+
+
+
+
 
     //function for resetting the input inside modal
 </script>

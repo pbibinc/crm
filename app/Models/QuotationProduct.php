@@ -164,4 +164,12 @@ class QuotationProduct extends Model
         return $query ? $query : null;
     }
 
+    public function getBinding()
+    {
+        $query = $this->where('status', 12)->get();
+        return $query ? $query : null;
+    }
+
+
+
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\API\RecreationalController;
 use App\Http\Controllers\Controller;
 use App\Models\ClassCodeLead;
 use App\Models\Lead;
+use App\Models\QuoationMarket;
 use App\Models\QuotationProduct;
 use App\Models\QuoteLead;
 use App\Models\RecreationalFacilities;
@@ -74,8 +75,9 @@ class AppointedController extends Controller
         }
         $localTime = Carbon::now($timezoneForState);
         $products = QuotationProduct::getQuotedProductByQuotedInformationId($leads->quoteLead->QuoteInformation->id);
+        $quationMarket = new QuoationMarket();
 
-        return view('leads.appointed_leads.apptaker-leads-view.index', compact('leads', 'localTime', 'usAddress', 'products', 'sortedClassCodeLeads', 'classCodeLeads', 'recreationalFacilities', 'states'));
+        return view('leads.appointed_leads.apptaker-leads-view.index', compact('leads', 'localTime', 'usAddress', 'products', 'sortedClassCodeLeads', 'classCodeLeads', 'recreationalFacilities', 'states', 'quationMarket'));
     }
 
 }

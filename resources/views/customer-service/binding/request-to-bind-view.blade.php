@@ -71,113 +71,81 @@
             }
         });
 
-        myDropzone = new Dropzone(".dropzone", {
-            url: "#",
-            autoProcessQueue: false, // Prevent automatic upload
-            clickable: true, // Allow opening file dialog on click
-            maxFiles: 10, //
-            init: function() {
-                this.on("addedfile", function(file) {
-                    file.previewElement.addEventListener("click", function() {
-                        var url = "{{ env('APP_FORM_LINK') }}";
-                        var fileUrl = url + file.url;
-
-                        Swal.fire({
-                            title: 'File Options',
-                            text: 'Choose an action for the file',
-                            showDenyButton: true,
-                            confirmButtonText: `Download`,
-                            denyButtonText: `View`,
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                var downloadLink = document.createElement(
-                                    "a");
-                                downloadLink.href = fileUrl;
-                                downloadLink.download = file.name;
-                                document.body.appendChild(downloadLink);
-                                downloadLink.click();
-                                document.body.removeChild(downloadLink);
-                            } else if (result.isDenied) {
-                                window.open(fileUrl, '_blank');
-                            }
-                        });
-
-
-                    });
-                });
-            }
-        });
-
-        function addExistingFiles(files) {
-            files.forEach(file => {
-                var mockFile = {
-                    id: file.id,
-                    name: file.basename,
-                    size: parseInt(file.size),
-                    type: file.type,
-                    status: Dropzone.ADDED,
-                    url: file.filepath // URL to the file's location
-                };
-                myDropzone.emit("addedfile", mockFile);
-                // myDropzone.emit("thumbnail", mockFile, file.filepath); // If you have thumbnails
-                myDropzone.emit("complete", mockFile);
-            });
-        };
-
-        $('#dataModal').on('hide.bs.modal', function() {
-            $(".dropzone .dz-preview").remove(); // This removes file previews from the DOM
-            myDropzone.files.length = 0;
-        });
-
-        $(document).on('click', '.viewBindingButton', function(e) {
+        $(document).on('click', '.viewRequestToBind', function(e) {
             e.preventDefault();
             var id = $(this).attr('id');
-            $.ajax({
-                url: "{{ route('request-to-bind-information') }}",
-                method: "POST",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: {
-                    id: id
-                },
-                dataType: "json",
-                success: function(data) {
-
-                    $('#companyName').text(data.lead.company_name);
-                    $('#insuredName').text(data.generalInformation.firstname + ' ' +
-                        data.generalInformation.lastname);
-                    $('#state').text(data.lead.state_abbr);
-                    $('#market').text(data.marketName.name);
-                    $('#product').text(data.product.product);
-                    $('#totalPolicyCost').text(data.market.full_payment);
-                    $('#policyNum').text(data.market.quote_no);
-                    $('#bindingEffectiveDate').text(data.market.effective_date);
-                    $('#paymentType').text(data.paymentInformation.payment_type);
-                    $('#paymentApprovedBy').text(data.userProfile.firstname);
-                    $('#inovoiceNumber').text(data.paymentCharged.invoice_number);
-                    $('#paymentAprrovedDate').text(data.paymentCharged.charged_date);
-                    $('#hiddenId').val(id);
-                    addExistingFiles(data.medias);
-                    if (status == 11) {
-                        $('#boundButton').hide();
-                        $('#declinedButton').hide();
-                    } else if (status == 6) {
-                        $('#boundButton').show();
-                        $('#declinedButton').show();
-                    };
-                    $('#declinedLeadId').val(data.lead.id);
-                    $('#declinedHiddenProductId').val(id);
-                    $('#declinedHiddenTitle').val('Declined Binding for' + ' ' + data
-                        .product.product);
-                    $('#userToNotify').val(data.userId);
-                    $('#dataModal').modal('show');
-                },
-                error: function(data) {
-                    var errors = data.responseJSON;
-                    console.log(errors);
+            console.log(id);
+            Swal.fire({
+                title: 'Process This Binding?',
+                text: "You want to send a request to bind?",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Send it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('save-bound-information') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        method: "POST",
+                        data: {
+                            id: id
+                        },
+                        success: function() {
+                            $.ajax({
+                                url: "{{ route('change-quotation-status') }}",
+                                headers: {
+                                    'X-CSRF-TOKEN': $(
+                                        'meta[name="csrf-token"]').attr(
+                                        'content')
+                                },
+                                method: "POST",
+                                data: {
+                                    status: 12,
+                                    id: id
+                                },
+                                success: function() {
+                                    Swal.fire({
+                                        title: 'Success',
+                                        text: 'has been saved',
+                                        icon: 'success'
+                                    }).then((result) => {
+                                        if (result
+                                            .isConfirmed) {
+                                            $('.boundProductTable')
+                                                .DataTable()
+                                                .ajax.reload();
+                                            $('.getConfimedProductTable')
+                                                .DataTable()
+                                                .ajax.reload();
+                                            $('#dataModal')
+                                                .modal('hide');
+                                        }
+                                    });
+                                },
+                                error: function() {
+                                    Swal.fire({
+                                        title: 'Error',
+                                        text: 'Something went wrong',
+                                        icon: 'error'
+                                    });
+                                }
+                            })
+                        },
+                        error: function() {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Something went wrong',
+                                icon: 'error'
+                            });
+                        }
+                    })
                 }
             });
         });
+
     });
 </script>

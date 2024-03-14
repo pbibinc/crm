@@ -7,6 +7,7 @@ use App\Models\GeneralLiabilities;
 use App\Models\GeneralLiabilitiesPolicyDetails;
 use App\Models\PolicyDetail;
 use App\Models\QuotationProduct;
+use App\Models\QuoteComparison;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Contracts\DataTable;
@@ -89,12 +90,35 @@ class PoliciesController extends Controller
                 $policy = PolicyDetail::where('quotation_product_id', $data->id)->first();
                 return $policy->effective_date;
             })
+
+            ->addColumn('status', function($data){
+                $policy = PolicyDetail::where('quotation_product_id', $data->id)->first();
+                return $policy->status;
+            })
             ->addColumn('expiration_date', function($data){
                 $policy = PolicyDetail::where('quotation_product_id', $data->id)->first();
                 return $policy->expiration_date;
             })
+            ->addColumn('action', function($data){
+                $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->first();
+                $quoteComparisonId = QuoteComparison::where('quotation_product_id', $policyDetail->QuotationProduct->id)->first()->id;
+
+                $viewButton = '<button type="button" class="btn btn-primary btn-sm waves-effect waves-light viewButton" id="'.$data->id.'"><i class="ri-eye-line"></i></button>';
+                $cancelButton = '<button type="button" class="btn btn-danger btn-sm waves-effect waves-light cancelButton" id="'.$policyDetail->id.'"><i class="mdi mdi-book-cancel-outline"></i></button>';
+                $renewQuoteButton = '<button type="button" class="btn btn-success btn-sm waves-effect waves-light renewQuoteButton" id="'.$data->id.'" data-quoteId="'.$quoteComparisonId.'"><i class="mdi mdi-account-reactivate"></i></button>';
+                return $viewButton . ' ' . $renewQuoteButton . ' ' . $cancelButton;
+            })
+            ->rawColumns(['action'])
             ->make(true);
         }
+    }
+
+    public function getPolicyDetails(Request $request)
+    {
+        $data = $request->all();
+        $policyDetail = PolicyDetail::where('quotation_product_id', $data['id']);
+
+        return response()->json(['policy_detail' => $policyDetail]);
     }
 
 }

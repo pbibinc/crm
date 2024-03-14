@@ -31,6 +31,7 @@ use App\Http\Controllers\BoundController;
 use App\Http\Controllers\BuildersRiskPolicyDetailsController;
 use App\Http\Controllers\BussinessOwnersPolicyDetailsController;
 use App\Http\Controllers\CallBackController;
+use App\Http\Controllers\CancellationReportController;
 use App\Http\Controllers\CommercialAutoPolicyController;
 use App\Http\Controllers\DepartmentListController;
 use App\Http\Controllers\DashboardControllerNew;
@@ -39,8 +40,11 @@ use App\Http\Controllers\CompanyHandbookController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\EmbeddedSignatureController;
 use App\Http\Controllers\ExcessLiabilityInsurancePolicyController;
+use App\Http\Controllers\FinanceAgreementPolicyList;
 use App\Http\Controllers\FinancingCompanyController;
+use App\Http\Controllers\FinancingController;
 use App\Http\Controllers\InsurerController;
+use App\Http\Controllers\IntentController;
 use App\Http\Controllers\MarketListController;
 use App\Http\Controllers\NonCallBackDispositionController;
 use App\Http\Controllers\NotesController;
@@ -52,10 +56,12 @@ use App\Http\Controllers\PricingBreakdownController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\RenewalController;
+use App\Http\Controllers\RenewalQuoteController;
 use App\Http\Controllers\ToolsEquipmentPolicyController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\WebsiteController;
 use App\Http\Controllers\WorkersCompPolicyController;
+use App\Models\FinancingAgreement;
 use App\Models\PricingBreakdown;
 use Faker\Provider\ar_EG\Payment;
 use Illuminate\Support\Facades\App;
@@ -160,6 +166,14 @@ Route::middleware(['auth'])->group(function (){
       //route for pricing breakdown
       Route::resource('pricing-breakdown', PricingBreakdownController::class);
 
+      //route for cancellation report
+      Route::prefix('canncellation')->group(function(){
+        Route::resource('cancellation-report', CancellationReportController::class);
+        Route::resource('intent', IntentController::class);
+        Route::post('intent/get-intent-list', [IntentController::class, 'getIntentList'])->name('intent.get-intent-list');
+      });
+
+
         //route for assigning leads
         Route::get('/', [AssignLeadController::class, 'index'])->name('assign');
         Route::get('/getDataTableLeads', [AssignLeadController::class, 'getDataTableLeads'])->name('getDataTableLeads');
@@ -259,6 +273,7 @@ Route::middleware(['auth'])->group(function (){
             Route::post('/binding/request-to-bind', [BindingController::class, 'requestToBind'])->name('request-to-bind');
             Route::post('binding/request-to-bind-information', [BindingController::class, 'requestToBindInformation'])->withoutMiddleware(['auth:sanctum'])->name('request-to-bind-information');
             Route::post('/binding/incomplete-binding-list', [BindingController::class, 'incompleteBindingList'])->withoutMiddleware(['auth:sanctum'])->name('incomplete-binding-list');
+            Route::post('/binding-view-list', [BindingController::class, 'bindingViewList'])->name('binding-view-list');
 
             Route::post('/bound/list', [BoundController::class, 'index'])->name('bound-list');
             Route::post('/bound/get-bound-information', [BoundController::class, 'getBoundInformation'])->name('get-bound-information');
@@ -287,6 +302,7 @@ Route::middleware(['auth'])->group(function (){
 
             //routes for policies
             Route::get('/get-policy-list', [PoliciesController::class, 'getPolicyList'])->name('get-policy-list');
+            Route::post('/get-policy-details', [PoliciesController::class, 'getPolicyDetails'])->name('get-policy-details');
             Route::get('/policy-list', [PoliciesController::class, 'index'])->name('policy-list');
             Route::post('/new-policy-list', [PoliciesController::class, 'newPolicyList'])->withoutMiddleware(['auth:sanctum'])->name('new-policy-list');
 
@@ -302,6 +318,12 @@ Route::middleware(['auth'])->group(function (){
             //route financing
             Route::prefix('financing')->group(function(){
                 Route::resource('/financing-company', FinancingCompanyController::class);
+                Route::resource('/financing-agreement', FinancingController::class);
+                Route::resource('/finance-agreement-list', FinanceAgreementPolicyList::class);
+                Route::post('/finance-agreement-list/get-data-table', [FinanceAgreementPolicyList::class, 'getDataTable'])->name('finance-agreement-list.get-data-table');
+                Route::post('/financing-aggreement/product-for-financing', [FinancingController::class, 'productForFinancing'])->name('financing-aggreement.product-for-financing');
+                Route::post('/financing-aggreement/creation-of-pfa', [FinancingController::class, 'pfaCreation'])->name('financing-aggreement.creation-of-pfa');
+                Route::post('/financing-aggrement/new-financing-agreement', [FinancingController::class, 'newFinancingAgreement'])->name('financing-aggrement.new-financing-agreement');
             });
 
             //route for renewal
@@ -310,7 +332,10 @@ Route::middleware(['auth'])->group(function (){
                 Route::post('/assign-policy-for-renewal', [RenewalController::class, 'assignPolicyForRenewal'])->name('renewal.assign-policy-for-renewal');
                 Route::post('/reassign-policy-for-renewal', [RenewalController::class, 'reassignPolicyForRenewal'])->name('renewal.reassign-policy-for-renewal');
                 Route::post('/void-policy-for-renewal', [RenewalController::class, 'voidPolicyForRenewal'])->name('renewal.void-policy-for-renewal');
+
                 Route::resource('/for-renewal', PolicyForRenewalController::class);
+
+                Route::resource('/renewal-quote', RenewalQuoteController::class);
             });
 
         });

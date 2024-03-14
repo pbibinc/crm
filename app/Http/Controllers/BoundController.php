@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\BoundInformation;
+use App\Models\FinancingStatus;
 use App\Models\GeneralLiabilitiesPolicyDetails;
 use App\Models\PolicyDetail;
 use App\Models\QuoationMarket;
@@ -64,11 +65,22 @@ class BoundController extends Controller
         try{
             DB::beginTransaction();
             $userProfileId = Auth::user()->userProfile->id;
+            $quoteComparison = QuoteComparison::where('quotation_product_id', $request->id)->where('recommended', 3)->first();
+            $paymentInformation = $quoteComparison->PaymentInformation;
+
+            if($paymentInformation->payment_term == 'Split low down' || $paymentInformation->payment_term == 'Low down')
+            {
+                $financingStatus = new FinancingStatus();
+                $financingStatus->quotation_product_id = $request->id;
+                $financingStatus->status = "Request For Financing";
+                $financingStatus->save();
+            }
             $boundInformation = new BoundInformation();
             $boundInformation->quoatation_product_id  = $request->id;
             $boundInformation->user_profile_id = $userProfileId;
             $boundInformation->bound_date = now()->format('Y-m-d');
             $boundInformation->save();
+
             DB::commit();
             return response()->json(['message' => 'Bound Information has been saved.'], 200);
         }catch(\Exception $e){

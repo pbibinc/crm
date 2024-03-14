@@ -152,9 +152,6 @@ class QuotationController extends Controller
     {
         if($request->ajax())
         {
-
-
-
             //declaring variable for quocte comparison
             $quotationProductId = $request->input('productId');
             $marketId = $request->input('marketDropdown');
@@ -166,6 +163,7 @@ class QuotationController extends Controller
             $reccomended = $request->input('recommended');
             $quoteNo = $request->input('quoteNo');
             $effectiveDate = $request->input('effectiveDate');
+            $numberOfPayment = $request->input('numberOfPayment');
 
             // $media = $request->input('media');
             $convertedFullPayment = floatval($fullPayment);
@@ -237,6 +235,7 @@ class QuotationController extends Controller
                 $quoteComparison->full_payment = $fullPayment;
                 $quoteComparison->down_payment = $downPayment;
                 $quoteComparison->monthly_payment = $monthlyPayment;
+                $quoteComparison->number_of_payments = $numberOfPayment;
                 $quoteComparison->broker_fee = $brokerFee;
                 $quoteComparison->recommended = floatval($reccomended);
                 $quoteComparison->effective_date = $effectiveDate;
@@ -272,7 +271,6 @@ class QuotationController extends Controller
 
     public function updateQuotationComparison(Request $request)
     {
-
         if($request->ajax())
         {
             try{
@@ -285,6 +283,7 @@ class QuotationController extends Controller
                  $fullPayment = $request->input('fullPayment');
                  $downPayment = $request->input('downPayment');
                  $monthlyPayment = $request->input('monthlyPayment');
+                 $numberOfPayment = $request->input('numberOfPayment');
                  $brokerFee = $request->input('brokerFee');
                  $reccomended = $request->input('recommended');
                  $productId = $request->input('productId');
@@ -300,7 +299,6 @@ class QuotationController extends Controller
                 $stampingFee = $request->input('stampingFee');
                 $surplusLinesTax = $request->input('surplusLinesTax');
                 $placementFee = $request->input('placementFee');
-                // $brokerFee = $request->input('brokerFee');
                 $miscellaneousFee = $request->input('miscellaneousFee');
 
                 $quoteComparison = QuoteComparison::find($id);
@@ -323,6 +321,7 @@ class QuotationController extends Controller
                         $quoteComparison->full_payment = $fullPayment;
                         $quoteComparison->down_payment = $downPayment;
                         $quoteComparison->monthly_payment = $monthlyPayment;
+                        $quoteComparison->number_of_payments = $numberOfPayment;
                         $quoteComparison->broker_fee = $brokerFee;
                         $quoteComparison->recommended = $reccomended;
                         $quoteComparison->quote_no = $quotationNo;
@@ -331,6 +330,7 @@ class QuotationController extends Controller
                         $quoteComparison->full_payment = $fullPayment;
                         $quoteComparison->down_payment = $downPayment;
                         $quoteComparison->monthly_payment = $monthlyPayment;
+                        $quoteComparison->number_of_payments = $numberOfPayment;
                         $quoteComparison->broker_fee = $brokerFee;
                         $quoteComparison->quote_no = $quotationNo;
                         $quoteComparison->effective_date = $effectiveDate;
@@ -707,11 +707,23 @@ class QuotationController extends Controller
                 return $market->name;
             }
          })
+         ->addColumn('renewal_status', function($quoteComparison){
+            $hasRenewalQuote = !is_null($quoteComparison->RenewalQuotation);
+            return $hasRenewalQuote ? 'isHave' : 'not';
+         })
          ->addColumn('action', function($quoteComparison){
-            $deletButton = '<button class="delete btn btn-outline-danger btn-sm deleteButton" id="' . $quoteComparison->id . '"><i class="ri-delete-bin-line"></i></button>';
-            $editButton = '<button class="edit btn btn-outline-info btn-sm editButton" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i></button>';
-            $uploadFileButton = '<button class="btn btn-outline-success btn-sm uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i></button>';
-            return $editButton . ' ' . $uploadFileButton . ' ' . $deletButton;
+            $dropdown = '<div class="btn-group">
+            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="ri-more-line"></i>
+            </button>
+            <ul class="dropdown-menu">
+                <li><button class="dropdown-item editButton" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i>Edit</button></li>
+                <li><button class="dropdown-item uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i>Upload</button></li>
+                <li><button class="dropdown-item renewQuotation" id="' . $quoteComparison->id . '"><i class="mdi mdi-account-reactivate"></i>Send Renew</button></li>
+                <li><button class="dropdown-item deleteButton" id="' . $quoteComparison->id . '"><i class="ri-delete-bin-line"></i>Delete</button></li>
+            </ul>
+         </div>';
+         return $dropdown;
          })
          ->addColumn('broker_action', function($quoteComparison){
             $market = QuoationMarket::find($quoteComparison->quotation_market_id);
@@ -734,7 +746,6 @@ class QuotationController extends Controller
             }
             return $editButton . ' ' . $makePaymentButton . ' ' . $uploadFileButton;
          })
-
          ->rawColumns(['market_name', 'action', 'broker_action'])
          ->make(true);
         }

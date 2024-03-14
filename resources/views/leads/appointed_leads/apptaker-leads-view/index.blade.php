@@ -158,6 +158,7 @@
                                     </a>
                                 </li>
 
+
                             </ul>
                         </div>
                     </div>
@@ -260,14 +261,26 @@
                                         'leadId' => $leads->id,
                                     ])
                                 </div>
-                                <div class="tab-pane fade show" id="policies" role="tabpanel">
-                                    @include('customer-service.policy.policy-view', ['id' => $leads->id])
+                                <div class="tab-pane fade show" id="quotation" role="tabpanel">
+                                    @include('leads.appointed_leads.qoutation-forms/forms', [
+                                        'product' => $product,
+                                        'generalInformation' => $leads->generalInformation,
+                                        'quotationMarket' => $quationMarket,
+                                        'lead' => $leads,
+                                    ])
                                 </div>
+                                {{-- <div class="tab-pane fade show" id="policies" role="tabpanel">
+                                    @include('customer-service.policy.policy-view', [
+                                        'id' => $leads->id,
+                                        'quationMarket' => $quationMarket,
+                                    ])
+                                </div> --}}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 @endsection

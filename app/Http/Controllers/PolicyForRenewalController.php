@@ -26,7 +26,9 @@ class PolicyForRenewalController extends Controller
             return DataTables($policiesData)
             ->addIndexColumn()
             ->addColumn('company_name', function($policiesData){
-                return $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name;
+                $lead = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;
+                $productId = $policiesData->quotation_product_id;
+                return '<a href="/quoatation/lead-profile-view/'.$productId.'">'.$lead->company_name.'</a>';
             })
             ->addColumn('product', function($policiesData){
                 return $policiesData->QuotationProduct->product;
@@ -35,6 +37,7 @@ class PolicyForRenewalController extends Controller
                 $quote = QuoteComparison::where('quotation_product_id', $policiesData->quotation_product_id)->where('recommended', 3)->first();
                 return $quote->full_payment;
             })
+            ->rawColumns(['company_name'])
             ->make(true);
         }
         return view('customer-service.renewal.for-renewal.index');

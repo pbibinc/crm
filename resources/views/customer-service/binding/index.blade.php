@@ -16,6 +16,12 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#binding" role="tab">
+                                        <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                                        <span class="d-none d-sm-block">Binding</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" data-bs-toggle="tab" href="#bound" role="tab">
                                         <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
                                         <span class="d-none d-sm-block">Bound</span>
@@ -39,6 +45,9 @@
                             <div class="tab-content p-3 text-muted">
                                 <div class="tab-pane active" id="request-to-bind" role="tabpanel">
                                     @include('customer-service.binding.request-to-bind-view')
+                                </div>
+                                <div class="tab-pane" id="binding" role="tabpanel">
+                                    @include('customer-service.binding.binding-view')
                                 </div>
                                 <div class="tab-pane" id="bound" role="tabpanel">
                                     <p class="mb-0">
@@ -65,10 +74,6 @@
             <div class="row">
 
             </div>
-
-
-
-
             @include('customer-service.binding.view-binding-information')
         </div>
     </div>

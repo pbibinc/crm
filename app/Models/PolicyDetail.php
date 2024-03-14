@@ -85,4 +85,14 @@ class PolicyDetail extends Model
         return $this->belongsToMany(UserProfile::class, 'renewal_user_profile', 'policy_details_id', 'user_profile_id')->withTimestamps();
     }
 
+    public function CancellationReport()
+    {
+        return $this->belongsTo(CancellationReport::class, 'policy_details_id');
+    }
+
+    public function getIntentList()
+    {
+        return $this->where('status', 'Intent')->get();
+    }
+
 }
