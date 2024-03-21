@@ -6,6 +6,7 @@ import GeneralLiabilitiesFormEdit from "./views/general-liabilities-edit.jsx";
 import workersCompensationFormEdit from "./views/workers-compensation-edit.jsx";
 import Header from "./partials-form/header.jsx";
 import WorkersCompensationFormEdit from "./views/workers-compensation-edit.jsx";
+import GeneralInformationEdit from "./views/general-information-edit.jsx";
 
 const router = createBrowserRouter([
     {
@@ -17,6 +18,14 @@ const router = createBrowserRouter([
         element: (
             <ContextDataProvider>
                 <GeneralLiabilitiesForm />
+            </ContextDataProvider>
+        ),
+    },
+    {
+        path: "/general-information-form/edit",
+        element: (
+            <ContextDataProvider>
+                <GeneralInformationEdit />
             </ContextDataProvider>
         ),
     },

@@ -8,6 +8,7 @@ import GeneralLiabilitiesData from "../data/general-liabilities-data";
 import getAuthToken from "../data/auth-token-data";
 import userData from "../data/user-data";
 import WorkersCompensationData from "../data/workers-compensation-data";
+import GeneralInformationData from "../data/general-information-data";
 
 export const ContextData = createContext();
 
@@ -17,10 +18,12 @@ const ContextDataProvider = ({ children }) => {
     const { cities, cityLoading } = LeadCity();
     const { zipCity } = LeadZipCodeCities();
     const { classCodeArray } = ClassCodeData();
+    const { generalInformation } = GeneralInformationData();
     const { generalLiabilitiesData } = GeneralLiabilitiesData();
     const { workersCompensationData } = WorkersCompensationData();
     const { authToken } = getAuthToken();
     const { user } = userData();
+
     return (
         <ContextData.Provider
             value={{
@@ -32,6 +35,7 @@ const ContextDataProvider = ({ children }) => {
                 cityLoading,
                 zipCity,
                 classCodeArray,
+                generalInformation,
                 generalLiabilitiesData,
                 workersCompensationData,
                 authToken,

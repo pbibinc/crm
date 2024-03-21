@@ -29,8 +29,9 @@ import Input from "../element/input-element";
 import NumericFormatInput from "../element/numeric-format";
 import "../style/general-information.css";
 const GeneralInformationForm = () => {
-    const { lead, zipcodes, cities, zipCity } = useContext(ContextData);
-
+    const { lead, zipcodes, cities, zipCity, generalInformation } =
+        useContext(ContextData);
+    console.log(generalInformation);
     const methods = useForm();
 
     const getStoredGeneralInformation = () => {
@@ -38,7 +39,8 @@ const GeneralInformationForm = () => {
         if (storedData === null) {
             storedData = localStorage.getItem("generalInformationStoredData");
         }
-        return JSON.parse(storedData || "{}");
+        const storedDataJson = JSON.parse(storedData || "{}");
+        return generalInformation.data.data || storedDataJson;
     };
 
     const [amount, setAmount] = useState(
@@ -166,8 +168,6 @@ const GeneralInformationForm = () => {
         amount,
     ]);
 
-    function submitGeneralInformationForm() {}
-
     // const Lead = LeadDetails();
 
     const leadsZipCodeCity = zipCity;
@@ -266,7 +266,7 @@ const GeneralInformationForm = () => {
             zipcode: selectedZipCode?.value,
             state: selectedCity?.value,
             alt_num: alternativeNumber,
-            fax: parseInt(fax.replace(/\D/g, ""), 10),
+            fax: fax,
             email: email,
             full_time_employee: fullTimeEmployee,
             part_time_employee: partTimeEmployee,

@@ -58,7 +58,6 @@
 <div id="notesDiv">
     <div class="card">
         <div class="card-body">
-
             @php
                 $user = Auth::user();
                 $id = $user->id;
@@ -68,7 +67,6 @@
                 $userProfiles = App\Models\UserProfile::get();
 
             @endphp
-
             <div class="row">
                 <div class="container mt-5 d-flex flex-column">
                     <div class="scrollable" style="height: 500px; overflow-y: auto;">

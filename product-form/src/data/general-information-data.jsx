@@ -5,26 +5,23 @@ import axiosClient from "../api/axios.client";
 
 const GeneralInformationData = () => {
     const [generalInformation, setGeneralInformation] = useState(null);
-    const leadDetailsInstance = LeadDetails();
+    const getLeadData = JSON.parse(sessionStorage.getItem("lead"));
     useEffect(() => {
         const fetchGenerealInformation = async () => {
             try {
                 const response = await axiosClient.get(
-                    `/api/general_information`
+                    `/api/general-information-data/edit/${getLeadData?.data?.id}`
                 );
-                setGeneralInformation(response.data);
+
+                setGeneralInformation(response);
             } catch (error) {
                 console.error("Error fetching general information", error);
             }
         };
         fetchGenerealInformation();
-    }, []);
-
-    const leadId = leadDetailsInstance?.data?.id;
-    const generalInformationMapped = generalInformation?.data?.filter(
-        (item) => item.leads_id === leadId
-    );
-    return generalInformationMapped;
+    }, [getLeadData?.data?.id]);
+    console.log(generalInformation);
+    return { generalInformation };
 };
 
 export default GeneralInformationData;

@@ -18,15 +18,23 @@ class PolicyForRenewalController extends Controller
      */
     public function index(Request $request)
     {
-        $policyDetail = new PolicyDetail();
         $userId = auth()->user()->id;
         $userProfileData = UserProfile::where('user_id', $userId)->first();
-        $policiesData = $userProfileData->renewalPolicy();
+        $policiesData = $userProfileData->renewalPolicy()->where('status', 'issued')->get();
+        // dd($policiesData);
         if($request->ajax()){
             return DataTables($policiesData)
             ->addIndexColumn()
+            ->addColumn('policy_no', function($policiesData){
+                $policyNumber = $policiesData->policy_number;
+                $policyNumberLink = '<a href="" class="proccessRenewal" id="'.$policiesData->id.'">'.$policyNumber.'</a>';
+                return $policyNumberLink;
+            })
             ->addColumn('company_name', function($policiesData){
-                return $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name;
+                $lead = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;
+                $productId = $policiesData->quotation_product_id;
+                $companyName = '<a href="/customer-service/renewal/get-renewal-lead-view/'.$productId.'">'.$lead->company_name.'</a>';
+                return $companyName;
             })
             ->addColumn('product', function($policiesData){
                 return $policiesData->QuotationProduct->product;
@@ -35,6 +43,7 @@ class PolicyForRenewalController extends Controller
                 $quote = QuoteComparison::where('quotation_product_id', $policiesData->quotation_product_id)->where('recommended', 3)->first();
                 return $quote->full_payment;
             })
+            ->rawColumns(['company_name', 'policy_no'])
             ->make(true);
         }
         return view('customer-service.renewal.for-renewal.index');
@@ -104,5 +113,10 @@ class PolicyForRenewalController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function proccessRenewal($id)
+    {
+
     }
 }

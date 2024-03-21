@@ -1,3 +1,15 @@
+<style>
+    #cd-timeline {
+        max-height: 500px;
+        /* Adjust the max height as needed */
+        overflow-y: auto;
+    }
+
+    .cd-timeline-inner {
+        padding: 10px;
+        /* Add padding to the inner container */
+    }
+</style>
 <section id="cd-timeline" class="cd-container">
     <div class="cd-timeline-block">
         <div class="cd-timeline-img cd-success">
@@ -60,6 +72,59 @@
                         {{ $leadHistory->userProfile->fullName() }}.</p>
                     <span
                         class="cd-date">{{ \Carbon\Carbon::parse($changes->assign_appointed_at)->format('M-j-Y g:iA') }}</span>
+                </div>
+            @elseif(isset($changes->type) && $changes->type == 'renewal_reminder')
+                <div class="cd-timeline-img cd-success">
+                    {{-- <i class="mdi mdi-book-edit"></i> --}}
+                    <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
+                        class="me-3 rounded-circle avatar-xs" alt="user-pic">
+                </div>
+                <div class="cd-timeline-content">
+                    <p class="mb-0 text-muted font-14">Renewal Reminder Sent By:
+                        {{ $leadHistory->userProfile->fullName() }}.</p>
+                    <span class="cd-date">{{ \Carbon\Carbon::parse($changes->sent_date)->format('M-j-Y g:iA') }}</span>
+                </div>
+            @elseif(isset($changes->changes) && $changes->type == 'general-information-update')
+                <div class="cd-timeline-img cd-success">
+                    {{-- <i class="mdi mdi-book-edit"></i> --}}
+                    <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
+                        class="me-3 rounded-circle avatar-xs" alt="user-pic">
+                </div>
+                <div class="cd-timeline-content">
+                    <p class="mb-0 text-muted font-14">General Information Updated By:
+                        {{ $leadHistory->userProfile->fullName() }}.</p>
+                    <span
+                        class="cd-date">{{ \Carbon\Carbon::parse($changes->sent_out_date)->format('M-j-Y g:iA') }}</span>
+
+                    <ul>
+                        @foreach ($changes->changes as $field => $change)
+                            @php
+                                // Check if the field is an amount field
+                                $isAmountField = in_array($field, [
+                                    'gross_receipt',
+                                    'employee_payroll',
+                                    'owners_payroll',
+                                    'sub_out',
+                                    'material_cost',
+                                ]);
+                            @endphp
+                            <li>
+                                <strong>{{ ucfirst(str_replace('_', ' ', $field)) }}:</strong>
+                                Changed from
+                                @if ($isAmountField)
+                                    ${{ number_format($change->old, 2) }}
+                                @else
+                                    {{ $change->old }}
+                                @endif
+                                to
+                                @if ($isAmountField)
+                                    ${{ number_format($change->new, 2) }}
+                                @else
+                                    {{ $change->new }}
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
                 </div>
             @endif
 

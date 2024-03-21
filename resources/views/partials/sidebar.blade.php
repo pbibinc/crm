@@ -195,7 +195,8 @@
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
                             <li><a href="{{ route('financing-company.index') }}">Financing Companies</a></li>
-                            <li><a href="{{ route('financing-company.index') }}">Financing Angreement</a></li>
+                            <li><a href="{{ route('financing-agreement.index') }}">Financing Agreement</a></li>
+                            <li><a href="{{ route('finance-agreement-list.index') }}">Finance Agreement List</a></li>
                         </ul>
                     </li>
                     <li>
@@ -204,8 +205,20 @@
                             <span>Renewal</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
-                            <li><a href="{{ route('renewal.index') }}">Assign Policy For Renewal</a></li>
-                            <li><a href="{{ route('for-renewal.index') }}">Policy For Renewal</a></li>
+                            <li><a href="{{ route('renewal.index') }}">Assign For Quote Renewal</a></li>
+                            <li><a href="{{ route('for-renewal.index') }}">Policy For Quote Renewal</a></li>
+                            <li><a href="{{ route('assign-quoted-policy.index') }}">Assign Renewal Policy</a></li>
+                            <li><a href="{{ route('renewal-policy.index') }}">Policy For Renewal</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-cancel"></i>
+                            <span>Cancellation</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="{{ route('intent.index') }}">Intent</a></li>
+
                         </ul>
                     </li>
                 @endcan

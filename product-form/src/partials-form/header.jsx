@@ -20,16 +20,14 @@ const Header = () => {
     if (storedLeadData?.data?.id !== storedLeadId?.id) {
         localStorage.removeItem("generalInformationStoredData");
     }
-
     function formatPhoneNumber(phoneNumberString) {
-        const cleaned = ("" + phoneNumberString).replace(/\D/g, ""); // Remove any non-numeric characters
-        const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/); // Match the number pattern
+        const cleaned = ("" + phoneNumberString).replace(/\D/g, "");
+        const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
         if (match) {
             return "(" + match[1] + ") " + match[2] + "-" + match[3];
         }
         return null;
     }
-
     return (
         <header id="page-topbar">
             <div className="navbar-header">

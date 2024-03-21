@@ -66,6 +66,7 @@ class QuotationProduct extends Model
             ->where('product', $product)
             ->first();
             return $query;
+
     }
 
     public static function getAssignedProductByUserProfileId($userProfileId)
@@ -163,5 +164,13 @@ class QuotationProduct extends Model
         $query = $this->where('status', 14)->get();
         return $query ? $query : null;
     }
+
+    public function getBinding()
+    {
+        $query = $this->where('status', 12)->get();
+        return $query ? $query : null;
+    }
+
+
 
 }

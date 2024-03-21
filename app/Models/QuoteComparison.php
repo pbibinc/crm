@@ -19,6 +19,7 @@ class QuoteComparison extends Model
         'full_payment',
         'down_payment',
         'monthly_payment',
+        'number_of_payments',
         'broker_fee',
         'recommended',
         'effective_date'
@@ -47,5 +48,10 @@ class QuoteComparison extends Model
     public function PricingBreakdown()
     {
         return $this->belongsTo(PricingBreakdown::class, 'pricing_breakdown_id');
+    }
+
+    public function RenewalQuotation()
+    {
+        return $this->hasOne(RenewalQuote::class, 'quote_comparison_id');
     }
 }

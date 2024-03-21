@@ -9,7 +9,7 @@
                         <h3 class="card-title mb-4"
                             style="display: flex; align-items: center; background-color: #2c3e50; color: #ecf0f1; padding: 10px 20px; border-radius: 5px;">
                             <i class="ri-file-list-3-line" style="font-size: 26px; margin-right: 15px;"></i>
-                            <span style="font-weight: 600; letter-spacing: 1px;">FOR RENEWAL POLICIES</span>
+                            <span style="font-weight: 600; letter-spacing: 1px;">ASSIGN FOR QUOTE RENEWAL POLICIES</span>
                         </h3>
                         <div>
                             <button type="button" id="assignPolicy"
@@ -50,6 +50,7 @@
                                             <th>Previous Policy Price</th>
                                             <th>Renewal Date</th>
                                         </tr>
+
                                         @foreach ($policies as $policy)
                                             <tr class="policyRow {{ $company }}">
                                                 <td></td>
@@ -198,40 +199,7 @@
                     },
                 ]
             });
-            // $('.dataTable').DataTable({
-            //     processing: true,
-            //     serverSide: true,
-            //     ajax: "{{ route('renewal.index') }}",
-            //     columns: [{
-            //             data: 'policy_number',
-            //             name: 'policy_number'
-            //         },
-            //         {
-            //             data: 'company_name',
-            //             name: 'company_name'
-            //         },
-            //         {
-            //             data: 'product',
-            //             name: 'product'
-            //         },
-            //         {
-            //             data: 'previous_policy_cost',
-            //             name: 'previous_policy_cost'
-            //         },
-            //         {
-            //             data: 'expiration_date',
-            //             name: 'expiration_date'
-            //         }
-            //     ],
-            //     language: {
-            //         emptyTable: "No data available in the table"
-            //     },
-            //     initComplete: function(settings, json) {
-            //         if (json.recordsTotal === 0) {
-            //             $('.dataTable').parent().hide();
-            //         }
-            //     }
-            // });
+
             $('.companyCheckAllBox').on('change', function() {
                 // Get the company name from the clicked checkbox
                 var companyName = $(this).data('company');
@@ -271,7 +239,6 @@
                 $('.companyCheckBox:checked').each(function() {
                     productsArray.push($(this).val());
                 });
-                console.log(productsArray);
                 var renewalAgentId = $('#renewalAgentDropdown').val();
                 var agentUserProfileId = $('#agentDropDown').val();
                 if (productsArray.length > 0) {
