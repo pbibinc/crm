@@ -458,7 +458,7 @@
                     var dropdownId = $(this).attr('id')
                     var rowId = dropdownId.replace('dispositionDropDown', '');
                     var selectedDisposition = $(this).val();
-                    var url = "{{ env('APP_FORM_URL') }}";
+                    var url = "{{ env('FORM_URL') }}";
                     if (selectedDisposition == '1') {
                         $.ajax({
                             url: "{{ route('list-lead-id') }}",
@@ -471,7 +471,7 @@
                                 leadId: leadsId
                             },
                             success: function(response) {
-                                window.open(`{{ env('APP_FORM_URL') }}appoinnted-lead-questionare`,
+                                window.open(`${url}appoinnted-lead-questionare`,
                                     "s_blank",
                                     "width=1000,height=849");
                                 $('#transactionLogModal').modal('hide');
