@@ -12,7 +12,7 @@ class WorkersCompensationHaveLoss extends Model
     protected $table = 'workers_comp_have_losses_table';
 
     public $timestamps = false;
-    
+
     protected $fillable = [
         'workers_compensation_id',
         'date_of_claim',

@@ -419,7 +419,7 @@
                 });
 
                 $('#openFormLinkButton').on('click', function(e) {
-                    window.open("http://localhost:3000/appoinnted-lead-questionare", "_blank",
+                    window.open("http://localhost:3000/appointed-lead-questionare", "_blank",
                         "width=400,height=800");
                 });
 

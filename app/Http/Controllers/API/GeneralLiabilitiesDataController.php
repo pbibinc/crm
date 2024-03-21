@@ -354,7 +354,6 @@ class GeneralLiabilitiesDataController extends BaseController
 
     public function edit($id)
     {
-
         $leads = Lead::find($id);
         if(is_null($leads)){
             return $this->sendError('General Liability not found.');

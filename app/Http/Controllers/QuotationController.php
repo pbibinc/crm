@@ -16,6 +16,7 @@ use App\Models\QuotationProduct;
 use App\Models\QuoteComparison;
 use App\Models\QuoteInformation;
 use App\Models\QuoteLead;
+use App\Models\RenewalQuote;
 use App\Models\UnitedState;
 use App\Models\UserProfile;
 use Carbon\Carbon;
@@ -241,6 +242,13 @@ class QuotationController extends Controller
                 $quoteComparison->effective_date = $effectiveDate;
                 $quoteComparison->save();
                 $quoteComparison->media()->sync($mediaIds);
+
+                if($request->input('renewalQuote') == 'true'){
+                    $renewalQuotation = new RenewalQuote();
+                    $renewalQuotation->quote_comparison_id = $quoteComparison->id;
+                    $renewalQuotation->status = 'Pending';
+                    $renewalQuotation->save();
+                }
 
                 DB::commit();
                 return response()->json(['success' => 'Quote comparison saved successfully']);
@@ -709,9 +717,9 @@ class QuotationController extends Controller
          })
          ->addColumn('renewal_status', function($quoteComparison){
             $hasRenewalQuote = !is_null($quoteComparison->RenewalQuotation);
-            return $hasRenewalQuote ? 'isHave' : 'not';
+            return $hasRenewalQuote ? 'New Renewal Quote' : 'Old Quote';
          })
-         ->addColumn('action', function($quoteComparison){
+         ->addColumn('renewal_action_dropdown', function($quoteComparison){
             $dropdown = '<div class="btn-group">
             <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="ri-more-line"></i>
@@ -724,6 +732,15 @@ class QuotationController extends Controller
             </ul>
          </div>';
          return $dropdown;
+         })
+         ->addColumn('action', function($quoteComparison){
+            $viewButton = '<button class="btn btn-sm btn-outline-info editButton" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i></button>';
+
+            $uploadButton = '<button class="btn btn-sm btn-outline-primary uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i></button>';
+
+            $deleteButton = '<button class="btn btn-sm btn-outline-danger deleteButton" id="' . $quoteComparison->id . '"><i class="ri-delete-bin-line"></i></button>';
+
+            return $viewButton . ' ' . $uploadButton . ' ' . $deleteButton;
          })
          ->addColumn('broker_action', function($quoteComparison){
             $market = QuoationMarket::find($quoteComparison->quotation_market_id);
@@ -746,7 +763,7 @@ class QuotationController extends Controller
             }
             return $editButton . ' ' . $makePaymentButton . ' ' . $uploadFileButton;
          })
-         ->rawColumns(['market_name', 'action', 'broker_action'])
+         ->rawColumns(['market_name', 'action', 'broker_action', 'renewal_action_dropdown'])
          ->make(true);
         }
     }

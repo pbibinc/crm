@@ -125,4 +125,15 @@ class UserProfile extends Model
         return $this->belongsToMany(PolicyDetail::class, 'renewal_user_profile', 'user_profile_id', 'policy_details_id')->withTimestamps();
     }
 
+    public function renewalQuotedPolicy()
+    {
+        return $this->belongsToMany(PolicyDetail::class, 'renewal_quoted_user_profile', 'user_profile_id', 'policy_details_id')->withTimestamps();
+    }
+
+    public function handledQuotePolicyRenewal($statuses)
+    {
+        return $this->renewalPolicy()->whereNotIn('status', $statuses);
+    }
+
+
 }

@@ -9,6 +9,8 @@ use App\Events\LeadAssignEvent;
 use App\Events\LeadImportEvent;
 use App\Events\LeadReassignEvent;
 use App\Events\ReassignedAppointedLead;
+use App\Events\SendRenewalReminderEvent;
+use App\Events\UpdateGeneralInformationEvent;
 use App\Listeners\AssignPolicyForRenewalListener;
 use App\Listeners\BroadcastUserLoginNotification;
 use App\Listeners\BroadcastUserLogoutNotification;
@@ -18,6 +20,8 @@ use App\Listeners\LogLeadAssignListener;
 use App\Listeners\LogLeadImportListener;
 use App\Listeners\LogLeadReassignListener;
 use App\Listeners\LogReassignAppointedLeadListner;
+use App\Listeners\SendRenewalReminderListener;
+use App\Listeners\UpdateGeneralInformationListener;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Auth\Events\Registered;
@@ -116,6 +120,23 @@ class EventServiceProvider extends ServiceProvider
             [AssignPolicyForRenewalListener::class, 'handle']
         );
 
+        Event::listen(queueable(function(SendRenewalReminderListener $event){
+
+        }));
+
+        Event::listen(
+            SendRenewalReminderEvent::class,
+            [SendRenewalReminderListener::class, 'handle']
+        );
+
+        Event::listen(queueable(function(UpdateGeneralInformationListener $event){
+
+        }));
+
+        Event::listen(
+            UpdateGeneralInformationEvent::class,
+            [UpdateGeneralInformationListener::class, 'handle']
+        );
 
     }
 

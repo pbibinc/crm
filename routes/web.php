@@ -25,6 +25,7 @@ use App\Http\Controllers\GeneralInformationController;
 use App\Http\Controllers\AssignLeadController;
 use App\Http\Controllers\AppTakerLeadsController;
 use App\Http\Controllers\AssignAppointedLeadController;
+use App\Http\Controllers\AssignQuotedRenewalPolicyController;
 use App\Http\Controllers\BindingController;
 use App\Http\Controllers\BindingDocsController;
 use App\Http\Controllers\BoundController;
@@ -56,6 +57,7 @@ use App\Http\Controllers\PricingBreakdownController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\RenewalController;
+use App\Http\Controllers\RenewalPolicyController;
 use App\Http\Controllers\RenewalQuoteController;
 use App\Http\Controllers\ToolsEquipmentPolicyController;
 use App\Http\Controllers\UploadController;
@@ -126,6 +128,11 @@ Route::middleware(['auth'])->group(function (){
         Route::post('/delete-invoice', [PaymentChargedController::class, 'deleteInvoice'])->name('delete-invoice');
         Route::get('/export-payment-list', [PaymentChargedController::class, 'exportPaymentList'])->name('export-payment-list');
     });
+
+    //general information route module
+    route::resource('general-information', GeneralInformationController::class);
+
+
 
     //route for file uploading functionalities
     Route::post('/file-upload', [UploadController::class, 'store'])->name('file-upload');
@@ -300,11 +307,25 @@ Route::middleware(['auth'])->group(function (){
             //route for excess liability insurance policy
             Route::resource('/excess-insurance-policy', ExcessLiabilityInsurancePolicyController::class);
 
+            //route for assigning quoted policies
+            Route::resource('/assign-quoted-policy', AssignQuotedRenewalPolicyController::class);
+            Route::post('/void-quoted-policy', [AssignQuotedRenewalPolicyController::class, 'voidQuotedPolicy'])->name('void-quoted-renewal-policy');
+            Route::post('/reassign-quoted-renewal-policy', [AssignQuotedRenewalPolicyController::class, 'reassignQuotedRenewalPolicy'])->name('reassign-quoted-renewal-policy');
+
+            //route for policy renewal
+            Route::resource('/policy-renewal', PolicyForRenewalController::class);
+
+            //route for main renewal process below of the assign quoted renewal
+            Route::resource('/renewal-policy', RenewalPolicyController::class);
+            Route::post('/policy-for-renewal-list', [RenewalPolicyController::class, 'policyForRenewalList'])->name('policy-quoted-for-renewal-list');
+            Route::post('/process-quoted-policy-renewal', [RenewalPolicyController::class, 'processQuotedPolicyRenewal'])->name('process-quoted-policy-renewal');
+
             //routes for policies
             Route::get('/get-policy-list', [PoliciesController::class, 'getPolicyList'])->name('get-policy-list');
             Route::post('/get-policy-details', [PoliciesController::class, 'getPolicyDetails'])->name('get-policy-details');
             Route::get('/policy-list', [PoliciesController::class, 'index'])->name('policy-list');
             Route::post('/new-policy-list', [PoliciesController::class, 'newPolicyList'])->withoutMiddleware(['auth:sanctum'])->name('new-policy-list');
+            Route::post('/change-policy-status/{id}', [PoliciesController::class, 'changeStatus'])->name('change-policy-status');
 
             //routes for bound
             Route::post('/save-bound-information', [BoundController::class, 'saveBoundInformation'])->name('save-bound-information');
@@ -333,9 +354,17 @@ Route::middleware(['auth'])->group(function (){
                 Route::post('/reassign-policy-for-renewal', [RenewalController::class, 'reassignPolicyForRenewal'])->name('renewal.reassign-policy-for-renewal');
                 Route::post('/void-policy-for-renewal', [RenewalController::class, 'voidPolicyForRenewal'])->name('renewal.void-policy-for-renewal');
 
+                Route::get('/get-renewal-lead-view/{productId}', [RenewalController::class, 'leadProfileView'])->name('get-renewal-lead-view');
+
                 Route::resource('/for-renewal', PolicyForRenewalController::class);
 
                 Route::resource('/renewal-quote', RenewalQuoteController::class);
+                Route::post('/renewal/get-renewal-reminder', [RenewalController::class, 'getRenewalReminder'])->name('renewal.get-renewal-reminder');
+                Route::post('/renewal/get-renewal-for-quote', [RenewalQuoteController::class, 'getForQuoteRenewal'])->name('renewal.get-renewal-for-quote');
+                Route::post('/renewal/get-quoted-renewal', [RenewalQuoteController::class, 'getQuotedRenewal'])->name('renewal.get-quoted-renewal');
+                Route::post('/renewal-handled-policy', [RenewalQuoteController::class, 'renewalHandledPolicy'])->name('renewal-handled-policy');
+
+
             });
 
         });

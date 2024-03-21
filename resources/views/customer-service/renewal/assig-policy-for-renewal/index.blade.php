@@ -199,40 +199,7 @@
                     },
                 ]
             });
-            // $('.dataTable').DataTable({
-            //     processing: true,
-            //     serverSide: true,
-            //     ajax: "{{ route('renewal.index') }}",
-            //     columns: [{
-            //             data: 'policy_number',
-            //             name: 'policy_number'
-            //         },
-            //         {
-            //             data: 'company_name',
-            //             name: 'company_name'
-            //         },
-            //         {
-            //             data: 'product',
-            //             name: 'product'
-            //         },
-            //         {
-            //             data: 'previous_policy_cost',
-            //             name: 'previous_policy_cost'
-            //         },
-            //         {
-            //             data: 'expiration_date',
-            //             name: 'expiration_date'
-            //         }
-            //     ],
-            //     language: {
-            //         emptyTable: "No data available in the table"
-            //     },
-            //     initComplete: function(settings, json) {
-            //         if (json.recordsTotal === 0) {
-            //             $('.dataTable').parent().hide();
-            //         }
-            //     }
-            // });
+
             $('.companyCheckAllBox').on('change', function() {
                 // Get the company name from the clicked checkbox
                 var companyName = $(this).data('company');
@@ -272,7 +239,6 @@
                 $('.companyCheckBox:checked').each(function() {
                     productsArray.push($(this).val());
                 });
-                console.log(productsArray);
                 var renewalAgentId = $('#renewalAgentDropdown').val();
                 var agentUserProfileId = $('#agentDropDown').val();
                 if (productsArray.length > 0) {

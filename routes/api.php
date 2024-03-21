@@ -52,6 +52,7 @@ Route::get('recreational', [RecreationalController::class, 'recreationalFactilie
 Route::post('general-information-data', [GeneralInformationDataController::class, 'getGeneralInformationData'])->withoutMiddleware(['auth:sanctum']);
 Route::get('general_information', [GeneralInformationDataController::class, 'generalInformationData'])->withoutMiddleware(['auth:sanctum']);
 Route::put('general-information-data/{id}', [GeneralInformationDataController::class, 'updateGenneralInformationData'])->withoutMiddleware(['auth:sanctum']);
+Route::get('general-information-data/edit/{id}', [GeneralInformationDataController::class, 'edit'])->withoutMiddleware(['auth:sanctum']);
 
 //route for general liabilities
 Route::post('general-liabilities-data', [GeneralLiabilitiesDataController::class, 'saveGeneralLiabilities'])->withoutMiddleware(['auth:sanctum']);

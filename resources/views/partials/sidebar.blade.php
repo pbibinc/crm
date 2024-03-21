@@ -207,6 +207,8 @@
                         <ul class="sub-menu" aria-expanded="false">
                             <li><a href="{{ route('renewal.index') }}">Assign For Quote Renewal</a></li>
                             <li><a href="{{ route('for-renewal.index') }}">Policy For Quote Renewal</a></li>
+                            <li><a href="{{ route('assign-quoted-policy.index') }}">Assign Renewal Policy</a></li>
+                            <li><a href="{{ route('renewal-policy.index') }}">Policy For Renewal</a></li>
                         </ul>
                     </li>
                     <li>

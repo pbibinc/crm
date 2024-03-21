@@ -43,7 +43,6 @@
     </table>
 </div>
 
-
 <div class="modal fade" id="uploadFileModal" tabindex="-1" aria-labelledby="addQuoteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl " role="document">
         <div class="modal-content">
@@ -215,6 +214,7 @@
                     <input type="hidden" name="recommended" id="recommended_hidden" value="0" />
                     <input type="hidden" name="currentMarketId" id="currentMarketId">
                     <input type="hidden" name="sender" id="sender" value="marketSpecialist">
+                    <input type="hidden" name="renewalQuote" id="renewalQuote" value="false">
 
             </div>
             <div class="modal-footer d-flex justify-content-between">
@@ -232,10 +232,6 @@
         </div>
     </div>
 </div>
-
-
-
-
 <script>
     Dropzone.autoDiscover = false;
     var myDropzone;

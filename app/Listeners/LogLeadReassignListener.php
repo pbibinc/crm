@@ -27,7 +27,7 @@ class LogLeadReassignListener
      */
     public function handle(LeadReassignEvent $event)
     {
-        //
+
         LeadHistory::create([
             'lead_id' => $event->lead->id,
             'user_profile_id' => $event->currentUserId,

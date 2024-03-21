@@ -66,6 +66,7 @@ class QuotationProduct extends Model
             ->where('product', $product)
             ->first();
             return $query;
+
     }
 
     public static function getAssignedProductByUserProfileId($userProfileId)

@@ -314,7 +314,7 @@
                     leadId: id
                 },
             });
-            window.open(`${url}/general-liabilities-form/edit`, "s_blank",
+            window.open(`${url}general-liabilities-form/edit`, "s_blank",
                 "width=1000,height=849");
 
         })

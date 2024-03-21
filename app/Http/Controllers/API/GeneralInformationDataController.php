@@ -3,15 +3,17 @@
 namespace App\Http\Controllers\API;
 
 use App\Events\AppointmentTaken;
-
+use App\Events\UpdateGeneralInformationEvent;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\GeneralInformation;
 use App\Models\Lead;
 use App\Models\LeadHistory;
+use App\Models\PolicyDetail;
 use App\Models\QuoteInformation;
 use App\Models\QuoteLead;
 use App\Models\UserProfile;
+use HelloSign\Event;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -93,36 +95,103 @@ class GeneralInformationDataController extends BaseController
         // return $this->sendResponse($generalInformation,'General Information Data retrieved successfully.');
     }
 
+    public function edit($id)
+    {
+        $leads = Lead::find($id);
+        $generalInformation = $leads->generalInformation;
+        // $userId = Auth::user()->id;
+        $generalInformationData = [
+            'address' => $generalInformation->address,
+            'all_trade_work' => $generalInformation->all_trade_work,
+            'alt_num' => $generalInformation->alt_num,
+            'amount' => $generalInformation->material_cost,
+            'email' => $generalInformation->email_address,
+            'employee_payroll' => $generalInformation->employee_payroll,
+            'fax' => $generalInformation->fax,
+            'firstname' => $generalInformation->firstname,
+            'full_time_employee' => $generalInformation->full_time_employee,
+            'gross_receipt' => $generalInformation->gross_receipt,
+            'job_position' => $generalInformation->job_position,
+            'lastname' => $generalInformation->lastname,
+            'owners_payroll' => $generalInformation->owners_payroll,
+            'part_time_employee' => $generalInformation->part_time_employee,
+            'state' => [
+                'value' => $generalInformation->state,
+                'label' => $generalInformation->state
+            ],
+            'sub_out' => $generalInformation->sub_out,
+            'zipcode' => [
+                'value' => $generalInformation->zipcode,
+                'label' => $generalInformation->zipcode
+            ],
+
+            //mode
+            'isUpdate' => true,
+            'isEditing' => false,
+        ];
+        return $this->sendResponse($generalInformationData,'General Information Data retrieved successfully.');
+    }
+
     public function updateGenneralInformationData(Request $request, $id)
     {
        try{
         DB::beginTransaction();
         $data = $request->all();
+        $quoteLead = QuoteLead::where('leads_id', $id)->first();
+        $policyDetail = PolicyDetail::where('quotation_product_id',$quoteLead->QuoteInformation->QuotationProduct->id)->first();
+        $userProfileId = $policyDetail->userProfile->first()->id;
+        $changes = [];
+         $originalData = GeneralInformation::where('leads_id', $id)->first();
+         $generalInformation = $originalData;
+         $defaultValues = [
+            'alt_num' => '99999999999',
+            'fax' => '9999999999',
+            'sub_out' => ' '
+         ];
 
-        $generalInformation = GeneralInformation::where('leads_id', $id)->first();
-         $generalInformation->firstname = $data['firstname'];
-         $generalInformation->lastname = $data['lastname'];
-         $generalInformation->job_position = $data['job_position'];
-         $generalInformation->address = $data['address'];
-         $generalInformation->zipcode = $data['zipcode'];
-         $generalInformation->state = $data['state'];
-         $generalInformation->alt_num = $data['alt_num'] ? $data['alt_num'] : '99999999999';
-         $generalInformation->email_address = $data['email'];
-         $generalInformation->fax = $data['fax'] ? $data['fax'] : '9999999999';
-         $generalInformation->gross_receipt = $data['gross_receipt'];
-         $generalInformation->full_time_employee = $data['full_time_employee'];
-         $generalInformation->part_time_employee = $data['part_time_employee'];
-         $generalInformation->employee_payroll = $data['employee_payroll'];
-         $generalInformation->all_trade_work = $data['all_trade_work'];
-         $generalInformation->owners_payroll = $data['owners_payroll'];
-         $generalInformation->sub_out = $data['sub_out'] ? $data['sub_out'] : ' ';
-         $generalInformation->material_cost = $data['material_cost'];
+         foreach($defaultValues as $property => $defaultValue){
+                if(!isset($data[$property]) || $data[$property] === null){
+                    $data[$property] = $defaultValue;
+                }
+         }
+
+         foreach($data as $key => $value){
+            if (isset($generalInformation->$key) && $generalInformation->$key !== $value) {
+                Log::info("General Information - {$key}: Old value: {$generalInformation->$key}, New value: {$value}");
+                $changes[$key] = [
+                    'old' => $generalInformation->$key,
+                    'new' => $value
+                ];
+                $generalInformation->$key = $value;
+            }
+         }
+        //  $generalInformation->firstname = $data['firstname'];
+        //  $generalInformation->lastname = $data['lastname'];
+        //  $generalInformation->job_position = $data['job_position'];
+        //  $generalInformation->address = $data['address'];
+        //  $generalInformation->zipcode = $data['zipcode'];
+        //  $generalInformation->state = $data['state'];
+        //  $generalInformation->alt_num = $data['alt_num'] ? $data['alt_num'] : '99999999999';
+        //  $generalInformation->email_address = $data['email'];
+        //  $generalInformation->fax = $data['fax'] ? $data['fax'] : '9999999999';
+        //  $generalInformation->gross_receipt = $data['gross_receipt'];
+        //  $generalInformation->full_time_employee = $data['full_time_employee'];
+        //  $generalInformation->part_time_employee = $data['part_time_employee'];
+        //  $generalInformation->employee_payroll = $data['employee_payroll'];
+        //  $generalInformation->all_trade_work = $data['all_trade_work'];
+        //  $generalInformation->owners_payroll = $data['owners_payroll'];
+        //  $generalInformation->sub_out = $data['sub_out'] ? $data['sub_out'] : ' ';
+        //  $generalInformation->material_cost = $data['material_cost'];
          $generalInformation->save();
+         if(count($changes) > 0){
+            event(new UpdateGeneralInformationEvent($id, $userProfileId, $changes, now()));
+         }
 
         DB::commit();
        }catch(\Exception $e){
         DB::rollback();
         return response()->json(['message' => $e->getMessage()], 500);
+        Log::info("Error for General Information", [$e]);
         return response()->json(['message' => 'Data updated successfully'], 200);
        }
 
@@ -131,6 +200,7 @@ class GeneralInformationDataController extends BaseController
     public function generalInformationData()
     {
         $generalInformation = GeneralInformation::all();
+        $userId = Auth::user()->id;
         return $this->sendResponse($generalInformation,'General Information Data retrieved successfully.');
     }
 }

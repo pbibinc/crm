@@ -80,9 +80,31 @@ class PolicyDetail extends Model
         return $policies;
     }
 
+    public function getPolicyQuotedRenewal()
+    {
+        $dataPolicies = $this->where('status', 'Renewal Quoted')->get();
+
+        foreach($dataPolicies as $policy)
+        {
+            $quoteComparison = QuoteComparison::where('quotation_product_id', $policy->quotation_product_id)->where('recommended', '3')->first();
+            $policies[] = [
+                'company' => $policy->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name,
+                'product' => $policy->QuotationProduct,
+                'policies' => $policy,
+                'quote' => $quoteComparison,
+            ];
+        }
+        return $policies;
+    }
+
     public function userProfile()
     {
         return $this->belongsToMany(UserProfile::class, 'renewal_user_profile', 'policy_details_id', 'user_profile_id')->withTimestamps();
+    }
+
+    public function quotedRenewalUserprofile()
+    {
+        return $this->belongsToMany(UserProfile::class, 'renewal_quoted_user_profile', 'policy_details_id', 'user_profile_id')->withTimestamps();
     }
 
     public function CancellationReport()
@@ -94,5 +116,18 @@ class PolicyDetail extends Model
     {
         return $this->where('status', 'Intent')->get();
     }
+
+    public function getPolicyForRenewalProcess()
+    {
+        $data = self::where('status', 'Process Renewal')->get();
+        return $data ? $data : null;
+    }
+
+    public function handledForQuoteRenewalPolicy()
+    {
+        $this->quotedRenewalUserprofile()->get();
+    }
+
+
 
 }
