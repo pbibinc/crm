@@ -40,7 +40,9 @@ const GeneralInformationForm = () => {
             storedData = localStorage.getItem("generalInformationStoredData");
         }
         const storedDataJson = JSON.parse(storedData || "{}");
-        return generalInformation.data.data || storedDataJson;
+        return generalInformation
+            ? generalInformation.data.data
+            : storedDataJson;
     };
 
     const [amount, setAmount] = useState(
