@@ -76,6 +76,7 @@ class ExcessLiabilityInsurancePolicyController extends Controller
             $policyDetails->payment_mode = $data['excessInsurancePaymentTermInput'];
             $policyDetails->effective_date = $data['excessInsuranceEffectiveDate'];
             $policyDetails->expiration_date = $data['excessInsuranceExpirationDate'];
+            $policyDetails->status = 'issued';
             $policyDetails->media_id = $mediaId;
             $policyDetails->save();
 

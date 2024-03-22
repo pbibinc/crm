@@ -257,20 +257,19 @@
                                     agentUserProfileId: agentUserProfileId
                                 },
                                 success: function(data) {
-                                    // Swal.fire({
-                                    //     title: 'Success',
-                                    //     text: 'Leads has been assigned',
-                                    //     icon: 'success'
-                                    // });
-                                    // $('#assignAppointedLeadsTable').DataTable().ajax.reload();
-                                    // $('#datatableLeads').DataTable().ajax.reload();
-                                    // location.reload();
+                                    Swal.fire({
+                                        title: 'Success',
+                                        text: 'Leads has been assigned',
+                                        icon: 'success'
+                                    }).then();
                                 },
                                 error: function(data) {
                                     Swal.fire({
                                         title: 'Error',
                                         text: 'Ther is a error while assigning leads',
                                         icon: 'error'
+                                    }).then((result) => {
+                                        location.reload();
                                     });
                                 }
                             });
@@ -319,10 +318,9 @@
                                     title: 'Success',
                                     text: 'Leads has been voided',
                                     icon: 'success'
+                                }).then((result) => {
+                                    location.reload();
                                 });
-                                // $('#assignAppointedLeadsTable').DataTable().ajax.reload();
-                                // $('#datatableLeads').DataTable().ajax.reload();
-                                location.reload();
                             },
                             error: function(data) {
                                 Swal.fire({

@@ -76,6 +76,7 @@ class ToolsEquipmentPolicyController extends Controller
             $policyDetails->effective_date = $data['toolsEquipmentEffectiveDate'];
             $policyDetails->expiration_date = $data['toolsEquipmentExpirationDate'];
             $policyDetails->media_id = $mediaId;
+            $policyDetails->status = 'issued';
             $policyDetails->save();
 
             $toolsEquipmentPolicy = new ToolsEquipmentPolicy();

@@ -418,10 +418,10 @@
                     ]
                 });
 
-                $('#openFormLinkButton').on('click', function(e) {
-                    window.open("http://localhost:3000/appointed-lead-questionare", "_blank",
-                        "width=400,height=800");
-                });
+                // $('#openFormLinkButton').on('click', function(e) {
+                //     window.open("http://localhost:3000/appointed-lead-questionare", "_blank",
+                //         "width=400,height=800");
+                // });
 
                 // scripts for reloading and configuring the dropdowns filters
                 $('#websiteOriginatedDropdown').on('change', function() {
@@ -458,7 +458,7 @@
                     var dropdownId = $(this).attr('id')
                     var rowId = dropdownId.replace('dispositionDropDown', '');
                     var selectedDisposition = $(this).val();
-                    var url = "{{ env('FORM_URL') }}";
+                    var url = "{{ env('APP_FORM_URL') }}";
                     if (selectedDisposition == '1') {
                         $.ajax({
                             url: "{{ route('list-lead-id') }}",

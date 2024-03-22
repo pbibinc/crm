@@ -129,6 +129,7 @@ class BindingController extends Controller
 
     public function saveGeneralLiabilitiesPolicy(Request $request)
     {
+        dd($request->all());
         if($request->ajax())
         {  try{
 
@@ -184,7 +185,7 @@ class BindingController extends Controller
                 $generalLiabilitiesDetails->per_adv_injury = $data['perAdvInjury'];
                 $generalLiabilitiesDetails->gen_aggregate = $data['genAggregate'];
                 $generalLiabilitiesDetails->product_comp = $data['comp'];
-                $generalLiabilitiesDetails->status = $data['statusDropdowm'];
+                $generalLiabilitiesDetails->status = 'issued';
                 $generalLiabilitiesDetails->save();
 
                 //code for saving product

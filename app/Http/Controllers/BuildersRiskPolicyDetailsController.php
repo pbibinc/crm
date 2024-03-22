@@ -77,6 +77,7 @@ class BuildersRiskPolicyDetailsController extends Controller
             $policyDetails->payment_mode = $data['buildersRiskPaymentTermInput'];
             $policyDetails->effective_date = $data['buildersRiskEffectiveDate'];
             $policyDetails->expiration_date = $data['buildersRiskExpirationDate'];
+            $policyDetails->status = 'issued';
             $policyDetails->media_id = $mediaId;
             $policyDetails->save();
 
