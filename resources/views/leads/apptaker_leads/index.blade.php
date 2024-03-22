@@ -418,10 +418,10 @@
                     ]
                 });
 
-                $('#openFormLinkButton').on('click', function(e) {
-                    window.open("http://localhost:3000/appointed-lead-questionare", "_blank",
-                        "width=400,height=800");
-                });
+                // $('#openFormLinkButton').on('click', function(e) {
+                //     window.open("http://localhost:3000/appointed-lead-questionare", "_blank",
+                //         "width=400,height=800");
+                // });
 
                 // scripts for reloading and configuring the dropdowns filters
                 $('#websiteOriginatedDropdown').on('change', function() {

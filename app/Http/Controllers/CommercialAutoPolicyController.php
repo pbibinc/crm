@@ -76,6 +76,7 @@ class CommercialAutoPolicyController extends Controller
             $policyDetails->payment_mode = $data['commercialAutoPaymentTermInput'];
             $policyDetails->effective_date = $data['commercialAutoEffectiveDate'];
             $policyDetails->expiration_date = $data['commercialAutoExpirationDate'];
+            $policyDetails->status = 'issued';
             $policyDetails->media_id = $mediaId;
             $policyDetails->save();
 

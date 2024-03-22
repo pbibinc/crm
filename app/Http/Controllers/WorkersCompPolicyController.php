@@ -75,6 +75,7 @@ class WorkersCompPolicyController extends Controller
             $policyDetails->payment_mode = $data['workersCompensationPaymentTermInput'];
             $policyDetails->effective_date = $data['workersCompensationEffectiveDate'];
             $policyDetails->expiration_date = $data['workersCompensationExpirationDate'];
+            $policyDetails->status = 'issued';
             $policyDetails->media_id = $mediaId;
             $policyDetails->save();
 

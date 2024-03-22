@@ -75,6 +75,7 @@ class BussinessOwnersPolicyDetailsController extends Controller
             $policyDetails->payment_mode = $data['businessOwnersPaymentTermInput'];
             $policyDetails->effective_date = $data['businessOwnersEffectiveDate'];
             $policyDetails->expiration_date = $data['businessOwnersExpirationDate'];
+            $policyDetails->status = 'issued';
             $policyDetails->media_id = $mediaId;
             $policyDetails->save();
 
