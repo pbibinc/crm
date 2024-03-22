@@ -155,11 +155,13 @@
                         icon: 'success',
                         confirmButtonText: 'Ok'
                     }).then((result) => {
-                        if (result.isConfirmed) {
-                            $('#buildersRiskPolicyFormModal').modal('hide');
-                            $('.boundProductTable').DataTable().ajax.reload();
-                            $('.newPolicyList').DataTable().ajax.reload();
-                        }
+                        // if (result.isConfirmed) {
+                        //     $('#buildersRiskPolicyFormModal').modal('hide');
+                        //     $('.boundProductTable').DataTable().ajax.reload();
+                        //     $('.newPolicyList').DataTable().ajax.reload();
+                        // }
+                        $('#buildersRiskPolicyFormModal').modal('hide');
+                        location.reload();
                     });
                 },
                 error: function(data) {

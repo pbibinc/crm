@@ -100,8 +100,20 @@ class AppTakerLeadsController extends Controller
     public function listLeadId(Request $request){
         $leadId = $request->input('leadId');
         $user = Auth::user();
+        $productId = $request->input('productId');
+        $status = $request->input('status');
         $cachedUser = Cache::get('user_id');
         $cachedLeadId = Cache::get('lead_id');
+        $cachedProductId = Cache::get('product_id');
+
+        if($productId){
+            if($productId == $cachedProductId){
+                Cache::get('product_id');
+            }else{
+                Cache::put('product_id', $productId, 60 * 60);
+            }
+        }
+
         if($leadId == $cachedLeadId){
             Cache::get('lead_id');
             Cache::get('user_id');

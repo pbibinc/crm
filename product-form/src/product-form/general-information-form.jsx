@@ -31,7 +31,6 @@ import "../style/general-information.css";
 const GeneralInformationForm = () => {
     const { lead, zipcodes, cities, zipCity, generalInformation } =
         useContext(ContextData);
-    console.log(generalInformation);
     const methods = useForm();
 
     const getStoredGeneralInformation = () => {
@@ -258,8 +257,6 @@ const GeneralInformationForm = () => {
     });
 
     const onSubmit = (data) => {
-        console.log(data);
-
         const generalInfomrationFormData = {
             firstname: firstName,
             lastname: lastName,
@@ -272,18 +269,26 @@ const GeneralInformationForm = () => {
             email: email,
             full_time_employee: fullTimeEmployee,
             part_time_employee: partTimeEmployee,
+
             // gross_receipt: parseInt(grossReceipt.replace(/\D/g, ""), 10),
             gross_receipt: grossReceipt,
+
             // employee_payroll: parseInt(employeePayroll.replace(/\D/g, ""), 10),
             employee_payroll: employeePayroll,
+
             // sub_out: parseFloat(subOut.replace(/\D/g, ""), 10),
             sub_out: subOut,
+
             // owners_payroll: parseInt(ownersPayroll.replace(/\D/g, ""), 10),
             owners_payroll: ownersPayroll,
             all_trade_work: allTradesAndWork,
             lead_id: lead?.data?.id,
+
             // material_cost: parseInt(amount.replace(/\D/g, ""), 10),
             material_cost: amount,
+
+            //productId
+            productId: lead?.data?.productId ? lead?.data?.productId : 0,
         };
         const leadIdTobeUpdates = lead?.data?.id;
 

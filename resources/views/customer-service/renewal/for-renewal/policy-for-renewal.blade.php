@@ -26,8 +26,7 @@
                 {
                     data: 'product',
                     name: 'product'
-                },
-                {
+                } {
                     data: 'previous_policy_price',
                     name: 'previous_policy_price'
                 },

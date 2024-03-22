@@ -157,11 +157,13 @@
                         icon: 'success',
                         confirmButtonText: 'Ok'
                     }).then((result) => {
-                        if (result.isConfirmed) {
-                            $('#toolsEquipmentPolicyFormModal').modal('hide');
-                            $('.boundProductTable').DataTable().ajax.reload();
-                            $('.newPolicyList').DataTable().ajax.reload();
-                        }
+                        // if (result.isConfirmed) {
+                        //     $('#toolsEquipmentPolicyFormModal').modal('hide');
+                        //     $('.boundProductTable').DataTable().ajax.reload();
+                        //     $('.newPolicyList').DataTable().ajax.reload();
+                        // }
+                        $('#toolsEquipmentPolicyFormModal').modal('hide');
+                        location.reload();
                     });
                 },
                 error: function(data) {
