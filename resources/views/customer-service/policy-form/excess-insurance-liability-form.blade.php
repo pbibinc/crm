@@ -291,11 +291,13 @@
                         icon: 'success',
                         confirmButtonText: 'Ok'
                     }).then((result) => {
-                        if (result.isConfirmed) {
-                            $('#excessInsurancePolicyFormModal').modal('hide');
-                            $('.boundProductTable').DataTable().ajax.reload();
-                            $('.newPolicyList').DataTable().ajax.reload();
-                        }
+                        // if (result.isConfirmed) {
+                        //     $('#excessInsurancePolicyFormModal').modal('hide');
+                        //     $('.boundProductTable').DataTable().ajax.reload();
+                        //     $('.newPolicyList').DataTable().ajax.reload();
+                        // }
+                        $('#excessInsurancePolicyFormModal').modal('hide');
+                        location.reload();
                     });
                 },
                 error: function(data) {

@@ -315,9 +315,11 @@
                         text: 'General Liability Policy Form has been saved.',
                         icon: 'success',
                     }).then(function() {
+                        // $('#generalLiabilitiesPolicyForm').modal('hide');
+                        // $('.boundProductTable').DataTable().ajax.reload();
+                        // $('.newPolicyList').DataTable().ajax.reload();
                         $('#generalLiabilitiesPolicyForm').modal('hide');
-                        $('.boundProductTable').DataTable().ajax.reload();
-                        $('.newPolicyList').DataTable().ajax.reload();
+                        location.reload();
                     });
                 },
                 error: function(data) {

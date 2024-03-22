@@ -113,17 +113,18 @@
                                         text: 'has been saved',
                                         icon: 'success'
                                     }).then((result) => {
-                                        if (result
-                                            .isConfirmed) {
-                                            $('.boundProductTable')
-                                                .DataTable()
-                                                .ajax.reload();
-                                            $('.getConfimedProductTable')
-                                                .DataTable()
-                                                .ajax.reload();
-                                            $('#dataModal')
-                                                .modal('hide');
-                                        }
+                                        // if (result
+                                        //     .isConfirmed) {
+                                        //     $('.boundProductTable')
+                                        //         .DataTable()
+                                        //         .ajax.reload();
+                                        //     $('.getConfimedProductTable')
+                                        //         .DataTable()
+                                        //         .ajax.reload();
+                                        //     $('#dataModal')
+                                        //         .modal('hide');
+                                        // }
+                                        location.reload();
                                     });
                                 },
                                 error: function() {

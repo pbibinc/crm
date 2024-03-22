@@ -226,11 +226,13 @@
                         icon: 'success',
                         confirmButtonText: 'Ok'
                     }).then((result) => {
-                        if (result.isConfirmed) {
-                            $('#commercialAutoPolicyForm').modal('hide');
-                            $('.boundProductTable').DataTable().ajax.reload();
-                            $('.newPolicyList').DataTable().ajax.reload();
-                        }
+                        // if (result.isConfirmed) {
+                        //     $('#commercialAutoPolicyForm').modal('hide');
+                        //     $('.boundProductTable').DataTable().ajax.reload();
+                        //     $('.newPolicyList').DataTable().ajax.reload();
+                        // }
+                        $('#commercialAutoPolicyForm').modal('hide');
+                        location.reload();
                     });
                 },
                 error: function(data) {
