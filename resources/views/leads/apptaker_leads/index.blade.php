@@ -458,7 +458,7 @@
                     var dropdownId = $(this).attr('id')
                     var rowId = dropdownId.replace('dispositionDropDown', '');
                     var selectedDisposition = $(this).val();
-                    var url = "{{ env('FORM_URL') }}";
+                    var url = "{{ env('APP_FORM_URL') }}";
                     if (selectedDisposition == '1') {
                         $.ajax({
                             url: "{{ route('list-lead-id') }}",
