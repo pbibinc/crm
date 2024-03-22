@@ -31,7 +31,6 @@ import "../style/general-information.css";
 const GeneralInformationForm = () => {
     const { lead, zipcodes, cities, zipCity, generalInformation } =
         useContext(ContextData);
-    console.log(generalInformation);
     const methods = useForm();
 
     const getStoredGeneralInformation = () => {
@@ -258,8 +257,6 @@ const GeneralInformationForm = () => {
     });
 
     const onSubmit = (data) => {
-        console.log(data);
-
         const generalInfomrationFormData = {
             firstname: firstName,
             lastname: lastName,
@@ -284,6 +281,8 @@ const GeneralInformationForm = () => {
             lead_id: lead?.data?.id,
             // material_cost: parseInt(amount.replace(/\D/g, ""), 10),
             material_cost: amount,
+            //productId
+            productId: lead?.data?.productId ? lead?.data?.productId : 0,
         };
         const leadIdTobeUpdates = lead?.data?.id;
 

@@ -18,7 +18,8 @@ class PolicyDetail extends Model
         'policy_number',
         'carrier',
         'market',
-        'payment_mode'
+        'payment_mode',
+        'status'
     ];
 
     public function GeneralLiabilitiesPolicyDetails()

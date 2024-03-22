@@ -69,8 +69,9 @@
                                 'Success!',
                                 'Renewal Processed Successfully.',
                                 'success'
-                            )
-                            $('#renewalReminderTable').DataTable().ajax.reload();
+                            ).then((result) => {
+                                location.reload();
+                            })
                         }
                     });
                 }

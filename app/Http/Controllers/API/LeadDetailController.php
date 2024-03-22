@@ -19,10 +19,12 @@ class LeadDetailController extends BaseController
     public function show()
     {
         $leadId = Cache::get('lead_id');
+        $productId = Cache::get('product_id');
         $lead = Lead::find($leadId);
         if (is_null($lead)) {
             return $this->sendError('Lead not found.');
         }
+        $lead->productId = $productId ? $productId : null;
         return $this->sendResponse($lead->toArray(), 'Lead retrieved successfully.');
     }
     public function leadAddress()

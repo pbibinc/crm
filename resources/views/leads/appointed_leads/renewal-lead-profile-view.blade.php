@@ -421,6 +421,7 @@
         $('#editGeneralInformationButton').on('click', function() {
             var url = "{{ env('APP_FORM_URL') }}";
             var id = "{{ $lead->id }}";
+            var productId = "{{ $product->id }}"
             $.ajax({
                 url: "{{ route('list-lead-id') }}",
                 headers: {
@@ -429,7 +430,9 @@
                 dataType: 'json',
                 method: 'POST',
                 data: {
-                    leadId: id
+                    leadId: id,
+                    productId: productId,
+
                 },
             });
             window.open(`${url}general-information-form/edit`, "s_blank",
