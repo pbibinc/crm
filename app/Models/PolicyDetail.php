@@ -78,7 +78,7 @@ class PolicyDetail extends Model
 
         // Fetch policies with expiration dates between today and the next 60 days
         $recentPolicies = self::where('expiration_date', '<=', $dateRange)->get();
-        return $recentPolicies;
+        return $recentPolicies ? $recentPolicies : null;
     }
 
     public function getPolicyQuotedRenewal()

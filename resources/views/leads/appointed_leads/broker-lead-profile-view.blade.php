@@ -2,7 +2,6 @@
 @section('admin')
     <div class="page-content pt-6">
         <div class="container-fluid">
-
             <div class="row">
                 <div class="col-4">
 
@@ -487,7 +486,6 @@
                     </div>
                 </div>
             </div>
-
             @include('leads.appointed_leads.request-to-bind-form.index', [
                 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
                     $product->product,
