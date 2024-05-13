@@ -10,6 +10,7 @@ use App\Models\SelectedQuote;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Svg\Tag\Rect;
 
 class RenewalQuoteController extends Controller
@@ -124,90 +125,120 @@ class RenewalQuoteController extends Controller
 
     public function getForQuoteRenewal(Request $request)
     {
-        $policyDetails = new PolicyDetail();
-        $policiesData = $policyDetails->getPolicyForRenewal()->where('status', 'Renewal Quote');
-        if($request->ajax()){
-            return DataTables($policiesData)
-            ->addIndexColumn()
-            ->addColumn('policy_no', function($policiesData){
-                $policyNumber = $policiesData->policy_number;
-                $productId =  $policiesData->quotation_product_id;
-                return '<a href="/customer-service/renewal/get-renewal-lead-view/'.$productId.'"  id="'.$policiesData->policy_details_id.'">'.$policyNumber.'</a>';
-            })
-            ->addColumn('company_name', function($policiesData){
-                $lead = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;
-                return $lead->company_name;
-            })
-            ->addColumn('product', function($policiesData){
-                return $policiesData->QuotationProduct->product;
-            })
-            ->addColumn('previous_policy_price', function($policiesData){
-                $quote = SelectedQuote::find($policiesData->selected_quote_id)->first();
-                return $quote ? $quote->full_payment : 'N/A';
-            })
-            ->rawColumns(['company_name', 'policy_no'])
-            ->make(true);
+        try{
+            $policyDetails = new PolicyDetail();
+            $policiesData = $policyDetails->getPolicyForRenewal()->where('status', 'Renewal Quote');
+            if($request->ajax()){
+                $dataTable =  DataTables($policiesData)
+                ->addIndexColumn()
+                ->addColumn('policy_no', function($policiesData){
+                    $policyNumber = $policiesData->policy_number;
+                    $productId =  $policiesData->quotation_product_id;
+                    return '<a href="/customer-service/renewal/get-renewal-lead-view/'.$productId.'"  id="'.$policiesData->policy_details_id.'">'.$policyNumber.'</a>';
+                })
+                ->addColumn('company_name', function($policiesData){
+                    $lead = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;
+                    return $lead->company_name;
+                })
+                ->addColumn('product', function($policiesData){
+                    return $policiesData->QuotationProduct->product;
+                })
+                ->addColumn('previous_policy_price', function($policiesData){
+                    $quote = SelectedQuote::find($policiesData->selected_quote_id)->first();
+                    return $quote ? $quote->full_payment : 'N/A';
+                })
+                ->rawColumns(['company_name', 'policy_no'])
+                ->make(true);
+                return $dataTable;
+            }
+        }catch(\Exception $e){
+            Log::error('Error in getForQuoteRenewal function', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
+
     }
 
     public function getQuotedRenewal(Request $request)
     {
-        $policyDetails = new PolicyDetail();
-        $policiesData = $policyDetails->getPolicyForRenewal()->where('status', 'Renewal Quoted');
-        if($request->ajax()){
-            return DataTables($policiesData)
-            ->addIndexColumn()
-            ->addColumn('policy_no', function($policiesData){
-                $policyNumber = $policiesData->policy_number;
-                $productId =  $policiesData->quotation_product_id;
-                return '<a href="/customer-service/renewal/get-renewal-lead-view/'.$productId.'"  id="'.$policiesData->policy_details_id.'">'.$policyNumber.'</a>';
-            })
-            ->addColumn('company_name', function($policiesData){
-                $lead = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;
-                return $lead->company_name;
-            })
-            ->addColumn('product', function($policiesData){
-                return $policiesData->QuotationProduct->product;
-            })
-            ->addColumn('previous_policy_price', function($policiesData){
-                $quote = SelectedQuote::find($policiesData->selected_quote_id)->first();
-                return $quote ? $quote->full_payment : 'N/A';
-            })
-            ->rawColumns(['company_name', 'policy_no'])
-            ->make(true);
+        try{
+            $policyDetails = new PolicyDetail();
+            $policiesData = $policyDetails->getPolicyForRenewal()->where('status', 'Renewal Quoted');
+            if($request->ajax()){
+                $dataTable = DataTables($policiesData)
+                ->addIndexColumn()
+                ->addColumn('policy_no', function($policiesData){
+                    $policyNumber = $policiesData->policy_number;
+                    $productId =  $policiesData->quotation_product_id;
+                    return '<a href="/customer-service/renewal/get-renewal-lead-view/'.$productId.'"  id="'.$policiesData->policy_details_id.'">'.$policyNumber.'</a>';
+                })
+                ->addColumn('company_name', function($policiesData){
+                    $lead = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;
+                    return $lead->company_name;
+                })
+                ->addColumn('product', function($policiesData){
+                    return $policiesData->QuotationProduct->product;
+                })
+                ->addColumn('previous_policy_price', function($policiesData){
+                    $quote = SelectedQuote::find($policiesData->selected_quote_id)->first();
+                    return $quote ? $quote->full_payment : 'N/A';
+                })
+                ->rawColumns(['company_name', 'policy_no'])
+                ->make(true);
+                return $dataTable;
+            }
+        }catch(\Exception $e){
+            Log::error('Error in getForQuoteRenewal function', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
+
     }
 
     public function renewalHandledPolicy(Request $request)
     {
-        $policyDetails = new PolicyDetail();
-        $statusesToExclude = ['issued', 'Process Renewal', 'Renewal Quote', 'Renewal Quoted'];
-        $policiesData = $policyDetails->getPolicyForRenewal()->whereNotIn('status', $statusesToExclude);
-        if($request->ajax()){
-            return DataTables($policiesData)
-            ->addIndexColumn()
-            ->addColumn('policy_no', function($policiesData){
-                $policyNumber = $policiesData->policy_number;
-                $productId =  $policiesData->quotation_product_id;
-                return '<a href="/customer-service/renewal/get-renewal-lead-view/'.$productId.'"  id="'.$policiesData->policy_details_id.'">'.$policyNumber.'</a>';
-            })
-            ->addColumn('company_name', function($policiesData){
-                $lead = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;
-                return $lead->company_name;
-            })
-            ->addColumn('product', function($policiesData){
-                return $policiesData->QuotationProduct->product;
-            })
-            ->addColumn('status', function($policiesData){
-                return $policiesData->status;
-            })
-            ->addColumn('handledBy', function($policiesData){
-                $userProfile = $policiesData->quotedRenewalUserprofile()->first();
-                return $userProfile->fullAmericanName();
-            })
-            ->rawColumns(['company_name', 'policy_no'])
-            ->make(true);
+        try{
+            $policyDetails = new PolicyDetail();
+            $statusesToExclude = ['issued', 'Process Renewal', 'Renewal Quote', 'Renewal Quoted'];
+            $policiesData = $policyDetails->getPolicyForRenewal()->whereNotIn('status', $statusesToExclude);
+            if($request->ajax()){
+                $dataTable =  DataTables($policiesData)
+                ->addIndexColumn()
+                ->addColumn('policy_no', function($policiesData){
+                    $policyNumber = $policiesData->policy_number;
+                    $productId =  $policiesData->quotation_product_id;
+                    return '<a href="/customer-service/renewal/get-renewal-lead-view/'.$productId.'"  id="'.$policiesData->policy_details_id.'">'.$policyNumber.'</a>';
+                })
+                ->addColumn('company_name', function($policiesData){
+                    $lead = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;
+                    return $lead->company_name;
+                })
+                ->addColumn('product', function($policiesData){
+                    return $policiesData->QuotationProduct->product;
+                })
+                ->addColumn('status', function($policiesData){
+                    return $policiesData->status;
+                })
+                ->addColumn('handledBy', function($policiesData){
+                    $userProfile = $policiesData->quotedRenewalUserprofile()->first();
+                    return $userProfile->fullAmericanName();
+                })
+                ->rawColumns(['company_name', 'policy_no'])
+                ->make(true);
+                return $dataTable;
+            }
+        }catch(\Exception $e){
+            Log::error('Error in renewalHandledPolicy function', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
+
     }
 
 }
