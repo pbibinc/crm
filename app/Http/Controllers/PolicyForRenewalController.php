@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\PolicyDetail;
 use App\Models\QuoteComparison;
+use App\Models\SelectedQuote;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -18,10 +19,9 @@ class PolicyForRenewalController extends Controller
      */
     public function index(Request $request)
     {
-        $userId = auth()->user()->id;
-        $userProfileData = UserProfile::where('user_id', $userId)->first();
-        $policiesData = $userProfileData->renewalPolicy()->where('status', 'issued')->get();
-        // dd($policiesData);
+        $policyDetail = new PolicyDetail();
+        $forRenewal = $policyDetail->getPolicyForRenewal();
+        $policiesData = $forRenewal->where('status', 'issued');
         if($request->ajax()){
             return DataTables($policiesData)
             ->addIndexColumn()
@@ -40,8 +40,8 @@ class PolicyForRenewalController extends Controller
                 return $policiesData->QuotationProduct->product;
             })
             ->addColumn('previous_policy_price', function($policiesData){
-                $quote = QuoteComparison::where('quotation_product_id', $policiesData->quotation_product_id)->where('recommended', 3)->first();
-                return $quote->full_payment;
+                $quote = SelectedQuote::where('quotation_product_id', $policiesData->selected_quote_id)->first();
+                return $quote ? $quote->full_payment : 'N/A';
             })
             ->rawColumns(['company_name', 'policy_no'])
             ->make(true);

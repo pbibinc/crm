@@ -11,6 +11,7 @@ use App\Models\Metadata;
 use App\Models\PaymentOption;
 use App\Models\PolicyDetail;
 use App\Models\QuoteComparison;
+use App\Models\SelectedQuote;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Yajra\DataTables\Facades\DataTables;
@@ -101,7 +102,7 @@ class FinanceAgreementPolicyList extends Controller
         return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('policy_number', function($data){
-            $quoteComparison = QuoteComparison::find($data->quote_comparison_id);
+            $quoteComparison = SelectedQuote::find($data->selected_quote_id);
             return $quoteComparison->quote_no;
         })
         ->addColumn('financing_company', function($data){

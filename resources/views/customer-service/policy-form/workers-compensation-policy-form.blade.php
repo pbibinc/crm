@@ -129,7 +129,8 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-12">
-                            <input type="file" id="file" name="file" class="form-control">
+                            <input type="file" id="file" name="file"
+                                class="form-control workersCompensationPolicyFormFile">
                         </div>
                     </div>
                     <input type="hidden" name="workersCompensationHiddenInputId"
@@ -140,7 +141,8 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Close</button>
                 <input type="submit" name="action_button" id="action_button" value="Submit"
-                    class="btn btn-primary ladda-button" data-style="expand-right">
+                    class="btn btn-primary ladda-button workersCompensationPolicyActionButton"
+                    data-style="expand-right">
             </div>
             </form>
         </div>
@@ -197,7 +199,6 @@
                 contentType: false,
                 dataType: "json",
                 success: function(data) {
-
                     Swal.fire({
                         title: 'Success!',
                         text: 'Workers Compensation Policy has been added!',
@@ -214,7 +215,6 @@
                     });
                 },
                 error: function(data) {
-                    console.log(data);
                     Swal.fire({
                         title: 'Error!',
                         text: 'Something went wrong!',

@@ -6,6 +6,7 @@
             <th>Product</th>
             <th>Company Name</th>
             <th>Requested By</th>
+            <th>Type</th>
             <th>Total Cost</th>
             <th>Effective Date</th>
             {{-- <th>Sent Out Date</th>
@@ -27,7 +28,6 @@
             ajax: {
                 url: "{{ route('request-to-bind') }}",
                 type: "POST",
-
             },
             columns: [{
                     data: 'policy_number',
@@ -44,6 +44,10 @@
                 {
                     data: 'requested_by',
                     name: 'requested_by'
+                },
+                {
+                    data: 'bindingType',
+                    name: 'bindingType'
                 },
                 {
                     data: 'total_cost',
@@ -74,7 +78,25 @@
         $(document).on('click', '.viewRequestToBind', function(e) {
             e.preventDefault();
             var id = $(this).attr('id');
-            console.log(id);
+            var productStatus = $(this).data('status');
+            var status = 12;
+            switch (productStatus) {
+                case 17:
+                    status = 19;
+                    break;
+                case 18:
+                    status = 19;
+                    break;
+                case 6:
+                    status = 12;
+                    break;
+                case 15:
+                    status = 12;
+                    break;
+                default:
+                    status = 12;
+                    break;
+            }
             Swal.fire({
                 title: 'Process This Binding?',
                 text: "You want to send a request to bind?",
@@ -104,7 +126,7 @@
                                 },
                                 method: "POST",
                                 data: {
-                                    status: 12,
+                                    status: status,
                                     id: id
                                 },
                                 success: function() {
@@ -113,17 +135,6 @@
                                         text: 'has been saved',
                                         icon: 'success'
                                     }).then((result) => {
-                                        // if (result
-                                        //     .isConfirmed) {
-                                        //     $('.boundProductTable')
-                                        //         .DataTable()
-                                        //         .ajax.reload();
-                                        //     $('.getConfimedProductTable')
-                                        //         .DataTable()
-                                        //         .ajax.reload();
-                                        //     $('#dataModal')
-                                        //         .modal('hide');
-                                        // }
                                         location.reload();
                                     });
                                 },

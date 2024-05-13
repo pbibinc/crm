@@ -130,6 +130,7 @@
         $(document).on('click', '.viewBindingButton', function(e) {
             e.preventDefault();
             var id = $(this).attr('id');
+            var productStatus = $(this).data('status');
             $.ajax({
                 url: "{{ route('request-to-bind-information') }}",
                 method: "POST",
@@ -169,6 +170,7 @@
                     $('#declinedHiddenTitle').val('Declined Binding for' + ' ' + data
                         .product.product);
                     $('#userToNotify').val(data.userId);
+                    $('#productStatus').val(productStatus);
                     $('#dataModal').modal('show');
                 },
                 error: function(data) {
@@ -177,5 +179,6 @@
                 }
             });
         });
+
     });
 </script>

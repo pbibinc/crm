@@ -9,6 +9,7 @@ use App\Models\PolicyAdditionalValue;
 use App\Models\PolicyDetail;
 use App\Models\QuotationProduct;
 use App\Models\QuoteComparison;
+use App\Models\SelectedQuote;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -49,14 +50,14 @@ class BussinessOwnersPolicyDetailsController extends Controller
 
             $file = $data['file'];
             $basename = $file->getClientOriginalName();
-            $directoryPath = public_path('backend/assets/attacedFiles/binding/business-owners-policy');
+            $directoryPath = public_path('backend/assets/attacedFiles/policy');
             $type = $file->getClientMimeType();
             $size = $file->getSize();
             if(!File::isDirectory($directoryPath)){
                 File::makeDirectory($directoryPath, 0777, true, true);
             }
             $file->move($directoryPath, $basename);
-            $filepath = 'backend/assets/attacedFiles/binding/business-owners-policy' . $basename;
+            $filepath = 'backend/assets/attacedFiles/policy'. '/' . $basename;
 
             $metadata = new Metadata();
             $metadata->basename = $basename;
@@ -68,6 +69,7 @@ class BussinessOwnersPolicyDetailsController extends Controller
             $mediaId = $metadata->id;
 
             $policyDetails = new PolicyDetail();
+            $policyDetails->selected_quote_id = $data['businessOwnersHiddenQuoteId'];
             $policyDetails->quotation_product_id = $data['businessOwnersHiddenInputId'];
             $policyDetails->policy_number = $data['businessOwnersNumber'];
             $policyDetails->carrier = $data['businessOwnersCarrierInput'];
@@ -104,7 +106,7 @@ class BussinessOwnersPolicyDetailsController extends Controller
             $quotationProduct->status = 8;
             $quotationProduct->save();
 
-            $quotationComparison = QuoteComparison::find($data['businessOwnersHiddenQuoteId']);
+            $quotationComparison = SelectedQuote::find($data['businessOwnersHiddenQuoteId']);
             $quotationComparison->quote_no = $data['businessOwnersNumber'];
             $quotationComparison->save();
 

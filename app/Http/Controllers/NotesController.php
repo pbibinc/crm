@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\GeneralInformation;
 use App\Models\LeadNotes;
 use App\Models\User;
+use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -36,6 +37,7 @@ class NotesController extends Controller
             $productId = $request->input('productId');
             $notifyUserIds = $request->input('userToNotify');
             $icon = $request->input('icon') ? $request->input('icon') : 'info';
+            $departmentIds = $request->input('departmentIds');
 
             $leadNotes = new LeadNotes();
             $leadNotes->lead_id = $leadId;
@@ -53,11 +55,16 @@ class NotesController extends Controller
               }
             }
 
-            // if($status == 'declined-make-payment'){
-            //     broadcast(new DeclinedRequest($leadId, $generalInformationId, $productId, $user->id));
-            // }
-            DB::commit();
+            if($departmentIds !== null){
+                $userIds = UserProfile::whereIn('department_id', $departmentIds)->pluck('user_id')->unique()->toArray();
+                foreach($userIds as $userId){
+                  $user = User::find($userId);
+                  $user->sendNoteNotification($user, $noteTitle, $userProfileId,  $noteDescription, $leadId);
+                  broadcast(new LeadNotesNotificationEvent($noteTitle, $noteDescription, $userId, $leadId, $userProfileId, $icon));
+                }
+            }
 
+            DB::commit();
             return response()->json(['message' => 'Data stored successfully']);
         }catch (ValidationException $e){
             DB::rollBack();
@@ -82,5 +89,14 @@ class NotesController extends Controller
     public function getGeneralInformation($id)
     {
 
+    }
+
+    public function getNoteUsingLeadid($id)
+    {
+        if(request()->ajax()){
+            $leadNotes = LeadNotes::where('lead_id', $id)->with('userProfile')->get();
+            $userProfileId = UserProfile::where('user_id', auth()->user()->id)->first()->id;
+            return response()->json(['notes' => $leadNotes, 'userProfileId' => $userProfileId]);
+        }
     }
 }

@@ -25,4 +25,9 @@ class Metadata extends Model
     {
         return $this->belongsToMany(ProductMedia::class, 'product_media_table', 'metadata_id', 'quotation_product_id');
     }
+
+    public function PolicyDetail()
+    {
+        return $this->hasOne(PolicyDetail::class, 'media_id');
+    }
 }

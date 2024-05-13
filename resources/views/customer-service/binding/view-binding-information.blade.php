@@ -110,6 +110,7 @@
                     </div>
                 </div>
                 <input type="hidden" id="hiddenId">
+                <input type="hidden" id="productStatus">
 
                 <div class="row mb-2">
                     <div class="col-12">
@@ -164,7 +165,20 @@
         $('#boundButton').on('click', function(e) {
             e.preventDefault();
             var id = $('#hiddenId').val();
-
+            var productStatus = $('#productStatus').val();
+            var parsedStatus = parseInt(productStatus, 10);
+            var status = 11;
+            switch (parsedStatus) {
+                case 19:
+                    status = 20;
+                    break;
+                case 12:
+                    status = 11;
+                    break;
+                default:
+                    status = 11;
+                    break;
+            }
             $.ajax({
                 url: "{{ route('save-bound-information') }}",
                 headers: {
@@ -183,7 +197,7 @@
                         },
                         method: "POST",
                         data: {
-                            status: 11,
+                            status: status,
                             id: id
                         },
                         success: function() {

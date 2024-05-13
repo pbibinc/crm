@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Lead;
 use App\Models\UnitedState;
+use App\Models\UserProfile;
 use Illuminate\Support\Facades\Cache;
 use SebastianBergmann\CodeCoverage\Report\Xml\Unit;
 
@@ -20,11 +21,13 @@ class LeadDetailController extends BaseController
     {
         $leadId = Cache::get('lead_id');
         $productId = Cache::get('product_id');
+        $userProfileId = UserProfile::where('user_id', Cache::get('user_id'))->first()->id;
         $lead = Lead::find($leadId);
         if (is_null($lead)) {
             return $this->sendError('Lead not found.');
         }
         $lead->productId = $productId ? $productId : null;
+        $lead->userProfileId = $userProfileId ? $userProfileId : null;
         return $this->sendResponse($lead->toArray(), 'Lead retrieved successfully.');
     }
     public function leadAddress()

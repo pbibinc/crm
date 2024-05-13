@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::table('quote_comparison_table', function (Blueprint $table) {
             $table->boolean('recommended')->default(false)->after('broker_fee');
-            //
         });
     }
 

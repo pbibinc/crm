@@ -14,13 +14,20 @@ class PolicyDetail extends Model
     protected $table = 'policy_details_table';
 
     protected $fillable = [
+        'selected_quote_id',
         'quotation_product_id',
         'policy_number',
         'carrier',
         'market',
         'payment_mode',
+        'media_id',
         'status'
     ];
+
+    public function medias()
+    {
+        return $this->belongsTo(Metadata::class, 'media_id');
+    }
 
     public function GeneralLiabilitiesPolicyDetails()
     {
@@ -30,6 +37,11 @@ class PolicyDetail extends Model
     public function QuotationProduct()
     {
         return $this->belongsTo(QuotationProduct::class, 'quotation_product_id');
+    }
+
+    public function SelectedQuote()
+    {
+        return $this->belongsTo(SelectedQuote::class, 'selected_quote_id');
     }
 
     public function NewPoicyList()
@@ -58,7 +70,6 @@ class PolicyDetail extends Model
 
     public function getPolicyForRenewal()
     {
-        $policies = [];
         // Today's date
         $today = Carbon::now()->format('Y-m-d');
 
@@ -66,28 +77,17 @@ class PolicyDetail extends Model
         $dateRange = Carbon::now()->addDays(60)->format('Y-m-d');
 
         // Fetch policies with expiration dates between today and the next 60 days
-        $recentPolicies = self::where('expiration_date', '>=', $today)->where('expiration_date', '<=', $dateRange)->whereDoesntHave('userProfile')->get();
-
-        foreach($recentPolicies as $policy)
-        {
-            $quoteComparison = QuoteComparison::where('quotation_product_id', $policy->quotation_product_id)->where('recommended', '3')->first();
-            $policies[] = [
-                'company' => $policy->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name,
-                'product' => $policy->QuotationProduct,
-                'policies' => $policy,
-                'quote' => $quoteComparison,
-            ];
-        }
-        return $policies;
+        $recentPolicies = self::where('expiration_date', '<=', $dateRange)->get();
+        return $recentPolicies;
     }
 
     public function getPolicyQuotedRenewal()
     {
         $dataPolicies = $this->where('status', 'Renewal Quoted')->get();
-
+        $policies = [];
         foreach($dataPolicies as $policy)
         {
-            $quoteComparison = QuoteComparison::where('quotation_product_id', $policy->quotation_product_id)->where('recommended', '3')->first();
+            $quoteComparison = SelectedQuote::where('quotation_product_id', $policy->quotation_product_id)->first();
             $policies[] = [
                 'company' => $policy->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name,
                 'product' => $policy->QuotationProduct,
@@ -129,6 +129,35 @@ class PolicyDetail extends Model
         $this->quotedRenewalUserprofile()->get();
     }
 
+    public static function getPolicyDetailByLeadId($leadId)
+    {
+        $lead = Lead::find($leadId);
+        if (!$lead) {
+            return [];
+        }
 
+        $quoteInformationId = optional($lead->quoteLead)->QuoteInformation->id;
+        if (!$quoteInformationId) {
+            return [];
+        }
+
+        $quoteProducts = QuotationProduct::where('quote_information_id', $quoteInformationId)->get();
+        $policies = [];
+
+        foreach ($quoteProducts as $product) {
+            $productPolicies = self::where('quotation_product_id', $product->id)
+                ->whereIn('status', ['issued', 'old policy', 'renewal issued'])
+                ->get();
+
+            if ($productPolicies->isNotEmpty()) {
+                // Push each policy individually
+                foreach ($productPolicies as $policy) {
+                    $policies[] = $policy;
+                }
+            }
+        }
+
+        return $policies;
+    }
 
 }

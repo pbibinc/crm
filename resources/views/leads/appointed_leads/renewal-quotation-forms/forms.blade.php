@@ -7,6 +7,7 @@
         'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
             'General Liability',
             $lead->quoteLead->QuoteInformation->id),
+        'complianceOfficer' => $complianceOfficer,
     ])
 @endif
 
@@ -17,6 +18,7 @@
         'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
             'Workers Compensation',
             $lead->quoteLead->QuoteInformation->id),
+        'complianceOfficer' => $complianceOfficer,
     ])
 @endif
 
@@ -27,6 +29,7 @@
         'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
             'Commercial Auto',
             $lead->quoteLead->QuoteInformation->id),
+        'complianceOfficer' => $complianceOfficer,
     ])
 @endif
 
@@ -37,6 +40,7 @@
         'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
             'Excess Liability',
             $lead->quoteLead->QuoteInformation->id),
+        'complianceOfficer' => $complianceOfficer,
     ])
 @endif
 
@@ -47,6 +51,7 @@
         'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
             'Tools Equipment',
             $lead->quoteLead->QuoteInformation->id),
+        'complianceOfficer' => $complianceOfficer,
     ])
 @endif
 
@@ -57,6 +62,7 @@
         'quoteProduct' => $generalInformation->lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
             'Builders Risk',
             $generalInformation->lead->quoteLead->QuoteInformation->id),
+        'complianceOfficer' => $complianceOfficer,
     ])
 @endif
 
@@ -67,5 +73,6 @@
         'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
             'Business Owners',
             $lead->quoteLead->QuoteInformation->id),
+        'complianceOfficer' => $complianceOfficer,
     ])
 @endif

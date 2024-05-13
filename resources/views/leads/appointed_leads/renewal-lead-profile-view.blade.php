@@ -18,10 +18,7 @@
 
                     </div>
                     <div>
-                        {{-- <button type="button"
-                                class="btn btn-lg btn-success btn-rounded waves-effect waves-light mt-2 d-flex align-items-center justify-content-center"
-                                style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);"><i class="ri-add-circle-fill"></i> Add
-                                Product</button> --}}
+
                     </div>
                 </div>
             </div>
@@ -143,11 +140,10 @@
                     </div>
                 </div>
             </div>
+
             <div class="col-8">
                 <div class="card"
                     style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
-
-                    <!-- Nav tabs -->
                     <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist" style="margin-top: 0px">
                         <li class="nav-item">
                             <a class="nav-link active" data-bs-toggle="tab" href="#product" role="tab">
@@ -171,71 +167,21 @@
                                 <span class="d-none d-sm-block"><i class="fas fa-cog"></i> Quotation</span>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#emails" role="tab">
+                                <span class="d-none d-sm-block"><i class="ri-mail-fill"></i> Emails</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#policyList" role="tab">
+                                <span class="d-none d-sm-block"><i class="ri-mail-fill"></i> Policy List</span>
+                            </a>
+                        </li>
                     </ul>
 
                     <div class="card-body">
-                        <!-- Tab panes -->
                         <div class="tab-content p-3 text-muted">
                             <div class="tab-pane fade show active" id="product" role="tabpanel">
-                                {{-- <div class="row mb-4"> --}}
-                                {{-- <div class="card mb-4 shadow-lg">
-                                        <div class="card-body">
-                                            <ul class="nav nav-pills nav-justified" role="tablist">
-                                                @if ($product->product = 'General Liabilities')
-                                                <li class="nav-item waves-effect waves-light">
-                                                    <a class="nav-link navProfile active" data-bs-toggle="tab" href="#generalLiabilites" role="tab" id="generalLiabilitiesButton" style="white-space: nowrap;">
-                                                       General Liabilities
-                                                    </a>
-                                                </li>
-                                                @endif
-                                                @if ($product->product = 'Workers Compensation')
-                                                <li class="nav-item waves-effect waves-light">
-                                                    <a class="nav-link navProfile" data-bs-toggle="tab" href="#workersCompensation" role="tab" style="white-space: nowrap;">
-                                                        Workers Comp
-                                                    </a>
-                                                </li>
-                                                @endif
-                                                @if ($product->product = 'Commercial Auto')
-                                                <li class="nav-item waves-effect waves-light">
-                                                    <a class="nav-link navProfile" data-bs-toggle="tab" href="#commercialAuto" role="tab" style="white-space: nowrap;">
-                                                        Commercial Auto
-                                                    </a>
-                                                </li>
-                                                @endif
-                                                @if ($product->product = 'Excess Liability')
-                                                <li class="nav-item waves-effect waves-light">
-                                                    <a class="nav-link navProfile" data-bs-toggle="tab" href="#excessLiabiliy" role="tab" style="white-space: nowrap;">
-                                                        Excess Liability
-                                                    </a>
-                                                </li>
-                                                @endif
-                                                @if ($product->product = 'Tools Equipment')
-                                                <li class="nav-item waves-effect waves-light">
-                                                    <a class="nav-link navProfile" data-bs-toggle="tab" href="#toolsEquipment" role="tab" style="white-space: nowrap;">
-                                                        Tools Equipment
-
-                                                    </a>
-                                                </li>
-                                                @endif
-                                                @if ($product->product = 'Builders Risk')
-                                                <li class="nav-item waves-effect waves-light">
-                                                    <a class="nav-link navProfile" data-bs-toggle="tab" href="#buildersRisk" role="tab" style="white-space: nowrap;">
-                                                       Builders Risk
-                                                    </a>
-                                                </li>
-                                                @endif
-                                                @if ($product->product = 'Business Owners')
-                                                <li class="nav-item waves-effect waves-light">
-                                                    <a class="nav-link navProfile" data-bs-toggle="tab" href="#bop" role="tab" style="white-space: nowrap;">
-                                                     Business Owners
-                                                    </a>
-                                                </li>
-                                                @endif
-                                            </ul>
-                                        </div>
-                                   </div> --}}
-                                {{-- </div> --}}
-
                                 <div class="row">
 
                                     @if ($product->product == 'General Liability')
@@ -318,7 +264,6 @@
 
                                 </div>
                             </div>
-
                             <div class="tab-pane" id="activityLog" role="tabpanel">
                                 @include('leads.appointed_leads.log-activity.activity-log', [
                                     'generalInformation' => $generalInformation,
@@ -334,35 +279,33 @@
                                     'product' => $product,
                                     'generalInformation' => $generalInformation,
                                     'quationMarket' => $quationMarket,
+                                    'complianceOfficer' => $complianceOfficer,
+                                ])
+                            </div>
+                            <div class="tab-pane" id="emails" role="tabpanel">
+                                @include('email.index', [
+                                    'productId' => $product->id,
+                                    'templates' => $templates,
+                                ])
+                            </div>
+                            <div class="tab-pane" id="policyList" role="tabpanel">
+                                @include('customer-service.policy.policy-lead-table-list', [
+                                    'productId' => $product->id,
+                                    'templates' => $templates,
+                                    'leadId' => $lead->id,
                                 ])
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
+
         </div>
+
     </div>
 </div>
-<div class="modal fade" id="editGeneralInformationModal" tabindex="-1" aria-labelledby="editGeneralInformationModal"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addQuoteModalLabel">Edit General Information</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="">
-                <div class="modal-body">
-                    @include('leads.apptaker_leads.general-information')
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+
 
 <script>
     $(document).ready(function() {
@@ -388,35 +331,6 @@
                 $('#businessOwnersPolicyForm').show();
             }
         });
-
-        // $('#editGeneralInformationButton').on('click', function() {
-        //     var id = "{{ $generalInformation->id }}";
-        //     // $('#editGeneralInformationModal').modal('show');
-        //     $.ajax({
-        //         url: "/general-information/" + id + "/edit",
-        //         method: "GET",
-        //         success: function(data) {
-        //             console.log(data);
-        //             $('#firstName').val(data.data.firstname);
-        //             $('#lastName').val(data.data.lastname);
-        //             $('#jobPosition').val(data.data.job_position);
-        //             $('#address').val(data.data.address);
-        //             $('#telNum').val(data.data.lead.tel_num);
-        //             $('#altNumber').val(data.data.alt_num);
-        //             $('#fax').val(data.data.fax);
-        //             $('#email').val(data.data.email_address);
-        //             $('#fullTimeEmployee').val(data.data.full_time_employee);
-        //             $('#partTimeEmployee').val(data.data.part_time_employee);
-        //             $('#grossReceipt').val(data.data.gross_receipt);
-        //             $('#employeePayRoll').val(data.data.employee_payroll);
-        //             $('#ownersPayroll').val(data.data.owners_payroll);
-        //             $('#subout').val(data.data.sub_out);
-        //             $('#subcontractDescription').val(data.data.sub_out);
-        //             $('#editGeneralInformationModal').modal('show');
-        //         }
-
-        //     })
-        // });
 
         $('#editGeneralInformationButton').on('click', function() {
             var url = "{{ env('APP_FORM_URL') }}";

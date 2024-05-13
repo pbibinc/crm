@@ -12,6 +12,7 @@ use App\Models\PolicyDetail;
 use App\Models\QuoationMarket;
 use App\Models\QuotationProduct;
 use App\Models\QuoteComparison;
+use App\Models\SelectedQuote;
 use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
@@ -42,8 +43,8 @@ class BindingController extends Controller
             return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('policy_number', function($data){
-                $quote_comparison = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
-                $policy_number = '<a href="" id="'.$data->id.'" name="viewButton" class="viewRequestToBind">'.$quote_comparison->quote_no.'</a>';
+                $quote_comparison = SelectedQuote::where('quotation_product_id', $data->id)->first();
+                $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind">'.$quote_comparison->quote_no.'</a>';
                 return $policy_number;
             })
             ->addColumn('company_name', function($data){
@@ -51,7 +52,7 @@ class BindingController extends Controller
                 return $company_name;
             })
             ->addColumn('total_cost', function($data){
-                $quote_information = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
+                $quote_information = SelectedQuote::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
                 return $quote_information->full_payment;
             })
             ->addColumn('requested_by', function($data) use($broker){
@@ -60,10 +61,37 @@ class BindingController extends Controller
                 return $userProfile;
             })
             ->addColumn('effective_date', function($data){
-                $quote_information = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
+                $quote_information = SelectedQuote::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
                 return $quote_information->effective_date;
             })
-            ->rawColumns(['policy_number'])
+            ->addColumn('bindingType', function($data){
+                $statusLabel = '';
+                $class = '';
+                Switch ($data->status){
+                    case 17:
+                        $statusLabel = 'Direct Renewals';
+                        $class = 'bg-warning';
+                        break;
+                    case 18:
+                        $statusLabel = 'Resend Direct Renewals';
+                        $class = 'bg-danger';
+                        break;
+                    case 6:
+                        $statusLabel = 'Direct New';
+                        $class = 'bg-warning';
+                        break;
+                    case 15:
+                        $statusLabel = 'Resend Direct New';
+                        $class = 'bg-danger';
+                        break;
+                    default:
+                        $statusLabel = 'Unknown';
+                        $class = 'bg-secondary';
+                        break;
+                }
+                return '<span class="badge '.$class.'">'.$statusLabel.'</span>';
+            })
+            ->rawColumns(['policy_number', 'bindingType'])
             ->make(true);
         }
         return view('customer-service.binding.request-to-bind-view');
@@ -71,8 +99,9 @@ class BindingController extends Controller
 
     public function requestToBindInformation(Request $request)
     {
+
        $product = QuotationProduct::find($request->id);
-       $market = $product->QouteComparison->where('recommended', 3)->first();
+       $market = $product->QouteComparison->first();
        $lead = $product->QuoteInformation->QuoteLead->leads;
        $paymentInformation = $market->PaymentInformation;
        $paymentCharged = $paymentInformation->paymentCharged;
@@ -129,10 +158,9 @@ class BindingController extends Controller
 
     public function saveGeneralLiabilitiesPolicy(Request $request)
     {
-        dd($request->all());
         if($request->ajax())
-        {  try{
-
+        {
+            try{
                 $data = $request->all();
                 $mediaIds = [];
                 DB::beginTransaction();
@@ -140,14 +168,14 @@ class BindingController extends Controller
                 //file uploading
                 $file = $data['attachedFiles'];
                 $basename = $file->getClientOriginalName();
-                $directoryPath = public_path('backend/assets/attacedFiles/binding/general-liability-insurance');
+                $directoryPath = public_path('backend/assets/attacedFiles/policy');
                 $type = $file->getClientMimeType();
                 $size = $file->getSize();
                 if(!File::isDirectory($directoryPath)){
                     File::makeDirectory($directoryPath, 0777, true, true);
                 }
                 $file->move($directoryPath, $basename);
-                $filepath = 'backend/assets/attacedFiles/binding/general-liability-insurance/' . $basename;
+                $filepath = 'backend/assets/attacedFiles/policy'. '/' . $basename;
 
                 $metadata = new Metadata();
                 $metadata->basename = $basename;
@@ -157,8 +185,13 @@ class BindingController extends Controller
                 $metadata->size = $size;
                 $metadata->save();
 
+                //code for saving product
+                $quotationProduct = QuotationProduct::find($data['glHiddenInputId']);
+
+
                 //policy details saving
                 $policyDetails = new PolicyDetail();
+                $policyDetails->selected_quote_id = $data['glHiddenQuoteId'];
                 $policyDetails->quotation_product_id = $data['glHiddenInputId'];
                 $policyDetails->policy_number = $data['glPolicyNumber'];
                 $policyDetails->carrier = $data['carriersInput'];
@@ -167,7 +200,22 @@ class BindingController extends Controller
                 $policyDetails->effective_date = $data['effectiveDate'];
                 $policyDetails->expiration_date = $data['expirationDate'];
                 $policyDetails->media_id =  $metadata->id;
+                if($quotationProduct->status = 20){
+                    $previousPolicy = PolicyDetail::where('quotation_product_id', $quotationProduct->id)->where('status', 'Renewal Request To Bind')->get();
+                    foreach($previousPolicy as $policy){
+                        $policy->status = 'old policy';
+                        $policy->save();
+                    }
+                    $policyDetails->status = 'renewal issued';
+                    $quotationProduct->status = 8;
+                    $quotationProduct->save();
+                }else{
+                    $policyDetails->status = 'issued';
+                    $quotationProduct->status = 8;
+                    $quotationProduct->save();
+                }
                 $policyDetailSaving = $policyDetails->save();
+
 
                 //general liabilities policy details saving
                 $generalLiabilitiesDetails = new GeneralLiabilitiesPolicyDetails();
@@ -179,6 +227,7 @@ class BindingController extends Controller
                 $generalLiabilitiesDetails->is_loc = isset($data['loc']) && $data['loc'] ? 1 : 0;
                 $generalLiabilitiesDetails->is_additional_insd = isset($data['glAddlInsd']) && $data['glAddlInsd'] ? 1 : 0;
                 $generalLiabilitiesDetails->is_subr_wvd = isset($data['glSubrWvd']) && $data['glSubrWvd'] ? 1 : 0;
+                $generalLiabilitiesDetails->is_claims_made = isset($data['claimsMade']) && $data['claimsMade'] ? 1 : 0;
                 $generalLiabilitiesDetails->each_occurence = $data['eachOccurence'];
                 $generalLiabilitiesDetails->damage_to_rented = $data['rentedDmg'];
                 $generalLiabilitiesDetails->medical_expenses = $data['medExp'];
@@ -188,13 +237,10 @@ class BindingController extends Controller
                 $generalLiabilitiesDetails->status = 'issued';
                 $generalLiabilitiesDetails->save();
 
-                //code for saving product
-                $quotationProduct = QuotationProduct::find($data['glHiddenInputId']);
-                $quotationProduct->status = 8;
-                $quotationProduct->save();
+
 
                 //code for quotation
-                $quotationComparison = QuoteComparison::find($data['glHiddenQuoteId']);
+                $quotationComparison = SelectedQuote::find($data['glHiddenQuoteId']);
                 $quotationComparison->quote_no = $data['glPolicyNumber'];
                 $quotationComparison->save();
 
@@ -217,8 +263,8 @@ class BindingController extends Controller
         return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('policy_number', function($data){
-            $quote_comparison = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
-            $policy_number = '<a href="" id="'.$data->id.'" name="viewButton" class="viewBindingButton">'.$quote_comparison->quote_no.'</a>';
+            $quote_comparison = SelectedQuote::where('quotation_product_id', $data->id)->first();
+            $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewBindingButton">'.$quote_comparison->quote_no.'</a>';
             return $policy_number;
         })
         ->addColumn('company_name', function($data){
@@ -226,7 +272,7 @@ class BindingController extends Controller
             return $company_name;
         })
         ->addColumn('total_cost', function($data){
-            $quote_information = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
+            $quote_information = SelectedQuote::where('quotation_product_id', $data->id)->first();
             return $quote_information->full_payment;
         })
         ->addColumn('requested_by', function($data) use($broker){
@@ -235,7 +281,7 @@ class BindingController extends Controller
             return $userProfile;
         })
         ->addColumn('effective_date', function($data){
-            $quote_information = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
+            $quote_information = SelectedQuote::where('quotation_product_id', $data->id)->first();
             return $quote_information->effective_date;
         })
         ->rawColumns(['policy_number'])

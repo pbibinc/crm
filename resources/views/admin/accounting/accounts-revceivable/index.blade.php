@@ -45,6 +45,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
 
 
@@ -203,8 +204,9 @@
                             @csrf
                             <div class="row mb-2">
                                 <div class="col-6">
-                                    <label for="paymentType">Invoice Number:</label>
-                                    <input type="text" class="form-control" id="invoiceNumber" name="invoiceNumber">
+                                    <label for="invoiceNumber">Invoice Number:</label>
+                                    <input type="text" class="form-control" id="invoiceNumber" name="invoiceNumber"
+                                        autocomplete="off">
                                 </div>
                                 <div class="col-6">
                                     <label for="invoiceMediaLabel">Attached File:</label>
@@ -213,9 +215,9 @@
                                 </div>
                             </div>
                             <input type="hidden" value="" id="paymentInformationId" name="paymentInformationId">
+                            <input type="hidden" value="" id="hiddenPaymentType" name="hiddenPaymentType">
                             <input type="hidden" value="" id="quoteComparisonId" name="quoteComparisonId">
                             <input type="hidden" value="" id="quotationProductId" name="quotationProductId">
-
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button"
@@ -395,12 +397,12 @@
                     },
                     success: function(response) {
                         var files = response.medias;
-                        // var userId = respinse.
                         console.log(response);
                         $('#paymentInformationId').val(response.paymentInformation.id);
                         $('#quoteComparisonId').val(response.quoteComparison.id);
                         $('#quotationProductId').val(response.quotationProduct.id);
                         $('#paymentType').text(response.paymentInformation.payment_type);
+                        $('#hiddenPaymentType').val(response.paymentInformation.payment_type);
                         $('#complianceOfficer').text(response.paymentInformation.compliance_by);
                         $('#market').text(response.market.name);
                         $('#quoteNo').text(response.quoteComparison.quote_no);
@@ -461,7 +463,6 @@
             });
 
             $('#paymentFormButton').on('click', function() {
-                // console.log('test this code');
                 $('#modalForm').modal('show');
                 $('#dataModal').modal('hide');
             });
@@ -477,10 +478,12 @@
                     },
                     success: function(response) {
                         var files = response.medias;
+                        console.log(response);
                         $('#paymentInformationId').val(response.paymentInformation.id);
                         $('#quoteComparisonId').val(response.quoteComparison.id);
                         $('#quotationProductId').val(response.quotationProduct.id);
                         $('#paymentType').text(response.paymentInformation.payment_type);
+                        $('#hiddenPaymentType').val(response.paymentInformation.payment_type);
                         $('#complianceOfficer').text(response.paymentInformation.compliance_by);
                         $('#market').text(response.market.name);
                         $('#quoteNo').text(response.quoteComparison.quote_no);
@@ -521,6 +524,7 @@
                 var leadId = $('#declinedLeadId').val();
                 var noteDescription = $('#noteDescription').val();
                 var userToNotify = $('#userToNotify').val();
+                var paymentInformationId = $('#paymentInformationId').val();
                 $.ajax({
                     url: "{{ route('create-notes') }}",
                     headers: {
@@ -548,6 +552,7 @@
                             data: {
                                 id: productId,
                                 status: 13,
+                                paymentInformationId: paymentInformationId
                             },
                             success: function() {
                                 Swal.fire({

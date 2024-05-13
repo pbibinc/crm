@@ -309,10 +309,9 @@
                                         title: 'Success',
                                         text: 'Leads has been assigned',
                                         icon: 'success'
+                                    }).then(() => {
+                                        location.reload();
                                     });
-                                    $('#assignAppointedLeadsTable').DataTable().ajax.reload();
-                                    $('#datatableLeads').DataTable().ajax.reload();
-                                    // location.reload();
                                 },
                                 error: function(data) {
                                     Swal.fire({
@@ -452,8 +451,9 @@
                                 text: 'Leads has been voided',
                                 icon: 'success'
                             }).then(() => {
-                                $('#datatableLeads').DataTable().ajax.reload();
                                 $('#userDropdownModal').modal('hide');
+                                $('#datatableLeads').DataTable().ajax.reload();
+
                             });
                         },
                         error: function(data) {
@@ -472,8 +472,6 @@
                     });
                 }
             });
-
-
         })
     </script>
 @endsection

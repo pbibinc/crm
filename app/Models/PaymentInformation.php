@@ -22,7 +22,7 @@ class PaymentInformation extends Model
 
     public function QuoteComparison()
     {
-        return $this->belongsTo(QuoteComparison::class, 'quote_comparison_id');
+        return $this->belongsTo(SelectedQuote::class, 'selected_quote_id');
     }
 
     public function PaymentCharged()
@@ -52,8 +52,9 @@ class PaymentInformation extends Model
     {
         $quoteInformationData = [];
         foreach($this->get() as $data){
-            $leadId = $data->QuoteComparison->QuotationProduct->QuoteInformation->QuoteLead->leads->id;
-            $quoteStatus = $data->QuoteComparison->recommended;
+            $selectedQuote = SelectedQuote::find($data->selected_quote_id);
+            $leadId = QuotationProduct::find($selectedQuote->quotation_product_id)->QuoteInformation->QuoteLead->leads->id;
+            $quoteStatus = $data->status;
             $quoteInformationData[] = [
                 'lead_id' => $leadId,
                 'data' => $data,
@@ -61,11 +62,12 @@ class PaymentInformation extends Model
             ];
         }
 
+
         $data = array_filter($quoteInformationData, function($item) use($id){
-            return $item['lead_id'] == $id && $item['status'] == 3;
+            return $item['lead_id'] == $id && $item['status'] == 'charged';
         });
 
-        return $data;
+        return $data ? $data : [];
         // $quoteInformation = $this-
     }
 }

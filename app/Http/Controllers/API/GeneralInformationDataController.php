@@ -98,6 +98,7 @@ class GeneralInformationDataController extends BaseController
     public function edit($id)
     {
         $leads = Lead::find($id);
+        $userId = Cache::get('user_id');
         $generalInformation = $leads->generalInformation;
         // $userId = Auth::user()->id;
         $generalInformationData = [
@@ -125,7 +126,7 @@ class GeneralInformationDataController extends BaseController
                 'label' => $generalInformation->zipcode
             ],
 
-            //mode
+            'userId' => $userId,
             'isUpdate' => true,
             'isEditing' => false,
         ];
@@ -138,7 +139,7 @@ class GeneralInformationDataController extends BaseController
         DB::beginTransaction();
         $data = $request->all();
         $policyDetail = PolicyDetail::where('quotation_product_id', $data['productId'])->first();
-         $userProfileId = $policyDetail->userProfile->first()->id;
+         $userProfileId = UserProfile::where('user_id', $data['userId'])->first()->id;
          $changes = [];
          $originalData = GeneralInformation::where('leads_id', $id)->first();
          $generalInformation = $originalData;

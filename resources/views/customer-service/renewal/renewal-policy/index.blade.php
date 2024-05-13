@@ -19,31 +19,56 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#renewalPolicyQuotation" role="tab">
+                            <a class="nav-link" data-bs-toggle="tab" href="#renewalMakeAPayment" role="tab">
                                 <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
-                                <span class="d-none d-sm-block">Renewal Policy Quotation</span>
+                                <span class="d-none d-sm-block">Make A Payment</span>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#quotedRenewal" role="tab">
+                            <a class="nav-link" data-bs-toggle="tab" href="#requestToBind" role="tab">
                                 <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
-                                <span class="d-none d-sm-block">Quoted Policies</span>
+                                <span class="d-none d-sm-block">Request To Bind</span>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="tab" href="#policyList" role="tab">
                                 <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
-                                <span class="d-none d-sm-block">New Policies</span>
+                                <span class="d-none d-sm-block">Declined Binding</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#newRenewedPolicy" role="tab">
+                                <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+                                <span class="d-none d-sm-block">New Renewed Policy</span>
                             </a>
                         </li>
                     </ul>
 
                     <div class="tab-content p-3 text-muted">
                         <div class="tab-pane active" id="policyForRenewal" role="tabpanel">
-                            @include('customer-service.renewal.renewal-policy..policy-for-renewal-list')
+                            @include(
+                                'customer-service.renewal.renewal-policy.policy-for-renewal-list',
+                                compact('userProfiles'))
                         </div>
                         <div class="tab-pane" id="renewalProcess" role="tabpanel">
-                            @include('customer-service.renewal.renewal-policy.policy-renewal-process-list')
+                            @include(
+                                'customer-service.renewal.renewal-policy.policy-renewal-process-list',
+                                compact('userProfiles'))
+                        </div>
+                        <div class="tab-pane" id="renewalMakeAPayment" role="tabpanel">
+                            @include(
+                                'customer-service.renewal.renewal-policy.policy-renewal-make-payment',
+                                compact('userProfiles'))
+                        </div>
+                        <div class="tab-pane" id="requestToBind" role="tabpanel">
+                            @include(
+                                'customer-service.renewal.renewal-policy.policy-renewal-request-to-bind',
+                                compact('userProfiles'))
+                        </div>
+                        <div class="tab-pane" id="newRenewedPolicy" role="tabpanel">
+                            @include(
+                                'customer-service.renewal.renewal-policy.policy-renewed-list',
+                                compact('userProfiles'))
                         </div>
                     </div>
 

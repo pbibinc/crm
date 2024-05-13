@@ -15,6 +15,7 @@
                         </div>
                     </div>
                     <input type="hidden" value="" id="paymentChargedId" name="paymentChargedId">
+                    <input type="hidden" name="paymentType" id="paymentType">
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>

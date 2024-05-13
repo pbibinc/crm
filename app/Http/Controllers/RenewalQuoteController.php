@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PolicyDetail;
 use App\Models\QuoteComparison;
 use App\Models\RenewalQuote;
+use App\Models\SelectedQuote;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -123,10 +124,8 @@ class RenewalQuoteController extends Controller
 
     public function getForQuoteRenewal(Request $request)
     {
-        $userId = auth()->user()->id;
-        $userProfileData = UserProfile::where('user_id', $userId)->first();
-        $policiesData = $userProfileData->renewalPolicy()->where('status', 'Renewal Quote')->get();
-
+        $policyDetails = new PolicyDetail();
+        $policiesData = $policyDetails->getPolicyForRenewal()->where('status', 'Renewal Quote');
         if($request->ajax()){
             return DataTables($policiesData)
             ->addIndexColumn()
@@ -143,8 +142,8 @@ class RenewalQuoteController extends Controller
                 return $policiesData->QuotationProduct->product;
             })
             ->addColumn('previous_policy_price', function($policiesData){
-                $quote = QuoteComparison::where('quotation_product_id', $policiesData->quotation_product_id)->where('recommended', 3)->first();
-                return $quote->full_payment;
+                $quote = SelectedQuote::find($policiesData->selected_quote_id)->first();
+                return $quote ? $quote->full_payment : 'N/A';
             })
             ->rawColumns(['company_name', 'policy_no'])
             ->make(true);
@@ -153,10 +152,8 @@ class RenewalQuoteController extends Controller
 
     public function getQuotedRenewal(Request $request)
     {
-        $userId = auth()->user()->id;
-        $userProfileData = UserProfile::where('user_id', $userId)->first();
-        $policiesData = $userProfileData->renewalPolicy()->where('status', 'Renewal Quoted')->get();
-
+        $policyDetails = new PolicyDetail();
+        $policiesData = $policyDetails->getPolicyForRenewal()->where('status', 'Renewal Quoted');
         if($request->ajax()){
             return DataTables($policiesData)
             ->addIndexColumn()
@@ -173,8 +170,8 @@ class RenewalQuoteController extends Controller
                 return $policiesData->QuotationProduct->product;
             })
             ->addColumn('previous_policy_price', function($policiesData){
-                $quote = QuoteComparison::where('quotation_product_id', $policiesData->quotation_product_id)->where('recommended', 3)->first();
-                return $quote->full_payment;
+                $quote = SelectedQuote::find($policiesData->selected_quote_id)->first();
+                return $quote ? $quote->full_payment : 'N/A';
             })
             ->rawColumns(['company_name', 'policy_no'])
             ->make(true);
@@ -183,10 +180,9 @@ class RenewalQuoteController extends Controller
 
     public function renewalHandledPolicy(Request $request)
     {
-        $userId = auth()->user()->id;
-        $userProfileData = UserProfile::where('user_id', $userId)->first();
+        $policyDetails = new PolicyDetail();
         $statusesToExclude = ['issued', 'Process Renewal', 'Renewal Quote', 'Renewal Quoted'];
-        $policiesData = $userProfileData->handledQuotePolicyRenewal($statusesToExclude)->get();
+        $policiesData = $policyDetails->getPolicyForRenewal()->whereNotIn('status', $statusesToExclude);
         if($request->ajax()){
             return DataTables($policiesData)
             ->addIndexColumn()

@@ -3,97 +3,74 @@
     <div class="page-content pt-6">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-5">
-                    <div class="card"
-                        style=" box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="card"
-                                        style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
-                                        <div class="card-body">
-                                            <div class="d-flex">
-                                                <div class="flex-grow-1">
-                                                    <p class="text-truncate font-size-14 mb-2">Product For Follow Up</p>
-                                                    <h4 class="mb-2">{{ $followupProductCount }}</h4>
-                                                </div>
-                                                <div class="avatar-sm">
-                                                    <span class="avatar-title bg-light text-primary rounded-3">
-                                                        <i class="ri-file-edit-line font-size-24"></i>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                <div class="col-12">
+                    <div class="row">
+                        <div class="card"
+                            style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
+                            <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-bs-toggle="tab" href="#products" role="tab">
+                                        <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                                        <span class="d-none d-sm-block">Products</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#compliance" role="tab">
+                                        <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                                        <span class="d-none d-sm-block">Compliance</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#complied" role="tab">
+                                        <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                                        <span class="d-none d-sm-block">Complied</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#followup" role="tab">
+                                        <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
+                                        <span class="d-none d-sm-block">For Follow Up</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#makePayment" role="tab">
+                                        <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
+                                        <span class="d-none d-sm-block">Make A Payment</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#requestToBind" role="tab">
+                                        <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+                                        <span class="d-none d-sm-block">Request To Bind</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#handledProduct" role="tab">
+                                        <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
+                                        <span class="d-none d-sm-block">Handled Product</span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content p-3 text-muted">
+                                <div class="tab-pane active" id="products" role="tabpanel">
+                                    @include('leads.broker_leads.pending-product-view')
                                 </div>
-                                <div class="col-6">
-                                    <div class="card bg-info text-white-50"
-                                        style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
-                                        <div class="card-body">
-                                            <div class="d-flex">
-                                                <div class="flex-grow-1">
-                                                    <p class="text-truncate font-size-14 mb-2" style="color: white">Pending
-                                                        Product</p>
-                                                    <h4 class="mb-2" style="color: white">
-                                                        {{ isset($pendingProductCount) ? $pendingProductCount : 0 }}
-                                                    </h4>
-                                                </div>
-                                                <div class="avatar-sm">
-                                                    <span class="avatar-title bg-light text-primary rounded-3">
-                                                        <i class="ri-umbrella-line font-size-24"
-                                                            style="color: #17a2b8;"></i>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="tab-pane" id="compliance" role="tabpanel">
+                                    @include('leads.broker_leads.compliance-product-view')
+                                </div>
+                                <div class="tab-pane" id="complied" role="tabpanel">
+                                    @include('leads.broker_leads.complied-product-view')
+                                </div>
+                                <div class="tab-pane" id="followup" role="tabpanel">
+                                    @include('leads.broker_leads.for-follow-up-product-view')
+                                </div>
+                                <div class="tab-pane" id="makePayment" role="tabpanel">
+                                    @include('leads.broker_leads.make-a-payment-list-view')
+                                </div>
+                                <div class="tab-pane" id="requestToBind" role="tabpanel">
+                                    @include('leads.broker_leads.request-to-bind-product-view')
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-7">
-                    <div class="card"
-                        style=" box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
-                        <div class="card-body">
-                            <table id="assignPendingLeadsTable" class="table table-bordered dt-responsive nowrap"
-                                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                <thead>
-                                    <th>Product</th>
-                                    <th>Company Name</th>
-                                    <th>Sent Out Date</th>
-                                    <th>Status</th>
-                                    <th></th>
-                                </thead>
-                                <tbody>
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-5">
-                    <div class="card"
-                        style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
-                        <div class="card-body">
-                            <table id="getConfimedProductTable"
-                                class="table table-bordered dt-responsive nowrap getConfimedProductTable"
-                                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                <thead>
-                                    <th>Policy No</th>
-                                    <th>Company Name</th>
-                                    <th></th>
-                                    {{-- <th>Status</th> --}}
-                                    {{-- <th>Sent Out Date</th>
-                                <th></th> --}}
-                                </thead>
-                                <tbody>
-
-                                </tbody>
-                            </table>
-
                         </div>
                     </div>
                 </div>
@@ -212,6 +189,7 @@
                     }
                 })
             });
+
             $('.getConfimedProductTable').on('click', '.viewButton', function() {
                 $id = $(this).attr('id');
                 $.ajax({
