@@ -75,30 +75,30 @@
                     id: id
                 },
                 success: function(response) {
-                    console.log(response.product.product);
+                    console.log(response);
                     if (response.product.product == 'General Liability') {
                         $('#glInsuredInput').val(response.lead.company_name);
-                        $('#glPolicyNumber').val(response.quoteComparison.quote_no);
+                        $('#glPolicyNumber').val(response.selectedQuote.quote_no);
                         $('#glPaymentTermInput').val(response.paymentInformation
                             .payment_term);
                         $('#glHiddenInputId').val(id);
-                        $('#hiddenQuoteId').val(response.quoteComparison.id);
+                        $('#hiddenQuoteId').val(response.selectedQuote.id);
                         $('#glMarketInput').val(response.marketName.name);
                         $('#generalLiabilitiesPolicyForm').modal('show');
                     }
                     if (response.product.product == 'Commercial Auto') {
                         $('#commercialAutoInsuredInput').val(response.lead.company_name);
-                        $('#commerciarlAutoPolicyNumber').val(response.quoteComparison
+                        $('#commerciarlAutoPolicyNumber').val(response.selectedQuote
                             .quote_no);
                         $('#commercialAutoPaymentTermInput').val(response.paymentInformation
                             .payment_term);
                         $('#commercialAutoHiddenInputId').val(id);
-                        $('#commercialAutoHiddenQuoteId').val(response.quoteComparison.id);
+                        $('#commercialAutoHiddenQuoteId').val(response.selectedQuote.id);
                         $('#commercialAutoMarketInput').val(response.marketName.name);
                         $('#commercialAutoPolicyForm').modal('show');
                     }
                     if (response.product.product == 'Workers Compensation') {
-                        $('#workersCompensationPolicyNumber').val(response.quoteComparison
+                        $('#workersCompensationPolicyNumber').val(response.selectedQuote
                             .quote_no);
                         $('#workersCompensationInsuredInput').val(response.lead
                             .company_name);
@@ -108,49 +108,49 @@
                             .paymentInformation
                             .payment_term);
                         $('#workersCompensationHiddenInputId').val(id);
-                        $('#workersCompensationHiddenQuoteId').val(response.quoteComparison
+                        $('#workersCompensationHiddenQuoteId').val(response.selectedQuote
                             .id);
                         $('#workersCompensationModalForm').modal(
                             'show');
                     }
                     if (response.product.product == 'Tools Equipment') {
-                        $('#toolsEquipmentPolicyNumber').val(response.quoteComparison
+                        $('#toolsEquipmentPolicyNumber').val(response.selectedQuote
                             .quote_no);
                         $('#toolsEquipmentInsuredInput').val(response.lead.company_name);
                         $('#toolsEquipmentMarketInput').val(response.marketName.name);
                         $('#toolsEquipmentPaymentTermInput').val(response.paymentInformation
                             .payment_term);
                         $('#toolsEquipmentHiddenInputId').val(id);
-                        $('#toolsEquipmentHiddenQuoteId').val(response.quoteComparison
+                        $('#toolsEquipmentHiddenQuoteId').val(response.selectedQuote
                             .id);
                         $('#toolsEquipmentPolicyFormModal').modal('show');
                     }
                     if (response.product.product == 'Business Owners') {
-                        $('#businessOwnersNumber').val(response.quoteComparison
+                        $('#businessOwnersNumber').val(response.selectedQuote
                             .quote_no);
                         $('#businessOwnersInsuredInput').val(response.lead.company_name);
                         $('#businessOwnersMarketInput').val(response.marketName.name);
                         $('#businessOwnersPaymentTermInput').val(response.paymentInformation
                             .payment_term);
                         $('#businessOwnersHiddenInputId').val(id);
-                        $('#businessOwnersHiddenQuoteId').val(response.quoteComparison
+                        $('#businessOwnersHiddenQuoteId').val(response.selectedQuote
                             .id);
                         $('#businessOwnersPolicyFormModal').modal('show');
                     }
                     if (response.product.product == 'Builders Risk') {
-                        $('#buildersRiskPolicyNumber').val(response.quoteComparison
+                        $('#buildersRiskPolicyNumber').val(response.selectedQuote
                             .quote_no);
                         $('#buildersRiskInsuredInput').val(response.lead.company_name);
                         $('#buildersRiskMarketInput').val(response.marketName.name);
                         $('#buildersRiskPaymentTermInput').val(response.paymentInformation
                             .payment_term);
                         $('#buildersRiskHiddenInputId').val(id);
-                        $('#buildersRiskHiddenQuoteId').val(response.quoteComparison
+                        $('#buildersRiskHiddenQuoteId').val(response.selectedQuote
                             .id);
                         $('#buildersRiskPolicyFormModal').modal('show');
                     }
                     if (response.product.product == 'Excess Liability') {
-                        $('#excessInsuranceNumber').val(response.quoteComparison
+                        $('#excessInsuranceNumber').val(response.selectedQuote
                             .quote_no);
                         $('#excessInsuranceInsuredInput').val(response.lead.company_name);
                         $('#excessInsuranceMarketInput').val(response.marketName.name);
@@ -158,7 +158,7 @@
                             .paymentInformation
                             .payment_term);
                         $('#excessInsuranceHiddenInputId').val(id);
-                        $('#excessInsuranceHiddenQuoteId').val(response.quoteComparison
+                        $('#excessInsuranceHiddenQuoteId').val(response.selectedQuote
                             .id);
                         $('#excessInsurancePolicyFormModal').modal('show');
                     }

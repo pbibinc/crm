@@ -11,7 +11,7 @@
                     @csrf
                     <div class="row mb-3">
                         <div class="col-6">
-                            <label for="paymentType">Payment Type</label>
+                            <label for="paymentTypeLabel">Payment Type</label>
                             <select name="paymentType" id="paymentType" class="form-control">
                                 <option value="">Select Payment Type</option>
                                 <option value="Endorsement">Endorsement</option>
@@ -100,7 +100,6 @@
                                 <option value="Visa">Visa</option>
                                 <option value="Master Card">Master Card</option>
                                 <option value="American Express">American Express</option>
-                                <option value="Discover">Discover</option>
                                 <option value="Other">Other</option>
                             </select>
                         </div>
@@ -151,6 +150,7 @@
                     <input type="hidden" name="paymentInformationId" id="paymentInformationId">
                     <input type="hidden" name="statusInput" id="statusInput">
                     <input type="hidden" name="quotationProductId" id="quotationProductId">
+                    <input type="hidden" name="selectedQuoteId" id="selectedQuoteId">
 
             </div>
             <div class="modal-footer">
@@ -173,6 +173,7 @@
                 $('#otherCard').attr('hidden', true);
             }
         })
+
         $('#paymentMethodMakePayment').on('change', function() {
             if ($(this).val() == 'Credit Card') {
                 $('#cardTypeLabel').attr('hidden', false);
@@ -238,7 +239,7 @@
                         laddaButton.stop();
                         Swal.fire({
                             title: 'Success',
-                            text: 'Payment Information Send Successfully',
+                            text: 'Payment Information Saved Successfully',
                             icon: 'success'
                         }).then(function() {
                             $('#makePaymentModal').modal('hide');

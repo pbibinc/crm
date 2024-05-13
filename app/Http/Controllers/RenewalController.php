@@ -6,10 +6,13 @@ use App\Events\AssignPolicyForRenewalEvent;
 use App\Http\Controllers\Controller;
 use App\Models\GeneralInformation;
 use App\Models\Lead;
+use App\Models\Messages;
 use App\Models\PolicyDetail;
 use App\Models\QuoationMarket;
 use App\Models\QuotationProduct;
 use App\Models\QuoteComparison;
+use App\Models\SelectedQuote;
+use App\Models\Templates;
 use App\Models\UnitedState;
 use App\Models\User;
 use App\Models\UserProfile;
@@ -28,7 +31,6 @@ class RenewalController extends Controller
      */
     public function index(Request $request)
     {
-        //
         $policyDetail = new PolicyDetail();
         $userProfile = new UserProfile();
         $apptaker = $userProfile->apptaker();
@@ -206,7 +208,7 @@ class RenewalController extends Controller
         ];
         $timezoneForState = null;
         $quationMarket = new QuoationMarket();
-
+        $templates = Templates::all();
         if(!$lead || !$generalInformation){
             return redirect()->route('leads.appointed-leads')->withErrors('No DATA found');
             // dd($lead, $generalInformation );
@@ -219,21 +221,22 @@ class RenewalController extends Controller
         }
         $localTime = Carbon::now($timezoneForState);
         $generalLiabilities = $generalInformation->generalLiabilities;
+        $userProfile = new UserProfile();
+        $complianceOfficer = $userProfile->complianceOfficer();
         // dd($generalInformation->id);
-        return view('leads.appointed_leads.renewal-lead-profile-view', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', ));
+        return view('leads.appointed_leads.renewal-lead-profile-view', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer'));
     }
 
     public function getRenewalReminder(Request $request)
     {
-        $userId = auth()->user()->id;
-        $userProfileData = UserProfile::where('user_id', $userId)->first();
-        $policiesData = $userProfileData->renewalPolicy()->where('status', 'Process Renewal')->get();
+        $policyDetail = new PolicyDetail();
+        $policiesData = $policyDetail->getPolicyForRenewal()->where('status', 'Process Renewal');
         if($request->ajax()){
             return DataTables($policiesData)
             ->addIndexColumn()
             ->addColumn('policy_no', function($policiesData){
                 $policyNumber = $policiesData->policy_number;
-                return '<a href="" class="renewalReminder" id="'.$policiesData->id.'">'.$policyNumber.'</a>';
+                return $policyNumber;
             })
             ->addColumn('company_name', function($policiesData){
                 $lead = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;
@@ -243,12 +246,24 @@ class RenewalController extends Controller
                 return $policiesData->QuotationProduct->product;
             })
             ->addColumn('previous_policy_price', function($policiesData){
-                $quote = QuoteComparison::where('quotation_product_id', $policiesData->quotation_product_id)->where('recommended', 3)->first();
-                return $quote->full_payment;
+                $quote = SelectedQuote::find($policiesData->selected_quote_id)->first();
+                return $quote ? $quote->full_payment : 'N/A';
             })
-            ->rawColumns(['company_name', 'policy_no'])
+            ->addColumn('emailSentCount', function($policiesData){
+                $sentCount = Messages::where('type', 'Renewal Reminder')->where('status', 'sent')->where('quotation_product_id', $policiesData->QuotationProduct->id)->count();
+                $pendingCount = Messages::where('type', 'Renewal Reminder')->where('quotation_product_id', $policiesData->QuotationProduct->id)->count();
+                return $sentCount . '/'. $pendingCount;
+            })
+            ->addColumn('action', function($policiesData){
+                $setEmailSendingButton = '<button type="button" class="btn btn-outline-primary btn-sm waves-effect waves-light sentEmailButton" id="'.$policiesData->id.'" data-product-id="'.$policiesData->QuotationProduct->id.'"><i class="ri-mail-send-line"></i></button>';
+                $viewButton = '<a href="/customer-service/renewal/get-renewal-lead-view/'.$policiesData->quotation_product_id.'"  id="'.$policiesData->policy_details_id.'" class="btn btn-sm btn-outline-info"><i class="ri-eye-line"></i></a>';
+                $renewalQuoteButton = '<button type="button" class="btn btn-outline-success btn-sm waves-effect waves-light renewalReminder" id="'.$policiesData->id.'"><i class=" ri-task-line"></i></button>';
+                return $setEmailSendingButton . ' ' . $viewButton . ' ' . $renewalQuoteButton;
+            })
+            ->rawColumns(['company_name', 'policy_no', 'action'])
             ->make(true);
         }
     }
+
 
 }

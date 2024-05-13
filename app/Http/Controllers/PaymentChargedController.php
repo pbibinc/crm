@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Metadata;
 use App\Models\PaymentCharged;
 use App\Models\PaymentInformation;
+use App\Models\PolicyDetail;
 use App\Models\QuotationProduct;
 use App\Models\QuoteComparison;
+use App\Models\SelectedQuote;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,8 +24,7 @@ class PaymentChargedController extends Controller
     {
         if($request->ajax())
         {
-            $paymentCharged = new PaymentCharged();
-            $paymentChargedData = $paymentCharged->get();
+            $paymentChargedData = PaymentCharged::orderBy('charged_date', 'desc')->get();
             return DataTables::of($paymentChargedData)
             ->addIndexColumn()
             ->addColumn('product_name', function($paymentChargedData){
@@ -52,7 +53,7 @@ class PaymentChargedController extends Controller
             })
             ->addColumn('charged_by', function($paymentChargedData){
                 $chargedBy = $paymentChargedData->userProfile->fullName();
-                return $chargedBy;
+                return $chargedBy ? $chargedBy : 'N/A';
             })
             ->addColumn('action', function($paymentChargedData){
                 $editButton = '<a href="#" class="btn btn-sm btn-primary editPaymentButton" data-id="'.$paymentChargedData->id.'"><i class="ri-pencil-line"></i></a>';
@@ -88,27 +89,41 @@ class PaymentChargedController extends Controller
             $metadata->size = $size;
             $metadata->save();
 
+            $paymentInformation = PaymentInformation::find($request->paymentInformationId);
+            $paymentInformation->status = 'charged';
+            $paymentInformation->save();
+
+            if($request->hiddenPaymentType == 'Direct Renewals'){
+                $policyDetails = PolicyDetail::where('quotation_product_id', $request->quotationProductId)->first();
+                $policyDetails->status = 'Renewal Payment Processed';
+                $policyDetails->save();
+            }
+
             $paymentCharged = new PaymentCharged();
             $paymentCharged->payment_information_id = $request->paymentInformationId;
             $paymentCharged->user_profile_id = $userProfileId;
             $paymentCharged->invoice_number = $request->invoiceNumber;
             $paymentCharged->charged_date = now();
             $paymentCharged->save();
-
             $paymentCharged->medias()->attach($metadata->id);
-
-            // $quoteComparison = QuoteComparison::find($request->quoteComparisonId);
-            // $quoteComparison->recommended = 10;
 
             $quoteProduct = QuotationProduct::find($request->quotationProductId);
             $quoteProduct->status = 10;
             $quoteProduct->save();
 
-            $quoteComparison = QuoteComparison::find($request->quoteComparisonId);
+            // $quoteComparison = QuoteComparison::find($request->quoteComparisonId);
+            // $quoteComparison->recommended = 3;
+            // $quoteComparison->save();
+
+            $quoteComparison = SelectedQuote::find($request->quoteComparisonId);
             $quoteComparison->recommended = 3;
             $quoteComparison->save();
 
             DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Payment charged successfully',
+            ]);
         }catch(\Exception $e){
             DB::rollback();
             return response()->json([
@@ -125,6 +140,7 @@ class PaymentChargedController extends Controller
             $id = $request->id;
             $paymentInformation = new PaymentInformation();
             $paymentInformationData = $paymentInformation->getPaymentInformationByLeadId($id);
+            //dd($paymentInformationData);
             // dd($paymentInformationData);
             // $paymentInformationData = $paymentInformation->get();
             // $paymentCharged = new PaymentCharged();
@@ -145,11 +161,11 @@ class PaymentChargedController extends Controller
             })
             ->addColumn('invoice_number', function($paymentInformationData){
                 $paymentCharged = PaymentCharged::where('payment_information_id', $paymentInformationData['data']->id)->first();
-                return $paymentCharged->invoice_number;
+                return $paymentCharged->invoice_number ? $paymentCharged->invoice_number : 'N/A';
             })
             ->addColumn('charged_by', function($paymentInformationData){
                 $paymentCharged = PaymentCharged::where('payment_information_id', $paymentInformationData['data']->id)->first();
-                return $paymentCharged->userProfile->fullName();
+                return $paymentCharged->userProfile ? $paymentCharged->userProfile->fullName() : 'N/A';
             })
             ->addColumn('charged_date', function($paymentInformationData){
                 $paymentCharged = PaymentCharged::where('payment_information_id', $paymentInformationData['data']->id)->first();

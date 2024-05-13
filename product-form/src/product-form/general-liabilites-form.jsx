@@ -96,6 +96,10 @@ const GeneralLiabilitiesForm = () => {
         const leads_item_value = JSON.parse(sessionStorage.getItem("lead"));
         return leads_item_value ? leads_item_value.data.id : "";
     });
+    const [userProfileId, setUserProfileId] = useState(() => {
+        var userProfileId = getLeadStoredData()?.data?.userProfileId;
+        return userProfileId;
+    });
 
     // useEffect(() => {
     //     setLeadId(leadDetailsInstance?.data?.id);
@@ -637,6 +641,8 @@ const GeneralLiabilitiesForm = () => {
         recreational_facilities: selectedRecreationalFacilities.map((e) => {
             return e.value;
         }),
+
+        userProfileId: userProfileId,
     };
 
     const generalLiabilitiesStoredFormData = {
@@ -706,7 +712,7 @@ const GeneralLiabilitiesForm = () => {
 
         isUpdate: isUpdate,
         isEditing: isEditing,
-
+        userProfileId: userProfileId,
         //object for general liabilities recreational facilities
         recreational_facilities: selectedRecreationalFacilities.map((e) => {
             return { value: e.value, label: e.label };

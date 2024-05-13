@@ -8,7 +8,7 @@
                         <table id="bound-list-data-table"
                             class="table table-bordered dt-responsive nowrap bound-list-data-table"
                             style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                            <thead>
+                            <thead style="background-color: #f0f0f0;">
                                 <th>Effective Date</th>
                                 <th>Policy Number</th>
                                 <th>Company Name</th>
@@ -28,7 +28,16 @@
             $('#bound-list-data-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('policy-list') }}",
+                ajax: {
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                            'content')
+                    },
+                    url: "{{ route('policy-list') }}",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                    }
+                },
                 columns: [{
                         data: 'effective_date',
                         name: 'effective_date'

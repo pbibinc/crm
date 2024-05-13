@@ -105,7 +105,8 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-12">
-                            <input type="file" name="file" id="file" class="form-control">
+                            <input type="file" name="file" id="file"
+                                class="form-control businessOwnersPolicyFile">
                         </div>
                     </div>
                     <input type="hidden" name="businessOwnersHiddenInputId" id="businessOwnersHiddenInputId">
@@ -114,7 +115,8 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Close</button>
                     <input type="submit" name="action_button" id="action_button" value="Add"
-                        class="btn btn-primary ladda-button" data-style="expand-right">
+                        class="btn btn-primary ladda-button businessOwnersPolicyActionButton"
+                        data-style="expand-right">
                 </div>
             </form>
         </div>

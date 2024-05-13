@@ -32,19 +32,24 @@ class BrokerQuotation extends Model
         return $fullName->fullAmericanName();
     }
 
-    public function getAssignQoutedLead($userProfileId)
+    public function getAssignQoutedLead($userProfileId, $status)
     {
     // Get the broker quotations with the given user profile ID
     $brokerQuotations = self::where('user_profile_id', $userProfileId)->get();
-
-    // Collect the related QuotationProduct models
-    $quotationProducts = collect();
-    foreach ($brokerQuotations as $brokerQuotation) {
-        if($brokerQuotation->quotationProduct->status == 3 || $brokerQuotation->quotationProduct->status == 4 ||$brokerQuotation->quotationProduct->status == 9 || $brokerQuotation->quotationProduct->status == 10) {
-            $quotationProducts->push($brokerQuotation->quotationProduct);
-        }
+    if(is_array($status)){
+            // $quotationProducts = collect();
+    $quotationProducts = BrokerQuotation::where('user_profile_id', $userProfileId)
+    ->whereHas('quotationProduct', function ($query) use ($status) {
+        $query->whereIn('status', $status);
+    })->with('quotationProduct')->get()->pluck('quotationProduct')->unique('id');
+    }else{
+        $quotationProducts = BrokerQuotation::where('user_profile_id', $userProfileId)
+        ->whereHas('quotationProduct', function ($query) use ($status) {
+            $query->where('status', $status);
+        })->with('quotationProduct')->get()->pluck('quotationProduct')->unique('id');
     }
-    return $quotationProducts->isEmpty() ? null : $quotationProducts;
+
+    return $quotationProducts->isEmpty() ? [] : $quotationProducts;
     }
 
     public function getProductToBind($userProfileId)

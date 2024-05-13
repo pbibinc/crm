@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Mail\SendFollowUpEmail;
 use App\Mail\SendQoute;
+use App\Mail\sendTemplatedEmail;
 use App\Models\QuotationProduct;
 use App\Models\QuoteComparison;
+use App\Models\Templates;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -81,6 +83,26 @@ class EmailController extends Controller
             }
         }
 
+    }
+
+    public function sendTemplatedEmail(Request $request)
+    {
+        $subject = 'Test Template Email';
+        $template = Templates::find(9);
+        $htmlContent = '<h1>Test Template Email</h1>';
+
+        $sendingMail = Mail::to('maechael108@gmail.com')->send(new sendTemplatedEmail($subject, $template->html));
+        if($sendingMail){
+            return response()->json([
+                'success' => true,
+                'message' => 'Email Sent'
+            ]);
+        }else{
+            return response()->json([
+                'success' => false,
+                'message' => 'Email Not Sent'
+            ]);
+        }
     }
 
 }

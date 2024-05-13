@@ -32,7 +32,6 @@ const GeneralInformationForm = () => {
     const { lead, zipcodes, cities, zipCity, generalInformation } =
         useContext(ContextData);
     const methods = useForm();
-
     const getStoredGeneralInformation = () => {
         let storedData = sessionStorage.getItem("generalInformationStoredData");
         if (storedData === null) {
@@ -105,6 +104,10 @@ const GeneralInformationForm = () => {
         () => getStoredGeneralInformation().isUpdate || false
     );
 
+    const [userId, setUserId] = useState(
+        () => getStoredGeneralInformation().userId || 0
+    );
+
     const [leadId, setLeadId] = useState(lead?.data?.id);
 
     useEffect(() => {
@@ -136,6 +139,7 @@ const GeneralInformationForm = () => {
             isEditing: isEditing,
             isUpdate: isUpdate,
             amount: amount,
+            userId: userId,
         };
         sessionStorage.setItem(
             "generalInformationStoredData",
@@ -167,6 +171,7 @@ const GeneralInformationForm = () => {
         isEditing,
         isUpdate,
         amount,
+        userId,
     ]);
 
     // const Lead = LeadDetails();
@@ -286,6 +291,9 @@ const GeneralInformationForm = () => {
 
             // material_cost: parseInt(amount.replace(/\D/g, ""), 10),
             material_cost: amount,
+
+            //
+            userId: userId,
 
             //productId
             productId: lead?.data?.productId ? lead?.data?.productId : 0,

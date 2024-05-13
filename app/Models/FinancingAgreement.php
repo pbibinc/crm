@@ -14,7 +14,7 @@ class FinancingAgreement extends Model
     protected $table = 'financing_agreement';
 
     protected $fillable = [
-        'quote_comparison_id',
+        'selected_quote_id',
         'financing_company_id',
         'is_auto_pay',
         'media_id',
@@ -22,7 +22,7 @@ class FinancingAgreement extends Model
 
     public function QuoteComparison()
     {
-        return $this->belongsTo(QuoteComparison::class, 'quote_comparison_id');
+        return $this->belongsTo(SelectedQuote::class, 'selected_quote_id');
     }
     public function media()
     {

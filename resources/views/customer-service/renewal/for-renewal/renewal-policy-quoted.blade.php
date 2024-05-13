@@ -1,4 +1,5 @@
-<table id="renewalPolicyQuotedTable" class="table table-bordered dt-responsive nowrap" style="width: 100%;">
+<table id="renewalPolicyQuotedTable" class="table table-bordered dt-responsive nowrap renewalPolicyQuotedTable"
+    style="width: 100%;">
     <thead>
         <tr style="background-color: #f0f0f0;">
             <th>Policy Number</th>
@@ -11,7 +12,7 @@
 </table>
 <script>
     $(document).ready(function() {
-        $('#renewalPolicyQuotedTable').DataTable({
+        $('.renewalPolicyQuotedTable').DataTable({
             "processing": true,
             "serverSide": true,
             "ajax": {
@@ -43,6 +44,7 @@
                 },
             ]
         });
+
         $(document).on('click', '.renewalReminder', function(e) {
             e.preventDefault();
             var id = $(this).attr('id');
@@ -77,5 +79,6 @@
                 }
             });
         });
+
     })
 </script>

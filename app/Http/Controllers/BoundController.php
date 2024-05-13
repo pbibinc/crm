@@ -7,9 +7,12 @@ use App\Models\BoundInformation;
 use App\Models\FinancingStatus;
 use App\Models\GeneralLiabilitiesPolicyDetails;
 use App\Models\PolicyDetail;
+use App\Models\PricingBreakdown;
 use App\Models\QuoationMarket;
 use App\Models\QuotationProduct;
 use App\Models\QuoteComparison;
+use App\Models\SelectedPricingBreakDown;
+use App\Models\SelectedQuote;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,16 +35,16 @@ class BoundController extends Controller
                     return $company_name;
                 })
                 ->addColumn('policy_number', function($data){
-                    $quoteComparison = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
+                    $quoteComparison = SelectedQuote::where('quotation_product_id', $data->id)->first();
                     $policyNumber = '<a href="" id="'.$data->id.'" name="showPolicyForm" class="showPolicyForm" data-product='.$data->product.'>'.$quoteComparison->quote_no.'</a>';
                     return $policyNumber;
                 })
                 ->addColumn('total_cost', function($data){
-                    $totalCost = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first()->full_payment;
+                    $totalCost = SelectedQuote::where('quotation_product_id', $data->id)->first()->full_payment;
                     return $totalCost;
                 })
                 ->addColumn('effective_date', function($data){
-                    $quote_information = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
+                    $quote_information = SelectedQuote::where('quotation_product_id', $data->id)->first();
                     return $quote_information->effective_date;
                 })
                 ->rawColumns(['action', 'policy_number'])
@@ -54,10 +57,15 @@ class BoundController extends Controller
     {
         $product = QuotationProduct::find($request->id);
         $lead = $product->QuoteInformation->QuoteLead->leads;
-        $quoteComparison = QuoteComparison::where('quotation_product_id', $request->id)->where('recommended', 3)->first();
-        $marketName = QuoationMarket::find($quoteComparison->quotation_market_id);
-        $paymentInformation = $quoteComparison->PaymentInformation;
-        return response()->json(['product' => $product, 'lead' => $lead, 'quoteComparison' => $quoteComparison, 'marketName' => $marketName, 'paymentInformation' => $paymentInformation]);
+        $policyDetailSelectedQuoteIds = PolicyDetail::where('quotation_product_id', $request->id)->pluck('selected_quote_id');
+        if($policyDetailSelectedQuoteIds->isEmpty()){
+           $selectedQuote = SelectedQuote::where('quotation_product_id', $request->id)->first();
+        }else{
+            $selectedQuote = SelectedQuote::where('quotation_product_id', $request->id)->whereNotIn('id', $policyDetailSelectedQuoteIds)->first();
+        }
+        $marketName = QuoationMarket::find($selectedQuote->quotation_market_id);
+        $paymentInformation = $selectedQuote->PaymentInformation;
+        return response()->json(['product' => $product, 'lead' => $lead,  'marketName' => $marketName, 'paymentInformation' => $paymentInformation, 'selectedQuote' => $selectedQuote]);
     }
 
     public function saveBoundInformation(Request $request)
@@ -65,9 +73,8 @@ class BoundController extends Controller
         try{
             DB::beginTransaction();
             $userProfileId = Auth::user()->userProfile->id;
-            $quoteComparison = QuoteComparison::where('quotation_product_id', $request->id)->where('recommended', 3)->first();
+            $quoteComparison = SelectedQuote::where('quotation_product_id', $request->id)->first();
             $paymentInformation = $quoteComparison->PaymentInformation;
-
             if($paymentInformation->payment_term == 'Split low down' || $paymentInformation->payment_term == 'Low down')
             {
                 $financingStatus = new FinancingStatus();
@@ -75,6 +82,7 @@ class BoundController extends Controller
                 $financingStatus->status = "Request For Financing";
                 $financingStatus->save();
             }
+
             $boundInformation = new BoundInformation();
             $boundInformation->quoatation_product_id  = $request->id;
             $boundInformation->user_profile_id = $userProfileId;

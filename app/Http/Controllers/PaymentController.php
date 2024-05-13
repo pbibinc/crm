@@ -6,11 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\GeneralInformation;
 use App\Models\Lead;
 use App\Models\PaymentInformation;
+use App\Models\PolicyDetail;
+use App\Models\PricingBreakdown;
 use App\Models\QuoationMarket;
 use App\Models\QuoteComparison;
+use App\Models\SelectedPricingBreakDown;
+use App\Models\SelectedQuote;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
 class PaymentController extends Controller
@@ -18,44 +23,41 @@ class PaymentController extends Controller
     public function index(Request $request)
     {
         $paymentInformation = new PaymentInformation();
-        // $paymentInformationInstance = ;
-        // dd($paymentInformationInstance);
-        $paymentInformationData = $paymentInformation->AccountsForPayable();
-        // $generalInformation = $paymentInformationData->QuoteComparison->QuotationProduct->QuoteInformation->QuoteLead->leads->GeneralInformation;
+        $paymentInformationData = $paymentInformation->where('status', 'pending')->get();
         if($request->ajax())
         {
             return DataTables::of($paymentInformationData)
             ->addIndexColumn()
             ->addColumn('payment_type', function($paymentInformationData){
-                $paymentType = $paymentInformationData['data']->payment_type;
+                $paymentType = $paymentInformationData->payment_type;
                 return $paymentType;
             })
             ->addColumn('quote_no', function($paymentInformationData){
-                $quoteNo = $paymentInformationData['data']->QuoteComparison->quote_no;
+                $quoteNo = $paymentInformationData->QuoteComparison->quote_no;
                 return $quoteNo;
             })
             ->addColumn('company_name', function($paymentInformationData){
-                $lead = $paymentInformationData['data']->QuoteComparison->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name;
+                $lead = $paymentInformationData->QuoteComparison->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name;
                 return $lead;
             })
             ->addColumn('product', function($paymentInformationData){
-                $product = $paymentInformationData['data']->QuoteComparison->QuotationProduct->product;
+                $product = $paymentInformationData->QuoteComparison->QuotationProduct->product;
                 return $product;
             })
             ->addColumn('status', function($paymentInformationData){
-                $status = $paymentInformationData['data']->QuoteComparison->QuotationProduct->status;
+                $status = $paymentInformationData->QuoteComparison->QuotationProduct->status;
                 return $status;
             })
             ->addColumn('requested_date', function($paymentInformationData){
-                $requestedDate = $paymentInformationData['data']->created_at->format('M-d-Y H:i:s');
+                $requestedDate = $paymentInformationData->created_at->format('M-d-Y H:i:s');
                 return $requestedDate;
             })
             ->addColumn('requested_by', function($paymentInformationData){
-                $requestedBy = $paymentInformationData['data']->QuoteComparison->QuotationProduct->brokerQuotation->fullAmericanName();
+                $requestedBy = $paymentInformationData->QuoteComparison->QuotationProduct->brokerQuotation->fullAmericanName();
                 return $requestedBy;
             })
             ->addColumn('action', function($paymentInformationData){
-                $viewButton = '<button type="button" id="'.$paymentInformationData['data']->id.'" data-user-id="'. $paymentInformationData['data']->QuoteComparison->QuotationProduct->brokerQuotation->user_profile_id.'" class="btn btn-sm btn-primary viewPaymentInformationButton"><i class="ri-eye-line"></i></button>';
+                $viewButton = '<button type="button" id="'.$paymentInformationData->id.'" data-user-id="'. $paymentInformationData->QuoteComparison->QuotationProduct->brokerQuotation->user_profile_id.'" class="btn btn-sm btn-primary viewPaymentInformationButton"><i class="ri-eye-line"></i></button>';
                 return $viewButton;
             })
             ->make(true);
@@ -74,11 +76,8 @@ class PaymentController extends Controller
                 'chargedAmount' => 'required',
                 'note' => 'required',
             ]);
-
             if($request->paymentInformationId){
                 $paymentInformation = PaymentInformation::find($request->paymentInformationId);
-
-                //Updating quotation number
                 $quoteComparison = $paymentInformation->QuoteComparison;
                 $quoteComparison->quote_no = $request->quoteNumber;
                 $quoteComparison->save();
@@ -86,15 +85,26 @@ class PaymentController extends Controller
                 $paymentInformation = new PaymentInformation();
 
                 //Updating quotation number and setting status
-                $quoteComparison = QuoteComparison::find($request->quoteComparisonId);
-                $quoteComparison->quote_no = $request->quoteNumber;
-                $quoteComparison->recommended = 2;
-                $quoteComparison->save();
+                // $quoteComparison = QuoteComparison::find($request->quoteComparisonId);
+                // $quoteComparison->quote_no = $request->quoteNumber;
+                // $quoteComparison->recommended = 2;
+                // $quoteComparison->save();
+                $selectedQuote = SelectedQuote::find($request->quoteComparisonId);
+                $selectedPricingBreakdown = $selectedQuote->SelectedPricingBreakDown;
+
+                // SelectedPricingBreakDown::create($pricingBreakDown->toArray());
+                // SelectedQuote::create($quoteComparison->toArray());
 
                 //Updating quotation product status
-                $paymentProduct = $quoteComparison->QuotationProduct;
+                $paymentProduct = $selectedQuote->QuotationProduct;
                 $paymentProduct->status = 9;
                 $paymentProduct->save();
+            }
+
+            if($request->paymentType == 'Direct Renewals'){
+                $policyDetails = PolicyDetail::where('quotation_product_id', $selectedQuote->QuotationProduct->id)->first();
+                $policyDetails->status = 'Renewal Make A Payment';
+                $policyDetails->save();
             }
 
             //Saving Payment Information
@@ -113,6 +123,7 @@ class PaymentController extends Controller
             $paymentInformation->compliance_by = $request->insuranceCompliance;
             $paymentInformation->amount_to_charged = $request->chargedAmount;
             $paymentInformation->note = $request->note;
+            $paymentInformation->selected_quote_id = $request->selectedQuoteId;
             $paymentInformation->save();
 
             //updating Lead Details
@@ -131,9 +142,10 @@ class PaymentController extends Controller
             DB::commit();
             return response()->json(['success' => 'Payment Information Successfully Saved!'], 200);
         }catch(\Exception $e){
+            DB::rollBack();
+            Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
-
     }
 
     public function getPaymentInformation(Request $request)
@@ -141,11 +153,12 @@ class PaymentController extends Controller
         $paymentInformation = PaymentInformation::find($request->id);
         $lead = $paymentInformation->QuoteComparison->QuotationProduct->QuoteInformation->QuoteLead->leads;
         $generalInformation = $lead->GeneralInformation;
-        $quoteComparison = $paymentInformation->QuoteComparison;
-        $medias = $quoteComparison->media;
+        $quoteComparison = SelectedQuote::where('quotation_product_id', $paymentInformation->QuoteComparison->QuotationProduct->id)->first();
+
+        $medias = $paymentInformation->QuoteComparison->media;
         $fullName = $generalInformation->customerFullName();
         $market = QuoationMarket::find($quoteComparison->quotation_market_id);
-        $quotationProduct = $quoteComparison->QuotationProduct;
+        $quotationProduct = $paymentInformation->QuoteComparison->QuotationProduct;
         $userId = User::find($quotationProduct->brokerQuotation->user_profile_id)->id;
         return response()->json(['paymentInformation' => $paymentInformation, 'lead' => $lead, 'generalInformation' => $generalInformation, 'quoteComparison' => $quoteComparison, 'market' => $market, 'fullName' => $fullName, 'quotationProduct' => $quotationProduct, 'medias' => $medias, 'userId' => $userId], 200);
     }

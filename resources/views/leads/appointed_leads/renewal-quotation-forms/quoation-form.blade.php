@@ -7,7 +7,19 @@
 
 @php
     use App\Models\PolicyDetail;
+    use App\Models\SelectedQuote;
+    use App\Models\PaymentInformation;
     $policyDetail = PolicyDetail::where('quotation_product_id', $quoteProduct->id)->first();
+    $policyDetailsIds = PolicyDetail::where('quotation_product_id', $quoteProduct->id)->pluck('id');
+    $selectedQuoteData = SelectedQuote::where('quotation_product_id', $quoteProduct->id)
+        ->whereNotIn('id', $policyDetailsIds)
+        ->first();
+    $selectedQuote = $selectedQuoteData ? $selectedQuoteData : null;
+    $selectedQuoteId = $selectedQuote ? $selectedQuote->id : null;
+    $paymentInformation = null; // Initialize $paymentInformation with null
+    if ($selectedQuote) {
+        $paymentInformation = PaymentInformation::where('selected_quote_id', $selectedQuote->id)->first();
+    }
 @endphp
 
 <div class="row mb-2">
@@ -48,6 +60,29 @@
         <tbody></tbody>
     </table>
 </div>
+
+@if ($selectedQuote)
+    <div class="row mb-2">
+        <div class="col-6 title-card">
+            <h4 class="card-title mb-0" style="color: #ffffff">Selected Quote Information</h4>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div>
+            </div>
+            <div>
+                <button class="btn btn-primary editSelectedQuote" id="editSelectedQuote">
+                    EDIT QUOTE
+                </button>
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        @include(
+            'leads.appointed_leads.broker-quotation-forms.selected-quotation-form',
+            compact('quoteProduct'));
+    </div>
+@endif
 
 <div class="modal fade" id="uploadFileModal" tabindex="-1" aria-labelledby="addQuoteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl " role="document">
@@ -238,6 +273,11 @@
         </div>
     </div>
 </div>
+
+@include(
+    'leads.appointed_leads.broker-quotation-forms.selected-quote-edit-form',
+    compact('selectedQuoteId'))
+{{-- @include('leads.appointed_leads.broker-forms.make-payment-form', compact('complianceOfficer')) --}}
 <script>
     Dropzone.autoDiscover = false;
     var myDropzone;
@@ -723,6 +763,56 @@
                 }
             });
         });
+
+        $(document).on('click', '.selectQuoteButton', function(e) {
+            e.preventDefault();
+            var id = $(this).attr('id');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to select this quote?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('selected-quote.store') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                'content')
+                        },
+                        method: "POST",
+                        data: {
+                            id: id,
+                            stats: 4
+                        },
+                        success: function() {
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: 'Quotation Comparison has been selected',
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            var errorMessage = xhr.status + ': ' + xhr.statusText
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Something went wrong: ' +
+                                    errorMessage,
+                                icon: 'error'
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
     });
 
     //function for parsing
@@ -755,9 +845,146 @@
         calculateFullPayment();
     });
 
+    // $(document).on('click', '.makePaymentButton', function() {
 
+    //     var id = "{{ $selectedQuoteId }}";
+    //     $.ajax({
+    //         url: "{{ route('edit-selected-quote') }}",
+    //         method: "POST",
+    //         data: {
+    //             id: id,
+    //             _token: "{{ csrf_token() }}"
+    //         },
+    //         dataType: "json",
+    //         success: function(response) {
+    //             console.log(response);
+    //             $('#quoteNumber').val(response.data.quote_no);
+    //             $('#market').val(response.market.name);
+    //             $('#companyName').val(response.leads.company_name);
+    //             $('#firstName').val(response.generalInformation.firstname);
+    //             $('#lastName').val(response.generalInformation.lastname);
+    //             $('#emailAddress').val(response.generalInformation.email_address);
+    //             $('#totalPremium').val(response.data.full_payment);
+    //             $('#brokerFeeAmount').val(response.data.broker_fee);
+    //             $('#generalInformationId').val(response.generalInformation.id);
+    //             $('#leadsId').val(response.leads.id);
+    //             $('#quoteComparisonId').val(id);
+    //             $('#selectedQuoteId').val(id);
+    //             $('#makePaymentEffectiveDate').val(response.data.effective_date);
+    //             //$('#statusInput').val(data.quotation_product.status);
+    //             $('#makePaymentModal').modal('show');
+    //         }
+    //     });
+    // });
 
+    // $(document).on('click', '.editMakePayment', function() {
+    //     $.ajax({
+    //         url: "{{ route('get-payment-information') }}",
+    //         method: "GET",
+    //         data: {
+    //             id: "{{ $paymentInformation ? $paymentInformation->id : null }}",
+    //             _token: "{{ csrf_token() }}"
+    //         },
+    //         dataType: "json",
+    //         success: function(response) {
+    //             console.log(response);
+    //             var paymentMethod = response.paymentInformation.payment_method;
+    //             $('#paymentType').val(response.paymentInformation.payment_type);
+    //             $('#insuranceCompliance').val(response.paymentInformation.compliance_by);
+    //             $('#market').val(response.market.name);
+    //             $('#firstName').val(response.generalInformation.firstname);
+    //             $('#companyName').val(response.lead.company_name);
+    //             $('#makePaymentEffectiveDate').val(response.quoteComparison.effective_date);
+    //             $('#quoteNumber').val(response.quoteComparison.quote_no);
+    //             $('#paymentTerm').val(response.paymentInformation.payment_term);
+    //             $('#lastName').val(response.generalInformation.lastname);
+    //             $('#emailAddress').val(response.generalInformation.email_address);
+    //             // Set the payment method dropdown based on the fetched payment method
+    //             if (paymentMethod.toLowerCase() == 'checking') {
+    //                 $('#paymentMethodMakePayment').val('Checking').trigger('change');
+    //             } else {
+    //                 $('#paymentMethodMakePayment').val("Credit Card").trigger('change');
+    //                 // Handling other card types
+    //                 if (['Visa', 'Master Card', 'American Express'].includes(paymentMethod)) {
+    //                     $('#cardType').val(paymentMethod).trigger('change');
+    //                 } else {
+    //                     $('#cardType').val('Other').trigger('change');
+    //                     $('#otherCard').val(paymentMethod);
+    //                 }
+    //             }
+    //             $('#totalPremium').val(response.quoteComparison.full_payment);
+    //             $('#brokerFeeAmount').val(response.quoteComparison.broker_fee);
+    //             $('#chargedAmount').val(response.paymentInformation.amount_to_charged);
+    //             $('#note').val(response.paymentInformation.note);
+    //             $('#generalInformationId').val(response.generalInformation.id);
+    //             $('#leadsId').val(response.lead.id);
+    //             $('#quoteComparisonId').val(response.quoteComparison.id);
+    //             $('#paymentInformationId').val(response.paymentInformation.id);
+    //             $('#selectedQuoteId').val({{ $selectedQuote->id }});
+    //             $('#makePaymentModal').modal('show');
+    //         }
+    //     })
+    // });
 
+    $(document).on('click', '.editSelectedQuote', function(e) {
+        e.preventDefault();
+        var baseUrl = "{{ url('quoatation/selected-quote') }}";
+        var id = "{{ $selectedQuoteId }}";
+        var url = `${baseUrl}/${id}/edit`;
+        $('#action').val('edit');
+        $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
+        $.ajax({
+            url: url,
+            method: "GET",
+            data: {
+                id: id,
+                _token: "{{ csrf_token() }}"
+            },
+            dataType: "json",
+            success: function(response) {
+                // console.log(response.data.id)
+                var url = `{{ asset('${response.media.filepath}') }}`;
+                var filename = response.data.basename;
+                console.log(response.data);
+                //pricing breakdown inputs
+                $('#selectedPremium').val(response.pricingBreakdown.premium);
+                $('#selectedEndorsements').val(response.pricingBreakdown.endorsements);
+                $('#selectedPolicyFee').val(response.pricingBreakdown.policy_fee);
+                $('#selectedInspectionFee').val(response.pricingBreakdown
+                    .inspection_fee);
+                $('#selectedStampingFee').val(response.pricingBreakdown.stamping_fee);
+                $('#selectedSurplusLinesTax').val(response.pricingBreakdown
+                    .surplus_lines_tax);
+                $('#selectedPlacementFee').val(response.pricingBreakdown.placement_fee);
+                $('#selectedMiscellaneousFee').val(response.pricingBreakdown
+                    .miscellaneous_fee);
 
-    //function for resetting the input inside modal
+                //quote comparison inputs
+                $('#selectedMarketDropdown').val(String(response.data
+                    .quotation_market_id));
+                $('#selectedFullPayment').val(response.data.full_payment);
+                $('#selectedDownPayment').val(response.data.down_payment);
+                $('#selectedMonthlyPayment').val(response.data.monthly_payment);
+                $('#selectedNumberOfPayment').val(response.data.number_of_payments);
+                $('#selectedBrokerFee').val(response.data.broker_fee);
+                $('#selectedProduct_hidden_id').val(response.data.id);
+                $('#selectedProductId').val(response.data.quotation_product_id);
+                $('#selectedQuoteNo').val(response.data.quote_no);
+                $('#selectedCurrentMarketId').val(response.data.quotation_market_id);
+                $('#selectedEffectiveDate').val(response.data.effective_date);
+
+                $('#medias').hide();
+                $('#mediaLabelId').hide();
+                $('#selectedQuoteAction_button').val('Update');
+                if (response.data.recommended == 1) {
+                    $('#reccomended').prop('checked', true);
+                    $('#selectedRecommended_hidden').val(1);
+                } else {
+                    $('#reccomended').prop('checked', false);
+                    $('#selectedRecommended_hidden').val(0);
+                }
+                $('#editSelectedQuoteModal').modal('show');
+            }
+        });
+    });
 </script>

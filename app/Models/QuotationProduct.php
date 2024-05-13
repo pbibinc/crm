@@ -21,7 +21,7 @@ class QuotationProduct extends Model
 
     public function QouteComparison()
     {
-        return $this->hasMany(QuoteComparison::class, 'quotation_product_id');
+        return $this->hasMany(SelectedQuote::class, 'quotation_product_id');
     }
 
     public function QuoteInformation()
@@ -32,6 +32,11 @@ class QuotationProduct extends Model
     public function PolicyDetail()
     {
         return $this->belongsTo(PolicyDetail::class, 'quotation_product_id');
+    }
+
+    public function QuotationProductCallback()
+    {
+        return $this->hasOne(QuotationProductCallback::class, 'quotation_product_id', 'id');
     }
 
     public function quotedProduct()
@@ -103,8 +108,6 @@ class QuotationProduct extends Model
         return $quotationProducts->isEmpty() ? null : $quotationProducts;
     }
 
-
-
     public function userProfile()
     {
         return $this->belongsTo(UserProfile::class, 'user_profile_id');
@@ -149,13 +152,13 @@ class QuotationProduct extends Model
 
     public function getRequestToBind()
     {
-        $query = $this->whereIn('status', [6, 15])->get();
+        $query = $this->whereIn('status', [6, 15, 17, 18])->get();
         return $query ? $query : null;
     }
 
     public function getBoundList()
     {
-        $query = $this->where('status', 11)->get();
+        $query = $this->whereIn('status', [11, 20])->get();
         return $query ? $query : null;
     }
 
@@ -167,10 +170,23 @@ class QuotationProduct extends Model
 
     public function getBinding()
     {
-        $query = $this->where('status', 12)->get();
+        $query = $this->whereIn('status', [12, 19])->get();
         return $query ? $query : null;
     }
 
+    public function getQuotedProduct($userProfileId, $status)
+    {
+        $query = self::where('user_profile_id', $userProfileId);
 
+        if (is_array($status)) {
+            $query = $query->whereIn('status', $status);
+        } else {
+            $query = $query->where('status', $status);
+        }
+
+        $quotationProducts = $query->orderBy('created_at')->get();
+
+        return $quotationProducts->isEmpty() ? null : $quotationProducts;
+    }
 
 }

@@ -49,9 +49,9 @@ class FinancingController extends Controller
     public function store(Request $request)
     {
         try{
+
             DB::beginTransaction();
             $data = $request->all();
-
             $file = $data['pfaFile'];
             $basename = $file->getClientOriginalName();
             $directoryPath = public_path('backend/assets/attacedFiles/financing-agreement/');
@@ -216,6 +216,7 @@ class FinancingController extends Controller
     {
         if($request->ajax())
         {
+
             $financingStaus = new FinancingStatus();
             $data = $financingStaus->getPfaProcessing();
             return DataTables::of($data)

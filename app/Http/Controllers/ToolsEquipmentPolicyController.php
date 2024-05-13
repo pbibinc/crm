@@ -8,6 +8,7 @@ use App\Models\PolicyAdditionalValue;
 use App\Models\PolicyDetail;
 use App\Models\QuotationProduct;
 use App\Models\QuoteComparison;
+use App\Models\SelectedQuote;
 use App\Models\ToolsEquipmentPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -49,14 +50,14 @@ class ToolsEquipmentPolicyController extends Controller
             DB::beginTransaction();
             $file = $data['file'];
             $basename = $file->getClientOriginalName();
-            $directoryPath = public_path('backend/assets/attacedFiles/binding/tools-equipment-policy');
+            $directoryPath = public_path('backend/assets/attacedFiles/policy');
             $type = $file->getClientMimeType();
             $size = $file->getSize();
             if(!File::isDirectory($directoryPath)){
                 File::makeDirectory($directoryPath, 0777, true, true);
             }
             $file->move($directoryPath, $basename);
-            $filepath = 'backend/assets/attacedFiles/binding/tools-equipment-policy' . $basename;
+            $filepath = 'backend/assets/attacedFiles/policy'. '/' . $basename;
 
             $metadata = new Metadata();
             $metadata->basename = $basename;
@@ -68,6 +69,7 @@ class ToolsEquipmentPolicyController extends Controller
             $mediaId = $metadata->id;
 
             $policyDetails = new PolicyDetail();
+            $policyDetails->selected_quote_id = $data['toolsEquipmentHiddenQuoteId'];
             $policyDetails->quotation_product_id = $data['toolsEquipmentHiddenInputId'];
             $policyDetails->policy_number = $data['toolsEquipmentPolicyNumber'];
             $policyDetails->carrier = $data['toolsEquipmentCarrierInput'];
@@ -104,7 +106,7 @@ class ToolsEquipmentPolicyController extends Controller
             $quotationProduct->status = 8;
             $quotationProduct->save();
 
-            $quoteComparison = QuoteComparison::find($data['toolsEquipmentHiddenQuoteId']);
+            $quoteComparison = SelectedQuote::find($data['toolsEquipmentHiddenQuoteId']);
             $quoteComparison->quote_no = $data['toolsEquipmentPolicyNumber'];
             $quoteComparison->save();
 

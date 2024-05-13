@@ -135,12 +135,16 @@
                         orderable: false,
                         searchable: false
                     }
+                ],
+                "order": [
+                    [0, "desc"]
                 ]
             });
 
             $(document).on('click', '.editPaymentButton', function(e) {
                 e.preventDefault();
                 var id = $(this).data('id');
+                var paymentType = $(this).data('payment-type');
                 $.ajax({
                     url: "{{ route('payment-charged.edit') }}",
                     method: "POST",
@@ -152,6 +156,7 @@
                     success: function(data) {
                         $('#invoiceNumber').val(data.paymentCharged.invoice_number);
                         $('#paymentChargedId').val(data.paymentCharged.id);
+                        $('#paymentType').val(paymentType);
                         $('#modalForm').modal('show');
                         // console.log(data);
                     }

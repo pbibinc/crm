@@ -208,7 +208,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label" for="effectiveDate">Effective Date</label>
-                                <input class="form-control" type="date" value="2011-08-19" id="effectiveDate"
+                                <input class="form-control " type="date" value="2011-08-19" id="glEffectiveDate"
                                     name="effectiveDate">
                             </div>
 
@@ -224,7 +224,7 @@
                     <div class="row">
                         <div class="col-6">
                             <div class="form-group">
-                                <label class="form-label" for="expirationDate">Attached File <i
+                                <label class="form-label" for="attachedFiles" id="attachedFileLabel">Attached File <i
                                         class="ri-attachment-line"></i></label>
                                 <input type="file" class="form-control" id="attachedFiles" name="attachedFiles"
                                     multiple>
@@ -232,7 +232,8 @@
                         </div>
                         <div class="col-6">
                             <div class="form-group">
-                                <label class="form-label" for="statusDropdowm">Status</label>
+                                <label class="form-label" for="statusDropdowm"
+                                    id="statusDropdownLabel">Status</label>
                                 <select class="form-select" aria-label="Default select example" id="statusDropdowm"
                                     name="statusDropdowm">
                                     <option selected="">Open this select menu</option>
@@ -250,13 +251,15 @@
                     </div>
                     <input type="hidden" id="glHiddenInputId" name="glHiddenInputId">
                     <input type="hidden" name="glHiddenQuoteId" id="hiddenQuoteId">
+                    <input type="hidden" name="glHiddenSelectedQuoteId" id="glHiddenSelectedQuoteId">
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" name="saveGeneralLiabilitiesPolicyForm"
-                        id="saveGeneralLiabilitiesPolicyForm" value="Save" class="btn btn-success ladda-button"
-                        data-style="expand-right">
                     <button type="button" class="btn btn-secondary waves-effect waves-light"
                         data-bs-dismiss="modal">Close</button>
+                    <input type="submit" name="saveGeneralLiabilitiesPolicyForm"
+                        id="saveGeneralLiabilitiesPolicyForm" value="Submit" class="btn btn-success ladda-button"
+                        data-style="expand-right">
+
                 </div>
             </form>
         </div>

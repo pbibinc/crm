@@ -9,6 +9,7 @@ use App\Models\PolicyAdditionalValue;
 use App\Models\PolicyDetail;
 use App\Models\QuotationProduct;
 use App\Models\QuoteComparison;
+use App\Models\SelectedQuote;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -69,6 +70,7 @@ class CommercialAutoPolicyController extends Controller
             $mediaId = $metadata->id;
 
             $policyDetails = new PolicyDetail();
+            $policyDetails->selected_quote_id = $data['commercialAutoHiddenQuoteId'];
             $policyDetails->quotation_product_id = $data['commercialAutoHiddenInputId'];
             $policyDetails->policy_number = $data['commerciarlAutoPolicyNumber'];
             $policyDetails->carrier = $data['commercialAutoCarrierInput'];
@@ -116,7 +118,7 @@ class CommercialAutoPolicyController extends Controller
             $quotationProduct->save();
 
             //code for quoation
-            $quoteComparison = QuoteComparison::find($data['commercialAutoHiddenQuoteId']);
+            $quoteComparison = SelectedQuote::find($data['commercialAutoHiddenQuoteId']);
             $quoteComparison->quote_no = $data['commerciarlAutoPolicyNumber'];
             $quoteComparison->save();
 

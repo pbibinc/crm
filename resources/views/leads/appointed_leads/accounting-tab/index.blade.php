@@ -37,6 +37,7 @@
     var myDropzone;
     $(document).ready(function() {
         var id = {{ $generalInformation->lead->id }};
+        console.log(id);
         $('#accountingTable').DataTable({
             processing: true,
             serverSide: true,
@@ -158,7 +159,7 @@
                 success: function(data) {
                     // $('#viewInvoiceModal').modal('show');
                     // $('#viewInvoiceModalBody').html(data);
-                    console.log(data);
+                    // console.log(data);
                     addExistingFiles(data.media);
                     $('#fileViewingModal').modal('show');
                 }

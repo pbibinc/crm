@@ -85,7 +85,8 @@
                         </div>
                         <div class="col-6">
                             <label for="quoteNo" class="form-label">Policy No/Quote No:</label>
-                            <input type="text" class="form-control" id="quoteNo" name="quoteNo" required>
+                            <input type="text" class="form-control" id="quoteNo" name="quoteNo" required
+                                autocomplete="off">
                         </div>
                     </div>
                     <div class="row mb-2">
@@ -747,10 +748,4 @@
     $('.calculateInput').on('input', function() {
         calculateFullPayment();
     });
-
-
-
-
-
-    //function for resetting the input inside modal
 </script>

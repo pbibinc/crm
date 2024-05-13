@@ -8,7 +8,6 @@
     .message-box.sender {
         margin-left: auto;
         background-color: #DCF8C6;
-        ;
         /* Green */
         color: black;
         border-radius: 10px 0px 10px 10px !important;

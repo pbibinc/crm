@@ -29,6 +29,7 @@ class GeneralLiabilitiesDataController extends BaseController
     public function saveGeneralLiabilities(Request $request)
     {
         $data = $request->all();
+        Log::info($data);
         $dataGeneralInformationId = GeneralInformation::where('leads_id', $data['leadId'])->value('id');
 
         if (empty($dataGeneralInformationId)) {

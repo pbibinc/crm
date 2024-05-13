@@ -7,9 +7,11 @@ use App\Mail\SendQoute;
 use App\Models\BrokerQuotation;
 use App\Models\GeneralInformation;
 use App\Models\GeneralLiabilities;
+use App\Models\Insurer;
 use App\Models\Lead;
 use App\Models\Metadata;
 use App\Models\PaymentInformation;
+use App\Models\PolicyDetail;
 use App\Models\PricingBreakdown;
 use App\Models\QuoationMarket;
 use App\Models\QuotationProduct;
@@ -17,6 +19,7 @@ use App\Models\QuoteComparison;
 use App\Models\QuoteInformation;
 use App\Models\QuoteLead;
 use App\Models\RenewalQuote;
+use App\Models\SelectedQuote;
 use App\Models\UnitedState;
 use App\Models\UserProfile;
 use Carbon\Carbon;
@@ -43,7 +46,7 @@ class QuotationController extends Controller
         $quotedProductCount = $quotatationProduct->getQuotedProductByUserProfile(Auth::user()->userProfile->id)->count();
         $quotationdProductCount = $quotatationProduct->getQuotingProductByUserProfile(Auth::user()->userProfile->id)->count();
         $quotationProduct = new QuotationProduct();
-        return view('leads.appointed_leads.index', compact('products', 'groupedProducts', 'quotedProductCount', 'quotationdProductCount', 'quotationProduct'));
+        return view('leads.appointed_leads.quotation-view.index', compact('products', 'groupedProducts', 'quotedProductCount', 'quotationdProductCount', 'quotationProduct'));
     }
 
     public function leadProfile(Request $request)
@@ -132,7 +135,10 @@ class QuotationController extends Controller
         }
         $localTime = Carbon::now($timezoneForState);
         $generalLiabilities = $generalInformation->generalLiabilities;
-        return view('leads.appointed_leads.broker-lead-profile-view', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'complianceOfficer'));
+        $markets = QuoationMarket::all()->sortBy('name');
+        $carriers = Insurer::all()->sortBy('name');
+        $leadId = $lead->id;
+        return view('leads.appointed_leads.broker-lead-profile-view', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'complianceOfficer', 'markets', 'carriers','leadId'));
     }
 
     public function saveQuotationProduct(Request $request)
@@ -165,6 +171,7 @@ class QuotationController extends Controller
             $quoteNo = $request->input('quoteNo');
             $effectiveDate = $request->input('effectiveDate');
             $numberOfPayment = $request->input('numberOfPayment');
+            $renewalQuote = $request->input('renewalQuote');
 
             // $media = $request->input('media');
             $convertedFullPayment = floatval($fullPayment);
@@ -238,6 +245,7 @@ class QuotationController extends Controller
                 $quoteComparison->monthly_payment = $monthlyPayment;
                 $quoteComparison->number_of_payments = $numberOfPayment;
                 $quoteComparison->broker_fee = $brokerFee;
+
                 $quoteComparison->recommended = floatval($reccomended);
                 $quoteComparison->effective_date = $effectiveDate;
                 $quoteComparison->save();
@@ -392,7 +400,9 @@ class QuotationController extends Controller
             $media= $data->media;
             $pricingBreakdown = $data->PricingBreakdown;
             $market = QuoationMarket::find($data->quotation_market_id);
-            return response()->json(['data' => $data, 'media' => $media, 'pricingBreakdown' => $pricingBreakdown, 'market' => $market]);
+            $leads = $data->QuotationProduct->QuoteInformation->QuoteLead->leads;
+            $generalInformation = $leads->generalInformation;
+            return response()->json(['data' => $data, 'media' => $media, 'pricingBreakdown' => $pricingBreakdown, 'market' => $market, 'leads' => $leads, 'generalInformation' => $generalInformation]);
         }
     }
 
@@ -430,7 +440,6 @@ class QuotationController extends Controller
         return view('leads.broker_leads.assign-quoted-leads', compact('userProfile', 'groupedProducts', 'quoationProduct'));
     }
 
-
     //assigning of product into broker assistant
     public function assignBrokerAssistant(Request $request)
     {
@@ -454,7 +463,7 @@ class QuotationController extends Controller
                    $brokerQuotation->save();
 
                    $quotationProduct = QuotationProduct::find($productId);
-                   $quotationProduct->status = 3;
+                   $quotationProduct->status = 21;
                    $quotationProduct->save();
                 }
                 DB::commit();
@@ -530,8 +539,9 @@ class QuotationController extends Controller
         $brokerId = $request->input('brokerAssistantId');
         $agentUserProfileId = $request->input('agentUserProfileId');
         $userProfileId = $brokerId ? $brokerId : $agentUserProfileId;
+        $statuses = [21, 22, 4, 5, 6, 9, 10, 12, 21, 22];
         if($userProfileId){
-            $pendingProduct = $quotationProduct->getAssignQoutedLead($userProfileId);
+            $pendingProduct = $quotationProduct->getAssignQoutedLead($userProfileId, $statuses);
         }else{
             $pendingProduct = null;
         }
@@ -601,22 +611,34 @@ class QuotationController extends Controller
 
     public function changeStatus(Request $request)
     {
-        if($request->ajax())
-        {
+        try{
+            DB::beginTransaction();
+            if($request->ajax())
+            {
+                $status = $request->input('status');
+                $productId = $request->input('id');
+                $paymentInformationId = $request->input('paymentInformationId');
+                $qoutationProduct = QuotationProduct::find($productId);
+                $qoutationProduct->status = $status;
+                $quotationProductSaving = $qoutationProduct->save();
 
-            $status = $request->input('status');
-            $productId = $request->input('id');
-            $qoutationProduct = QuotationProduct::find($productId);
-            $qoutationProduct->status = $status;
-            $quotationProductSaving = $qoutationProduct->save();
-            if($quotationProductSaving){
-                return response()->json(['success' => 'Status changed successfully']);
+                if($request->has('renewalStatus') && $request->input('renewalStatus') == 'true'){
+                    $policyDetails = PolicyDetail::where('quotation_product_id', $productId)->first();
+                    $policyDetails->status = $request->input('policyStatus');
+                    $policyDetails->save();
+                }
+
+                // $paymentInformation = PaymentInformation::find($paymentInformationId)
+                // ->update(['status' => 'declined']);
             }else{
                 return response()->json(['error' => 'Error in changing status']);
             }
-        }else{
-            return response()->json(['error' => 'Error in changing status']);
+            DB::commit();
+            return response()->json(['success' => 'Status changed successfully']);
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()]);
         }
+
     }
 
     public function setCallBackDate(Request $request)
@@ -696,10 +718,8 @@ class QuotationController extends Controller
 
     public function getGeneralLiabilitiesTable(Request $request)
     {
-        if($request->ajax())
-        {
+        if($request->ajax()){
          $quoteComparisson = QuoteComparison::where('quotation_product_id', $request->input('id'))->get();
-
          return DataTables::of($quoteComparisson)
          ->addIndexColumn()
          ->addColumn('status', function($quoteComparison){
@@ -728,10 +748,44 @@ class QuotationController extends Controller
                 <li><button class="dropdown-item editButton" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i>Edit</button></li>
                 <li><button class="dropdown-item uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i>Upload</button></li>
                 <li><button class="dropdown-item renewQuotation" id="' . $quoteComparison->id . '"><i class="mdi mdi-account-reactivate"></i>Send Renew</button></li>
+                <li><button class="dropdown-item selectQuoteButton" id="' . $quoteComparison->id . '"><i class="ri-checkbox-circle-fill"></i>Select Quote</button></li>
                 <li><button class="dropdown-item deleteButton" id="' . $quoteComparison->id . '"><i class="ri-delete-bin-line"></i>Delete</button></li>
             </ul>
          </div>';
          return $dropdown;
+         })
+         ->addColumn('renewal-quoted_action', function($quoteComparison){
+            $dropdown = '<div class="btn-group">
+            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="ri-more-line"></i>
+            </button>
+            <ul class="dropdown-menu">
+                <li><button class="dropdown-item editButton" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i>Edit</button></li>
+                <li><button class="dropdown-item uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i>Upload</button></li>
+                <li><button class="dropdown-item renewQuotation" id="' . $quoteComparison->id . '"><i class="mdi mdi-account-reactivate"></i>Send Renew</button></li>
+                <li><button class="dropdown-item selectQuoteButton" id="' . $quoteComparison->id . '"><i class="ri-checkbox-circle-fill"></i>Select Quote</button></li>
+                <li><button class="dropdown-item deleteButton" id="' . $quoteComparison->id . '"><i class="ri-delete-bin-line"></i>Delete</button></li>
+            </ul>
+         </div>';
+         return $dropdown;
+         })
+         ->addColumn('renewalPolicyAction', function($quoteComparison){
+            $market = QuoationMarket::find($quoteComparison->quotation_market_id);
+            $leads = QuoteLead::find(QuoteInformation::find($quoteComparison->QuotationProduct->quote_information_id)
+            ->quoting_lead_id)->leads;
+            $paymentInformation = PaymentInformation::where('quote_comparison_id', $quoteComparison->id)->where('status', 'declined')->first();
+            $generalInformation = $leads->GeneralInformation;
+            $quoteProduct = $quoteComparison->QuotationProduct;
+
+            if($paymentInformation){
+                $makePaymentButton = '<button class="btn btn-outline-secondary btn-sm makePaymentButton" id="' . $quoteComparison->id .'" data-quoteNo="'.$quoteComparison->quote_no.'" data-market="'.$market->name.'" data-company-name="'.$leads->company_name.'" data-insured-firstname="'.$generalInformation->firstname.'"
+                data-insured-lastname="'.$generalInformation->lastname.'" data-email="'.$generalInformation->email_address.'" data-broker-fee="'.$quoteComparison->broker_fee.'" data-total-premium="'.$quoteComparison->full_payment.'" data-lead-id="'.$leads->id.'" data-general-information-id="'.$generalInformation->id.'" data-effective-date = "'.$quoteComparison->effective_date.'" data-status="'.$quoteProduct->status.'" data-productId="'.$quoteProduct->id.'" data-payment-information="'.htmlspecialchars(json_encode($paymentInformation), ENT_QUOTES, 'UTF-8').'"><i class="ri-money-dollar-circle-line"></i></button>';
+            }else{
+                $makePaymentButton = '<button class="btn btn-outline-secondary btn-sm makePaymentButton" id="' . $quoteComparison->id .'" data-quoteNo="'.$quoteComparison->quote_no.'" data-market="'.$market->name.'" data-company-name="'.$leads->company_name.'" data-insured-firstname="'.$generalInformation->firstname.'"
+                data-insured-lastname="'.$generalInformation->lastname.'" data-email="'.$generalInformation->email_address.'" data-broker-fee="'.$quoteComparison->broker_fee.'" data-total-premium="'.$quoteComparison->full_payment.'" data-lead-id="'.$leads->id.'" data-general-information-id="'.$generalInformation->id.'" data-effective-date = "'.$quoteComparison->effective_date.'" data-product><i class="ri-money-dollar-circle-line"></i></button>';
+            }
+
+            return $makePaymentButton;
          })
          ->addColumn('action', function($quoteComparison){
             $viewButton = '<button class="btn btn-sm btn-outline-info editButton" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i></button>';
@@ -750,20 +804,22 @@ class QuotationController extends Controller
             $generalInformation = $leads->GeneralInformation;
             $quoteProduct = $quoteComparison->QuotationProduct;
 
-            $uploadFileButton = '<button class="btn btn-outline-success btn-sm uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i></button>';
+            $uploadFileButton = '<button class="btn btn-outline-primary btn-sm uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i></button>';
 
             $editButton = '<button class="edit btn btn-outline-info btn-sm editButton" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i></button>';
 
+            $selectQuoteButton = '<button class="btn btn-outline-success btn-sm selectQuoteButton" id="' . $quoteComparison->id . '"><i class="ri-checkbox-circle-fill"></i></button>';
+
             if($paymentInformation){
-                $makePaymentButton = '<button class="btn btn-outline-secondary btn-sm makePaymentButton" id="' . $quoteComparison->id .'" data-quoteNo="'.$quoteComparison->quote_no.'" data-market="'.$market->name.'" data-company-name="'.$leads->company_name.'" data-insured-firstname="'.$generalInformation->firstname.'"
+                $makePaymentButton = '<button class="btn btn-outline-success btn-sm makePaymentButton" id="' . $quoteComparison->id .'" data-quoteNo="'.$quoteComparison->quote_no.'" data-market="'.$market->name.'" data-company-name="'.$leads->company_name.'" data-insured-firstname="'.$generalInformation->firstname.'"
                 data-insured-lastname="'.$generalInformation->lastname.'" data-email="'.$generalInformation->email_address.'" data-broker-fee="'.$quoteComparison->broker_fee.'" data-total-premium="'.$quoteComparison->full_payment.'" data-lead-id="'.$leads->id.'" data-general-information-id="'.$generalInformation->id.'" data-effective-date = "'.$quoteComparison->effective_date.'" data-status="'.$quoteProduct->status.'" data-productId="'.$quoteProduct->id.'" data-payment-information="'.htmlspecialchars(json_encode($paymentInformation), ENT_QUOTES, 'UTF-8').'"><i class="ri-money-dollar-circle-line"></i></button>';
             }else{
                 $makePaymentButton = '<button class="btn btn-outline-secondary btn-sm makePaymentButton" id="' . $quoteComparison->id .'" data-quoteNo="'.$quoteComparison->quote_no.'" data-market="'.$market->name.'" data-company-name="'.$leads->company_name.'" data-insured-firstname="'.$generalInformation->firstname.'"
                 data-insured-lastname="'.$generalInformation->lastname.'" data-email="'.$generalInformation->email_address.'" data-broker-fee="'.$quoteComparison->broker_fee.'" data-total-premium="'.$quoteComparison->full_payment.'" data-lead-id="'.$leads->id.'" data-general-information-id="'.$generalInformation->id.'" data-effective-date = "'.$quoteComparison->effective_date.'" data-product><i class="ri-money-dollar-circle-line"></i></button>';
             }
-            return $editButton . ' ' . $makePaymentButton . ' ' . $uploadFileButton;
+            return $editButton . ' ' . $uploadFileButton . ' ' . $selectQuoteButton;
          })
-         ->rawColumns(['market_name', 'action', 'broker_action', 'renewal_action_dropdown'])
+         ->rawColumns(['market_name', 'action', 'broker_action', 'renewal_action_dropdown', 'renewalPolicyAction', 'renewal-quoted_action'])
          ->make(true);
         }
     }

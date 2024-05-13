@@ -17,6 +17,7 @@
 
 <!--Css For Dropzone-->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.css" rel="stylesheet">
+<script src="//editor.unlayer.com/embed.js"></script>
 
 <script>
     $.ajaxSetup({

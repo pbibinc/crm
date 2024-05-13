@@ -116,6 +116,7 @@
 
                 <div class="col-8">
                     <div class="row">
+
                         <div class="col-4">
                             @if ($product->status == 4)
                                 <div class="card"
@@ -126,6 +127,7 @@
                                         <input class="form-control" type="datetime-local"
                                             value="{{ old('callBackDateTime', $product->callback_date ?? $localTime) }}"
                                             id="callBackDateTime" style="margin-bottom: 10px;">
+                                        <input type="hidden" id="callBackId">
                                         <div class="text-center">
                                             <button type="button" class="btn btn-primary waves-effect waves-light"
                                                 style="padding: 6px 12px; font-size: 14px;"
@@ -135,6 +137,7 @@
                                 </div>
                             @endif
                         </div>
+
                         <div class="col-4">
                             <div class="card"
                                 style="background-color: white; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 10px;">
@@ -181,11 +184,16 @@
                                                 <option value="15" @if ($product->status == 15) selected @endif>
                                                     Resend RTB</option>
                                             @endif
+                                            @if ($product->status == 22)
+                                                <option value="22" @if ($product->status == 22) selected @endif>
+                                                    Pending</option>
+                                            @endif
                                         </select>
                                     </div>
                                     @if ($product->status !== 13 && $product->status !== 9)
-                                        <button type="button" class="btn btn-primary waves-effect waves-light"
-                                            style="padding: 6px 12px; font-size: 14px;" id="saveStatusButton">Save</button>
+                                        <button type="button" class="btn btn-success waves-effect waves-light"
+                                            style="padding: 6px 12px; font-size: 14px;"
+                                            id="saveStatusButton">Submit</button>
                                     @endif
                                 </div>
                             </div>
@@ -259,6 +267,11 @@
                             <li class="nav-item">
                                 <a class="nav-link" data-bs-toggle="tab" href="#accounting" role="tab">
                                     <span class="d-none d-sm-block"><i class="fas fa-cog"></i> Accounting</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#policies" role="tab">
+                                    <span class="d-none d-sm-block"><i class="fas fa-cog"></i> Policies</span>
                                 </a>
                             </li>
                         </ul>
@@ -361,7 +374,6 @@
                                     ])
                                 </div>
                                 <div class="tab-pane" id="quotation" role="tabpanel">
-
                                     <div class="quotation-form" id="generalLiabilitiesQuoationForm" role="tabpanel">
                                         @if ($product->product == 'General Liability')
                                             @include(
@@ -377,7 +389,6 @@
                                             )
                                         @endif
                                     </div>
-
                                     <div class="quotation-form" id="workersCompensationForm" role="tabpanel">
                                         @if ($product->product == 'Workers Compensation')
                                             @include(
@@ -392,7 +403,6 @@
                                             )
                                         @endif
                                     </div>
-
                                     <div class="quotation-form" id="commercialAutoForm" role="tabpanel">
                                         @if ($product->product == 'Commercial Auto')
                                             @include(
@@ -407,7 +417,6 @@
                                             )
                                         @endif
                                     </div>
-
                                     <div class="quotation-form" id="excessLiabilityForm" role="tabpanel">
                                         @if ($product->product == 'Excess Liability')
                                             @include(
@@ -468,6 +477,11 @@
                                 <div class="tab-pane" id="accounting" role="tabpanel">
                                     @include('leads.appointed_leads.accounting-tab.index')
                                 </div>
+                                <div class="tab-pane" id="policies" role="tabpanel">
+                                    @include(
+                                        'customer-service.policy.policy-lead-table-list',
+                                        compact('carriers', 'markets', 'leadId'))
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -483,8 +497,6 @@
     </div>
     <script>
         $(document).ready(function() {
-
-
             $('#saveStatusButton').on('click', function() {
                 var status = $('#statusSelect').val();
                 if (status == 6) {
@@ -520,7 +532,6 @@
                         }
                     })
                 }
-
             });
 
             $('#sendFollowUpEmail').on('click', function() {
@@ -576,12 +587,16 @@
 
             $('#saveCallbackDate').on('click', function() {
                 var callbackDateTime = $('#callBackDateTime').val();
+                var callBackId = $('#callBackId').val();
+                var callBackUrl = callBackId ? `/quoatation/quotation-callback/${callBackId}` :
+                    "{{ route('quotation-callback.store') }}";
+                var method = callBackId ? 'PUT' : 'POST';
                 $.ajax({
-                    url: "{{ route('set-callback-date') }}",
+                    url: callBackUrl,
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    method: "POST",
+                    method: method,
                     data: {
                         callbackDateTime: callbackDateTime,
                         id: {!! json_encode($product->id) !!}
@@ -604,7 +619,28 @@
                             icon: 'error'
                         });
                     }
-                })
+                });
+
+            });
+
+            var id = {!! json_encode($product->id) !!};
+            var url = `/quoatation/quotation-callback/${id}/edit`;
+            $.ajax({
+                url: url,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                method: "GET",
+                data: {
+                    id: {!! json_encode($product->id) !!}
+                },
+                success: function(response) {
+                    $('#callBackId').val(response.quotationCallback.id);
+                    $('#callBackDateTime').val(response.quotationCallback.date_time);
+                },
+                error: function(response) {
+                    console.log(response);
+                }
             });
 
         });

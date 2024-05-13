@@ -305,8 +305,8 @@
                     }
                 }
             });
-            var quotedIds = [];
 
+            var quotedIds = [];
 
             $('#voidQuotedLeads').on('click', function() {
                 var userProfileId = $('#brokerAssistantDropdown').val() ? $('#brokerAssistantDropdown')
@@ -381,7 +381,8 @@
                     $('#quoterDropdownModal').modal('show');;
                 }
 
-            })
+            });
+
             $('#submitQoutedReassign').on('click', function() {
                 var userProfileId = $('#brokerAssistantReassignDropdown').val() ? $(
                     '#brokerAssistantReassignDropdown').val() : $('#agentReassignDropdown').val();

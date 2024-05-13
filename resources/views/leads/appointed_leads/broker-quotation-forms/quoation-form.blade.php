@@ -1,10 +1,22 @@
+@php
+    use App\Models\SelectedQuote;
+    use App\Models\QuoteComparison;
+    use App\Models\PaymentInformation;
+
+    $selectedQuote = SelectedQuote::where('quotation_product_id', $quoteProduct->id)->first();
+    $quoteComparison = QuoteComparison::where('quotation_product_id', $quoteProduct->id)
+        ->where('recommended', 2)
+        ->first();
+    $selectedQuoteId = $selectedQuote ? $selectedQuote->id : null;
+    $paymentInformation = PaymentInformation::where('selected_quote_id', $selectedQuoteId)->first() ?? null;
+@endphp
+
 <style>
     .input-error {
         border: 1px solid red;
         /* or background-color: #ffcccc; for a red background */
     }
 </style>
-
 
 <div class="row mb-2">
     <div class="col-6 title-card">
@@ -19,8 +31,8 @@
     </div>
 </div>
 
-<div class="row">
-    <table id="qoutation-table" class="table table-bordered dt-responsive nowrap"
+<div class="row mb-3">
+    <table id="BrokerQuotationTable" class="table table-bordered dt-responsive nowrap BrokerQuotationTable"
         style="border-collapse: collapse; border-spacing: 0; width: 100%;">
         <thead>
             <tr>
@@ -35,6 +47,39 @@
         <tbody></tbody>
     </table>
 </div>
+
+@if ($selectedQuote)
+    <div class="row mb-2">
+        <div class="col-6 title-card">
+            <h4 class="card-title mb-0" style="color: #ffffff">Selected Quote Information</h4>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div>
+            </div>
+            <div>
+                <button class="btn btn-primary editSelectedQuote" id="editSelectedQuote">
+                    EDIT QUOTE
+                </button>
+                @if ($paymentInformation)
+                    <button class="btn btn-primary editMakePayment" id="makePaymentButton">
+                        EDIT MAKE PAYMENT
+                    </button>
+                @else
+                    <button class="btn btn-success makePaymentButton" id="makePaymentButton">
+                        MAKE PAYMENT
+                    </button>
+                @endif
+
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        @include(
+            'leads.appointed_leads.broker-quotation-forms.selected-quotation-form',
+            compact('quoteProduct'));
+    </div>
+@endif
 
 
 <div class="modal fade" id="uploadFileModal" tabindex="-1" aria-labelledby="addQuoteModalLabel" aria-hidden="true">
@@ -247,117 +292,17 @@
     </div>
 </div>
 
+@include(
+    'leads.appointed_leads.broker-quotation-forms.selected-quote-edit-form',
+    compact('selectedQuoteId'))
 @include('leads.appointed_leads.broker-forms.make-payment-form', compact('complianceOfficer'))
 
 <script>
     Dropzone.autoDiscover = false;
     var myDropzoneBroker;
     $(document).ready(function() {
-        var url = "{{ env('APP_FORM_URL') }}" + "/upload";
-        myDropzoneBroker = new Dropzone("#dropzoneBrokerQuoation", {
-            clickable: true,
-            init: function() {
-                this.on("sending", function(file, xhr, formData) {
-
-                    // Get the value from the hidden input
-                    var hiddenId = $('#hidden_id').val();
-                    // Append it to the FormData object
-                    formData.append("hidden_id", hiddenId);
-
-                });
-                this.on("removedfile", function(file, formData) {
-                    var id = file.id;
-                    var url = "{{ url('/delete-quotation-file') }}"
-                    // Get the value from the hidden input
-                    var hiddenId = $('#hidden_id').val();
-                    Swal.fire({
-                        title: 'Confirm File Removal',
-                        text: 'Are you sure you want to remove this file?',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, remove it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                url: url, // Replace with your delete file route
-                                method: "POST",
-                                data: {
-                                    id: id,
-                                    hiddenId: hiddenId,
-                                    _token: "{{ csrf_token() }}"
-                                },
-                                dataType: "json",
-                                success: function(response) {
-                                    console.log(response);
-                                },
-                                error: function(xhr, textStatus,
-                                    errorThrown) {
-                                    console.error(textStatus);
-                                }
-                            });
-                        } else {
-                            Swal.fire(
-                                'Cancelled',
-                                'Your file is safe :)',
-                                'error'
-                            )
-                        }
-                    })
-
-                });
-                this.on('addedfile', function(file) {
-                    file.previewElement.addEventListener("click", function() {
-                        var url = "{{ env('APP_FORM_LINK') }}";
-                        var fileUrl = url + file.url;
-                        Swal.fire({
-                            title: 'File Options',
-                            text: 'Choose an action for the file',
-                            showDenyButton: true,
-                            confirmButtonText: `Download`,
-                            denyButtonText: `View`,
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                var downloadLink = document.createElement(
-                                    "a");
-                                downloadLink.href = fileUrl;
-                                downloadLink.download = file.name;
-                                document.body.appendChild(downloadLink);
-                                downloadLink.click();
-                                document.body.removeChild(downloadLink);
-                            } else if (result.isDenied) {
-                                window.open(fileUrl, '_blank');
-                            }
-                        });
-                    });
-                });
-            },
-            renameFile: function(file) {
-                var dt = new Date();
-                var date = dt.toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit'
-                }).replace(/\//g, '-');
-                var time = dt.getTime();
-                var name = file.name;
-                var ext = name.substring(name.lastIndexOf('.')); // gets the file extension
-                var newName = date + '_' + time + '_' + name.replace(ext, '') +
-                    ext; // prepend date and timestamp before the name, and keep the extension at the end
-                return newName;
-            },
-            addRemoveLinks: true,
-            timeout: 5000,
-            success: function(file, response) {
-                console.log(response);
-            },
-            error: function(file, response) {
-                return false;
-            }
-        });
-        var id = {{ $quoteProduct->id }};
-        $('#qoutation-table').DataTable({
+        var id = "{{ $quoteProduct->id }}";
+        $('.BrokerQuotationTable').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
@@ -407,30 +352,21 @@
             }
         });
 
-        //checkbox for recommended
-        $('#reccomended').change(function() {
-            if ($(this).is(':checked')) {
-                $('#recommended_hidden').val(1);
-            } else {
-                $('#recommended_hidden').val(0);
-            }
-        });
-
-        //deletion of quote
-        $(document).on('click', '.deleteButton', function(e) {
+        $(document).on('click', '.selectQuoteButton', function(e) {
             e.preventDefault();
             var id = $(this).attr('id');
             Swal.fire({
                 title: 'Are you sure?',
-                text: 'You will not be able to recover this!',
+                text: "You want to select this quote?",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Yes, delete it!',
-                cancelButtonText: 'No, keep it'
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: "{{ route('delete-quotation-comparison') }}",
+                        url: "{{ route('selected-quote.store') }}",
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
                                 'content')
@@ -441,316 +377,548 @@
                         },
                         success: function() {
                             Swal.fire({
-                                title: 'Success',
-                                text: 'has been deleted',
-                                icon: 'success'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    $('#qoutation-table').DataTable()
-                                        .ajax
-                                        .reload();
-                                }
-                            })
+                                position: 'center',
+                                icon: 'success',
+                                title: 'Quotation Comparison has been selected',
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                location.reload();
+                            });
                         },
-                        error: function() {
+                        error: function(xhr, status, error) {
+                            var errorMessage = xhr.status + ': ' + xhr.statusText
                             Swal.fire({
                                 title: 'Error',
-                                text: 'Something went wrong',
+                                text: 'Something went wrong: ' +
+                                    errorMessage,
                                 icon: 'error'
                             });
                         }
-                    })
-                }
-            });
-        });
-
-        $(document).on('click', '#create_record', function(e) {
-            e.preventDefault();
-            $('#action').val('add');
-            $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
-            $('#addQuoteModal').modal('show');
-            $('#action_button').val('Add');
-            $('#medias').show();
-            $('#mediaLabelId').show();
-        });
-
-        $(document).on('change', '#attachedFile', function() {
-            var file = $(this)[0].files[0];
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                $('#currentImage').attr('src', e.target.result).show();
-            }
-            reader.readAsDataURL(file);
-        })
-
-        function addExistingQuotationFiles(files) {
-
-            files.forEach(file => {
-                var mockFile = {
-                    id: file.id,
-                    name: file.basename,
-                    size: parseInt(file.size),
-                    type: file.type,
-                    status: Dropzone.ADDED,
-                    url: file.filepath // URL to the file's location
-                };
-                myDropzoneBroker.emit("addedfile", mockFile);
-                // myDropzoneBroker.emit("thumbnail", mockFile, file.filepath); // If you have thumbnails
-                myDropzoneBroker.emit("complete", mockFile);
-            });
-        };
-
-        $('#uploadFileModal').on('hide.bs.modal', function() {
-            $(".dropzone .dz-preview").remove(); // This removes file previews from the DOM
-            myDropzoneBroker.files.length = 0;
-        });
-
-        //upload file button functionalities
-        $(document).on('click', '.uploadFileButton', function(e) {
-            e.preventDefault();
-            var id = $(this).attr('id');
-            $.ajax({
-                url: "{{ route('edit-quotation-comparison') }}",
-                method: "POST",
-                data: {
-                    id: id,
-                    _token: "{{ csrf_token() }}"
-                },
-                dataType: "json",
-                success: function(response) {
-                    $('#hidden_id').val(response.data.id);
-                    var files = response.media;
-                    addExistingQuotationFiles(files);
-                    $('#uploadFileModal').modal('show');
-                }
-            });
-        });
-
-        //edit button functionalities
-        $(document).on('click', '.editButton', function(e) {
-            e.preventDefault();
-            var id = $(this).attr('id');
-            $('#action').val('edit');
-            $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
-            $.ajax({
-                url: "{{ route('edit-quotation-comparison') }}",
-                method: "POST",
-                data: {
-                    id: id,
-                    _token: "{{ csrf_token() }}"
-                },
-                dataType: "json",
-                success: function(response) {
-                    // console.log(response.data.id)
-                    var url = `{{ asset('${response.media.filepath}') }}`;
-                    var filename = response.data.basename;
-
-                    //pricing breakdown inputs
-                    $('#premium').text(response.pricingBreakdown.premium);
-                    $('#endorsements').text(response.pricingBreakdown.endorsements);
-                    $('#policyFee').text(response.pricingBreakdown.policy_fee);
-                    $('#inspectionFee').text(response.pricingBreakdown.inspection_fee);
-                    $('#stampingFee').text(response.pricingBreakdown.stamping_fee);
-                    $('#suplusLinesTax').text(response.pricingBreakdown.surplus_lines_tax);
-                    $('#placementFee').text(response.pricingBreakdown.placement_fee);
-                    $('#miscellaneousFee').text(response.pricingBreakdown
-                        .miscellaneous_fee);
-
-                    $('#market').text(response.market.name);
-                    $('#addQuoteModalLabel').text(response.market.name);
-                    $('#effectiveDate').text(response.data.effective_date);
-                    $('#fullPayment').text(response.data.full_payment);
-                    $('#hiddenFullpayment').val(response.data.full_payment);
-                    $('#downPayment').text(response.data.down_payment);
-                    $('#hiddenDownpayment').val(response.data.down_payment);
-                    $('#monthlyPayment').text(response.data.monthly_payment);
-                    $('#brokerFee').val(response.data.broker_fee);
-                    $('#product_hidden_id').val(response.data.id);
-                    $('#productId').text(response.data.quotation_product_id);
-                    $('#quoteNo').text(response.data.quote_no);
-                    $('#currentMarketId').val(response.data.quotation_market_id);
-                    $('#medias').hide();
-                    $('#mediaLabelId').hide();
-                    $('#action_button').val('Update');
-                    if (response.data.recommended == 1) {
-                        $('#reccomended').prop('checked', true);
-                    } else {
-                        $('#reccomended').prop('checked', false);
-                    }
-                    $('#addQuoteModal').modal('show');
-                }
-            });
-
-        });
-
-        //submition of form
-        $('#quotationForm').on('submit', function(event) {
-            event.preventDefault();
-            $.ajax({
-                url: "{{ route('update-quotation-comparison') }}",
-                method: "POST",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                        'content')
-                },
-                processData: false, // Prevent jQuery from processing the data
-                contentType: false,
-                data: new FormData(this),
-                dataType: "json",
-                success: function(response) {
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'Quotation Comparison has been saved',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        $('#addQuoteModal').modal('hide');
-                        $('#qoutation-table').DataTable().ajax.reload();
                     });
-                },
-                error: function(data) {
-                    var errors = data.responseJSON.errors;
-                    console.log(data);
-                    if (data.status == 422) {
+                }
+            })
+
+        });
+
+    });
+
+    var url = "{{ env('APP_FORM_URL') }}" + "/upload";
+    myDropzoneBroker = new Dropzone("#dropzoneBrokerQuoation", {
+        clickable: true,
+        init: function() {
+            this.on("sending", function(file, xhr, formData) {
+
+                // Get the value from the hidden input
+                var hiddenId = $('#hidden_id').val();
+                // Append it to the FormData object
+                formData.append("hidden_id", hiddenId);
+
+            });
+            this.on("removedfile", function(file, formData) {
+                var id = file.id;
+                var url = "{{ url('/delete-quotation-file') }}"
+                // Get the value from the hidden input
+                var hiddenId = $('#hidden_id').val();
+                Swal.fire({
+                    title: 'Confirm File Removal',
+                    text: 'Are you sure you want to remove this file?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, remove it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: url, // Replace with your delete file route
+                            method: "POST",
+                            data: {
+                                id: id,
+                                hiddenId: hiddenId,
+                                _token: "{{ csrf_token() }}"
+                            },
+                            dataType: "json",
+                            success: function(response) {
+                                console.log(response);
+                            },
+                            error: function(xhr, textStatus,
+                                errorThrown) {
+                                console.error(textStatus);
+                            }
+                        });
+                    } else {
+                        Swal.fire(
+                            'Cancelled',
+                            'Your file is safe :)',
+                            'error'
+                        )
+                    }
+                })
+
+            });
+            this.on('addedfile', function(file) {
+                file.previewElement.addEventListener("click", function() {
+                    var url = "{{ env('APP_FORM_LINK') }}";
+                    var fileUrl = url + file.url;
+                    Swal.fire({
+                        title: 'File Options',
+                        text: 'Choose an action for the file',
+                        showDenyButton: true,
+                        confirmButtonText: `Download`,
+                        denyButtonText: `View`,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            var downloadLink = document.createElement(
+                                "a");
+                            downloadLink.href = fileUrl;
+                            downloadLink.download = file.name;
+                            document.body.appendChild(downloadLink);
+                            downloadLink.click();
+                            document.body.removeChild(downloadLink);
+                        } else if (result.isDenied) {
+                            window.open(fileUrl, '_blank');
+                        }
+                    });
+                });
+            });
+        },
+        renameFile: function(file) {
+            var dt = new Date();
+            var date = dt.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            }).replace(/\//g, '-');
+            var time = dt.getTime();
+            var name = file.name;
+            var ext = name.substring(name.lastIndexOf('.')); // gets the file extension
+            var newName = date + '_' + time + '_' + name.replace(ext, '') +
+                ext; // prepend date and timestamp before the name, and keep the extension at the end
+            return newName;
+        },
+        addRemoveLinks: true,
+        timeout: 5000,
+        success: function(file, response) {
+            console.log(response);
+        },
+        error: function(file, response) {
+            return false;
+        }
+    });
+
+
+
+    //checkbox for recommended
+    $('#reccomended').change(function() {
+        if ($(this).is(':checked')) {
+            $('#recommended_hidden').val(1);
+        } else {
+            $('#recommended_hidden').val(0);
+        }
+    });
+
+    //deletion of quote
+    $(document).on('click', '.deleteButton', function(e) {
+        e.preventDefault();
+        var id = $(this).attr('id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, keep it'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ route('delete-quotation-comparison') }}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                            'content')
+                    },
+                    method: "POST",
+                    data: {
+                        id: id
+                    },
+                    success: function() {
+                        Swal.fire({
+                            title: 'Success',
+                            text: 'has been deleted',
+                            icon: 'success'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $('#BrokerQuotationTable').DataTable()
+                                    .ajax
+                                    .reload();
+                            }
+                        })
+                    },
+                    error: function() {
                         Swal.fire({
                             title: 'Error',
-                            text: data.responseJSON.error,
+                            text: 'Something went wrong',
                             icon: 'error'
                         });
-                        $('#marketDropdown').addClass('input-error');
                     }
-                    if (errors) {
-                        $.each(errors, function(key, value) {
-                            $('#' + key).addClass('input-error');
-                            $('#' + key + '_error').html(value);
-                        });
-                    }
-                }
-            });
-
+                })
+            }
         });
+    });
 
-        //function for parsing
-        function parseCurrency(num) {
-            return parseFloat(num.replace(/[^0-9-.]/g, ''));
+    $(document).on('click', '#create_record', function(e) {
+        e.preventDefault();
+        $('#action').val('add');
+        $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
+        $('#addQuoteModal').modal('show');
+        $('#action_button').val('Add');
+        $('#medias').show();
+        $('#mediaLabelId').show();
+    });
+
+    $(document).on('change', '#attachedFile', function() {
+        var file = $(this)[0].files[0];
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $('#currentImage').attr('src', e.target.result).show();
         }
+        reader.readAsDataURL(file);
+    })
 
-        $('#brokerFee').on('focus', function() {
-            let currentBrokerFee = parseCurrency($(this).val()) || 0;
-            $(this).data('lastBrokerFee', currentBrokerFee);
+    function addExistingQuotationFiles(files) {
+
+        files.forEach(file => {
+            var mockFile = {
+                id: file.id,
+                name: file.basename,
+                size: parseInt(file.size),
+                type: file.type,
+                status: Dropzone.ADDED,
+                url: file.filepath // URL to the file's location
+            };
+            myDropzoneBroker.emit("addedfile", mockFile);
+            // myDropzoneBroker.emit("thumbnail", mockFile, file.filepath); // If you have thumbnails
+            myDropzoneBroker.emit("complete", mockFile);
         });
+    };
 
-        $('#brokerFee').on('input', function() {
-            const currentBrokerFee = parseCurrency($(this).val()) || 0;
-            const lastBrokerFee = $(this).data('lastBrokerFee') || 0;
+    $('#uploadFileModal').on('hide.bs.modal', function() {
+        $(".dropzone .dz-preview").remove(); // This removes file previews from the DOM
+        myDropzoneBroker.files.length = 0;
+    });
 
-            let fullPayment = parseCurrency($('#fullPayment').text()) || 0;
-            let downPayment = parseCurrency($('#downPayment').text()) || 0;
-
-            // Subtract last broker fee and add new broker fee
-            fullPayment = fullPayment - lastBrokerFee + currentBrokerFee;
-            downPayment = downPayment - lastBrokerFee + currentBrokerFee;
-
-            // Format and update their values
-            $('#fullPayment').text('$ ' + fullPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
-                '$&,'));
-            $('#downPayment').text('$ ' + downPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
-                '$&,'));
-
-            $('#hiddenFullpayment').val('$ ' + fullPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
-                '$&,'));
-            $('#hiddenDownpayment').val('$ ' + downPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
-                '$&,'));
-
-            // Update the last broker fee for the next change
-            $(this).data('lastBrokerFee', currentBrokerFee);
+    //upload file button functionalities
+    $(document).on('click', '.uploadFileButton', function(e) {
+        e.preventDefault();
+        var id = $(this).attr('id');
+        $.ajax({
+            url: "{{ route('edit-quotation-comparison') }}",
+            method: "POST",
+            data: {
+                id: id,
+                _token: "{{ csrf_token() }}"
+            },
+            dataType: "json",
+            success: function(response) {
+                $('#hidden_id').val(response.data.id);
+                var files = response.media;
+                addExistingQuotationFiles(files);
+                $('#uploadFileModal').modal('show');
+            }
         });
+    });
 
+    //edit button functionalities
+    $(document).on('click', '.editButton', function(e) {
+        e.preventDefault();
+        var id = $(this).attr('id');
+        $('#action').val('edit');
+        $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
+        $.ajax({
+            url: "{{ route('edit-quotation-comparison') }}",
+            method: "POST",
+            data: {
+                id: id,
+                _token: "{{ csrf_token() }}"
+            },
+            dataType: "json",
+            success: function(response) {
+                // console.log(response.data.id)
+                var url = `{{ asset('${response.media.filepath}') }}`;
+                var filename = response.data.basename;
 
-        //function for resetting the input inside modal
-        $('#addQuoteModal').on('hide.bs.modal', function() {
-            // Reset the content of the modal
-            $(this).find('form').trigger('reset'); // Reset all form fields
-            // If there are other elements to clear, handle them here
-            $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
-        });
+                //pricing breakdown inputs
+                $('#premium').text(response.pricingBreakdown.premium);
+                $('#endorsements').text(response.pricingBreakdown.endorsements);
+                $('#policyFee').text(response.pricingBreakdown.policy_fee);
+                $('#inspectionFee').text(response.pricingBreakdown.inspection_fee);
+                $('#stampingFee').text(response.pricingBreakdown.stamping_fee);
+                $('#suplusLinesTax').text(response.pricingBreakdown.surplus_lines_tax);
+                $('#placementFee').text(response.pricingBreakdown.placement_fee);
+                $('#miscellaneousFee').text(response.pricingBreakdown
+                    .miscellaneous_fee);
 
-        //broker side make payment button
-        $(document).on('click', '.makePaymentButton', function() {
-
-            var id = $(this).attr('id');
-            var market = $(this).attr('data-market');
-            var quoteNo = $(this).attr('data-quoteNo');
-            var companyName = $(this).attr('data-company-name');
-            var firstname = $(this).attr('data-insured-firstname');
-            var lastname = $(this).attr('data-insured-lastname');
-            var email = $(this).attr('data-email');
-            var totalPremium = $(this).attr('data-total-premium');
-            var brokerFee = $(this).attr('data-broker-fee');
-            var generalInformationId = $(this).attr('data-general-information-id');
-            var leadsId = $(this).attr('data-lead-id');
-            var effectiveDate = $(this).attr('data-effective-date');
-            var paymentInformation = $(this).attr('data-payment-information') ? JSON.parse($(this).attr(
-                'data-payment-information')) : {};
-
-            if (Object.keys(paymentInformation).length !== 0) {
-                $('#paymentTerm').val(paymentInformation.payment_term);
-                if (paymentInformation.payment_method == 'Visa' || paymentInformation.payment_method ==
-                    'Master Card' || paymentInformation.payment_method == 'American Express' ||
-                    paymentInformation
-                    .payment_method == 'Discover') {
-                    $('#paymentMethodMakePayment').val('Credit Card');
-                    $('#cardType').attr('hidden', false);
-                    $('#cardTypeLabel').attr('hidden', false);
-                    $('#cardType').val(paymentInformation.payment_method);
-                } else if (paymentInformation.method == 'Checking') {
-                    $('#paymentMethodMakePayment').val('Checking');
-
+                $('#market').text(response.market.name);
+                $('#addQuoteModalLabel').text(response.market.name);
+                $('#effectiveDate').text(response.data.effective_date);
+                $('#fullPayment').text(response.data.full_payment);
+                $('#hiddenFullpayment').val(response.data.full_payment);
+                $('#downPayment').text(response.data.down_payment);
+                $('#hiddenDownpayment').val(response.data.down_payment);
+                $('#monthlyPayment').text(response.data.monthly_payment);
+                $('#brokerFee').val(response.data.broker_fee);
+                $('#product_hidden_id').val(response.data.id);
+                $('#productId').text(response.data.quotation_product_id);
+                $('#quoteNo').text(response.data.quote_no);
+                $('#currentMarketId').val(response.data.quotation_market_id);
+                $('#medias').hide();
+                $('#mediaLabelId').hide();
+                $('#action_button').val('Update');
+                if (response.data.recommended == 1) {
+                    $('#reccomended').prop('checked', true);
                 } else {
-                    $('#paymentMethodMakePayment').val('Credit Card');
-                    $('#cardType').attr('hidden', false);
-                    $('#cardType').val('Other');
-                    $('#cardTypeLabel').attr('hidden', false);
-                    $('#otherCardLabel').attr('hidden', false);
-                    $('#otherCard').attr('hidden', false);
-                    $('#otherCard').val(paymentInformation.payment_method);
+                    $('#reccomended').prop('checked', false);
+                }
+                $('#addQuoteModal').modal('show');
+            }
+        });
+
+    });
+
+    //submition of form
+    $('#quotationForm').on('submit', function(event) {
+        event.preventDefault();
+        $.ajax({
+            url: "{{ route('update-quotation-comparison') }}",
+            method: "POST",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                    'content')
+            },
+            processData: false, // Prevent jQuery from processing the data
+            contentType: false,
+            data: new FormData(this),
+            dataType: "json",
+            success: function(response) {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Quotation Comparison has been saved',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    $('#addQuoteModal').modal('hide');
+                    $('#BrokerQuotationTable').DataTable().ajax.reload();
+                });
+            },
+            error: function(data) {
+                var errors = data.responseJSON.errors;
+                console.log(data);
+                if (data.status == 422) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: data.responseJSON.error,
+                        icon: 'error'
+                    });
+                    $('#marketDropdown').addClass('input-error');
+                }
+                if (errors) {
+                    $.each(errors, function(key, value) {
+                        $('#' + key).addClass('input-error');
+                        $('#' + key + '_error').html(value);
+                    });
                 }
             }
-            $('#quoteNumber').val(quoteNo);
-            $('#market').val(market);
-            $('#companyName').val(companyName);
-            $(
-                '#firstName').val(firstname);
-            $('#lastName').val(lastname);
-            $('#emailAddress').val(
-                email);
-            $('#totalPremium').val(totalPremium);
-            $('#brokerFeeAmount').val(brokerFee);
-            $(
-                '#generalInformationId').val(generalInformationId);
-            $('#leadsId').val(leadsId);
-            $(
-                '#quoteComparisonId').val(id);
-            $('#makePaymentEffectiveDate').val(effectiveDate);
-            $(
-                '#paymentType').val(paymentInformation.payment_type);
-            $('#insuranceCompliance').val(
-                paymentInformation.compliance_by);
-            $('#paymentMethod').val(paymentInformation
-                .payment_method);
-            $('#statusInput').val($(this).attr('data-status'));
-            $(
-                '#quotationProductId').val($(this).attr('data-productId'));
+        });
 
-            $('#chargedAmount').val(paymentInformation.amount_to_charged);
-            $('#note').val(paymentInformation
-                .note);
-            $('#paymentInformationId').val(paymentInformation.id);
-            $('#makePaymentModal').modal(
-                'show');
-            // $('#makePaymentModalTitle').text(
-            //     `Make A Payment For Market' ${market} 'With Quote No'  ${quoteNo}`);
+    });
+
+    //function for parsing
+    function parseCurrency(num) {
+        return parseFloat(num.replace(/[^0-9-.]/g, ''));
+    }
+
+    $('#brokerFee').on('focus', function() {
+        let currentBrokerFee = parseCurrency($(this).val()) || 0;
+        $(this).data('lastBrokerFee', currentBrokerFee);
+    });
+
+    $('#brokerFee').on('input', function() {
+        const currentBrokerFee = parseCurrency($(this).val()) || 0;
+        const lastBrokerFee = $(this).data('lastBrokerFee') || 0;
+
+        let fullPayment = parseCurrency($('#fullPayment').text()) || 0;
+        let downPayment = parseCurrency($('#downPayment').text()) || 0;
+
+        // Subtract last broker fee and add new broker fee
+        fullPayment = fullPayment - lastBrokerFee + currentBrokerFee;
+        downPayment = downPayment - lastBrokerFee + currentBrokerFee;
+
+        // Format and update their values
+        $('#fullPayment').text('$ ' + fullPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
+            '$&,'));
+        $('#downPayment').text('$ ' + downPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
+            '$&,'));
+
+        $('#hiddenFullpayment').val('$ ' + fullPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
+            '$&,'));
+        $('#hiddenDownpayment').val('$ ' + downPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
+            '$&,'));
+
+        // Update the last broker fee for the next change
+        $(this).data('lastBrokerFee', currentBrokerFee);
+    });
+
+
+    //function for resetting the input inside modal
+    $('#addQuoteModal').on('hide.bs.modal', function() {
+        // Reset the content of the modal
+        $(this).find('form').trigger('reset'); // Reset all form fields
+        // If there are other elements to clear, handle them here
+        $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
+    });
+
+    //broker side make payment button
+    $(document).on('click', '.makePaymentButton', function() {
+
+        var id = "{{ $selectedQuoteId }}";
+        $.ajax({
+            url: "{{ route('edit-selected-quote') }}",
+            method: "POST",
+            data: {
+                id: id,
+                _token: "{{ csrf_token() }}"
+            },
+            dataType: "json",
+            success: function(response) {
+                console.log(response);
+                $('#paymentType').val('Direct New').trigger('change');
+                $('#quoteNumber').val(response.data.quote_no);
+                $('#market').val(response.market.name);
+                $('#companyName').val(response.leads.company_name);
+                $('#firstName').val(response.generalInformation.firstname);
+                $('#lastName').val(response.generalInformation.lastname);
+                $('#emailAddress').val(response.generalInformation.email_address);
+                $('#totalPremium').val(response.data.full_payment);
+                $('#brokerFeeAmount').val(response.data.broker_fee);
+                $('#generalInformationId').val(response.generalInformation.id);
+                $('#leadsId').val(response.leads.id);
+                $('#quoteComparisonId').val(id);
+                $('#selectedQuoteId').val(id);
+                $('#makePaymentEffectiveDate').val(response.data.effective_date);
+                //$('#statusInput').val(data.quotation_product.status);
+                $('#makePaymentModal').modal('show');
+            }
+        });
+    });
+
+    $(document).on('click', '.editMakePayment', function() {
+        $.ajax({
+            url: "{{ route('get-payment-information') }}",
+            method: "GET",
+            data: {
+                id: "{{ $paymentInformation ? $paymentInformation->id : '' }}",
+                _token: "{{ csrf_token() }}"
+            },
+            dataType: "json",
+            success: function(response) {
+                var paymentMethod = response.paymentInformation.payment_method;
+                $('#paymentType').val(response.paymentInformation.payment_type);
+                $('#insuranceCompliance').val(response.paymentInformation.compliance_by);
+                $('#market').val(response.market.name);
+                $('#firstName').val(response.generalInformation.firstname);
+                $('#companyName').val(response.lead.company_name);
+                $('#makePaymentEffectiveDate').val(response.quoteComparison.effective_date);
+                $('#quoteNumber').val(response.quoteComparison.quote_no);
+                $('#paymentTerm').val(response.paymentInformation.payment_term);
+                $('#lastName').val(response.generalInformation.lastname);
+                $('#emailAddress').val(response.generalInformation.email_address);
+                // Set the payment method dropdown based on the fetched payment method
+                if (paymentMethod.toLowerCase() == 'checking') {
+                    $('#paymentMethodMakePayment').val('Checking').trigger('change');
+                } else {
+                    $('#paymentMethodMakePayment').val("Credit Card").trigger('change');
+                    // Handling other card types
+                    if (['Visa', 'Master Card', 'American Express'].includes(paymentMethod)) {
+                        $('#cardType').val(paymentMethod).trigger('change');
+                    } else {
+                        $('#cardType').val('Other').trigger('change');
+                        $('#otherCard').val(paymentMethod);
+                    }
+                }
+                $('#totalPremium').val(response.quoteComparison.full_payment);
+                $('#brokerFeeAmount').val(response.quoteComparison.broker_fee);
+                $('#chargedAmount').val(response.paymentInformation.amount_to_charged);
+                $('#note').val(response.paymentInformation.note);
+                $('#generalInformationId').val(response.generalInformation.id);
+                $('#leadsId').val(response.lead.id);
+                $('#quoteComparisonId').val(response.quoteComparison.id);
+                $('#paymentInformationId').val(response.paymentInformation.id);
+                $('#selectedQuoteId').val({{ $selectedQuoteId }});
+                $('#makePaymentModal').modal('show');
+            }
+        })
+    });
+
+    $(document).on('click', '.editSelectedQuote', function(e) {
+        e.preventDefault();
+        var baseUrl = "{{ url('quoatation/selected-quote') }}";
+        var id = "{{ $selectedQuoteId }}";
+        var url = `${baseUrl}/${id}/edit`;
+        $('#action').val('edit');
+        $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
+        $.ajax({
+            url: url,
+            method: "GET",
+            data: {
+                id: id,
+                _token: "{{ csrf_token() }}"
+            },
+            dataType: "json",
+            success: function(response) {
+                // console.log(response.data.id)
+                var url = `{{ asset('${response.media.filepath}') }}`;
+                var filename = response.data.basename;
+                console.log(response.data);
+                //pricing breakdown inputs
+                $('#selectedPremium').val(response.pricingBreakdown.premium);
+                $('#selectedEndorsements').val(response.pricingBreakdown.endorsements);
+                $('#selectedPolicyFee').val(response.pricingBreakdown.policy_fee);
+                $('#selectedInspectionFee').val(response.pricingBreakdown
+                    .inspection_fee);
+                $('#selectedStampingFee').val(response.pricingBreakdown.stamping_fee);
+                $('#selectedSurplusLinesTax').val(response.pricingBreakdown
+                    .surplus_lines_tax);
+                $('#selectedPlacementFee').val(response.pricingBreakdown.placement_fee);
+                $('#selectedMiscellaneousFee').val(response.pricingBreakdown
+                    .miscellaneous_fee);
+
+                //quote comparison inputs
+                $('#selectedMarketDropdown').val(String(response.data
+                    .quotation_market_id));
+                $('#selectedFullPayment').val(response.data.full_payment);
+                $('#selectedDownPayment').val(response.data.down_payment);
+                $('#selectedMonthlyPayment').val(response.data.monthly_payment);
+                $('#selectedNumberOfPayment').val(response.data.number_of_payments);
+                $('#selectedBrokerFee').val(response.data.broker_fee);
+                $('#selectedProduct_hidden_id').val(response.data.id);
+                $('#selectedProductId').val(response.data.quotation_product_id);
+                $('#selectedQuoteNo').val(response.data.quote_no);
+                $('#selectedCurrentMarketId').val(response.data.quotation_market_id);
+                $('#selectedEffectiveDate').val(response.data.effective_date);
+
+                $('#medias').hide();
+                $('#mediaLabelId').hide();
+                $('#selectedQuoteAction_button').val('Update');
+                if (response.data.recommended == 1) {
+                    $('#reccomended').prop('checked', true);
+                    $('#selectedRecommended_hidden').val(1);
+                } else {
+                    $('#reccomended').prop('checked', false);
+                    $('#selectedRecommended_hidden').val(0);
+                }
+                $('#editSelectedQuoteModal').modal('show');
+            }
         });
     });
 </script>

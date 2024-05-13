@@ -43,6 +43,7 @@
                 },
             ]
         })
+
         $(document).on('click', '.renewalPolicyButton', function(e) {
             e.preventDefault();
             var id = $(this).attr('id');
