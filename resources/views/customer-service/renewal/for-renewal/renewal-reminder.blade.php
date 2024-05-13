@@ -177,7 +177,7 @@
                         'Renewal Email Not Sent.',
                         'error'
                     ).then((result) => {
-                        location.reload();
+                        // location.reload();
                     })
                 }
             })
