@@ -21,7 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
-
+use Exception;
 class RenewalController extends Controller
 {
     /**
@@ -187,44 +187,69 @@ class RenewalController extends Controller
 
     public function leadProfileView($productId)
     {
-        $product = QuotationProduct::find($productId);
-        $lead = Lead::find($product->QuoteInformation->QuoteLead->leads->id);
-        $generalInformation = GeneralInformation::find($lead->generalInformation->id);
-        $timezones = [
-            'Eastern' => ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV'],
-            'Central' => ['AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI'],
-            'Mountain' => ['AZ', 'CO', 'ID', 'MT', 'NV', 'NM', 'UT', 'WY'],
-            'Pacific' => ['CA', 'OR', 'WA'],
-            'Alaska' => ['AK'],
-            'Hawaii-Aleutian' => ['HI']
-        ];
-        $timezoneStrings = [
-            'Eastern' => 'America/New_York',
-            'Central' => 'America/Chicago',
-            'Mountain' => 'America/Denver',
-            'Pacific' => 'America/Los_Angeles',
-            'Alaska' => 'America/Anchorage',
-            'Hawaii-Aleutian' => 'Pacific/Honolulu'
-        ];
-        $timezoneForState = null;
-        $quationMarket = new QuoationMarket();
-        $templates = Templates::all();
-        if(!$lead || !$generalInformation){
-            return redirect()->route('leads.appointed-leads')->withErrors('No DATA found');
-            // dd($lead, $generalInformation );
-        }
-        $usAddress = UnitedState::getUsAddress($generalInformation->zipcode);
-        foreach($timezones as $timezone => $states){
-            if(in_array($lead->state_abbr, $states)){
-                $timezoneForState =  $timezoneStrings[$timezone];
+        try {
+            $product = QuotationProduct::find($productId);
+            if (!$product) {
+                Log::warning('Product not found', ['Product ID' => $productId]);
+                return redirect()->route('leads.appointed-leads')->withErrors('Product not found');
             }
+
+            $lead = Lead::find($product->QuoteInformation->QuoteLead->leads->id);
+            if (!$lead) {
+                Log::warning('Lead not found', ['Product ID' => $productId]);
+                return redirect()->route('leads.appointed-leads')->withErrors('Lead not found');
+            }
+
+            $generalInformation = GeneralInformation::find($lead->generalInformation->id);
+            if (!$generalInformation) {
+                Log::warning('General Information not found', ['Lead ID' => $lead->id]);
+                return redirect()->route('leads.appointed-leads')->withErrors('General Information not found');
+            }
+
+            $timezones = [
+                'Eastern' => ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV'],
+                'Central' => ['AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI'],
+                'Mountain' => ['AZ', 'CO', 'ID', 'MT', 'NV', 'NM', 'UT', 'WY'],
+                'Pacific' => ['CA', 'OR', 'WA'],
+                'Alaska' => ['AK'],
+                'Hawaii-Aleutian' => ['HI']
+            ];
+            $timezoneStrings = [
+                'Eastern' => 'America/New_York',
+                'Central' => 'America/Chicago',
+                'Mountain' => 'America/Denver',
+                'Pacific' => 'America/Los_Angeles',
+                'Alaska' => 'America/Anchorage',
+                'Hawaii-Aleutian' => 'Pacific/Honolulu'
+            ];
+
+            $usAddress = UnitedState::getUsAddress($generalInformation->zipcode);
+            $timezoneForState = null;
+            foreach ($timezones as $timezone => $states) {
+                if (in_array($lead->state_abbr, $states)) {
+                    $timezoneForState = $timezoneStrings[$timezone];
+                    break;
+                }
+            }
+            $localTime = Carbon::now($timezoneForState ?: 'UTC');
+
+            $generalLiabilities = $generalInformation->generalLiabilities;
+            $quationMarket = new QuoationMarket();
+            $templates = Templates::all();
+            $userProfile = new UserProfile();
+            $complianceOfficer = $userProfile->complianceOfficer();
+
+            return view('leads.appointed_leads.renewal-lead-profile-view', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer'));
+
+        } catch (Exception $e) {
+            Log::error('Error accessing lead profile view', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'Product ID' => $productId
+            ]);
+            return redirect()->route('leads.appointed-leads')->withErrors('An unexpected error occurred');
         }
-        $localTime = Carbon::now($timezoneForState);
-        $generalLiabilities = $generalInformation->generalLiabilities;
-        $userProfile = new UserProfile();
-        $complianceOfficer = $userProfile->complianceOfficer();
-        // dd($generalInformation->id);
-        return view('leads.appointed_leads.renewal-lead-profile-view', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer'));
+
     }
 
     public function getRenewalReminder(Request $request)
