@@ -147,13 +147,11 @@ class GeneralInformationDataController extends BaseController
             'fax' => '9999999999',
             'sub_out' => ' '
          ];
-
          foreach($defaultValues as $property => $defaultValue){
                 if(!isset($data[$property]) || $data[$property] === null){
                     $data[$property] = $defaultValue;
                 }
          }
-
          foreach($data as $key => $value){
             if (isset($generalInformation->$key) && $generalInformation->$key !== $value) {
                 Log::info("General Information - {$key}: Old value: {$generalInformation->$key}, New value: {$value}");
