@@ -9,6 +9,7 @@ use App\Models\UserProfile;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 class MessageController extends Controller
 {
@@ -74,6 +75,8 @@ class MessageController extends Controller
             DB::commit();
             return response()->json(['success' => true, 'message' => 'Message Sent']);
         }catch(Exception $e){
+            DB::rollBack();
+            Log::info("message store error: ".$e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
