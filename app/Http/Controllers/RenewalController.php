@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\AssignPolicyForRenewalEvent;
 use App\Http\Controllers\Controller;
 use App\Models\GeneralInformation;
+use App\Models\Insurer;
 use App\Models\Lead;
 use App\Models\Messages;
 use App\Models\PolicyDetail;
@@ -223,6 +224,8 @@ class RenewalController extends Controller
                 'Hawaii-Aleutian' => 'Pacific/Honolulu'
             ];
 
+            $carriers = Insurer::all()->sortBy('name');
+
             $usAddress = UnitedState::getUsAddress($generalInformation->zipcode);
             $timezoneForState = null;
             foreach ($timezones as $timezone => $states) {
@@ -239,7 +242,7 @@ class RenewalController extends Controller
             $userProfile = new UserProfile();
             $complianceOfficer = $userProfile->complianceOfficer();
 
-            return view('leads.appointed_leads.renewal-lead-profile-view', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer'));
+            return view('leads.appointed_leads.renewal-lead-profile-view', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer', 'carriers'));
 
         } catch (Exception $e) {
             Log::error('Error accessing lead profile view', [
