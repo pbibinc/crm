@@ -225,7 +225,7 @@ class RenewalController extends Controller
             ];
 
             $carriers = Insurer::all()->sortBy('name');
-
+            $markets = QuoationMarket::all()->sortBy('name');
             $usAddress = UnitedState::getUsAddress($generalInformation->zipcode);
             $timezoneForState = null;
             foreach ($timezones as $timezone => $states) {
@@ -242,7 +242,7 @@ class RenewalController extends Controller
             $userProfile = new UserProfile();
             $complianceOfficer = $userProfile->complianceOfficer();
 
-            return view('leads.appointed_leads.renewal-lead-profile-view', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer', 'carriers'));
+            return view('leads.appointed_leads.renewal-lead-profile-view', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer', 'carriers', 'markets'));
 
         } catch (Exception $e) {
             Log::error('Error accessing lead profile view', [
