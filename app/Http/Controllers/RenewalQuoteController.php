@@ -152,7 +152,7 @@ class RenewalQuoteController extends Controller
                 return $dataTable;
             }
         }catch(\Exception $e){
-            Log::error('Error in getForQuoteRenewal function', [
+            Log::info('Error in getForQuoteRenewal function', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -190,7 +190,7 @@ class RenewalQuoteController extends Controller
                 return $dataTable;
             }
         }catch(\Exception $e){
-            Log::error('Error in getForQuoteRenewal function', [
+            Log::info('Error in getForQuoteRenewal function', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -232,13 +232,12 @@ class RenewalQuoteController extends Controller
                 return $dataTable;
             }
         }catch(\Exception $e){
-            Log::error('Error in renewalHandledPolicy function', [
+            Log::info('Error in renewalHandledPolicy function', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
             return response()->json(['error' => $e->getMessage()], 500);
         }
-
     }
 
 }
