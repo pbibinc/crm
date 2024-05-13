@@ -80,7 +80,7 @@ Route::get('/', function () {
 });
 
 //
-Route::webhooks('webhook-receiving-url');
+// Route::webhooks('webhook-receiving-url');
 
 
 Route::controller(DemoController::class)->group(function () {

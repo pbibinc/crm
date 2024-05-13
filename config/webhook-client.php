@@ -31,7 +31,7 @@ return [
              * This class determines if the webhook call should be stored and processed.
              */
             'webhook_profile' => \Spatie\WebhookClient\WebhookProfile\ProcessEverythingWebhookProfile::class,
-
+            // 'webhook_profile' => \Spatie\WebhookClient\WebhookProfile\IgnoreAllWebhookProfile::class,
             /*
              * This class determines the response on a valid webhook call.
              */
