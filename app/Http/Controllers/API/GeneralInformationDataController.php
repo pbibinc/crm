@@ -138,7 +138,7 @@ class GeneralInformationDataController extends BaseController
        try{
         DB::beginTransaction();
         $data = $request->all();
-        $policyDetail = PolicyDetail::where('quotation_product_id', $data['productId'])->first();
+        // $policyDetail = PolicyDetail::where('quotation_product_id', $data['productId'])->first();
          $userProfileId = UserProfile::where('user_id', $data['userId'])->first()->id;
          $changes = [];
          $originalData = GeneralInformation::where('leads_id', $id)->first();
