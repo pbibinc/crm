@@ -88,7 +88,7 @@ const GeneralInformationForm = () => {
     const [employeePayroll, setEmployeePayroll] = useState(
         () => getStoredGeneralInformation().employee_payroll || ""
     );
-    const [subOut, setSubOUt] = useState(
+    const [subOut, setSubOut] = useState(
         () => getStoredGeneralInformation().sub_out || ""
     );
     const [ownersPayroll, setOwnersPayroll] = useState(
@@ -260,6 +260,7 @@ const GeneralInformationForm = () => {
             label: city,
         };
     });
+    console.log(subOut);
 
     const onSubmit = (data) => {
         const generalInfomrationFormData = {
@@ -688,20 +689,14 @@ const GeneralInformationForm = () => {
                                 colContent={
                                     <>
                                         <Label labelContent="Sub Out/1099" />
-                                        <NumericFormat
+                                        <NumericFormatInput
                                             label="sub out"
-                                            name="subOut"
+                                            name={"subOut"}
                                             id={"subOut"}
                                             value={subOut}
-                                            prefix={"$"}
-                                            decimalScale={2}
-                                            fixedDecimalScale={true}
-                                            allowNegative={false}
                                             inputValue={subOut}
-                                            placeholder="$0.00"
                                             disabled={!isEditing}
-                                            onChangeInput={(e) => setSubOUt(e)}
-                                            className="form-control"
+                                            onChangeInput={(e) => setSubOut(e)}
                                         />
                                     </>
                                 }
@@ -760,19 +755,14 @@ const GeneralInformationForm = () => {
                                 classValue="col-10"
                                 colContent={
                                     <>
-                                        <NumericFormat
+                                        <NumericFormatInput
+                                            label="material cost"
                                             name="samount"
                                             id={"amount"}
                                             value={amount}
-                                            prefix={"$"}
-                                            decimalScale={2}
-                                            fixedDecimalScale={true}
-                                            allowNegative={false}
                                             inputValue={amount}
-                                            placeholder="$0.00"
                                             disabled={!isEditing}
                                             onChangeInput={(e) => setAmount(e)}
-                                            className="form-control"
                                         />
                                     </>
                                 }
