@@ -319,6 +319,10 @@ class PoliciesController extends Controller
                         $statusLabel = $policyStatus;
                         $class = 'bg-secondary';
                         break;
+                    default:
+                        $statusLabel = $policyStatus;
+                        $class = 'bg-secondary';
+                        break;
                 }
                 // $status = now()->isAfter($effectiveDate) ? 'Inactive' : 'Active';
                 // $class = now()->isAfter($effectiveDate) ? 'bg-danger' : 'bg-success';

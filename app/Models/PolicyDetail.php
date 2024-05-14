@@ -145,9 +145,9 @@ class PolicyDetail extends Model
         $policies = [];
 
         foreach ($quoteProducts as $product) {
-            $productPolicies = self::where('quotation_product_id', $product->id)
-                ->whereIn('status', ['issued', 'old policy', 'renewal issued'])
-                ->get();
+            $productPolicies = self::where('quotation_product_id', $product->id)->get();
+                // ->whereIn('status', ['issued', 'Cancelled', 'Declined', 'Endorsing', 'Notice of Cancellation', 'old policy', 'renewal issued', 'Renewal Notice of Cancellation', 'Intent', 'Potential For Rewrite', 'Rewrite', 'Not Interested', 'Process Renewal', 'Renewal Quote', 'Renewal Quoted', ''])
+
 
             if ($productPolicies->isNotEmpty()) {
                 // Push each policy individually
