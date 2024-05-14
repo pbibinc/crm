@@ -3,7 +3,9 @@
     use App\Models\QuoteComparison;
     use App\Models\PaymentInformation;
 
-    $selectedQuote = SelectedQuote::where('quotation_product_id', $quoteProduct->id)->first();
+    $selectedQuote = SelectedQuote::where('quotation_product_id', $quoteProduct->id)
+        ->latest()
+        ->first();
     $quoteComparison = QuoteComparison::where('quotation_product_id', $quoteProduct->id)
         ->where('recommended', 2)
         ->first();
