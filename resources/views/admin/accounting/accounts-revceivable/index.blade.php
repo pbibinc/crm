@@ -332,7 +332,6 @@
                         file.previewElement.addEventListener("click", function() {
                             var url = "{{ env('APP_FORM_LINK') }}";
                             var fileUrl = url + file.url;
-
                             Swal.fire({
                                 title: 'File Options',
                                 text: 'Choose an action for the file',
@@ -352,8 +351,6 @@
                                     window.open(fileUrl, '_blank');
                                 }
                             });
-
-
                         });
                     });
                 }

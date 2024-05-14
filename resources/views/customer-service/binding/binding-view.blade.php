@@ -99,8 +99,6 @@
                                 window.open(fileUrl, '_blank');
                             }
                         });
-
-
                     });
                 });
             }
