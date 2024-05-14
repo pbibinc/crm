@@ -10,12 +10,15 @@
     use App\Models\SelectedQuote;
     use App\Models\PaymentInformation;
     $policyDetail = PolicyDetail::where('quotation_product_id', $quoteProduct->id)->first();
-    $policyDetailsIds = PolicyDetail::where('quotation_product_id', $quoteProduct->id)->pluck('id');
+    $policyDetailsIds = PolicyDetail::where('quotation_product_id', $quoteProduct->id)->pluck('selected_quote_id');
     $selectedQuoteData = SelectedQuote::where('quotation_product_id', $quoteProduct->id)
         ->whereNotIn('id', $policyDetailsIds)
+        ->latest()
         ->first();
+
     $selectedQuote = $selectedQuoteData ? $selectedQuoteData : null;
     $selectedQuoteId = $selectedQuote ? $selectedQuote->id : null;
+    echo $selectedQuoteId;
     $paymentInformation = null; // Initialize $paymentInformation with null
     if ($selectedQuote) {
         $paymentInformation = PaymentInformation::where('selected_quote_id', $selectedQuote->id)->first();

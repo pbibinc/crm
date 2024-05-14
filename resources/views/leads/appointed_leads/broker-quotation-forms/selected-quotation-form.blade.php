@@ -3,7 +3,7 @@
     use App\Models\QuoationMarket;
     use App\Models\SelectedPricingBreakDown;
 
-    $selectedQuote = SelectedQuote::where('quotation_product_id', $quoteProduct->id)->first();
+    $selectedQuote = SelectedQuote::find($selectedQuoteId);
     $quoteMarket = QuoationMarket::where('id', $selectedQuote->quotation_market_id)->first();
     $selectedPricingBreakdown = SelectedPricingBreakDown::find($selectedQuote->pricing_breakdown_id);
 
