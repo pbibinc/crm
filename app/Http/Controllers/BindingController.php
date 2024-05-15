@@ -247,6 +247,7 @@ class BindingController extends Controller
                 DB::commit();
                 return response()->json(['success' => 'File uploaded successfully']);
             }catch(ValidationException $e){
+                DB::rollBack();
                 return response()->json([
                     'errors' => $e->validator->errors(),
                     'message' => 'Validation failed'

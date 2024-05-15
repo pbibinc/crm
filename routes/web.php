@@ -24,12 +24,14 @@ use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\GeneralInformationController;
 use App\Http\Controllers\AssignLeadController;
 use App\Http\Controllers\AppTakerLeadsController;
+use App\Http\Controllers\AssignAgentToBrokerController;
 use App\Http\Controllers\AssignAppointedLeadController;
 use App\Http\Controllers\AssignQuotedRenewalPolicyController;
 use App\Http\Controllers\BindingController;
 use App\Http\Controllers\BindingDocsController;
 use App\Http\Controllers\BoundController;
 use App\Http\Controllers\BrokerAssistantController;
+use App\Http\Controllers\BrokerHandleController;
 use App\Http\Controllers\BuildersRiskPolicyDetailsController;
 use App\Http\Controllers\BussinessOwnersPolicyDetailsController;
 use App\Http\Controllers\CallBackController;
@@ -289,12 +291,15 @@ Route::middleware(['auth'])->group(function (){
             Route::post('/get-for-follow-up-product', [BrokerAssistantController::class, 'getForFollowUpProduct'])->name('get-for-follow-up-product');
         });
 
-        Route::prefix('compliance')->group(function(){
+        Route::prefix('broker')->group(function(){
             Route::resource('/product', ComplianceController::class);
             Route::post('/get-pending-product', [ComplianceController::class, 'getPendingProduct'])->name('get-compliance-pending-product');
             Route::post('/get-complied-product', [ComplianceController::class, 'getCompliedBrokerProduct'])->name('get-compliance-complied-product');
             Route::post('/get-make-payment-list', [ComplianceController::class, 'getMakePaymentList'])->name('get-compliance-make-payment-list');
             Route::post('/get-binding-list', [ComplianceController::class, 'getBindingList'])->name('get-compliance-binding-list');
+            Route::resource('/broker-handle', BrokerHandleController::class);
+            Route::post('/broker-handle/get-broker-list', [BrokerHandleController::class, 'getBrokerList'])->name('get-broker-handle-list');
+            Route::resource('/assign-agent-to-broker', AssignAgentToBrokerController::class);
         });
 
         //route for insurer module

@@ -135,5 +135,10 @@ class UserProfile extends Model
         return $this->renewalPolicy()->whereNotIn('status', $statuses);
     }
 
+    public function brokersAssist()
+    {
+        return $this->belongsToMany(BrokerHandle::class, 'broker_handle', 'agent_userprofile_id', 'broker_userprofile_id');
+    }
+
 
 }

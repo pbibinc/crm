@@ -18,7 +18,7 @@ class ComplianceController extends Controller
      */
     public function index()
     {
-        return view('leads.compliance.index');
+        return view('leads.broker-assistant.index');
     }
 
     /**

@@ -22,7 +22,9 @@
             ajax: {
                 url: "{{ route('get-broker-complied-product') }}",
                 type: "POST",
-
+                data: {
+                    _token: "{{ csrf_token() }}"
+                }
             },
             columns: [{
                     data: 'companyName',

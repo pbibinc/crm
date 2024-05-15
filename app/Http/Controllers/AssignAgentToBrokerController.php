@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\QuotationProductCallback;
+use App\Models\BrokerHandle;
+use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class QuotationProductCallbackController extends Controller
+class AssignAgentToBrokerController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,6 +19,8 @@ class QuotationProductCallbackController extends Controller
     public function index()
     {
         //
+        $userProfiles = UserProfile::whereNot('is_compliance_officer', 1)->orderBy('firstname')->get();
+        return view('leads.assign-agent-to-broker.index', compact('userProfiles'));
     }
 
     /**
@@ -41,19 +44,28 @@ class QuotationProductCallbackController extends Controller
         try{
             DB::beginTransaction();
 
-            $callBack = new QuotationProductCallback();
-            $callBack->quotation_product_id = $request->id;
-            $callBack->date_time = $request->callbackDateTime;
-            $callBack->remarks = $request->remarks;
-            $callBack->save();
+            $validatedData = $request->validate([
+                'hidden_id' => 'required',
+                'agent' => 'required|array',
+                'agent.*' => 'exists:user_profiles,id',
+            ]);
+            $oldBrokerHandle = BrokerHandle::where('broker_userprofile_id', $validatedData['hidden_id'])->delete();
+            foreach($validatedData['agent'] as $agent){
+                $brokernHandle = new BrokerHandle();
+                $brokernHandle->broker_userprofile_id = $validatedData['hidden_id'];
+                $brokernHandle->agent_userprofile_id = $agent;
+                $brokernHandle->save();
+            }
             DB::commit();
-            return response()->json(['success' => 'Callback successfully added'], 200);
+            return response()->json(['success' => 'Agents have been assigned to the broker']);
         }catch(\Exception $e){
             DB::rollBack();
             Log::error($e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json([
+                'errors' => $e->getMessage(),
+                'message' => 'Validation failed'
+            ], 422);
         }
-
     }
 
     /**
@@ -65,7 +77,6 @@ class QuotationProductCallbackController extends Controller
     public function show($id)
     {
         //
-
     }
 
     /**
@@ -77,8 +88,6 @@ class QuotationProductCallbackController extends Controller
     public function edit($id)
     {
         //
-        $quotationCallback = QuotationProductCallback::where('quotation_product_id', $id)->first();
-        return response()->json(['quotationCallback' => $quotationCallback]);
     }
 
     /**
@@ -90,20 +99,7 @@ class QuotationProductCallbackController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try{
-            DB::beginTransaction();
-            $callBack = QuotationProductCallback::find($id);
-            $callBack->quotation_product_id = $request->id;
-            $callBack->date_time = $request->callbackDateTime;
-            $callBack->remarks = $request->remarks;
-            $callBack->save();
-            DB::commit();
-            return response()->json(['success' => 'Callback successfully added'], 200);
-        }catch(\Exception $e){
-            DB::rollBack();
-            Log::error($e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+        //
     }
 
     /**

@@ -41,16 +41,16 @@
                             </ul>
                             <div class="tab-content p-3 text-muted">
                                 <div class="tab-pane active" id="products" role="tabpanel">
-                                    @include('leads.compliance.pending-product-view')
+                                    @include('leads.broker-assistant.pending-product-view')
                                 </div>
                                 <div class="tab-pane" id="broker" role="tabpanel">
-                                    @include('leads.compliance.broker-product-view')
+                                    @include('leads.broker-assistant.broker-product-view')
                                 </div>
                                 <div class="tab-pane" id="makePayment" role="tabpanel">
-                                    @include('leads.compliance.make-payment-list-view')
+                                    @include('leads.broker-assistant.make-payment-list-view')
                                 </div>
                                 <div class="tab-pane" id="binding" role="tabpanel">
-                                    @include('leads.compliance.binding-product-view')
+                                    @include('leads.broker-assistant.binding-product-view')
                                 </div>
                             </div>
                         </div>

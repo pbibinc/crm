@@ -143,27 +143,27 @@
                             </ul>
                         @endcan
                     </li>
+                    <li>
+                        @can('viewAnyBrokerAssistant', App\Models\Lead::find(1))
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="ri-briefcase-line"></i>
+                                <span>Broker Assist</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                @can('viewBrokerAssistantLeadList', App\Models\Lead::find(1))
+                                    <li><a href="{{ route('broker-assistant.index') }}">Product List</a></li>
+                                @endcan
+                                {{-- <li><a href="{{route('get-confirmed-product')}}">Confirmed Product</a></li> --}}
+                            </ul>
+                        @endcan
+                    </li>
                 @endcan
-                <li class="menu-title">Broker Assistant</li>
+                <li class="menu-title">Broker</li>
                 <li>
                     @can('viewAnyBrokerAssistant', App\Models\Lead::find(1))
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
                             <i class="ri-briefcase-line"></i>
-                            <span>Broker Assist</span>
-                        </a>
-                        <ul class="sub-menu" aria-expanded="false">
-                            @can('viewBrokerAssistantLeadList', App\Models\Lead::find(1))
-                                <li><a href="{{ route('broker-assistant.index') }}">Product List</a></li>
-                            @endcan
-                            {{-- <li><a href="{{route('get-confirmed-product')}}">Confirmed Product</a></li> --}}
-                        </ul>
-                    @endcan
-                </li>
-                <li>
-                    @can('viewAnyBrokerAssistant', App\Models\Lead::find(1))
-                        <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="ri-briefcase-line"></i>
-                            <span>Compliance</span>
+                            <span>Product</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
                             @can('viewBrokerAssistantLeadList', App\Models\Lead::find(1))
@@ -175,10 +175,16 @@
                             {{-- <li><a href="{{route('get-confirmed-product')}}">Confirmed Product</a></li> --}}
                         </ul>
                     @endcan
-
                 </li>
-
-
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="ri-settings-2-line"></i>
+                        <span>Settings</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="{{ route('assign-agent-to-broker.index') }}">Assigning Agent</a></li>
+                    </ul>
+                </li>
                 @can('view', App\Models\Lead::find(1))
                     <li class="menu-title">Leads</li>
                     <li>
@@ -199,8 +205,6 @@
                         </ul>
                     </li>
                 @endcan
-
-
 
                 @can('viewAnyCustomerService', App\Models\Lead::find(1))
                     <li class="menu-title">Customer Service</li>
