@@ -124,8 +124,8 @@ class BrokerAssistantController extends Controller
         ->addIndexColumn()
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
-            $companyLink = '<a href="" class="companyName" id="'.$data->id.'">'.$companyName.'</a>';
-            return $companyLink;
+            $companyLink = '<a href="" class="complianceCompanyName" id="'.$data->id.'">'.$companyName.'</a>';
+            return $companyName;
         })
         ->addColumn('quotedBy', function($data){
             $quoter = UserProfile::find($data->user_profile_id);
@@ -154,7 +154,11 @@ class BrokerAssistantController extends Controller
             }
             return "<span class='badge {$class}'>{$statusLabel}</span>";
         })
-        ->rawColumns(['companyName', 'complianceStatus'])
+        ->addColumn('action', function($data){
+            $viewButton = '<button class="btn btn-outline-info btn-sm viewButton" id="'.$data->id.'" ><i class="ri-eye-line"></i></button>';
+            return $viewButton;
+        })
+        ->rawColumns(['companyName', 'complianceStatus', 'action'])
         ->make(true);
     }
 

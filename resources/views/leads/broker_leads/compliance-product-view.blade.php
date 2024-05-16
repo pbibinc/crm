@@ -7,6 +7,7 @@
             <th>Quoted By</th>
             <th>Appointed By</th>
             <th>Status</th>
+            <th>Action</th>
         </thead>
         <tbody>
 
@@ -42,6 +43,10 @@
                 {
                     data: 'complianceStatus',
                     name: 'complianceStatus'
+                },
+                {
+                    data: 'action',
+                    name: 'action'
                 }
             ],
             order: [
@@ -49,7 +54,7 @@
             ]
         });
 
-        $(document).on('click', '.companyName', function(e) {
+        $(document).on('click', '.complianceCompanyName', function(e) {
             e.preventDefault();
             var id = $(this).attr('id');
             Swal.fire({
