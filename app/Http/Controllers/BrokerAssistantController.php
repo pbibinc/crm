@@ -274,10 +274,10 @@ class BrokerAssistantController extends Controller
             $appointedBy = UserProfile::find($data->QuoteInformation->user_profile_id);
             return $appointedBy ? $appointedBy->fullAmericanName() : 'UNKNOWN';
         })
-        ->addColumn('complianceOfficer', function($data){
-            $complianceOfficerName = UserProfile::find(2)->fullAmericanName();
-            return $complianceOfficerName ? $complianceOfficerName : 'UNKNOWN';
-        })
+        // ->addColumn('complianceOfficer', function($data){
+        //     $complianceOfficerName = UserProfile::find(2)->fullAmericanName();
+        //     return $complianceOfficerName ? $complianceOfficerName : 'UNKNOWN';
+        // })
         ->addColumn('status', function($data){
             $statusLabel = '';
             $class = '';
