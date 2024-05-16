@@ -769,24 +769,6 @@ class QuotationController extends Controller
          </div>';
          return $dropdown;
          })
-         ->addColumn('renewalPolicyAction', function($quoteComparison){
-            $market = QuoationMarket::find($quoteComparison->quotation_market_id);
-            $leads = QuoteLead::find(QuoteInformation::find($quoteComparison->QuotationProduct->quote_information_id)
-            ->quoting_lead_id)->leads;
-            $paymentInformation = PaymentInformation::where('quote_comparison_id', $quoteComparison->id)->where('status', 'declined')->first();
-            $generalInformation = $leads->GeneralInformation;
-            $quoteProduct = $quoteComparison->QuotationProduct;
-
-            if($paymentInformation){
-                $makePaymentButton = '<button class="btn btn-outline-secondary btn-sm makePaymentButton" id="' . $quoteComparison->id .'" data-quoteNo="'.$quoteComparison->quote_no.'" data-market="'.$market->name.'" data-company-name="'.$leads->company_name.'" data-insured-firstname="'.$generalInformation->firstname.'"
-                data-insured-lastname="'.$generalInformation->lastname.'" data-email="'.$generalInformation->email_address.'" data-broker-fee="'.$quoteComparison->broker_fee.'" data-total-premium="'.$quoteComparison->full_payment.'" data-lead-id="'.$leads->id.'" data-general-information-id="'.$generalInformation->id.'" data-effective-date = "'.$quoteComparison->effective_date.'" data-status="'.$quoteProduct->status.'" data-productId="'.$quoteProduct->id.'" data-payment-information="'.htmlspecialchars(json_encode($paymentInformation), ENT_QUOTES, 'UTF-8').'"><i class="ri-money-dollar-circle-line"></i></button>';
-            }else{
-                $makePaymentButton = '<button class="btn btn-outline-secondary btn-sm makePaymentButton" id="' . $quoteComparison->id .'" data-quoteNo="'.$quoteComparison->quote_no.'" data-market="'.$market->name.'" data-company-name="'.$leads->company_name.'" data-insured-firstname="'.$generalInformation->firstname.'"
-                data-insured-lastname="'.$generalInformation->lastname.'" data-email="'.$generalInformation->email_address.'" data-broker-fee="'.$quoteComparison->broker_fee.'" data-total-premium="'.$quoteComparison->full_payment.'" data-lead-id="'.$leads->id.'" data-general-information-id="'.$generalInformation->id.'" data-effective-date = "'.$quoteComparison->effective_date.'" data-product><i class="ri-money-dollar-circle-line"></i></button>';
-            }
-
-            return $makePaymentButton;
-         })
          ->addColumn('action', function($quoteComparison){
             $viewButton = '<button class="btn btn-sm btn-outline-info editButton" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i></button>';
 
@@ -797,26 +779,10 @@ class QuotationController extends Controller
             return $viewButton . ' ' . $uploadButton . ' ' . $deleteButton;
          })
          ->addColumn('broker_action', function($quoteComparison){
-            $market = QuoationMarket::find($quoteComparison->quotation_market_id);
-            $leads = QuoteLead::find(QuoteInformation::find($quoteComparison->QuotationProduct->quote_information_id)
-            ->quoting_lead_id)->leads;
-            $paymentInformation = PaymentInformation::where('quote_comparison_id', $quoteComparison->id)->first();
-            $generalInformation = $leads->GeneralInformation;
-            $quoteProduct = $quoteComparison->QuotationProduct;
-
             $uploadFileButton = '<button class="btn btn-outline-primary btn-sm uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i></button>';
-
             $editButton = '<button class="edit btn btn-outline-info btn-sm editButton" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i></button>';
-
             $selectQuoteButton = '<button class="btn btn-outline-success btn-sm selectQuoteButton" id="' . $quoteComparison->id . '"><i class="ri-checkbox-circle-fill"></i></button>';
 
-            if($paymentInformation){
-                $makePaymentButton = '<button class="btn btn-outline-success btn-sm makePaymentButton" id="' . $quoteComparison->id .'" data-quoteNo="'.$quoteComparison->quote_no.'" data-market="'.$market->name.'" data-company-name="'.$leads->company_name.'" data-insured-firstname="'.$generalInformation->firstname.'"
-                data-insured-lastname="'.$generalInformation->lastname.'" data-email="'.$generalInformation->email_address.'" data-broker-fee="'.$quoteComparison->broker_fee.'" data-total-premium="'.$quoteComparison->full_payment.'" data-lead-id="'.$leads->id.'" data-general-information-id="'.$generalInformation->id.'" data-effective-date = "'.$quoteComparison->effective_date.'" data-status="'.$quoteProduct->status.'" data-productId="'.$quoteProduct->id.'" data-payment-information="'.htmlspecialchars(json_encode($paymentInformation), ENT_QUOTES, 'UTF-8').'"><i class="ri-money-dollar-circle-line"></i></button>';
-            }else{
-                $makePaymentButton = '<button class="btn btn-outline-secondary btn-sm makePaymentButton" id="' . $quoteComparison->id .'" data-quoteNo="'.$quoteComparison->quote_no.'" data-market="'.$market->name.'" data-company-name="'.$leads->company_name.'" data-insured-firstname="'.$generalInformation->firstname.'"
-                data-insured-lastname="'.$generalInformation->lastname.'" data-email="'.$generalInformation->email_address.'" data-broker-fee="'.$quoteComparison->broker_fee.'" data-total-premium="'.$quoteComparison->full_payment.'" data-lead-id="'.$leads->id.'" data-general-information-id="'.$generalInformation->id.'" data-effective-date = "'.$quoteComparison->effective_date.'" data-product><i class="ri-money-dollar-circle-line"></i></button>';
-            }
             return $editButton . ' ' . $uploadFileButton . ' ' . $selectQuoteButton;
          })
          ->rawColumns(['market_name', 'action', 'broker_action', 'renewal_action_dropdown', 'renewalPolicyAction', 'renewal-quoted_action'])

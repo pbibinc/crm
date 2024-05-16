@@ -6,6 +6,7 @@
             <th>Product</th>
             <th>Quoted By</th>
             <th>Appointed By</th>
+            <th>Status</th>
         </thead>
         <tbody>
 
@@ -38,8 +39,16 @@
                     data: 'appointedBy',
                     name: 'appointedBy'
                 },
+                {
+                    data: 'complianceStatus',
+                    name: 'complianceStatus'
+                }
             ],
+            order: [
+                [4, 'asc']
+            ]
         });
+
         $(document).on('click', '.companyName', function(e) {
             e.preventDefault();
             var id = $(this).attr('id');
@@ -85,5 +94,6 @@
 
             });
         });
+
     });
 </script>

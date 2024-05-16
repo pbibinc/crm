@@ -119,7 +119,7 @@ class BrokerAssistantController extends Controller
     {
         $quotationProduct = new BrokerQuotation();
         $userProfileId = Auth::user()->userProfile->id;
-        $data = $quotationProduct->getAssignQoutedLead($userProfileId, 22);
+        $data = $quotationProduct->getAssignQoutedLead($userProfileId, [22, 3]);
         return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('companyName', function($data){
@@ -135,7 +135,26 @@ class BrokerAssistantController extends Controller
             $appointedBy = UserProfile::find($data->QuoteInformation->user_profile_id);
             return $appointedBy ? $appointedBy->fullAmericanName() : 'UNKNOWN';
         })
-        ->rawColumns(['companyName'])
+        ->addColumn('complianceStatus', function($data){
+            $statusLabel = '';
+            $class = '';
+            Switch ($data->status) {
+                case 22:
+                    $statusLabel = 'Pending';
+                    $class = 'bg-warning';
+                    break;
+                case 3:
+                    $statusLabel = 'Complied';
+                    $class = 'bg-success';
+                    break;
+                default:
+                    $statusLabel = 'Unknown';
+                    $class = 'bg-secondary';
+                    break;
+            }
+            return "<span class='badge {$class}'>{$statusLabel}</span>";
+        })
+        ->rawColumns(['companyName', 'complianceStatus'])
         ->make(true);
     }
 

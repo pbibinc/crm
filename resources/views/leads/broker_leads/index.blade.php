@@ -21,12 +21,6 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#complied" role="tab">
-                                        <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
-                                        <span class="d-none d-sm-block">Complied</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
                                     <a class="nav-link" data-bs-toggle="tab" href="#followup" role="tab">
                                         <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
                                         <span class="d-none d-sm-block">For Follow Up</span>
@@ -57,9 +51,6 @@
                                 </div>
                                 <div class="tab-pane" id="compliance" role="tabpanel">
                                     @include('leads.broker_leads.compliance-product-view')
-                                </div>
-                                <div class="tab-pane" id="complied" role="tabpanel">
-                                    @include('leads.broker_leads.complied-product-view')
                                 </div>
                                 <div class="tab-pane" id="followup" role="tabpanel">
                                     @include('leads.broker_leads.for-follow-up-product-view')

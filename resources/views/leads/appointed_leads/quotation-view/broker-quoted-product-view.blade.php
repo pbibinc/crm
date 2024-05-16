@@ -53,10 +53,9 @@
             ],
         });
 
-
         $(document).on('click', '.viewButton', function() {
             var id = $(this).attr('id');
             window.location.href = `lead-profile-view/${id}`
-        })
+        });
     })
 </script>

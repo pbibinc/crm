@@ -311,6 +311,9 @@
                         name: 'action'
                     }
                 ],
+                order: [
+                    [5, 'desc']
+                ],
                 createdRow: function(row, data, dataIndex) {
                     var status = data.status;
                     if (status == 13) {

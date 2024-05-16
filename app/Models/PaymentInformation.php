@@ -25,6 +25,11 @@ class PaymentInformation extends Model
         return $this->belongsTo(SelectedQuote::class, 'selected_quote_id');
     }
 
+    public function SelectedQuote()
+    {
+        return $this->belongsTo(SelectedQuote::class, 'selected_quote_id');
+    }
+
     public function PaymentCharged()
     {
         return $this->hasOne(PaymentCharged::class, 'payment_information_id');

@@ -78,22 +78,13 @@ class PaymentController extends Controller
             ]);
             if($request->paymentInformationId){
                 $paymentInformation = PaymentInformation::find($request->paymentInformationId);
-                $quoteComparison = $paymentInformation->QuoteComparison;
-                $quoteComparison->quote_no = $request->quoteNumber;
-                $quoteComparison->save();
+                $selectedQuote = $paymentInformation->SelectedQuote;
+                $selectedQuote->quote_no = $request->quoteNumber;
+                $selectedQuote->save();
             }else{
                 $paymentInformation = new PaymentInformation();
-
-                //Updating quotation number and setting status
-                // $quoteComparison = QuoteComparison::find($request->quoteComparisonId);
-                // $quoteComparison->quote_no = $request->quoteNumber;
-                // $quoteComparison->recommended = 2;
-                // $quoteComparison->save();
                 $selectedQuote = SelectedQuote::find($request->quoteComparisonId);
                 $selectedPricingBreakdown = $selectedQuote->SelectedPricingBreakDown;
-
-                // SelectedPricingBreakDown::create($pricingBreakDown->toArray());
-                // SelectedQuote::create($quoteComparison->toArray());
 
                 //Updating quotation product status
                 $paymentProduct = $selectedQuote->QuotationProduct;
@@ -101,6 +92,7 @@ class PaymentController extends Controller
                 $paymentProduct->save();
             }
 
+            //direct renewals make a payment
             if($request->paymentType == 'Direct Renewals'){
                 $policyDetails = PolicyDetail::where('quotation_product_id', $selectedQuote->QuotationProduct->id)->first();
                 $policyDetails->status = 'Renewal Make A Payment';
@@ -108,7 +100,7 @@ class PaymentController extends Controller
             }
 
             //Saving Payment Information
-            $paymentInformation->quote_comparison_id = $request->quoteComparisonId;
+            // $paymentInformation->quote_comparison_id = $request->quoteComparisonId;
             $paymentInformation->payment_type = $request->paymentType;
             if($request->paymentMethod == 'Credit Card'){
                 if($request->cardType == 'Other'){

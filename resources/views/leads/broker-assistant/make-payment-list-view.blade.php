@@ -54,6 +54,9 @@
                     name: 'action'
                 }
             ],
+            order: [
+                [4, 'desc']
+            ],
         });
 
         $(document).on('click', '.companyName', function(e) {

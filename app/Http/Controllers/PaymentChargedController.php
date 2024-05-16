@@ -115,9 +115,9 @@ class PaymentChargedController extends Controller
             // $quoteComparison->recommended = 3;
             // $quoteComparison->save();
 
-            $quoteComparison = SelectedQuote::find($request->quoteComparisonId);
-            $quoteComparison->recommended = 3;
-            $quoteComparison->save();
+            $selectedQuote = SelectedQuote::find($request->quoteComparisonId);
+            $selectedQuote->recommended = 3;
+            $selectedQuote->save();
 
             DB::commit();
             return response()->json([
