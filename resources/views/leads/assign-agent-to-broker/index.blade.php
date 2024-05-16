@@ -43,13 +43,10 @@
                                 @foreach ($userProfiles as $userProfile)
                                     <option value="{{ $userProfile->id }}">{{ $userProfile->fullName() }}</option>
                                 @endforeach
-
                             </select>
                         </div>
-
                         <input type="hidden" name="action" id="action" value="add">
                         <input type="hidden" name="hidden_id" id="hidden_id" />
-
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Close</button>

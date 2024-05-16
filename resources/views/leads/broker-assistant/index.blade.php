@@ -52,6 +52,9 @@
                                 <div class="tab-pane" id="binding" role="tabpanel">
                                     @include('leads.broker-assistant.binding-product-view')
                                 </div>
+                                <div class="tab-pane" id="handledProduct" role="tabpanel">
+                                    @include('leads.broker-assistant.handled-product-view')
+                                </div>
                             </div>
                         </div>
                     </div>

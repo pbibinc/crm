@@ -89,7 +89,11 @@ class ComplianceController extends Controller
 
     public function getPendingProduct(Request $request)
     {
-        $data = QuotationProduct::where('status', 22)->orderBy('updated_at', 'desc')->get();
+        $brokerQuotation = new BrokerQuotation();
+        $userId = auth()->user()->id;
+        $userProfileId = UserProfile::where('user_id' , $userId)->first()->id;
+        $data = $brokerQuotation->getAgentProductByBrokerUserprofileId($userProfileId, 22);
+        // $data = QuotationProduct::where('status', 22)->orderBy('updated_at', 'desc')->get();
         return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('companyName', function($data){
@@ -122,7 +126,11 @@ class ComplianceController extends Controller
 
     public function getCompliedBrokerProduct(Request $request)
     {
-        $data = QuotationProduct::where('status', 3)->orderBy('updated_at', 'desc')->get();
+        $brokerQuotation = new BrokerQuotation();
+        $userId = auth()->user()->id;
+        $userProfileId = UserProfile::where('user_id' , $userId)->first()->id;
+        $data = $brokerQuotation->getAgentProductByBrokerUserprofileId($userProfileId, 3);
+        // $data = QuotationProduct::where('status', 3)->orderBy('updated_at', 'desc')->get();
         return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('companyName', function($data){
@@ -155,7 +163,11 @@ class ComplianceController extends Controller
 
     public function getMakePaymentList(Request $request)
     {
-        $data = QuotationProduct::whereIn('status', [9, 10])->orderBy('updated_at', 'desc')->get();
+        $brokerQuotation = new BrokerQuotation();
+        $userId = auth()->user()->id;
+        $userProfileId = UserProfile::where('user_id' , $userId)->first()->id;
+        $data = $brokerQuotation->getAgentProductByBrokerUserprofileId($userProfileId, [9, 10]);
+        // $data = QuotationProduct::whereIn('status', [9, 10])->orderBy('updated_at', 'desc')->get();
         return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('companyName', function($data){
@@ -211,7 +223,10 @@ class ComplianceController extends Controller
 
     public function getBindingList(Request $request)
     {
-        $data = QuotationProduct::whereIn('status', [6, 11, 12, 14, 15])->orderBy('updated_at', 'desc')->get();
+        $brokerQuotation = new BrokerQuotation();
+        $userId = auth()->user()->id;
+        $userProfileId = UserProfile::where('user_id' , $userId)->first()->id;
+        $data = $brokerQuotation->getAgentProductByBrokerUserprofileId($userProfileId, [6, 11, 12, 14, 15]);
         return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('companyName', function($data){
@@ -263,6 +278,42 @@ class ComplianceController extends Controller
                     break;
             }
             return "<span class='badge {$class}'>{$statusLabel}</span>";
+        })
+        ->addColumn('action', function($data){
+            $viewButton = '<button class="edit btn btn-outline-info btn-sm viewButton" id="'.$data->id.'"><i class="ri-eye-line"></i></button>';
+            $processButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light processButton" id="'.$data->id.'"><i class=" ri-task-line"></i></button>';
+            return $viewButton;
+        })
+        ->rawColumns(['action', 'status'])
+        ->make(true);
+    }
+
+    public function getHandledList(Request $request)
+    {
+        $brokerQuotation = new BrokerQuotation();
+        $userId = auth()->user()->id;
+        $userProfileId = UserProfile::where('user_id' , $userId)->first()->id;
+        $data = $brokerQuotation->getAgentProductByBrokerUserprofileId($userProfileId, 8);
+        return DataTables::of($data)
+        ->addIndexColumn()
+        ->addColumn('companyName', function($data){
+            $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
+            return $companyName;
+        })
+        ->addColumn('quotedBy', function($data){
+            $quoter = UserProfile::find($data->user_profile_id);
+            return $quoter ? $quoter->fullAmericanName() : 'UNKNOWN';
+        })
+        ->addColumn('appointedBy', function($data){
+            $appointedBy = UserProfile::find($data->QuoteInformation->user_profile_id);
+            return $appointedBy ? $appointedBy->fullAmericanName() : 'UNKNOWN';
+        })
+        ->addColumn('broker', function($data){
+            $broker = BrokerQuotation::where(
+                'quote_product_id', $data->id
+            )->first();
+            $userProfile = UserProfile::find($broker->user_profile_id)->fullAmericanName();
+            return $userProfile ? $userProfile : 'UNKNOWN';
         })
         ->addColumn('action', function($data){
             $viewButton = '<button class="edit btn btn-outline-info btn-sm viewButton" id="'.$data->id.'"><i class="ri-eye-line"></i></button>';

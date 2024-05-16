@@ -63,4 +63,20 @@ class BrokerQuotation extends Model
 
         return $quotationProducts->isEmpty() ? [] : $quotationProducts;
     }
+
+    public function getAgentProductByBrokerUserprofileId($userProfileId, $status)
+    {
+        $agentIds = BrokerHandle::where('broker_userprofile_id', $userProfileId)->pluck('agent_userprofile_id');
+        $quotationProductsQuery = BrokerQuotation::whereIn('user_profile_id', $agentIds)
+        ->whereHas('quotationProduct', function ($query) use ($status) {
+            if (is_array($status)) {
+                $query->whereIn('status', $status);
+            } else {
+                $query->where('status', $status);
+            }
+        })
+        ->with('quotationProduct');
+        $quotationProducts = $quotationProductsQuery->get()->pluck('quotationProduct')->unique('id')->flatten();
+        return $quotationProducts->isEmpty() ? [] : $quotationProducts;
+    }
 }

@@ -297,6 +297,7 @@ Route::middleware(['auth'])->group(function (){
             Route::post('/get-complied-product', [ComplianceController::class, 'getCompliedBrokerProduct'])->name('get-compliance-complied-product');
             Route::post('/get-make-payment-list', [ComplianceController::class, 'getMakePaymentList'])->name('get-compliance-make-payment-list');
             Route::post('/get-binding-list', [ComplianceController::class, 'getBindingList'])->name('get-compliance-binding-list');
+            Route::post('/get-handled-product', [ComplianceController::class, 'getHandledList'])->name('get-compliance-handled-product');
             Route::resource('/broker-handle', BrokerHandleController::class);
             Route::post('/broker-handle/get-broker-list', [BrokerHandleController::class, 'getBrokerList'])->name('get-broker-handle-list');
             Route::resource('/assign-agent-to-broker', AssignAgentToBrokerController::class);

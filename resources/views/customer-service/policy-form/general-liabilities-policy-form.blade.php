@@ -29,7 +29,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label" for="glMarketInput">Market</label>
-                                <select name="glMarketInput" id="glMarketInput" class="form-select">
+                                <select name="glMarketInput" id="glMarketInput" class="form-select" required>
                                     <option value="">Select Market</option>
                                     @foreach ($markets as $market)
                                         <option value="{{ $market->name }}">{{ $market->name }}</option>
@@ -41,7 +41,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label" for="carrierInput">Carrier</label>
-                                <select name="carriersInput" id="carriersInput" class="form-select">
+                                <select name="carriersInput" id="carriersInput" class="form-select" required>
                                     <option value="">Select Carrier</option>
                                     @foreach ($carriers as $carrier)
                                         <option value="{{ $carrier->name }}">{{ $carrier->name }}</option>
@@ -57,7 +57,7 @@
                             <div class="form-group">
                                 <label class="form-label" for="glPaymentTermInput">Payment Term</label>
                                 <select class="form-select" aria-label="Default select example" id="glPaymentTermInput"
-                                    name="glPaymentTermInput">
+                                    name="glPaymentTermInput" required>
                                     <option selected="">Open this select menu</option>
                                     <option value="PIF">PIF</option>
                                     <option value="Low down">Low down</option>
@@ -154,7 +154,7 @@
                                 <input type="text" class="form-control input-mask text-left"
                                     data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
                                     inputmode="decimal" style="text-align: right;" id="eachOccurence"
-                                    name="eachOccurence">
+                                    name="eachOccurence" autocomplete="off">
                             </div>
                         </div>
                         <div class="col-6">
@@ -162,7 +162,8 @@
                                 <label class="form-label" for="rentedDmg">DMG To Rented</label>
                                 <input type="text" class="form-control input-mask text-left"
                                     data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
-                                    inputmode="decimal" style="text-align: right;" id="rentedDmg" name="rentedDmg">
+                                    inputmode="decimal" style="text-align: right;" id="rentedDmg" name="rentedDmg"
+                                    autocomplete="off">
                             </div>
                         </div>
                     </div>
@@ -172,7 +173,8 @@
                                 <label class="form-label" for="medExp">Med Exp</label>
                                 <input type="text" class="form-control input-mask text-left"
                                     data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
-                                    inputmode="decimal" style="text-align: right;" id="medExp" name="medExp">
+                                    inputmode="decimal" style="text-align: right;" id="medExp" name="medExp"
+                                    autocomplete="off">
                             </div>
                         </div>
                         <div class="col-6">
@@ -181,7 +183,7 @@
                                 <input type="text" class="form-control input-mask text-left"
                                     data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
                                     inputmode="decimal" style="text-align: right;" id="perAdvInjury"
-                                    name="perAdvInjury">
+                                    name="perAdvInjury" autocomplete="off">
                             </div>
                         </div>
                     </div>
@@ -192,7 +194,7 @@
                                 <input type="text" class="form-control input-mask text-left"
                                     data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
                                     inputmode="decimal" style="text-align: right;" id="genAggregate"
-                                    name="genAggregate">
+                                    name="genAggregate" autocomplete="off">
                             </div>
                         </div>
                         <div class="col-6">
@@ -200,7 +202,8 @@
                                 <label class="form-label" for="medExp">Comp/OP</label>
                                 <input type="text" class="form-control input-mask text-left"
                                     data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
-                                    inputmode="decimal" style="text-align: right;" id="comp" name="comp">
+                                    inputmode="decimal" style="text-align: right;" id="comp" name="comp"
+                                    autocomplete="off">
                             </div>
                         </div>
                     </div>
@@ -231,7 +234,7 @@
                             </div>
                         </div>
                         <div class="col-6">
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label class="form-label" for="statusDropdowm"
                                     id="statusDropdownLabel">Status</label>
                                 <select class="form-select" aria-label="Default select example" id="statusDropdowm"
@@ -246,7 +249,7 @@
                                     <option value="Renewal Notice of Cancellation">Renewal Notice of Cancellation
                                     </option>
                                 </select>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                     <input type="hidden" id="glHiddenInputId" name="glHiddenInputId">

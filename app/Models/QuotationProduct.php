@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Amp\Http\Client\Request;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use League\CommonMark\Extension\SmartPunct\Quote;
@@ -187,6 +188,20 @@ class QuotationProduct extends Model
         $quotationProducts = $query->orderBy('created_at')->get();
 
         return $quotationProducts->isEmpty() ? null : $quotationProducts;
+    }
+
+    public static function getAgentProductByBrokerUserprofileId($status, $brokerUserProfileId)
+    {
+        $agentId = BrokerHandle::where('broker_userprofile_id', $brokerUserProfileId)->pluck('agent_userprofile_id');
+        $query = self::whereIn('user_profile_id', $agentId);
+         if(is_array($status)){
+            $query = $query->whereIn('status', $status);
+         }else{
+            $query = $query->where('status', $status);
+         }
+         $quotationProduct = $query->orderBy('created_at')->get();
+
+         return $quotationProduct->isEmpty() ? null : $quotationProduct;
     }
 
 }
