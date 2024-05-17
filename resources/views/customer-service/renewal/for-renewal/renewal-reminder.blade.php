@@ -159,7 +159,7 @@
                     _token: "{{ csrf_token() }}",
                     dateTime: dateTimeValues,
                     productId: $('#quotationProductId').val(),
-                    templateId: 9,
+                    templateId: 2,
                     type: 'Renewal Reminder'
                 },
                 success: function(data) {
