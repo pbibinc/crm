@@ -225,7 +225,7 @@ class RenewalQuoteController extends Controller
                 })
                 ->addColumn('handledBy', function($policiesData){
                     $userProfile = $policiesData->quotedRenewalUserprofile()->first();
-                    return $userProfile->fullAmericanName();
+                    return $userProfile ? $userProfile->fullAmericanName() : 'N/A';
                 })
                 ->rawColumns(['company_name', 'policy_no'])
                 ->make(true);
