@@ -187,7 +187,7 @@ class QuotationProduct extends Model
 
         $quotationProducts = $query->orderBy('created_at')->get();
 
-        return $quotationProducts->isEmpty() ? [] : $quotationProducts;
+        return $quotationProducts->isEmpty() ? null : $quotationProducts;
     }
 
     public static function getAgentProductByBrokerUserprofileId($status, $brokerUserProfileId)
