@@ -164,7 +164,7 @@ class QuotedController extends Controller
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
             $companyLink = '<a href="" class="companyName" id="'.$data->id.'">'.$companyName.'</a>';
-            return $companyName ? $companyLink : 'UNKNOWN';
+            return $companyName ? $companyName : 'UNKNOWN';
         })
         ->addColumn('broker', function($data){
             $broker = BrokerQuotation::where('quote_product_id', $data->id)->first();
