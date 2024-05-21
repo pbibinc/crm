@@ -35,17 +35,33 @@ class BoundController extends Controller
                     return $company_name;
                 })
                 ->addColumn('policy_number', function($data){
-                    $quoteComparison = SelectedQuote::where('quotation_product_id', $data->id)->first();
-                    $policyNumber = '<a href="" id="'.$data->id.'" name="showPolicyForm" class="showPolicyForm" data-product='.$data->product.'>'.$quoteComparison->quote_no.'</a>';
+                    if($data->status == 20){
+                        $policyDetail =PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
+                        $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+                        $policyNumber = '<a href="" id="'.$policyDetail->id.'" type="renewal" name="showPolicyForm" class="showPolicyForm" data-product='.$data->product.'>'.$selectedQuote->quote_no.'</a>';
+                    }else{
+                        $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
+                        $policyNumber = '<a href="" id="'.$data->id.'" name="showPolicyForm" type="new" class="showPolicyForm" data-product='.$data->product.'>'.$selectedQuote->quote_no.'</a>';
+                    }
                     return $policyNumber;
                 })
                 ->addColumn('total_cost', function($data){
-                    $totalCost = SelectedQuote::where('quotation_product_id', $data->id)->first()->full_payment;
-                    return $totalCost;
+                    if($data->status == 20){
+                        $policyDetail =PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
+                        $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+                    }else{
+                        $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
+                    }
+                    return $selectedQuote ? $selectedQuote->total_cost : 0;
                 })
                 ->addColumn('effective_date', function($data){
-                    $quote_information = SelectedQuote::where('quotation_product_id', $data->id)->first();
-                    return $quote_information->effective_date;
+                    if($data->status == 20){
+                        $policyDetail =PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
+                        $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+                    }else{
+                        $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
+                    }
+                    return $selectedQuote ? $selectedQuote->effective_date : '';
                 })
                 ->rawColumns(['action', 'policy_number'])
                 ->make(true);
@@ -55,17 +71,19 @@ class BoundController extends Controller
 
     public function getBoundInformation(Request $request)
     {
-        $product = QuotationProduct::find($request->id);
-        $lead = $product->QuoteInformation->QuoteLead->leads;
-        $policyDetailSelectedQuoteIds = PolicyDetail::where('quotation_product_id', $request->id)->pluck('selected_quote_id');
-        if($policyDetailSelectedQuoteIds->isEmpty()){
-           $selectedQuote = SelectedQuote::where('quotation_product_id', $request->id)->first();
+        $policyDetail = null;
+        if($request->type == 'renewal'){
+            $policyDetail = PolicyDetail::find($request->id);
+            $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+            $product = QuotationProduct::find($policyDetail->quotation_product_id);
         }else{
-            $selectedQuote = SelectedQuote::where('quotation_product_id', $request->id)->whereNotIn('id', $policyDetailSelectedQuoteIds)->first();
+            $product = QuotationProduct::find($request->id);
+            $selectedQuote = SelectedQuote::where('quotation_product_id', $request->id)->first();
         }
+        $lead = $product->QuoteInformation->QuoteLead->leads;
         $marketName = QuoationMarket::find($selectedQuote->quotation_market_id);
         $paymentInformation = $selectedQuote->PaymentInformation;
-        return response()->json(['product' => $product, 'lead' => $lead,  'marketName' => $marketName, 'paymentInformation' => $paymentInformation, 'selectedQuote' => $selectedQuote]);
+        return response()->json(['product' => $product, 'lead' => $lead,  'marketName' => $marketName, 'paymentInformation' => $paymentInformation, 'selectedQuote' => $selectedQuote, 'policyDetail' => $policyDetail ? $policyDetail : null]);
     }
 
     public function saveBoundInformation(Request $request)
@@ -73,12 +91,18 @@ class BoundController extends Controller
         try{
             DB::beginTransaction();
             $userProfileId = Auth::user()->userProfile->id;
-            $quoteComparison = SelectedQuote::where('quotation_product_id', $request->id)->first();
-            $paymentInformation = $quoteComparison->PaymentInformation;
+            if($request['productStatus'] == 19){
+                $policyDetail = PolicyDetail::find($request['id']);
+                $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+            }else{
+                $selectedQuote = SelectedQuote::where('quotation_product_id', $request->id)->first();
+            }
+            $paymentInformation = $selectedQuote->PaymentInformation;
             if($paymentInformation->payment_term == 'Split low down' || $paymentInformation->payment_term == 'Low down')
             {
                 $financingStatus = new FinancingStatus();
                 $financingStatus->quotation_product_id = $request->id;
+                $financingStatus->selected_quote_id = $selectedQuote->id;
                 $financingStatus->status = "Request For Financing";
                 $financingStatus->save();
             }

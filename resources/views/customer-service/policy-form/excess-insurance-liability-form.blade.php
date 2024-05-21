@@ -12,19 +12,19 @@
                         <div class="col-6">
                             <label class="form-label" for="excessInsuranceNumber">Policy Number</label>
                             <input type="text" class="form-control" id="excessInsuranceNumber"
-                                name="excessInsuranceNumber">
+                                name="excessInsuranceNumber" required autocomplete="off">
                         </div>
                         <div class="col-6">
                             <label class="form-label" for="excessInsuranceInsuredInput">Insured</label>
                             <input type="text" class="form-control" id="excessInsuranceInsuredInput"
-                                name="excessInsuranceInsuredInput">
+                                name="excessInsuranceInsuredInput" required autocomplete="off">
                         </div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">
                             <label class="form-label" for="excessInsuranceMarketInput">Market</label>
                             <select name="excessInsuranceMarketInput" id="excessInsuranceMarketInput"
-                                class="form-select">
+                                class="form-select" required>
                                 <option value="">Select Market</option>
                                 @foreach ($markets as $market)
                                     <option value="{{ $market->name }}">{{ $market->name }}</option>
@@ -34,7 +34,7 @@
                         <div class="col-6">
                             <label class="form-label" for="excessInsuranceCarrierInput">Carrier</label>
                             <select name="excessInsuranceCarrierInput" id="excessInsuranceCarrierInput"
-                                class="form-select">
+                                class="form-select" required>
                                 <option value="">Select Carrier</option>
                                 @foreach ($carriers as $carrier)
                                     <option value="{{ $carrier->name }}">{{ $carrier->name }}</option>
@@ -47,7 +47,8 @@
                             <div class="form-group">
                                 <label class="form-label" for="excessInsurancePaymentTermInput">Payment Term</label>
                                 <select class="form-select" aria-label="Default select example"
-                                    id="excessInsurancePaymentTermInput" name="excessInsurancePaymentTermInput">
+                                    id="excessInsurancePaymentTermInput" name="excessInsurancePaymentTermInput"
+                                    required>
                                     <option selected="">Open this select menu</option>
                                     <option value="PIF">PIF</option>
                                     <option value="Low down">Low down</option>
@@ -139,14 +140,14 @@
                             <input type="text" class="form-control input-mask text-left"
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
                                 inputmode="decimal" style="text-align: right;" id="excessInsuranceEachOccurrence"
-                                name="excessInsuranceEachOccurrence">
+                                name="excessInsuranceEachOccurrence" required autocomplete="off">
                         </div>
                         <div class="col-6">
                             <label class="form-label" for="excessInsuranceAggregate">Aggregate</label>
                             <input type="text" class="form-control input-mask text-left"
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
                                 inputmode="decimal" style="text-align: right;" id="excessInsuranceAggregate"
-                                name="excessInsuranceAggregate">
+                                name="excessInsuranceAggregate" required autocomplete="off">
                         </div>
                     </div>
                     <div class="row mb-2">

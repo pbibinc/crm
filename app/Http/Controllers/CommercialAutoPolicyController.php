@@ -69,6 +69,8 @@ class CommercialAutoPolicyController extends Controller
             $metadata->save();
             $mediaId = $metadata->id;
 
+            $quotationProduct = QuotationProduct::find($data['commercialAutoHiddenInputId']);
+
             $policyDetails = new PolicyDetail();
             $policyDetails->selected_quote_id = $data['commercialAutoHiddenQuoteId'];
             $policyDetails->quotation_product_id = $data['commercialAutoHiddenInputId'];
@@ -80,6 +82,20 @@ class CommercialAutoPolicyController extends Controller
             $policyDetails->expiration_date = $data['commercialAutoExpirationDate'];
             $policyDetails->status = 'issued';
             $policyDetails->media_id = $mediaId;
+            if($quotationProduct->status == 20){
+                $previousPolicy = PolicyDetail::where('quotation_product_id', $quotationProduct->id)->where('status', 'Renewal Request To Bind')->get();
+                foreach($previousPolicy as $policy){
+                    $policy->status = 'old policy';
+                    $policy->save();
+                }
+                $policyDetails->status = 'renewal issued';
+                $quotationProduct->status = 8;
+                $quotationProduct->save();
+            }else{
+                $policyDetails->status = 'issued';
+                $quotationProduct->status = 8;
+                $quotationProduct->save();
+            }
             $policyDetails->save();
 
             if(isset($data['newBlankLimits']) && isset($data['newBlankValue'])){

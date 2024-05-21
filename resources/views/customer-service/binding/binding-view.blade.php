@@ -25,7 +25,6 @@
             ajax: {
                 url: "{{ route('binding-view-list') }}",
                 type: "POST",
-
             },
             columns: [{
                     data: 'policy_number',
@@ -129,6 +128,7 @@
             e.preventDefault();
             var id = $(this).attr('id');
             var productStatus = $(this).data('status');
+            var type = $(this).attr('type');
             $.ajax({
                 url: "{{ route('request-to-bind-information') }}",
                 method: "POST",
@@ -136,11 +136,11 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 data: {
-                    id: id
+                    id: id,
+                    type: type
                 },
                 dataType: "json",
                 success: function(data) {
-
                     $('#companyName').text(data.lead.company_name);
                     $('#insuredName').text(data.generalInformation.firstname + ' ' +
                         data.generalInformation.lastname);

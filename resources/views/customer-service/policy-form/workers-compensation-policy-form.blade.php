@@ -34,7 +34,7 @@
                         <div class="col-6">
                             <label class="form-label" for="workersCompensationCarrierInput">Carrier</label>
                             <select name="workersCompensationCarrierInput" id="workersCompensationCarrierInput"
-                                class="form-select">
+                                class="form-select" required>
                                 <option value="">Select Carrier</option>
                                 @foreach ($carriers as $carrier)
                                     <option value="{{ $carrier->name }}">{{ $carrier->name }}</option>
@@ -47,7 +47,8 @@
                             <div class="form-group">
                                 <label class="form-label" for="workersCompensationPaymentTermInput">Payment Term</label>
                                 <select class="form-select" aria-label="Default select example"
-                                    id="workersCompensationPaymentTermInput" name="workersCompensationPaymentTermInput">
+                                    id="workersCompensationPaymentTermInput" name="workersCompensationPaymentTermInput"
+                                    required>
                                     <option selected="">Open this select menu</option>
                                     <option value="PIF">PIF</option>
                                     <option value="Low down">Low down</option>
@@ -80,22 +81,22 @@
                             <label class="form-label" for="">EACH ACCIDENT</label>
                             <input type="text" class="form-control input-mask text-left"
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
-                                inputmode="decimal" style="text-align: right;" id="elEachAccident"
-                                name="elEachAccident">
+                                inputmode="decimal" style="text-align: right;" id="elEachAccident" name="elEachAccident"
+                                required autocomplete="off">
                         </div>
                         <div class="col-4">
                             <label class="form-label" for="">DISEASE-POLICY LIMIT</label>
                             <input type="text" class="form-control input-mask text-left"
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
                                 inputmode="decimal" style="text-align: right;" id="elDiseasePolicyLimit"
-                                name="elDiseasePolicyLimit">
+                                name="elDiseasePolicyLimit" required autocomplete="off">
                         </div>
                         <div class="col-4">
                             <label class="form-label" for="">DISEASE-EACH EMPLOYEE</label>
                             <input type="text" class="form-control input-mask text-left"
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
                                 inputmode="decimal" style="text-align: right;" id="elDiseaseEachEmployee"
-                                name="elDiseaseEachEmployee">
+                                name="elDiseaseEachEmployee" required autocomplete="off">
                         </div>
                     </div>
                     <div class="row mb-2">
@@ -205,11 +206,6 @@
                         icon: 'success',
                         confirmButtonText: 'Ok'
                     }).then((result) => {
-                        // if (result.isConfirmed) {
-                        //     $('#workersCompensationModalForm').modal('hide');
-                        //     $('.boundProductTable').DataTable().ajax.reload();
-                        //     $('.newPolicyList').DataTable().ajax.reload();
-                        // }
                         $('#workersCompensationModalForm').modal('hide');
                         location.reload();
                     });

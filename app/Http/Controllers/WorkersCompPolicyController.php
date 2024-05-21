@@ -13,6 +13,7 @@ use App\Models\WorkersCompPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class WorkersCompPolicyController extends Controller
 {
@@ -68,6 +69,8 @@ class WorkersCompPolicyController extends Controller
             $metadata->save();
             $mediaId = $metadata->id;
 
+            $quotationProduct = QuotationProduct::find($data['workersCompensationHiddenInputId']);
+
             $policyDetails = new PolicyDetail();
             $policyDetails->selected_quote_id = $data['workersCompensationHiddenQuoteId'];
             $policyDetails->quotation_product_id = $data['workersCompensationHiddenInputId'];
@@ -79,6 +82,20 @@ class WorkersCompPolicyController extends Controller
             $policyDetails->expiration_date = $data['workersCompensationExpirationDate'];
             $policyDetails->status = 'issued';
             $policyDetails->media_id = $mediaId;
+            if($quotationProduct->status == 20){
+                $previousPolicy = PolicyDetail::where('quotation_product_id', $quotationProduct->id)->where('status', 'Renewal Request To Bind')->get();
+                foreach($previousPolicy as $policy){
+                    $policy->status = 'old policy';
+                    $policy->save();
+                }
+                $policyDetails->status = 'renewal issued';
+                $quotationProduct->status = 8;
+                $quotationProduct->save();
+            }else{
+                $policyDetails->status = 'issued';
+                $quotationProduct->status = 8;
+                $quotationProduct->save();
+            }
             $policyDetails->save();
 
             if(isset($data['newBlankLimits']) && isset($data['newBlankValue'])){
@@ -117,6 +134,7 @@ class WorkersCompPolicyController extends Controller
             return response()->json(['success' => 'Workers Compensation Policy has been added successfully'], 200);
         }catch(\Exception $e){
             DB::rollBack();
+            Log::info($e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }

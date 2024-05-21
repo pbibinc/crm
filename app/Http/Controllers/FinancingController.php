@@ -11,9 +11,11 @@ use App\Models\PaymentOption;
 use App\Models\PolicyDetail;
 use App\Models\QuoteComparison;
 use App\Models\RecurringAchMedia;
+use App\Models\SelectedQuote;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
 class FinancingController extends Controller
@@ -49,32 +51,38 @@ class FinancingController extends Controller
     public function store(Request $request)
     {
         try{
-
             DB::beginTransaction();
             $data = $request->all();
-            $file = $data['pfaFile'];
-            $basename = $file->getClientOriginalName();
-            $directoryPath = public_path('backend/assets/attacedFiles/financing-agreement/');
-            $type = $file->getClientMimeType();
-            $size = $file->getSize();
-            if(!File::isDirectory($directoryPath)){
-                File::makeDirectory($directoryPath, 0777, true, true);
-            }
-            $file->move($directoryPath, $basename);
-            $filepath = 'backend/assets/attacedFiles/financing-agreement/' . $basename;
+            if($request->hasFile('pfaFile')){
 
-            $metadata = new Metadata();
-            $metadata->basename = $basename;
-            $metadata->filename = $basename;
-            $metadata->filepath = $filepath;
-            $metadata->type = $type;
-            $metadata->size = $size;
-            $metadata->save();
-            $mediaId = $metadata->id;
+                $file = $data['pfaFile'];
+                $basename = $file->getClientOriginalName();
+                $directoryPath = public_path('backend/assets/attacedFiles/financing-agreement/');
+                $type = $file->getClientMimeType();
+                $size = $file->getSize();
+                if(!File::isDirectory($directoryPath)){
+                    File::makeDirectory($directoryPath, 0777, true, true);
+                }
+
+
+                 $file->move($directoryPath, $basename);
+                 $filepath = 'backend/assets/attacedFiles/financing-agreement/' . $basename;
+
+                 $metadata = new Metadata();
+                 $metadata->basename = $basename;
+                 $metadata->filename = $basename;
+                 $metadata->filepath = $filepath;
+                 $metadata->type = $type;
+                 $metadata->size = $size;
+                 $metadata->save();
+                 $mediaId = $metadata->id;
+            }else{
+                throw new \Exception('PFA File not found.');
+            }
 
             $financingAgreement = new FinancingAgreement();
             $financingAgreement->financing_company_id = $data['financingCompany'];
-            $financingAgreement->quote_comparison_id = $data['comparisonId'];
+            $financingAgreement->selected_quote_id = $data['selectedQuoteId'];
             $financingAgreement->is_auto_pay = $data['autoPay'];
             $financingAgreement->due_date = $data['dueDate'];
             $financingAgreement->payment_start = $data['paymentStart'];
@@ -88,41 +96,47 @@ class FinancingController extends Controller
                 $paymentOption->financing_agreement_id = $financingAgreement->id;
                 $paymentOption->payment_option = $data['payOption'];
                 $paymentOption->save();
+
+                $autoPayFile = $data['autoPayFile'];
+                $autoPayBasename = $autoPayFile->getClientOriginalName();
+                $autoPayDirectoryPath = public_path('backend/assets/attacedFiles/financing-agreement/');
+                $autoPayType = $autoPayFile->getClientMimeType();
+                $autoPaySize = $autoPayFile->getSize();
+                if(!File::isDirectory($autoPayDirectoryPath)){
+                    File::makeDirectory($autoPayDirectoryPath, 0777, true, true);
+                }
+                $autoPayFile->move($autoPayDirectoryPath, $autoPayBasename);
+                $autoPayFilepath = 'backend/assets/attacedFiles/financing-agreement/' . $autoPayBasename;
+
+                $autoPayMetadata = new Metadata();
+                $autoPayMetadata->basename = $autoPayBasename;
+                $autoPayMetadata->filename = $autoPayBasename;
+                $autoPayMetadata->filepath = $autoPayFilepath;
+                $autoPayMetadata->type = $autoPayType;
+                $autoPayMetadata->size = $autoPaySize;
+                $autoPayMetadata->save();
+
+                $recurringAchMedia = new RecurringAchMedia();
+                $recurringAchMedia->financing_aggreement_id = $financingAgreement->id;
+                $recurringAchMedia->media_id = $autoPayMetadata->id;
+                $recurringAchMedia->save();
             }
 
             $financialStatus = FinancingStatus::find($data['financialStatusId']);
             $financialStatus->status = 'PFA Created';
             $financialStatus->save();
-
-            $autoPayFile = $data['autoPayFile'];
-            $autoPayBasename = $autoPayFile->getClientOriginalName();
-            $autoPayDirectoryPath = public_path('backend/assets/attacedFiles/financing-agreement/');
-            $autoPayType = $autoPayFile->getClientMimeType();
-            $autoPaySize = $autoPayFile->getSize();
-            if(!File::isDirectory($autoPayDirectoryPath)){
-                File::makeDirectory($autoPayDirectoryPath, 0777, true, true);
-            }
-            $autoPayFile->move($autoPayDirectoryPath, $autoPayBasename);
-            $autoPayFilepath = 'backend/assets/attacedFiles/financing-agreement/' . $autoPayBasename;
-
-            $autoPayMetadata = new Metadata();
-            $autoPayMetadata->basename = $autoPayBasename;
-            $autoPayMetadata->filename = $autoPayBasename;
-            $autoPayMetadata->filepath = $autoPayFilepath;
-            $autoPayMetadata->type = $autoPayType;
-            $autoPayMetadata->size = $autoPaySize;
-            $autoPayMetadata->save();
-
-            $recurringAchMedia = new RecurringAchMedia();
-            $recurringAchMedia->financing_aggreement_id = $financingAgreement->id;
-            $recurringAchMedia->media_id = $autoPayMetadata->id;
-            $recurringAchMedia->save();
-
             DB::commit();
-            return response()->json(['success' => 'Financing Agreement has been saved'], 200);
+            return response()->json([
+             'status' => 'success',
+             'message' => 'Payment charged successfully',
+            ]);
         }catch(\Exception $e){
             DB::rollback();
-            return response()->json(['error' => $e->getMessage()]);
+            Log::error($e->getMessage());
+            return response()->json([
+             'status' => 'error',
+             'message' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -143,13 +157,14 @@ class FinancingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        $quoteComparison = QuoteComparison::find($id);
-        $quoteProduct = $quoteComparison->QuotationProduct;
+        $data = $request->all();
+        $selectedQuote = SelectedQuote::find($id);
+        $quoteProduct = $selectedQuote->QuotationProduct;
         $leads = $quoteProduct->QuoteInformation->QuoteLead->leads;
-        $financialStatus = FinancingStatus::where('quotation_product_id', $quoteProduct->id)->first();
-        return response()->json(['quoteComparison' => $quoteComparison, 'quoteProduct' => $quoteProduct, 'leads' => $leads, 'financialStatus' => $financialStatus], 200);
+        $financialStatus = FinancingStatus::find($data['financingId']);
+        return response()->json(['selectedQuote' => $selectedQuote, 'quoteProduct' => $quoteProduct, 'leads' => $leads, 'financialStatus' => $financialStatus], 200);
     }
 
     /**
@@ -187,8 +202,8 @@ class FinancingController extends Controller
             return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('policy_number', function($data){
-                $policyCost = QuoteComparison::where('quotation_product_id', $data->QuotationProduct->id)->where('recommended', 3)->first();
-                return $policyCost->quote_no;
+                $selectedQuote = SelectedQuote::find($data->selected_quote_id)->first();
+                return $selectedQuote->quote_no;
             })
             ->addColumn('company_name', function($data){
                 $leads = $data->QuotationProduct->QuoteInformation->QuoteLead->leads;
@@ -200,12 +215,12 @@ class FinancingController extends Controller
                 return $product;
             })
             ->addColumn('full_payment', function($data){
-                $policyCost = QuoteComparison::where('quotation_product_id', $data->QuotationProduct->id)->where('recommended', 3)->first();
-                return $policyCost->full_payment;
+                $selectedQuote = SelectedQuote::find($data->selected_quote_id)->first();
+                return $selectedQuote->full_payment;
             })
             ->addColumn('effective_date', function($data){
-                $policyCost = QuoteComparison::where('quotation_product_id', $data->QuotationProduct->id)->where('recommended', 3)->first();
-                return $policyCost->quote_no;
+                $selectedQuote = SelectedQuote::find($data->selected_quote_id)->first();
+                return $selectedQuote->effective_date;
             })
             ->rawColumns(['company_name'])
             ->make(true);
@@ -216,19 +231,18 @@ class FinancingController extends Controller
     {
         if($request->ajax())
         {
-
             $financingStaus = new FinancingStatus();
             $data = $financingStaus->getPfaProcessing();
+
             return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('policy_number', function($data){
-                $quoteComparison = QuoteComparison::where('quotation_product_id', $data->QuotationProduct->id)->where('recommended', 3)->first();
-                $policyNumber = '<a href="" id="'.$quoteComparison->id.'" name="showPolicyForm" class="createPfa">'. $quoteComparison->quote_no.'</a>';
+                $selectedQuote = SelectedQuote::find($data->selected_quote_id);
+                $policyNumber = '<a href="" id="'.$selectedQuote->id.'" data-financing-id="'.$data->id.'" name="showPolicyForm" class="createPfa">'. $selectedQuote->quote_no.'</a>';
                 return $policyNumber;
             })
             ->addColumn('company_name', function($data){
                 $company_name = $data->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name;
-
                 return $company_name;
             })
             ->addColumn('product', function($data){
@@ -236,12 +250,12 @@ class FinancingController extends Controller
                 return $product;
             })
             ->addColumn('full_payment', function($data){
-                $policyCost = QuoteComparison::where('quotation_product_id', $data->QuotationProduct->id)->where('recommended', 3)->first();
-                return $policyCost->full_payment;
+                $selectedQuote = SelectedQuote::find($data->selected_quote_id)->first();
+                return $selectedQuote->full_payment;
             })
             ->addColumn('effective_date', function($data){
-                $policyCost = QuoteComparison::where('quotation_product_id', $data->QuotationProduct->id)->where('recommended', 3)->first();
-                return $policyCost->quote_no;
+                $selectedQuote = SelectedQuote::find($data->selected_quote_id)->first();
+                return $selectedQuote->quote_no;
             })
             ->rawColumns(['policy_number'])
             ->make(true);
@@ -257,7 +271,7 @@ class FinancingController extends Controller
         return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('policy_number', function($data){
-            $quoteComparison = QuoteComparison::find($data->quote_comparison_id);
+            $quoteComparison = SelectedQuote::find($data->selected_quote_id);
             return $quoteComparison->quote_no;
         })
         ->addColumn('financing_company', function($data){
@@ -278,8 +292,9 @@ class FinancingController extends Controller
             return $autoPay;
         })
         ->addColumn('media', function($data){
+            $url = env('APP_FORM_LINK');
             $media = Metadata::find($data->media_id);
-            $baseUrl = "https://insuraprime_crm.test/";
+            $baseUrl = $url;
             $fullPath = $baseUrl . $media->filepath;
             return '<a href="'.$fullPath.'" target="_blank">'.$media->basename.'</a>';
         })

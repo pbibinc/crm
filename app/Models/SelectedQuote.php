@@ -42,7 +42,7 @@ class SelectedQuote extends Model
 
     public function QuotationProduct()
     {
-        return $this->belongsTo(QuotationProduct::class);
+        return $this->belongsTo(QuotationProduct::class, 'quotation_product_id');
     }
 
     public function PaymentInformation()

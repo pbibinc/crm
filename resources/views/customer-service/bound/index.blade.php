@@ -68,11 +68,13 @@
             e.preventDefault();
             var id = $(this).attr('id');
             var product = $(this).attr('data-product');
+            var type = $(this).attr('type');
             $.ajax({
                 url: "{{ route('get-bound-information') }}",
                 type: "POST",
                 data: {
-                    id: id
+                    id: id,
+                    type: type
                 },
                 success: function(response) {
                     console.log(response);
@@ -81,7 +83,7 @@
                         $('#glPolicyNumber').val(response.selectedQuote.quote_no);
                         $('#glPaymentTermInput').val(response.paymentInformation
                             .payment_term);
-                        $('#glHiddenInputId').val(id);
+                        $('#glHiddenInputId').val(response.product.id);
                         $('#hiddenQuoteId').val(response.selectedQuote.id);
                         $('#glMarketInput').val(response.marketName.name);
                         $('#generalLiabilitiesPolicyForm').modal('show');
@@ -92,7 +94,7 @@
                             .quote_no);
                         $('#commercialAutoPaymentTermInput').val(response.paymentInformation
                             .payment_term);
-                        $('#commercialAutoHiddenInputId').val(id);
+                        $('#commercialAutoHiddenInputId').val(response.product.id);
                         $('#commercialAutoHiddenQuoteId').val(response.selectedQuote.id);
                         $('#commercialAutoMarketInput').val(response.marketName.name);
                         $('#commercialAutoPolicyForm').modal('show');
@@ -107,7 +109,7 @@
                         $('#workersCompensationPaymentTermInput').val(response
                             .paymentInformation
                             .payment_term);
-                        $('#workersCompensationHiddenInputId').val(id);
+                        $('#workersCompensationHiddenInputId').val(response.product.id);
                         $('#workersCompensationHiddenQuoteId').val(response.selectedQuote
                             .id);
                         $('#workersCompensationModalForm').modal(
@@ -120,7 +122,7 @@
                         $('#toolsEquipmentMarketInput').val(response.marketName.name);
                         $('#toolsEquipmentPaymentTermInput').val(response.paymentInformation
                             .payment_term);
-                        $('#toolsEquipmentHiddenInputId').val(id);
+                        $('#toolsEquipmentHiddenInputId').val(response.product.id);
                         $('#toolsEquipmentHiddenQuoteId').val(response.selectedQuote
                             .id);
                         $('#toolsEquipmentPolicyFormModal').modal('show');
@@ -132,7 +134,7 @@
                         $('#businessOwnersMarketInput').val(response.marketName.name);
                         $('#businessOwnersPaymentTermInput').val(response.paymentInformation
                             .payment_term);
-                        $('#businessOwnersHiddenInputId').val(id);
+                        $('#businessOwnersHiddenInputId').val(response.product.id);
                         $('#businessOwnersHiddenQuoteId').val(response.selectedQuote
                             .id);
                         $('#businessOwnersPolicyFormModal').modal('show');
@@ -144,7 +146,7 @@
                         $('#buildersRiskMarketInput').val(response.marketName.name);
                         $('#buildersRiskPaymentTermInput').val(response.paymentInformation
                             .payment_term);
-                        $('#buildersRiskHiddenInputId').val(id);
+                        $('#buildersRiskHiddenInputId').val(response.product.id);
                         $('#buildersRiskHiddenQuoteId').val(response.selectedQuote
                             .id);
                         $('#buildersRiskPolicyFormModal').modal('show');
@@ -157,7 +159,7 @@
                         $('#excessInsurancePaymentTermInput').val(response
                             .paymentInformation
                             .payment_term);
-                        $('#excessInsuranceHiddenInputId').val(id);
+                        $('#excessInsuranceHiddenInputId').val(response.product.id);
                         $('#excessInsuranceHiddenQuoteId').val(response.selectedQuote
                             .id);
                         $('#excessInsurancePolicyFormModal').modal('show');

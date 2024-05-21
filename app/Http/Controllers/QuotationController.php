@@ -616,22 +616,39 @@ class QuotationController extends Controller
             if($request->ajax())
             {
                 $status = $request->input('status');
-                $productId = $request->input('id');
-                $paymentInformationId = $request->input('paymentInformationId');
-                $qoutationProduct = QuotationProduct::find($productId);
-                $qoutationProduct->status = $status;
-                $quotationProductSaving = $qoutationProduct->save();
-
-                if($request->has('renewalStatus') && $request->input('renewalStatus') == 'true'){
-                    $policyDetails = PolicyDetail::where('quotation_product_id', $productId)->first();
-                    $policyDetails->status = $request->input('policyStatus');
-                    $policyDetails->save();
+                $id = $request->input('id');
+                if ($status == 19 || $status == 20) {
+                    $policyDetail = PolicyDetail::find($id);
+                    if ($policyDetail) {
+                        $qoutationProduct = QuotationProduct::find($policyDetail->quotation_product_id);
+                    } else {
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'PolicyDetail not found.',
+                        ], 404);
+                    }
+                } else {
+                    $qoutationProduct = QuotationProduct::find($id);
                 }
 
-                // $paymentInformation = PaymentInformation::find($paymentInformationId)
-                // ->update(['status' => 'declined']);
+                if ($qoutationProduct) {
+                    $qoutationProduct->status = $status;
+                    $quotationProductSaving = $qoutationProduct->save();
+                } else {
+                    // Handle the case where QuotationProduct is not found
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'QuotationProduct not found.',
+                    ], 404);
+                }
             }else{
                 return response()->json(['error' => 'Error in changing status']);
+            }
+
+            if($request->has('renewalStatus') && $request->input('renewalStatus') == 'true'){
+                $policyDetails = PolicyDetail::where('quotation_product_id', $qoutationProduct->id)->where('status', 'Renewal Payment Processed')->latest()->first();
+                $policyDetails->status = $request->input('policyStatus');
+                $policyDetails->save();
             }
             DB::commit();
             return response()->json(['success' => 'Status changed successfully']);

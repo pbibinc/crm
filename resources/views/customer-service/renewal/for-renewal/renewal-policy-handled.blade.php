@@ -42,7 +42,7 @@
                     name: 'handledBy'
                 },
             ]
-        })
+        });
 
         $(document).on('click', '.renewalPolicyButton', function(e) {
             e.preventDefault();
@@ -71,6 +71,6 @@
                     });
                 }
             })
-        })
+        });
     });
 </script>

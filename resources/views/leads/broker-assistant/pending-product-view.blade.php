@@ -72,7 +72,7 @@
                     method: "POST",
                     data: {
                         id: id,
-                        status: 22,
+                        status: 3,
                     },
                     success: function() {
                         Swal.fire({

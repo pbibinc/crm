@@ -186,7 +186,8 @@
                 },
                 method: "POST",
                 data: {
-                    id: id
+                    id: id,
+                    productStatus: parsedStatus
                 },
                 success: function() {
                     $.ajax({

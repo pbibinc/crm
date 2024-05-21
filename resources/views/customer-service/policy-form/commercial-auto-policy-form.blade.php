@@ -23,7 +23,8 @@
                     <div class="row mb-2">
                         <div class="col-6">
                             <label class="form-label" for="commercialAutoMarketInput">Market</label>
-                            <select name="commercialAutoMarketInput" id="commercialAutoMarketInput" class="form-select">
+                            <select name="commercialAutoMarketInput" id="commercialAutoMarketInput" class="form-select"
+                                required>
                                 <option value="">Select Market</option>
                                 @foreach ($markets as $market)
                                     <option value="{{ $market->name }}">{{ $market->name }}</option>
@@ -33,7 +34,7 @@
                         <div class="col-6">
                             <label class="form-label" for="commercialAutoCarrierInput">Carrier</label>
                             <select name="commercialAutoCarrierInput" id="commercialAutoCarrierInput"
-                                class="form-select">
+                                class="form-select" required>
                                 <option value="">Select Carrier</option>
                                 @foreach ($carriers as $carrier)
                                     <option value="{{ $carrier->name }}">{{ $carrier->name }}</option>
@@ -121,14 +122,15 @@
                             <label class="form-label" for="biPerPerson">Bodily Injury (Per Person)</label>
                             <input type="text" class="form-control input-mask text-left"
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
-                                inputmode="decimal" style="text-align: right;" id="biPerPerson" name="biPerPerson">
+                                inputmode="decimal" style="text-align: right;" id="biPerPerson" name="biPerPerson"
+                                autocomplete="off" required>
                         </div>
                         <div class="col-6">
                             <label class="form-label" for="biPerAccident">Bodily Injury (Per accident)</label>
                             <input type="text" class="form-control input-mask text-left"
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
                                 inputmode="decimal" style="text-align: right;" id="biPerAccident"
-                                name="biPerAccident">
+                                name="biPerAccident" autocomplete="off" required>
                         </div>
                     </div>
                     <div class="row mb-2">
@@ -136,20 +138,22 @@
                             <label class="form-label" for="combineUnit">Combine S Unit</label>
                             <input type="text" class="form-control input-mask text-left"
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
-                                inputmode="decimal" style="text-align: right;" id="combineUnit" name="combineUnit">
+                                inputmode="decimal" style="text-align: right;" id="combineUnit" name="combineUnit"
+                                autocomplete="off" required>
                         </div>
                         <div class="col-6">
                             <label class="form-label" for="propertyDamage">Property Damage</label>
                             <input type="text" class="form-control input-mask text-left"
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
                                 inputmode="decimal" style="text-align: right;" id="propertyDamage"
-                                name="propertyDamage">
+                                name="propertyDamage" autocomplete="off" required>
                         </div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">
                             <label class="form-label" for="blankLimits">Blank Limits</label>
-                            <input type="text" class="form-control" id="blankLimits" name="newBlankLimits[]">
+                            <input type="text" class="form-control" id="blankLimits" name="newBlankLimits[]"
+                                autocomplete="off">
                         </div>
                         <div class="col-6">
                             <label class="form-label" for="blankValue">Blank Value</label>
@@ -157,7 +161,7 @@
                                 <input type="text" class="form-control input-mask text-left"
                                     data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
                                     inputmode="decimal" style="text-align: right;" id="blankValue"
-                                    name="newBlankValue[]">
+                                    name="newBlankValue[]" autocomplete="off">
                                 <button class="btn btn-outline-success addMore" type="button"
                                     id="addMore">+</button>
                             </div>

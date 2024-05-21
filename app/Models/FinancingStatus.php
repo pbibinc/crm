@@ -11,6 +11,7 @@ class FinancingStatus extends Model
     protected $table = 'financing_status';
     protected $fillable = [
         'quotation_product_id',
+        'selected_quote_id',
         'status',
     ];
     public $timestamps = false;

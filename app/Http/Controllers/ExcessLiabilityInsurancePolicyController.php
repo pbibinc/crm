@@ -69,6 +69,8 @@ class ExcessLiabilityInsurancePolicyController extends Controller
             $metadata->save();
             $mediaId = $metadata->id;
 
+            $quotationProduct = QuotationProduct::find($data['excessInsuranceHiddenInputId']);
+
             $policyDetails = new PolicyDetail();
             $policyDetails->selected_quote_id = $data['excessInsuranceHiddenQuoteId'];
             $policyDetails->quotation_product_id = $data['excessInsuranceHiddenInputId'];
@@ -80,6 +82,22 @@ class ExcessLiabilityInsurancePolicyController extends Controller
             $policyDetails->expiration_date = $data['excessInsuranceExpirationDate'];
             $policyDetails->status = 'issued';
             $policyDetails->media_id = $mediaId;
+
+            if($quotationProduct->status == 20){
+                $previousPolicy = PolicyDetail::where('quotation_product_id', $quotationProduct->id)->where('status', 'Renewal Request To Bind')->get();
+                foreach($previousPolicy as $policy){
+                    $policy->status = 'old policy';
+                    $policy->save();
+                }
+                $policyDetails->status = 'renewal issued';
+                $quotationProduct->status = 8;
+                $quotationProduct->save();
+            }else{
+                $policyDetails->status = 'issued';
+                $quotationProduct->status = 8;
+                $quotationProduct->save();
+            }
+
             $policyDetails->save();
 
             $excessLiability = new ExcessLiabilityInsurancePolicy();

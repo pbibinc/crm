@@ -9,11 +9,8 @@
             <th>Type</th>
             <th>Total Cost</th>
             <th>Effective Date</th>
-            {{-- <th>Sent Out Date</th>
-                        <th></th> --}}
         </thead>
         <tbody>
-
         </tbody>
     </table>
 </div>
@@ -107,45 +104,47 @@
                 confirmButtonText: 'Yes, Send it!'
             }).then((result) => {
                 if (result.isConfirmed) {
+                    // $.ajax({
+                    //     url: "{{ route('save-bound-information') }}",
+                    //     headers: {
+                    //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    //     },
+                    //     method: "POST",
+                    //     data: {
+                    //         id: id,
+                    //         productStatus: productStatus
+                    //     },
+                    //     success: function() {
+
+                    //     },
+                    //     error: function() {
+                    //         Swal.fire({
+                    //             title: 'Error',
+                    //             text: 'Something went wrong',
+                    //             icon: 'error'
+                    //         });
+                    //     }
+                    // })
                     $.ajax({
-                        url: "{{ route('save-bound-information') }}",
+                        url: "{{ route('change-quotation-status') }}",
                         headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            'X-CSRF-TOKEN': $(
+                                'meta[name="csrf-token"]').attr(
+                                'content')
                         },
                         method: "POST",
                         data: {
+                            status: status,
                             id: id
                         },
                         success: function() {
-                            $.ajax({
-                                url: "{{ route('change-quotation-status') }}",
-                                headers: {
-                                    'X-CSRF-TOKEN': $(
-                                        'meta[name="csrf-token"]').attr(
-                                        'content')
-                                },
-                                method: "POST",
-                                data: {
-                                    status: status,
-                                    id: id
-                                },
-                                success: function() {
-                                    Swal.fire({
-                                        title: 'Success',
-                                        text: 'has been saved',
-                                        icon: 'success'
-                                    }).then((result) => {
-                                        location.reload();
-                                    });
-                                },
-                                error: function() {
-                                    Swal.fire({
-                                        title: 'Error',
-                                        text: 'Something went wrong',
-                                        icon: 'error'
-                                    });
-                                }
-                            })
+                            Swal.fire({
+                                title: 'Success',
+                                text: 'has been saved',
+                                icon: 'success'
+                            }).then((result) => {
+                                location.reload();
+                            });
                         },
                         error: function() {
                             Swal.fire({

@@ -8,6 +8,7 @@ use App\Models\GeneralLiabilitiesPolicyDetails;
 use App\Models\Insurer;
 use App\Models\Lead;
 use App\Models\Metadata;
+use App\Models\PaymentInformation;
 use App\Models\PolicyDetail;
 use App\Models\QuoationMarket;
 use App\Models\QuotationProduct;
@@ -43,8 +44,15 @@ class BindingController extends Controller
             return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('policy_number', function($data){
-                $quote_comparison = SelectedQuote::where('quotation_product_id', $data->id)->first();
-                $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind">'.$quote_comparison->quote_no.'</a>';
+                if($data->status == 17 || $data->status == 18)
+                {
+                    $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
+                    $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+                    $policy_number = '<a href="" id="'.$policyDetail->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind">'.$selectedQuote->quote_no.'</a>';
+                }else{
+                    $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
+                    $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind">'.$selectedQuote->quote_no.'</a>';
+                }
                 return $policy_number;
             })
             ->addColumn('company_name', function($data){
@@ -99,19 +107,28 @@ class BindingController extends Controller
 
     public function requestToBindInformation(Request $request)
     {
+        if($request->type == 'renewal'){
+            $policyDetail = PolicyDetail::find($request->id);
+            $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+            $product = QuotationProduct::find($policyDetail->quotation_product_id);
 
-       $product = QuotationProduct::find($request->id);
-       $market = $product->QouteComparison->first();
+        }else{
+            $product = QuotationProduct::find($request->id);
+            $selectedQuote = SelectedQuote::where('quotation_product_id', $request->id)->first();
+        }
+
        $lead = $product->QuoteInformation->QuoteLead->leads;
-       $paymentInformation = $market->PaymentInformation;
+       $paymentInformation = PaymentInformation::where('selected_quote_id', $selectedQuote->id)->first();
        $paymentCharged = $paymentInformation->paymentCharged;
-       $marketName = QuoationMarket::find($market->quotation_market_id);
+       $marketName = QuoationMarket::find($selectedQuote->quotation_market_id);
        $generalInformation = $lead->GeneralInformation;
        $userProfile = UserProfile::find($paymentCharged->user_profile_id);
        $userId = User::find($userProfile->user_id)->id;
        $mediaIds = $product->medias()->pluck('metadata_id')->toArray();
        $medias = Metadata::whereIn('id', $mediaIds)->get();
-       return response()->json(['product' => $product, 'market' => $market, 'lead' => $lead, 'paymentInformation' => $paymentInformation, 'paymentCharged' => $paymentCharged, 'marketName' => $marketName, 'generalInformation' => $generalInformation, 'userProfile' => $userProfile, 'medias' => $medias, 'userId' => $userId]);
+
+
+       return response()->json(['product' => $product, 'market' => $selectedQuote, 'lead' => $lead, 'paymentInformation' => $paymentInformation, 'paymentCharged' => $paymentCharged, 'marketName' => $marketName, 'generalInformation' => $generalInformation, 'userProfile' => $userProfile, 'medias' => $medias, 'userId' => $userId]);
     }
 
     public function incompleteBindingList(Request $request)
@@ -160,6 +177,7 @@ class BindingController extends Controller
     {
         if($request->ajax())
         {
+
             try{
                 $data = $request->all();
                 $mediaIds = [];
@@ -188,7 +206,6 @@ class BindingController extends Controller
                 //code for saving product
                 $quotationProduct = QuotationProduct::find($data['glHiddenInputId']);
 
-
                 //policy details saving
                 $policyDetails = new PolicyDetail();
                 $policyDetails->selected_quote_id = $data['glHiddenQuoteId'];
@@ -200,7 +217,7 @@ class BindingController extends Controller
                 $policyDetails->effective_date = $data['effectiveDate'];
                 $policyDetails->expiration_date = $data['expirationDate'];
                 $policyDetails->media_id =  $metadata->id;
-                if($quotationProduct->status = 20){
+                if($quotationProduct->status == 20){
                     $previousPolicy = PolicyDetail::where('quotation_product_id', $quotationProduct->id)->where('status', 'Renewal Request To Bind')->get();
                     foreach($previousPolicy as $policy){
                         $policy->status = 'old policy';
@@ -264,8 +281,14 @@ class BindingController extends Controller
         return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('policy_number', function($data){
-            $quote_comparison = SelectedQuote::where('quotation_product_id', $data->id)->first();
-            $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewBindingButton">'.$quote_comparison->quote_no.'</a>';
+            if($data->status == 19){
+                $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
+                $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+                $policy_number = '<a href="" id="'.$policyDetail->id.'" data-status="'.$data->status.'" name="viewButton" class="viewBindingButton" type="renewal">'.$selectedQuote->quote_no.'</a>';
+            }else{
+                $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
+                $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewBindingButton" type="new">'.$selectedQuote->quote_no.'</a>';
+            }
             return $policy_number;
         })
         ->addColumn('company_name', function($data){

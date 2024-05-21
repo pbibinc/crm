@@ -158,7 +158,7 @@
         $(document).on('click', '.resendBindButton', function() {
             var id = $(this).attr('id');
             console.log(id);
-        })
+        });
 
     });
 </script>

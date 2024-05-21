@@ -40,7 +40,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="" class="form-label">Financing Company</label>
-                                <select name="financingCompany" id="financingCompany" class="form-control">
+                                <select name="financingCompany" id="financingCompany" class="form-control" required>
                                     <option value="">Select Financing Company</option>
                                     @foreach ($financeCompany as $company)
                                         <option value="{{ $company->id }}">{{ $company->name }}</option>
@@ -64,14 +64,14 @@
                             <div class="form-group">
                                 <label for="">Payment Start</label>
                                 <input class="form-control" type="date" value="2011-08-19" id="paymentStart"
-                                    name="paymentStart">
+                                    name="paymentStart" required>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="">Due Date</label>
                                 <input class="form-control" type="number" id="dueDate" min="1" max="31"
-                                    name="dueDate">
+                                    name="dueDate" required>
                             </div>
                         </div>
                     </div>
@@ -79,7 +79,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="" class="form-label">Upload File</label>
-                                <input type="file" name="pfaFile" id="pfaFile" class="form-control">
+                                <input type="file" name="pfaFile" id="pfaFile" class="form-control" required>
                             </div>
                         </div>
                         <div class="col-6">
@@ -106,7 +106,7 @@
                             <input type="file" name="autoPayFile" id="autoPayFile" class="form-control" hidden>
                         </div>
                     </div>
-                    <input type="hidden" name="comparisonId" id="comparisonId">
+                    <input type="hidden" name="selectedQuoteId" id="selectedQuoteId">
                     <input type="hidden" name="autoPay" id="autoPay" value="0">
                     <input type="hidden" name="financialStatusId" id="financialStatusId" value="0">
                 </div>
@@ -172,17 +172,21 @@
         $(document).on('click', '.createPfa', function(e) {
             e.preventDefault();
             var id = $(this).attr('id');
-
+            var financingId = $(this).attr('data-financing-id');
             $.ajax({
                 url: `{{ url('customer-service/financing/financing-agreement') }}/${id}/edit`,
                 type: "GET",
+                data: {
+                    id: id,
+                    financingId: financingId,
+                    _token: token
+                },
                 success: function(response) {
-                    console.log(response);
-                    $('#policyNumber').val(response.quoteComparison.quote_no);
+                    $('#policyNumber').val(response.selectedQuote.quote_no);
                     $('#product').val(response.quoteProduct.product);
                     $('#createPfaModalgModalTitle').text(response.leads.company_name);
-                    $('#monthlyPayment').val(response.quoteComparison.monthly_payment);
-                    $('#comparisonId').val(response.quoteComparison.id);
+                    $('#monthlyPayment').val(response.selectedQuote.monthly_payment);
+                    $('#selectedQuoteId').val(response.selectedQuote.id);
                     $('#financialStatusId').val(response.financialStatus.id);
                     $('#createPfaModal').modal('show');
                 }
@@ -199,27 +203,22 @@
                 contentType: false,
                 processData: false,
                 success: function(response) {
-                    if (response.success) {
+                    Swal.fire(
+                        'Success!',
+                        response.message,
+                        'success'
+                    ).then((result) => {
                         $('#createPfaModal').modal('hide');
-                        Swal.fire(
-                            'Success!',
-                            'Financing Agreement Created Successfully!',
-                            'success'
-                        ).then((result) => {
-                            location.reload();
-                        })
-                    }
+                        location.reload();
+                    })
                 },
                 error: function(response) {
-                    if (reponse.error) {
-                        Swal.fire(
-                            'Error!',
-                            'Financing Agreement Created Failed!',
-                            'error'
-                        ).then((result) => {
-                            location.reload();
-                        })
-                    }
+                    Swal.fire(
+                        'Error!',
+                        response.responseJSON.message ||
+                        'Financing Agreement Creation Failed!',
+                        'error'
+                    )
                 }
             })
         });
