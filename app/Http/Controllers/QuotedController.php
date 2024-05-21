@@ -101,7 +101,6 @@ class QuotedController extends Controller
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
             $companyLink = '<a href="" class="companyName" id="'.$data->id.'">'.$companyName.'</a>';
             return $companyName ? $companyName : 'UNKNOWN';
-
         })
         ->addColumn('broker', function($data){
             $broker = BrokerQuotation::where('quote_product_id', $data->id)->first();
@@ -177,8 +176,8 @@ class QuotedController extends Controller
             return $appointedBy ? $appointedBy->fullAmericanName() : 'UNKNOWN';
         })
         ->addColumn('complianceOfficer', function($data){
-            $complianceOfficerName = UserProfile::find(2)->fullAmericanName();
-            return $complianceOfficerName ? $complianceOfficerName : 'UNKNOWN';
+            $complianceOfficerName = UserProfile::find(5);
+            return $complianceOfficerName ? $complianceOfficerName->fullAmericanName() : 'UNKNOWN';
         })
         ->addColumn('action', function($data){
             $viewButton = '<button class="btn btn-outline-info btn-sm viewButton" id="'.$data->id.'" ><i class="ri-eye-line"></i></button>';
