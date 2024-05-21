@@ -186,7 +186,6 @@ class QuotationProduct extends Model
         }
 
         $quotationProducts = $query->orderBy('created_at')->get();
-        dd($quotationProducts);
         return $quotationProducts->isEmpty() ? [] : $quotationProducts;
     }
 

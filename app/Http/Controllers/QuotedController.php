@@ -98,22 +98,10 @@ class QuotedController extends Controller
         return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('companyName', function($data){
-            // $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
-            // $companyLink = '<a href="" class="companyName" id="'.$data->id.'">'.$companyName.'</a>';
-            // return $companyName;
-            $quoteInformation = $data->QuoteInformation;
-            if ($quoteInformation) {
-                $quoteLead = $quoteInformation->QuoteLead;
-                if ($quoteLead) {
-                    $lead = $quoteLead->leads;
-                    if ($lead) {
-                        $companyName = $lead->company_name;
-                        $companyLink = '<a href="" class="companyName" id="'.$data->id.'">'.$companyName.'</a>';
-                        return $companyLink;
-                    }
-                }
-            }
-            return 'UNKNOWN';
+            $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
+            $companyLink = '<a href="" class="companyName" id="'.$data->id.'">'.$companyName.'</a>';
+            return $companyName ? $companyName : 'UNKNOWN';
+
         })
         ->addColumn('broker', function($data){
             $broker = BrokerQuotation::where('quote_product_id', $data->id)->first();
@@ -177,7 +165,7 @@ class QuotedController extends Controller
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
             $companyLink = '<a href="" class="companyName" id="'.$data->id.'">'.$companyName.'</a>';
-            return $companyName;
+            return $companyName ? $companyLink : 'UNKNOWN';
         })
         ->addColumn('broker', function($data){
             $broker = BrokerQuotation::where('quote_product_id', $data->id)->first();
