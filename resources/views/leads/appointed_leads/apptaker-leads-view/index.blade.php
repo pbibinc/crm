@@ -153,7 +153,7 @@
 
 
                                 <li class="nav-item">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#policies" role="tab">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#policyList" role="tab">
                                         <span class="d-none d-sm-block"><i class="ri-file-edit-line"></i> Policies</span>
                                     </a>
                                 </li>
@@ -269,12 +269,14 @@
                                         'lead' => $leads,
                                     ])
                                 </div>
-                                {{-- <div class="tab-pane fade show" id="policies" role="tabpanel">
-                                    @include('customer-service.policy.policy-view', [
-                                        'id' => $leads->id,
-                                        'quationMarket' => $quationMarket,
+                                <div class="tab-pane fade show" id="policyList" role="tabpanel">
+                                    @include('customer-service.policy.policy-lead-table-list', [
+                                        'leadId' => $leads->id,
+                                        'carriers' => $carriers,
+                                        'markets' => $markets,
+                                        'templates' => $templates,
                                     ])
-                                </div> --}}
+                                </div>
                             </div>
                         </div>
                     </div>

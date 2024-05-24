@@ -203,4 +203,27 @@ class QuotationProduct extends Model
          return $quotationProduct->isEmpty() ? null : $quotationProduct;
     }
 
+    public function getAppointedProduct()
+    {
+        $startOfMonth = now()->startOfMonth();
+        $endOfMonth = now()->endOfMonth();
+        $product = $this->whereBetween('created_at', [$startOfMonth, $endOfMonth])->get();
+        $totalProduct = $product = 0 ? 0 : $product->count();
+        return $totalProduct;
+    }
+
+    public function appointedProductPercentageFromPreviousMonth()
+    {
+        $startOfMonth = now()->startOfMonth();
+        $endOfMonth = now()->endOfMonth();
+        $product = $this->whereBetween('created_at', [$startOfMonth, $endOfMonth])->get();
+        $totalProduct = $product = 0 ? 0 : $product->count();
+        $previousMonth = now()->subMonth()->startOfMonth();
+        $previousMonthEnd = now()->subMonth()->endOfMonth();
+        $previousMonthProduct = $this->whereBetween('created_at', [$previousMonth, $previousMonthEnd])->get();
+        $previousMonthTotalProduct = $previousMonthProduct = 0 ? 0 : $previousMonthProduct->count();
+        $percentage = $totalProduct > 0 && $previousMonthTotalProduct > 0 ? (($totalProduct - $previousMonthTotalProduct) / $previousMonthTotalProduct) * 100 : 0;
+        return number_format($percentage, 2);
+    }
+
 }

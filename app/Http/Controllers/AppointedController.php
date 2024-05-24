@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\API\RecreationalController;
 use App\Http\Controllers\Controller;
 use App\Models\ClassCodeLead;
+use App\Models\Insurer;
 use App\Models\Lead;
 use App\Models\QuoationMarket;
 use App\Models\QuotationProduct;
 use App\Models\QuoteLead;
 use App\Models\RecreationalFacilities;
+use App\Models\Templates;
 use App\Models\UnitedState;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -76,8 +78,10 @@ class AppointedController extends Controller
         $localTime = Carbon::now($timezoneForState);
         $products = QuotationProduct::getQuotedProductByQuotedInformationId($leads->quoteLead->QuoteInformation->id);
         $quationMarket = new QuoationMarket();
-
-        return view('leads.appointed_leads.apptaker-leads-view.index', compact('leads', 'localTime', 'usAddress', 'products', 'sortedClassCodeLeads', 'classCodeLeads', 'recreationalFacilities', 'states', 'quationMarket'));
+        $templates = Templates::all();
+        $markets = QuoationMarket::all()->sortBy('name');
+         $carriers = Insurer::all()->sortBy('name');
+        return view('leads.appointed_leads.apptaker-leads-view.index', compact('leads', 'localTime', 'usAddress', 'products', 'sortedClassCodeLeads', 'classCodeLeads', 'recreationalFacilities', 'states', 'quationMarket', 'carriers', 'markets', 'templates'));
     }
 
 }

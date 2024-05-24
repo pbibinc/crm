@@ -41,6 +41,7 @@
 @include('customer-service.policy-form.builders-risk-policy-form', compact('carriers', 'markets'))
 @include('customer-service.policy-form.excess-insurance-liability-form', compact('carriers', 'markets'))
 
+@include('customer-service.policy.renewal-form')
 <script>
     Dropzone.autoDiscover = false;
     var policyDropzone;
@@ -850,5 +851,13 @@
                 }
             })
         })
+    });
+
+    $(document).on('click', '.cancelButton', function(e) {
+        e.preventDefault();
+        var id = $(this).attr('id');
+        $('#policyId').val(id);
+        $('#policyCancellationModal').modal('show');
+
     });
 </script>

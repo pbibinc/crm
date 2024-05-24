@@ -117,6 +117,9 @@ Route::middleware(['auth'])->group(function (){
      Route::get('/table-data', [DashboardControllerNew::class, 'getTableData'])->name('dashboard.table-data');
      Route::get('/aux-history-data', [DashboardControllerNew::class, 'getAuxHistoryData'])->name('dashboard.aux-history-data');
      Route::get('/check-aux-status', [DashboardControllerNew::class, 'checkAuxLogoutStatus'])->name('dashboard.check-aux-status');
+
+     //route for dashboard report
+     Route::get('/dashboard-report', [DashboardControllerNew::class, 'dashBoardReport'])->name('dashboard-report');
     });
 
     //accounting module

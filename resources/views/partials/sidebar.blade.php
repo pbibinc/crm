@@ -33,6 +33,13 @@
                         <i class="ri-dashboard-line"></i><span class="badge rounded-pill bg-success float-end">3</span>
                         <span>Dashboard</span>
                     </a>
+
+                </li>
+                <li>
+                    <a href="{{ route('dashboard-report') }}" class="waves-effect">
+                        <i class="ri-dashboard-line"></i><span class="badge rounded-pill bg-success float-end"></span>
+                        <span>Report</span>
+                    </a>
                 </li>
                 @can('view', App\Models\Permission::find(1))
                     <li class="menu-title">Admin</li>
