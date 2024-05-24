@@ -365,14 +365,12 @@
                     </div>
                 </div>
             </div>
+            @include('leads.appointed_leads.request-to-bind-form.renewal-request-to-bind-form', [
+                'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+                    $product->product,
+                    $lead->quoteLead->QuoteInformation->id),
+            ])
         </div>
-
-        @include('leads.appointed_leads.request-to-bind-form.renewal-request-to-bind-form', [
-            'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
-                $product->product,
-                $lead->quoteLead->QuoteInformation->id),
-        ])
-
     </div>
 </div>
 

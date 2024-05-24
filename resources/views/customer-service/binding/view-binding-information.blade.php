@@ -111,7 +111,6 @@
                 </div>
                 <input type="hidden" id="hiddenId">
                 <input type="hidden" id="productStatus">
-
                 <div class="row mb-2">
                     <div class="col-12">
                         <form action="" class="dropzone mt-4 border-dashed" id="dropzone"
@@ -235,7 +234,7 @@
                 }
             })
 
-        })
+        });
 
         $('#logNote').on('click', function(e) {
             e.preventDefault();
@@ -300,6 +299,6 @@
 
                 }
             });
-        })
+        });
     });
 </script>
