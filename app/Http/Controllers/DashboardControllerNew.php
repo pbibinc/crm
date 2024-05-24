@@ -6,6 +6,9 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Dashboard;
 use App\Models\Attendance;
+use App\Models\BoundInformation;
+use App\Models\PolicyDetail;
+use App\Models\QuotationProduct;
 use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
 
@@ -676,7 +679,7 @@ class DashboardControllerNew extends Controller
                         ->whereNull('log_out')
                         ->orderBy('log_in', 'desc')
                         ->first();
-                        
+
                     // Update to time out entry
                     if ($afCheckIfTheresAuxIn) {
                         $afCheckIfTheresAuxIn->login_type = 6;
@@ -758,4 +761,20 @@ class DashboardControllerNew extends Controller
     //         return response()->json(['auxDuration' => 0]);
     //     }
     // }
+
+    public function dashBoardReport()
+    {
+        $policyDetail = new PolicyDetail();
+        $boundInformation = new BoundInformation();
+        $quotationProduct = new QuotationProduct();
+        $totalSales = $boundInformation->getTotalSales();
+        $salesPercentage = $boundInformation->salesPercentageFromPreviousMonth();
+        $totalAppointedProduct = $quotationProduct->getAppointedProduct();
+        $appointedProductPercentage = $quotationProduct->appointedProductPercentageFromPreviousMonth();
+        $totalSalesPerType = $boundInformation->getTotalSalesPartionByType();
+        $totalSalesPerType = $boundInformation->getTotalSalesPartionByType();
+        return view('admin.dashboard.daily-reports', compact('totalSales', 'salesPercentage', 'totalAppointedProduct', 'appointedProductPercentage', 'totalSalesPerType'));
+    }
+
+
 }

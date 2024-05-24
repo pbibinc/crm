@@ -16,6 +16,10 @@
                          <i class="ri-dashboard-line"></i><span class="badge rounded-pill bg-success float-end"></span>
                          <span>Dashboard</span>
                      </a>
+                     <a href="{{ route('dashboard-report') }}" class="waves-effect">
+                         <i class="ri-dashboard-line"></i><span class="badge rounded-pill bg-success float-end"></span>
+                         <span>Report</span>
+                     </a>
                  </li>
 
 

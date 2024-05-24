@@ -23,23 +23,6 @@
                         </div>
                     </div>
                 </div>
-                {{-- <div class="col-6">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title mb-4">Appointed Leads To Call Back</h4>
-                            <table id="appointedCallback" class="table table-bordered dt-responsive nowrap"
-                                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                <thead style="background-color: #f0f0f0;">
-                                    <tr>
-                                        <th>Company Name</th>
-                                        <th>Callback Date</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
-                </div> --}}
             </div>
         </div>
     </div>

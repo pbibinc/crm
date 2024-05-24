@@ -112,10 +112,14 @@ class IntentController extends Controller
                 return $company_name;
             })
             ->addColumn('financing_company', function($data){
-                $QuoteComparison = $data->QuotationProduct->QouteComparison->where('recommended', 3)->first();
-                $financingAgreement = FinancingAgreement::where('quote_comparison_id', $QuoteComparison->id)->first();
-                $financingCompany = FinancingCompany::find($financingAgreement->financing_company_id);
-                return $financingCompany->name;
+                $financingAgreement = FinancingAgreement::where('selected_quote_id', $data->selected_quote_id)->first();
+                if ($financingAgreement) {
+                    $financingCompany = FinancingCompany::find($financingAgreement->financing_company_id);
+                    if ($financingCompany) {
+                        return $financingCompany->name ? $financingCompany->name : 'N/A';
+                    }
+                }
+                return 'N/A';
             })
             ->addColumn('intent_start_date', function($data){
                 $CancellationReport = CancellationReport::where('policy_details_id', $data->id)->first();

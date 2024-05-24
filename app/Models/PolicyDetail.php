@@ -160,4 +160,24 @@ class PolicyDetail extends Model
         return $policies;
     }
 
+    public function getTotalSales()
+    {
+        $totalSales = 0;
+        $startOfMonth = now()->startOfMonth();
+        $endOfMonth = now()->endOfMonth();
+
+
+        $policies = $this->whereIn('status', ['issued', 'renewal issued'])
+        ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+        ->get();
+
+       // Calculate the total sales
+        foreach ($policies as $policy) {
+          if ($policy->QuotationProduct) {
+             $totalSales += $policy->QuotationProduct->total_cost;
+           }
+        }
+        return $totalSales;
+    }
+
 }

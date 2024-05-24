@@ -4,6 +4,7 @@ import Alpine from "alpinejs";
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
 import * as Ladda from "ladda";
+import ApexCharts from "apexcharts";
 
 // import $ from "jquery";
 // import Swal from "sweetalert2";
@@ -15,6 +16,7 @@ import * as Ladda from "ladda";
 // window.$ = $;
 window.Pusher = Pusher;
 window.Alpine = Alpine;
+window.ApexCharts = ApexCharts;
 
 Alpine.start();
 

@@ -161,11 +161,11 @@ class PoliciesController extends Controller
             })
             ->addColumn('action', function($data){
                 $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->first();
-                $quoteComparisonId = QuoteComparison::where('quotation_product_id', $policyDetail->QuotationProduct->id)->first()->id;
+                $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
 
                 $viewButton = '<button type="button" class="btn btn-primary btn-sm waves-effect waves-light viewButton" id="'.$data->id.'"><i class="ri-eye-line"></i></button>';
                 $cancelButton = '<button type="button" class="btn btn-danger btn-sm waves-effect waves-light cancelButton" id="'.$policyDetail->id.'"><i class="mdi mdi-book-cancel-outline"></i></button>';
-                $renewQuoteButton = '<button type="button" class="btn btn-success btn-sm waves-effect waves-light renewQuoteButton" id="'.$data->id.'" data-quoteId="'.$quoteComparisonId.'"><i class="mdi mdi-account-reactivate"></i></button>';
+                $renewQuoteButton = '<button type="button" class="btn btn-success btn-sm waves-effect waves-light renewQuoteButton" id="'.$data->id.'" data-quoteId="'.$selectedQuote->id.'"><i class="mdi mdi-account-reactivate"></i></button>';
                 return $viewButton . ' ' . $renewQuoteButton . ' ' . $cancelButton;
             })
             ->rawColumns(['action'])
@@ -338,7 +338,8 @@ class PoliciesController extends Controller
             ->addColumn('action', function($data){
                 $viewButton = '<button type="button" class="btn btn-primary btn-sm waves-effect waves-light viewButton" id="'.$data->id.'"><i class="ri-eye-line"></i></button>';
                 $uploadFileButton = '<button type="button" class="btn btn-success btn-sm waves-effect waves-light uploadPolicyFileButton" id="'.$data->id.'"><i class="ri-upload-2-line"></i></button>';
-                return $viewButton. ' ' . $uploadFileButton;
+                $cancelButton = '<button type="button" class="btn btn-danger btn-sm waves-effect waves-light cancelButton" id="'.$data->id.'"><i class="mdi mdi-book-cancel-outline"></i></button>';
+                return $viewButton. ' ' . $uploadFileButton .  ' ' . $cancelButton;
             })
             ->rawColumns(['policyStatus', 'action', 'effectiveDate'])
             ->make(true);

@@ -82,8 +82,6 @@
             e.preventDefault();
             var id = $(this).attr('id');
             $('#policyId').val(id);
-
-
             $('#policyCancellationModal').modal('show');
 
         })
