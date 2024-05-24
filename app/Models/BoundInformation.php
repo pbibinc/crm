@@ -17,6 +17,7 @@ class BoundInformation extends Model
         'quotation_product_id',
         'user_profile_id',
         'bound_date',
+        'status',
     ];
 
     public function getTotalSales()

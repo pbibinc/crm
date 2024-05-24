@@ -155,6 +155,7 @@
                     $('#inovoiceNumber').text(data.paymentCharged.invoice_number);
                     $('#paymentAprrovedDate').text(data.paymentCharged.charged_date);
                     $('#hiddenId').val(id);
+                    $('#hiddenPaymentInformationId').val(data.paymentInformation.id);
                     addExistingFiles(data.medias);
                     if (status == 11) {
                         $('#boundButton').hide();

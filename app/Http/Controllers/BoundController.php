@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BoundInformation;
 use App\Models\FinancingStatus;
 use App\Models\GeneralLiabilitiesPolicyDetails;
+use App\Models\PaymentInformation;
 use App\Models\PolicyDetail;
 use App\Models\PricingBreakdown;
 use App\Models\QuoationMarket;
@@ -90,14 +91,17 @@ class BoundController extends Controller
     {
         try{
             DB::beginTransaction();
+
             $userProfileId = Auth::user()->userProfile->id;
             if($request['productStatus'] == 19){
                 $policyDetail = PolicyDetail::find($request['id']);
                 $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+                $boundStatus = 'Direct Renewals';
             }else{
                 $selectedQuote = SelectedQuote::where('quotation_product_id', $request->id)->first();
+                $boundStatus = 'Direct New';
             }
-            $paymentInformation = $selectedQuote->PaymentInformation;
+            $paymentInformation = PaymentInformation::where('selected_quote_id', $selectedQuote->id)->first();
             if($paymentInformation->payment_term == 'Split low down' || $paymentInformation->payment_term == 'Low down')
             {
                 $financingStatus = new FinancingStatus();
@@ -106,10 +110,10 @@ class BoundController extends Controller
                 $financingStatus->status = "Request For Financing";
                 $financingStatus->save();
             }
-
             $boundInformation = new BoundInformation();
             $boundInformation->quoatation_product_id  = $request->id;
             $boundInformation->user_profile_id = $userProfileId;
+            $boundInformation->status = $boundStatus;
             $boundInformation->bound_date = now()->format('Y-m-d');
             $boundInformation->save();
 
