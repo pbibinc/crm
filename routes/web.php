@@ -319,6 +319,7 @@ Route::middleware(['auth'])->group(function (){
         Route::prefix('messages')->group(function(){
             Route::resource('messages', MessageController::class);
             Route::post('/get-messages', [MessageController::class, 'getMessages'])->name('get-messages');
+            Route::post('/get-client-emails', [MessageController::class, 'getClientEmails'])->name('get-clients-emails');
         });
 
 
@@ -406,6 +407,7 @@ Route::middleware(['auth'])->group(function (){
                 Route::post('/financing-aggreement/product-for-financing', [FinancingController::class, 'productForFinancing'])->name('financing-aggreement.product-for-financing');
                 Route::post('/financing-aggreement/creation-of-pfa', [FinancingController::class, 'pfaCreation'])->name('financing-aggreement.creation-of-pfa');
                 Route::post('/financing-aggrement/new-financing-agreement', [FinancingController::class, 'newFinancingAgreement'])->name('financing-aggrement.new-financing-agreement');
+                Route::post('/get-customers-financing-agreement', [FinancingController::class, 'getCustomersPfa'])->name('get-customers-financing-agreement');
             });
 
             //route for renewal
@@ -471,7 +473,10 @@ Route::middleware(['auth'])->group(function (){
          // SIC
          Route::resource('/sic', SICController::class)->except(['update']);
          Route::post('/sic/update', [SICController::class, 'update'])->name('sic.update');
+
+         Route::post('/search-lead', [LeadController::class, 'searchLead'])->name('search-lead');
         });
+
         Route::prefix('non-callback')->group(function(){
             Route::get('/', [NonCallBackDispositionController::class, 'index'])->name('non-callback-disposition');
         });

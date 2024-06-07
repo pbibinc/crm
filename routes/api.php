@@ -68,6 +68,8 @@ Route::get('workers-comp-data/edit/{id}', [WorkersCompDataController::class, 'ed
 //route for commercial auto
 Route::post('commercial-auto-data/store', [CommercialAutoController::class, 'saveCommercialAuto'])->withoutMiddleware(['auth:sanctum']);
 Route::put('commercial-auto-data/update/{id}', [CommercialAutoController::class, 'updateCommercialAuto'])->withoutMiddleware(['auth:sanctum']);
+Route::get('commercial-auto-data/edit/{id}', [CommercialAutoController::class, 'edit'])->withoutMiddleware(['auth:sanctum']);
+Route::get('commercial-auto-data/get/previousCommercialAutoInformation/{id}', [CommercialAutoController::class, 'getPreviousCommercialAutoInformation'])->withoutMiddleware(['auth:sanctum']);
 
 //route for excess liability
 Route::post('excess-liability-data/store', [ExcessLiabilityController::class, 'saveExcessLiability'])->withoutMiddleware(['auth:sanctum']);

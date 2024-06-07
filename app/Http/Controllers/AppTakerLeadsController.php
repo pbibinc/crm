@@ -102,15 +102,24 @@ class AppTakerLeadsController extends Controller
         $user = Auth::user();
         $productId = $request->input('productId');
         $status = $request->input('status');
+        $activityId = $request->input('activityId');
         $cachedUser = Cache::get('user_id');
         $cachedLeadId = Cache::get('lead_id');
         $cachedProductId = Cache::get('product_id');
-
+        $cachedActivityId = Cache::get('activity_id');
         if($productId){
             if($productId == $cachedProductId){
                 Cache::get('product_id');
             }else{
                 Cache::put('product_id', $productId, 60 * 60);
+            }
+        }
+
+        if($activityId){
+            if($activityId == $cachedActivityId){
+                Cache::get('activity_id');
+            }else{
+                Cache::put('activity_id', $activityId, 60 * 60);
             }
         }
 

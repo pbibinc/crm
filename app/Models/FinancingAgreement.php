@@ -43,4 +43,22 @@ class FinancingAgreement extends Model
 
         return $data->isEmpty() ? []: $data;
     }
+
+    public function getCustomersPfa($leadId)
+    {
+        foreach($this->get() as $data)
+        {
+            $financingAgreement = [];
+            $selectedQuote = SelectedQuote::find($data->selected_quote_id);
+            $leadId = QuotationProduct::find($selectedQuote->quotation_product_id)->QuoteInformation->QuoteLead->leads->id;
+            $financingAgreement[] = [
+                'lead_id' => $leadId,
+                'data' => $data,
+            ];
+        }
+        $data = array_filter($financingAgreement, function($item) use($leadId){
+            return $item['lead_id'] == $leadId;
+        });
+        return $data ? $data : [];
+    }
 }

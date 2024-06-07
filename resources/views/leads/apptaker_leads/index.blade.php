@@ -477,7 +477,6 @@
                                 $('#transactionLogModal').modal('hide');
                             }
                         });
-
                     }
                     if (selectedDisposition == '2') {
                         $('#callbackModal').modal('show');

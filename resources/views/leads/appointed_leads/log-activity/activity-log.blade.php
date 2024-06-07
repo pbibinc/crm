@@ -1,3 +1,6 @@
+@php
+    use App\Models\QuotationProduct;
+@endphp
 <style>
     #cd-timeline {
         max-height: 500px;
@@ -24,7 +27,6 @@
     </div>
     @foreach ($generalInformation->lead->leadHistories as $leadHistory)
         <div class="cd-timeline-block">
-
             @php
                 $changes = json_decode($leadHistory->changes);
             @endphp
@@ -45,6 +47,19 @@
                     <p class="mb-0 text-muted font-14">Reassigned to: {{ $leadHistory->userProfile->fullName() }}.</p>
                     <span
                         class="cd-date">{{ \Carbon\Carbon::parse($changes->reassigned_at)->format('M-j-Y g:iA') }}</span>
+                </div>
+            @elseif(isset($changes->old_owner_name))
+                @php
+                    $product = QuotationProduct::find($changes->product_id);
+                @endphp
+                <div class="cd-timeline-img cd-success">
+                    <i class="mdi mdi-account-arrow-right"></i>
+                </div>
+                <div class="cd-timeline-content">
+                    <p class="mb-0 text-muted font-14">{{ $product->product }} Reassigned to:
+                        {{ $changes->new_owner_name }}.</p>
+                    <span
+                        class="cd-date">{{ \Carbon\Carbon::parse($leadHistory->created_at)->format('M-j-Y g:iA') }}</span>
                 </div>
             @elseif (isset($changes->appointed_by))
                 <div class="cd-timeline-img cd-success">
@@ -126,8 +141,47 @@
                         @endforeach
                     </ul>
                 </div>
+            @elseif(isset($changes->changes) && $changes->type == 'commercial-auto-update')
+                <div class="cd-timeline-img cd-success">
+                    <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
+                        class="me-3 rounded-circle avatar-xs" alt="user-pic">
+                </div>
+                <div class="cd-timeline-content">
+                    <p class="mb-0 text-muted font-14 mb-3">Commercial Auto Updated By:
+                        {{ $leadHistory->userProfile->fullName() }}.</p>
+                    <span
+                        class="cd-date ">{{ \Carbon\Carbon::parse($changes->sent_out_date)->format('M-j-Y g:iA') }}</span>
+                    <p>
+                        <button class="btn btn-sm btn-outline-primary viewPreviousCommercialAutoButton"
+                            value="{{ $leadHistory->id }}" id="{{ $leadHistory->lead_id }}">View
+                            Changes</button>
+                    </p>
+                </div>
             @endif
-
         </div>
     @endforeach
 </section>
+<script>
+    $(document).ready(function() {
+        $('.viewPreviousCommercialAutoButton').on('click', function(e) {
+            e.preventDefault();
+            var activityId = $(this).val();
+            var id = $(this).attr('id');
+            var url = "{{ env('APP_FORM_URL') }}";
+            $.ajax({
+                url: "{{ route('list-lead-id') }}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: 'json',
+                method: 'POST',
+                data: {
+                    leadId: id,
+                    activityId: activityId
+                },
+            });
+            window.open(`${url}commercial-auto-form/previous-product-information`, "s_blank",
+                "width=1000,height=849")
+        });
+    });
+</script>

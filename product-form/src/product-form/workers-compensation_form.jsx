@@ -25,7 +25,6 @@ import Button from "react-bootstrap/Button";
 
 const WorkersCompensationForm = () => {
     const { workersCompensationData } = useContext(ContextData);
-    console.log(workersCompensationData);
     const getWorkersCompensationData = () => {
         let storedData =
             JSON.parse(sessionStorage.getItem("storeWorkersCompData")) || {};

@@ -26,4 +26,15 @@ class Messages extends Model
         return $this->belongsTo(Templates::class, 'template_id', 'id');
     }
 
+    public function getMessageByLeadId($leadId)
+    {
+
+        $quoteInformationId = Lead::find($leadId)->quoteLead->QuoteInformation->id;
+        $quotationProductIds = QuotationProduct::where('quote_information_id', $quoteInformationId)->pluck('id');
+        $messages = self::whereIn('quotation_product_id', $quotationProductIds)->get();
+
+        return $messages ? $messages : [];
+
+    }
+
 }

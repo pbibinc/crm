@@ -7,6 +7,9 @@ import workersCompensationFormEdit from "./views/workers-compensation-edit.jsx";
 import Header from "./partials-form/header.jsx";
 import WorkersCompensationFormEdit from "./views/workers-compensation-edit.jsx";
 import GeneralInformationEdit from "./views/general-information-edit.jsx";
+import CommercialAutoFormEdit from "./views/commercial-auto-form-edit.jsx";
+import CommercialAutoPreviousForm from "./views/commercial-auto-previous.jsx";
+import CommercialAutoPrevious from "./views/commercial-auto-previous.jsx";
 
 const router = createBrowserRouter([
     {
@@ -42,6 +45,22 @@ const router = createBrowserRouter([
         element: (
             <ContextDataProvider>
                 <WorkersCompensationFormEdit />
+            </ContextDataProvider>
+        ),
+    },
+    {
+        path: "/commercial-auto-form/edit",
+        element: (
+            <ContextDataProvider>
+                <CommercialAutoFormEdit />
+            </ContextDataProvider>
+        ),
+    },
+    {
+        path: "/commercial-auto-form/previous-product-information",
+        element: (
+            <ContextDataProvider>
+                <CommercialAutoPrevious />
             </ContextDataProvider>
         ),
     },

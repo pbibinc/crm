@@ -183,7 +183,7 @@ class GeneralInformationDataController extends BaseController
         //  $generalInformation->material_cost = $data['material_cost'];
          $generalInformation->save();
          if(count($changes) > 0){
-            event(new UpdateGeneralInformationEvent($id, $userProfileId, $changes, now()));
+            event(new UpdateGeneralInformationEvent($id, $userProfileId, $changes, now(), 'general-information-update'));
          }
 
         DB::commit();

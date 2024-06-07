@@ -2,9 +2,7 @@
     use App\Models\Lead;
     use App\Models\Callback;
     use Carbon\Carbon;
-
 @endphp
-
 <header id="page-topbar">
     <div class="navbar-header">
         <div class="d-flex">
@@ -42,7 +40,6 @@
             </form>
 
         </div>
-
         <div class="d-flex">
             <div class="dropdown d-inline-block d-lg-none ms-2">
                 <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-search-dropdown"
@@ -51,8 +48,7 @@
                 </button>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
                     aria-labelledby="page-header-search-dropdown">
-
-                    <form class="p-3">
+                    <form class="p-3" id="searchBarForm">
                         <div class="mb-3 m-0">
                             <div class="input-group">
                                 <input type="text" class="form-control" placeholder="Search ...">
@@ -90,13 +86,10 @@
                     @foreach ($callBackData as $data)
                         <a href="" class="text-reset notification-item">
                             <div class="d-flex">
-
                                 <div class="avatar-xs me-3">
                                     <span class="avatar-title bg-primary rounded-circle font-size-16">
-
                                     </span>
                                 </div>
-
                                 <div class="flex-1">
                                     <h6 class="mb-1">
                                         {{ $data->company_name }}
@@ -114,7 +107,6 @@
             </div>
 
             @include('partials.notification')
-
 
             @php
                 $user = Auth::user();
@@ -157,3 +149,30 @@
         </div>
     </div>
 </header>
+<script>
+    $(document).ready(function() {
+        $('#searchLead').on('submit', function(e) {
+            var url = "{{ env('APP_FORM_LINK') }}";
+            e.preventDefault();
+            $.ajax({
+                url: "{{ route('search-lead') }}",
+                type: 'POST',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    search: $(this).find('input').val()
+                },
+                success: function(data) {
+                    var leadId = data.leadId;
+                    window.open(`${url}appointed-list/${leadId}`, '_blank');
+                },
+                error: function(err) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Lead not found',
+                        icon: 'error'
+                    })
+                }
+            });
+        });
+    });
+</script>

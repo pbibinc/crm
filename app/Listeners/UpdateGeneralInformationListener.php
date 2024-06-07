@@ -30,7 +30,7 @@ class UpdateGeneralInformationListener
         LeadHistory::create([
             'lead_id' => $event->leadId,
             'user_profile_id' => $event->userProfileId,
-            'changes' => json_encode(['changes' => $event->changes, 'sent_out_date' => $event->date, 'type' => 'general-information-update'])
+            'changes' => json_encode(['changes' => $event->changes, 'sent_out_date' => $event->date, 'type' => $event->type])
         ]);
 
     }

@@ -306,6 +306,7 @@ class LeadController extends Controller
         Cache::forget('apptaker_leads');
         return response()->json(['success' => 'Leads Succesfully Created']);
     }
+
     public function edit($id)
     {
         $lead = Lead::find($id);
@@ -369,5 +370,18 @@ class LeadController extends Controller
         }
     }
 
-
+    public function searchLead(Request $request)
+    {
+       $search = $request->search;
+       $leads = Lead::where('company_name', 'LIKE', "%{$search}%")
+       ->orWhere('tel_num', 'LIKE', "%{$search}%")
+       ->orWhereHas('GeneralInformation', function($query) use ($search){
+        $query->where('email_address', 'LIKE', "%{$search}%")
+        ->orWhere('firstname', 'LIKE', "%{$search}%")
+        ->orWhere('lastname', 'LIKE', "%{$search}%")
+        ->orWhere(DB::raw('CONCAT(firstname, lastname)'), 'LIKE', "%{$search}%");
+       })
+       ->first();
+       return response()->json(['leadId' => $leads->id]);
+    }
 }

@@ -129,7 +129,8 @@
                         </div>
                         <div class="col-6">
                             <label for="quoteNo" class="form-label">Policy No/Quote No:</label>
-                            <input type="text" class="form-control" id="quoteNo" name="quoteNo" required>
+                            <input type="text" class="form-control" id="quoteNo" name="quoteNo" autocomplete="off"
+                                required>
                         </div>
                     </div>
                     <div class="row mb-2">

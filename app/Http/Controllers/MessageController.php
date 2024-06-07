@@ -137,4 +137,17 @@ class MessageController extends Controller
         })
         ->make(true);
     }
+
+    public function getClientEmails(Request $request)
+    {
+        $messages = new Messages();
+        $data = $messages->getMessageByLeadId($request['id']);
+        return DataTables::of($data)
+        ->addIndexColumn()
+        ->addColumn('product', function($data){
+            $quotationProduct = QuotationProduct::find($data->quotation_product_id);
+            return $quotationProduct->product;
+        })
+        ->make(true);
+    }
 }

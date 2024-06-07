@@ -4,14 +4,16 @@
         <div class="container-fluid">
             <div class="row">
                 <div>
-                    @include(
-                        'leads.appointed_leads.apptaker-leads-view.header-profile-section',
-                        compact('leads', 'localTime'))
+                    @include('leads.appointed_leads.quotation-lead-view.header-profile-section', [
+                        'leads' => $lead,
+                        'product' => $product,
+                        'localTime' => $localTime,
+                    ])
                 </div>
             </div>
             <div class="row">
                 <div class="col-4">
-                    <div class="card mt-3"
+                    <div class="card"
                         style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                         <div class="card-body">
                             <div class="row mb-3">
@@ -21,18 +23,18 @@
                                 <div class="col-6">
                                     <strong>Email Address:</strong>
                                     <br>
-                                    <strong>{{ $leads->GeneralInformation->email_address }}</strong>
+                                    <strong>{{ $generalInformation->email_address }}</strong>
                                 </div>
                                 <div class="col-6">
                                     <strong>Tel Num:</strong>
                                     <br>
-                                    <strong> {{ $leads->tel_num }}</strong>
+                                    <strong> {{ $lead->tel_num }}</strong>
                                 </div>
                             </div>
                             <div class="row">
                                 <strong>Alt Num:</strong>
                                 <br>
-                                <strong>{{ $leads->GeneralInformation->alt_num ? $leads->GeneralInformation->alt_num : $leads->tel_num }}</strong>
+                                <strong>{{ $generalInformation->alt_num ? $generalInformation->alt_num : $lead->tel_num }}</strong>
                             </div>
 
                             <div class="row">
@@ -58,7 +60,7 @@
                                 <div class="col-6">
                                     <strong>Address:</strong>
                                     <br>
-                                    <strong>{{ $leads->GeneralInformation->address }}</strong>
+                                    <strong>{{ $generalInformation->address }}</strong>
                                 </div>
                             </div>
                             <div class="row">
@@ -71,31 +73,31 @@
                                 <div class="col-6">
                                     <strong>Full Time Employee:</strong>
                                     <br>
-                                    <strong>{{ $leads->GeneralInformation->full_time_employee }}</strong>
+                                    <strong>{{ $generalInformation->full_time_employee }}</strong>
                                 </div>
                                 <div class="col-6">
                                     <strong>Part Time Employee:</strong>
                                     <br>
-                                    <strong>{{ $leads->GeneralInformation->part_time_employee }}</strong>
+                                    <strong>{{ $generalInformation->part_time_employee }}</strong>
                                 </div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6">
                                     <strong>Owners Payroll:</strong>
                                     <br>
-                                    <strong>${{ number_format($leads->GeneralInformation->owners_payroll, 2, '.', ',') }}</strong>
+                                    <strong>${{ number_format($generalInformation->owners_payroll, 2, '.', ',') }}</strong>
                                 </div>
                                 <div class="col-6">
                                     <strong>Employee Payroll:</strong>
                                     <br>
-                                    <strong>${{ number_format($leads->GeneralInformation->employee_payroll, 2, '.', ',') }}</strong>
+                                    <strong>${{ number_format($generalInformation->employee_payroll, 2, '.', ',') }}</strong>
                                 </div>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6">
                                     <strong>Gross Receipt:</strong>
                                     <br>
-                                    <strong>${{ number_format($leads->GeneralInformation->gross_receipt, 2, '.', ',') }}</strong>
+                                    <strong>${{ number_format($generalInformation->gross_receipt, 2, '.', ',') }}</strong>
                                 </div>
                             </div>
                         </div>
@@ -104,9 +106,9 @@
                 <div class="col-8">
                     <div class="tab-content p-3 text-muted">
                         <div class="tab-pane fade show active" id="summary" role="tabpanel">
-                            @include(
-                                'leads.appointed_leads.apptaker-leads-view.profile-summary',
-                                compact('leads'))
+                            @include('leads.appointed_leads.apptaker-leads-view.profile-summary', [
+                                'leads' => $lead,
+                            ])
                         </div>
                         <div class="tab-pane fade show" id="product" role="tabpanel">
                             <div class="card"
@@ -133,8 +135,7 @@
                                                     $product->product == 'General Liability',
                                                     'leads.appointed_leads.product-view.general-liability-profile',
                                                     [
-                                                        'generalLiabilities' =>
-                                                            $leads->generalInformation->generalLiabilities,
+                                                        'generalLiabilities' => $generalLiabilities,
                                                         'actionButtons' => true,
                                                     ]
                                                 )
@@ -142,7 +143,7 @@
                                                     $product->product == 'Workers Compensation',
                                                     'leads.appointed_leads.product-view.workers-comp-profile',
                                                     [
-                                                        'generalInformation' => $leads->generalInformation,
+                                                        'generalInformation' => $lead->generalInformation,
                                                         'actionButtons' => true,
                                                     ]
                                                 )
@@ -150,7 +151,7 @@
                                                     $product->product == 'Commercial Auto',
                                                     'leads.appointed_leads.product-view.commercial-auto-profile',
                                                     [
-                                                        'generalInformation' => $leads->generalInformation,
+                                                        'generalInformation' => $lead->generalInformation,
                                                         'actionButtons' => true,
                                                     ]
                                                 )
@@ -158,7 +159,7 @@
                                                     $product->product == 'Excess Liability',
                                                     'leads.appointed_leads.product-view.excess-liability-profile',
                                                     [
-                                                        'generalInformation' => $leads->generalInformation,
+                                                        'generalInformation' => $lead->generalInformation,
                                                         'actionButtons' => true,
                                                     ]
                                                 )
@@ -166,7 +167,7 @@
                                                     $product->product == 'Tools Equipment',
                                                     'leads.appointed_leads.product-view.tools-equipment-profile',
                                                     [
-                                                        'generalInformation' => $leads->generalInformation,
+                                                        'generalInformation' => $lead->generalInformation,
                                                         'actionButtons' => true,
                                                     ]
                                                 )
@@ -174,7 +175,7 @@
                                                     $product->product == 'Builders Risk',
                                                     'leads.appointed_leads.product-view.builders-risk-profile',
                                                     [
-                                                        'generalInformation' => $leads->generalInformation,
+                                                        'generalInformation' => $lead->generalInformation,
                                                         'actionButtons' => true,
                                                     ]
                                                 )
@@ -182,7 +183,7 @@
                                                     $product->product == 'Business Owners',
                                                     'leads.appointed_leads.product-view.business-owners-profile',
                                                     [
-                                                        'generalInformation' => $leads->generalInformation,
+                                                        'generalInformation' => $lead->generalInformation,
                                                         'actionButtons' => true,
                                                     ]
                                                 )
@@ -192,79 +193,45 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade show" id="activityLog" role="tabpanel">
+                        <div class="tab-pane" id="activityLog" role="tabpanel">
                             <div class="card"
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                                 <div class="card-body">
                                     @include('leads.appointed_leads.log-activity.activity-log', [
-                                        'generalInformation' => $leads->generalInformation,
+                                        'generalInformation' => $generalInformation,
                                     ])
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade show" id="messages" role="tabpanel">
+                        <div class="tab-pane" id="messages" role="tabpanel">
                             <div class="card"
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                                 <div class="card-body">
                                     @include('leads.appointed_leads.log-activity.notes-log', [
-                                        'generalInformation' => $leads->generalInformation,
+                                        'generalInformation' => $generalInformation,
                                     ])
                                 </div>
                             </div>
                         </div>
-                        {{-- <div class="tab-pane fade show" id="bindocsPfa" role="tabpanel">
-                            <div class="card"
-                                style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
-                                <div class="card-body">
-                                    @include('customer-service.binding-docs-pfa.index', [
-                                        'generalInformation' => $leads->generalInformation,
-                                        'leadId' => $leads->id,
-                                    ])
-                                </div>
-                            </div>
-                        </div> --}}
-                        {{-- <div class="tab-pane fade show" id="quotation" role="tabpanel">
+                        <div class="tab-pane" id="quotation" role="tabpanel">
                             <div class="card"
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                                 <div class="card-body">
                                     @include('leads.appointed_leads.qoutation-forms/forms', [
                                         'product' => $product,
-                                        'generalInformation' => $leads->generalInformation,
-                                        'quotationMarket' => $quationMarket,
-                                        'lead' => $leads,
-                                    ])
-                                </div>
-                            </div>
-                        </div> --}}
-                        <div class="tab-pane" id="accounting" role="tabpanel">
-                            <div class="card"
-                                style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
-                                <div class="card-body">
-                                    @include('leads.appointed_leads.accounting-tab.index', [
-                                        'generalInformation' => $leads->generalInformation,
+                                        'generalInformation' => $generalInformation,
+                                        'quationMarket' => $quationMarket,
                                     ])
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade show" id="financingAgreement" role="tabpanel">
+                        <div class="tab-pane" id="emails" role="tabpanel">
                             <div class="card"
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                                 <div class="card-body">
-                                    @include(
-                                        'customer-service.financing.finance-agreement.financing-table',
-                                        [
-                                            'leadId' => $leads->id,
-                                        ]
-                                    )
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade show" id="emails" role="tabpanel">
-                            <div class="card"
-                                style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
-                                <div class="card-body">
-                                    @include('email.client-emails-table', [
-                                        'leadId' => $leads->id,
+                                    @include('email.index', [
+                                        'productId' => $product->id,
+                                        'templates' => $templates,
                                     ])
                                 </div>
                             </div>
@@ -274,7 +241,7 @@
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                                 <div class="card-body">
                                     @include('customer-service.policy.policy-lead-table-list', [
-                                        'leadId' => $leads->id,
+                                        'leadId' => $lead->id,
                                         'carriers' => $carriers,
                                         'markets' => $markets,
                                         'templates' => $templates,
@@ -287,4 +254,31 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function() {
+            $('.quotation-form').hide()
+            var target = '#generalLiabilitiesQuoationForm';
+            $(target).show();
+            $('.navProfile').on('click', function() {
+                $('.quotation-form').hide()
+                target = $(this).attr('href');
+                if (target == '#generalLiabilites') {
+                    $('#generalLiabilitiesQuoationForm').show();
+                } else if (target == '#workersCompensation') {
+                    $('#workersCompensationForm').show();
+                } else if (target == '#commercialAuto') {
+                    $('#commercialAutoForm').show();
+                } else if (target == '#excessLiabiliy') {
+                    $('#excessLiabilityForm').show();
+                } else if (target == '#toolsEquipment') {
+                    $('#toolsEquipmentForm').show();
+                } else if (target == '#buildersRisk') {
+                    $('#buildersRiskForm').show();
+                } else if (target == '#bop') {
+                    $('#businessOwnersPolicyForm').show();
+                }
+            });
+        });
+    </script>
 @endsection

@@ -9,6 +9,8 @@ import getAuthToken from "../data/auth-token-data";
 import userData from "../data/user-data";
 import WorkersCompensationData from "../data/workers-compensation-data";
 import GeneralInformationData from "../data/general-information-data";
+import CommercialAutoData from "../data/commercial-auto-data";
+import CommercialAutoPreviousData from "../data/commercial-auto-previous-data";
 
 export const ContextData = createContext();
 
@@ -21,6 +23,8 @@ const ContextDataProvider = ({ children }) => {
     const { generalInformation } = GeneralInformationData();
     const { generalLiabilitiesData } = GeneralLiabilitiesData();
     const { workersCompensationData } = WorkersCompensationData();
+    const { commercialAutoData } = CommercialAutoData();
+    const { commercialAutoPreviousData } = CommercialAutoPreviousData();
     const { authToken } = getAuthToken();
     const { user } = userData();
 
@@ -38,6 +42,8 @@ const ContextDataProvider = ({ children }) => {
                 generalInformation,
                 generalLiabilitiesData,
                 workersCompensationData,
+                commercialAutoData,
+                commercialAutoPreviousData,
                 authToken,
                 user,
             }}

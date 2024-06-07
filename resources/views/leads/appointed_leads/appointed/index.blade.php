@@ -38,8 +38,8 @@
                     url: "{{ route('appointed-list') }}"
                 },
                 columns: [{
-                        data: 'company_name_action',
-                        name: 'company_name_action'
+                        data: 'company_name',
+                        name: 'company_name'
                     },
                     {
                         data: 'tel_num',

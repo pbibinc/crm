@@ -10,26 +10,20 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UpdateGeneralInformationEvent implements ShouldBroadcast
+class UpdateCommercialAutoEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $leadId;
-    public $userProfileId;
-    public $changes;
-    public $date;
+    // public $leadId;
+
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($leadId, $userProfileId, $changes, $date, $type)
+    public function __construct()
     {
-        $this->leadId = $leadId;
-        $this->userProfileId = $userProfileId;
-        $this->changes = $changes;
-        $this->date = $date;
-        $this->type = $type;
+        //
     }
 
     /**

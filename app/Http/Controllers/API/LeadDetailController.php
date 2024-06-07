@@ -21,6 +21,7 @@ class LeadDetailController extends BaseController
     {
         $leadId = Cache::get('lead_id');
         $productId = Cache::get('product_id');
+        $activityId = Cache::get('activity_id');
         $userProfileId = UserProfile::where('user_id', Cache::get('user_id'))->first()->id;
         $lead = Lead::find($leadId);
         if (is_null($lead)) {
@@ -28,6 +29,7 @@ class LeadDetailController extends BaseController
         }
         $lead->productId = $productId ? $productId : null;
         $lead->userProfileId = $userProfileId ? $userProfileId : null;
+        $lead->activityId = $activityId ? $activityId : null;
         return $this->sendResponse($lead->toArray(), 'Lead retrieved successfully.');
     }
     public function leadAddress()

@@ -21,8 +21,8 @@ import "../style/general-information.css";
 import Button from "react-bootstrap/Button";
 import { ContextData } from "../contexts/context-data-provider";
 import { isArray, isEmpty } from "lodash";
-const CommercialAutoForm = () => {
-    const { commercialAutoData } = useContext(ContextData);
+const CommercialAutoPreviousForm = () => {
+    const { commercialAutoPreviousData } = useContext(ContextData);
     const storeWorkersCompData = JSON.parse(
         sessionStorage.getItem("storeWorkersCompData")
     );
@@ -31,7 +31,9 @@ const CommercialAutoForm = () => {
         let storeData =
             JSON.parse(sessionStorage.getItem("commercialAutoStoredData")) ||
             {};
-        return commercialAutoData ? commercialAutoData.data : storeData;
+        return commercialAutoPreviousData
+            ? commercialAutoPreviousData.data.changes
+            : storeData;
     };
     // console.log(getCommercialAutoData());
 
@@ -1607,4 +1609,4 @@ const CommercialAutoForm = () => {
     );
 };
 
-export default CommercialAutoForm;
+export default CommercialAutoPreviousForm;
