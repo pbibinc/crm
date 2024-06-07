@@ -29,9 +29,9 @@ class AppointedController extends Controller
         if($request->ajax())
         {
             return DataTables::of($leads)
-            ->addColumn('company_name_action', function($leads){
-                return '<a href="#" id="companyLink" name"companyLinkButtonData" data-id="'.$leads->id.'">'.$leads->company_name.'</a>';
-            })
+            // ->addColumn('company_name_action', function($leads){
+            //     return '<a href="#" id="companyLink" name"companyLinkButtonData" data-id="'.$leads->id.'">'.$leads->company_name.'</a>';
+            // })
             ->addColumn('action', function($leads){
                 $profileViewRoute = route('appointed-list-profile-view', ['leadsId' => $leads->id]);
                 return '<a href="'.$profileViewRoute.'" class="viiew btn btn-success btn-sm" id="'.$leads->id.'" name"view"><i class="ri-eye-line"></i></a>';

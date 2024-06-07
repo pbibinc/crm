@@ -58,6 +58,11 @@ class Lead extends Model
         return $this->hasMany(LeadHistory::class, 'lead_id');
     }
 
+    public function recentLeadHistories()
+    {
+        return $this->leadHistories()->orderBy('created_at', 'desc')->take(2);
+    }
+
     public function quoteLead()
     {
         return $this->hasOne(QuoteLead::class, 'leads_id');
@@ -66,6 +71,11 @@ class Lead extends Model
     public function notes()
     {
         return $this->hasMany(LeadNotes::class, 'lead_id');
+    }
+
+    public function recentNotes()
+    {
+        return $this->notes()->orderBy('created_at', 'desc')->take(2);
     }
 
     public function classcodeQuestionare()
@@ -80,13 +90,10 @@ class Lead extends Model
         ->withTimestamps();
     }
 
-
     public function quoterUserProfile()
     {
         return $this->belongsToMany(UserProfile::class, 'quote_lead_table', 'leads_id', 'user_profiles_id');
     }
-
-
 
     public function callback()
     {
@@ -125,8 +132,6 @@ class Lead extends Model
         }
         return null;
     }
-
-
 
     public static function getLeadsAppointed($userProfileId)
     {

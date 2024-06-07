@@ -143,7 +143,6 @@
                             <textarea name="note" id="note" cols="30" rows="10" class="form-control"></textarea>
                         </div>
                     </div>
-
                     <input type="hidden" id="quoteComparisonId" name="quoteComparisonId">
                     <input type="hidden" id="leadsId" name="leadsId">
                     <input type="hidden" id="generalInformationId" name="generalInformationId">
@@ -151,7 +150,6 @@
                     <input type="hidden" name="statusInput" id="statusInput">
                     <input type="hidden" name="quotationProductId" id="quotationProductId">
                     <input type="hidden" name="selectedQuoteId" id="selectedQuoteId">
-
             </div>
             <div class="modal-footer">
                 <input type="submit" name="savePaymentInformation" id="savePaymentInformation"

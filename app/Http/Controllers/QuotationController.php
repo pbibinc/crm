@@ -20,11 +20,13 @@ use App\Models\QuoteInformation;
 use App\Models\QuoteLead;
 use App\Models\RenewalQuote;
 use App\Models\SelectedQuote;
+use App\Models\Templates;
 use App\Models\UnitedState;
 use App\Models\UserProfile;
 use Carbon\Carbon;
 use Demo\Product;
 use Dflydev\DotAccessData\Data;
+use HelloSign\Template;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -60,6 +62,7 @@ class QuotationController extends Controller
     public function leadProfileView($productId)
     {
         $product = QuotationProduct::find($productId);
+        $products = QuotationProduct::where('quote_information_id', $product->quote_information_id)->get();
         $lead = Lead::find($product->QuoteInformation->QuoteLead->leads->id);
         $generalInformation = GeneralInformation::find($lead->generalInformation->id);
         $timezones = [
@@ -94,8 +97,10 @@ class QuotationController extends Controller
         }
         $localTime = Carbon::now($timezoneForState);
         $generalLiabilities = $generalInformation->generalLiabilities;
-        // dd($generalInformation->id);
-        return view('leads.appointed_leads.leads-profile', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product'));
+        $carriers = Insurer::all()->sortBy('name');
+        $markets = QuoationMarket::all()->sortBy('name');
+        $templates = Templates::all();
+        return view('leads.appointed_leads.quotation-lead-view.leads-profile', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'products', 'carriers', 'markets', 'templates'));
     }
 
     public function brokerProfileView($leadId, $generalInformationId, $productId)
