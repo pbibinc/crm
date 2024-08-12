@@ -313,15 +313,15 @@ class FinancingController extends Controller
             ->addIndexColumn()
             ->addColumn('policy_number', function($data){
                 $quoteComparison = SelectedQuote::find($data['data']['selected_quote_id']);
-                return $quoteComparison->quote_no;
+                return $quoteComparison->quote_no ? $quoteComparison->quote_no : 'N/A';
             })
             ->addColumn('financing_company', function($data){
                 $financeCompany = FinancingCompany::find($data['data']['financing_company_id']);
-                return $financeCompany->name;
+                return $financeCompany->name ? $financeCompany->name : 'N/A';
             })
             ->addColumn('company_name', function($data){
                 $company_name = Lead::find($data['lead_id'])->company_name;
-                return $company_name;
+                return $company_name ? $company_name : 'N/A';
             })
             ->addColumn('product', function($data){
                 $product = SelectedQuote::find($data['data']['selected_quote_id'])->QuotationProduct->product;
@@ -330,7 +330,7 @@ class FinancingController extends Controller
             ->addColumn('auto_pay', function($data){
                 $paymentOption = PaymentOption::where('financing_agreement_id', $data['data']['id'])->first();
                 $autoPay = $data['data']['is_auto_pay'] == 1 ? $paymentOption->payment_option : 'No';
-                return $autoPay;
+                return $autoPay ? $autoPay : 'N/A';
             })
             ->addColumn('media', function($data){
                 $baseUrl = url('/');
