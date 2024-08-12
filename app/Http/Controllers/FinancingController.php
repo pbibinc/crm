@@ -305,39 +305,44 @@ class FinancingController extends Controller
 
     public function getCustomersPfa(Request $request)
     {
-        $id = $request->id;
-        $financingAgreement = new FinancingAgreement();
-        $data = $financingAgreement->getCustomersPfa($id);
-        return DataTables::of($data)
-        ->addIndexColumn()
-        ->addColumn('policy_number', function($data){
-            $quoteComparison = SelectedQuote::find($data['data']['selected_quote_id']);
-            return $quoteComparison->quote_no;
-        })
-        ->addColumn('financing_company', function($data){
-            $financeCompany = FinancingCompany::find($data['data']['financing_company_id']);
-            return $financeCompany->name;
-        })
-        ->addColumn('company_name', function($data){
-            $company_name = Lead::find($data['lead_id'])->company_name;
-            return $company_name;
-        })
-        ->addColumn('product', function($data){
-            $product = SelectedQuote::find($data['data']['selected_quote_id'])->QuotationProduct->product;
-            return $product;
-        })
-        ->addColumn('auto_pay', function($data){
-            $paymentOption = PaymentOption::where('financing_agreement_id', $data['data']['id'])->first();
-            $autoPay = $data['data']['is_auto_pay'] == 1 ? $paymentOption->payment_option : 'No';
-            return $autoPay;
-        })
-        ->addColumn('media', function($data){
-            $baseUrl = url('/');
-            $media = Metadata::find($data['data']['media_id']);
-            $fullPath = $baseUrl . '/' .$media->filepath;
-            return '<a href="'.$fullPath.'" target="_blank">'.$media->basename.'</a>';
-        })
-        ->rawColumns(['media'])
-        ->make(true);
+        try{
+            $id = $request->id;
+            $financingAgreement = new FinancingAgreement();
+            $data = $financingAgreement->getCustomersPfa($id);
+            return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('policy_number', function($data){
+                $quoteComparison = SelectedQuote::find($data['data']['selected_quote_id']);
+                return $quoteComparison->quote_no;
+            })
+            ->addColumn('financing_company', function($data){
+                $financeCompany = FinancingCompany::find($data['data']['financing_company_id']);
+                return $financeCompany->name;
+            })
+            ->addColumn('company_name', function($data){
+                $company_name = Lead::find($data['lead_id'])->company_name;
+                return $company_name;
+            })
+            ->addColumn('product', function($data){
+                $product = SelectedQuote::find($data['data']['selected_quote_id'])->QuotationProduct->product;
+                return $product;
+            })
+            ->addColumn('auto_pay', function($data){
+                $paymentOption = PaymentOption::where('financing_agreement_id', $data['data']['id'])->first();
+                $autoPay = $data['data']['is_auto_pay'] == 1 ? $paymentOption->payment_option : 'No';
+                return $autoPay;
+            })
+            ->addColumn('media', function($data){
+                $baseUrl = url('/');
+                $media = Metadata::find($data['data']['media_id']);
+                $fullPath = $baseUrl . '/' .$media->filepath;
+                return '<a href="'.$fullPath.'" target="_blank">'.$media->basename.'</a>';
+            })
+            ->rawColumns(['media'])
+            ->make(true);
+        }catch(\Exception $e){
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }
