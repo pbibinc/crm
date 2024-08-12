@@ -94,7 +94,7 @@ class PaymentChargedController extends Controller
             $paymentInformation->save();
 
             if($request->hiddenPaymentType == 'Direct Renewals'){
-                $policyDetails = PolicyDetail::where('quotation_product_id', $request->quotationProductId)->first();
+                $policyDetails = PolicyDetail::where('quotation_product_id', $request->quotationProductId)->where('status', 'Renewal Make A Payment')->first();
                 $policyDetails->status = 'Renewal Payment Processed';
                 $policyDetails->save();
             }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Events\UpdateGeneralInformationEvent;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\CarpentryWoodworking;
@@ -13,6 +14,7 @@ use App\Models\GeneralLiabilities;
 use App\Models\GeneralLiabilitiesHaveLoss;
 use App\Models\GeneralLiabilitiesRecreationalFacilities;
 use App\Models\Lead;
+use App\Models\LeadHistory;
 use App\Models\MultipleState;
 use App\Models\QuotationProduct;
 use App\Models\QuoteInformation;
@@ -191,9 +193,66 @@ class GeneralLiabilitiesDataController extends BaseController
         $data = $request->all();
 
         try{
+            DB::beginTransaction();
+            $leads = Lead::find($id);
             $generalInformationId = GeneralInformation::where('leads_id', $id)->value('id');
             $generalLiabilitiesId = GeneralLiabilities::where('general_information_id', $generalInformationId)->value('id');
             $generalLiabilities = GeneralLiabilities::where('id', $generalLiabilitiesId)->first();
+            $oldGeneralLiabilities = $generalLiabilities;
+            $userProfleId = $data['userProfileId'];
+
+            $oldMultipleState = $generalLiabilities->multiStates;
+            $oldMultipleStatePercentage = [];
+            $oldMultipleStatesData = [];
+            $oldMultiplestateSelectedObject = [];
+            if($oldMultipleState != null){
+                foreach($oldMultipleState as $multipleState){
+                    $oldMultipleStatePercentage [] = $multipleState->percentage;
+                    $oldMultipleStatesData [] = $multipleState->state;
+                    $oldMultiplestateSelectedObject [] = [
+                        'value' => $multipleState->state,
+                        'label' => $multipleState->state
+                    ];
+                }
+            }
+
+            $oldClassCodeQuestionare = $leads->classcodeQuestionare;
+            $oldClassCodeAnswer = [];
+            $oldClassCodeQuestion = [];
+            $oldClassCodeId = [];
+            if($oldClassCodeQuestionare != null){
+                foreach($oldClassCodeQuestionare as $classCode){
+                    $oldClassCodeAnswer [] = $classCode->answer;
+                    $oldClassCodeQuestion [] = $classCode->question;
+                    $oldClassCodeId [] = $classCode->classcode_id;
+                }
+            }
+
+            $oldClassCodeQuestionare = $generalLiabilities->classCodePercentage;
+            $oldClassCodePercentages = [];
+            $oldSelectedClassCodeObject = [];
+            $oldSelectedClassCode = [];
+            if($oldClassCodeQuestionare != null){
+                foreach($oldClassCodeQuestionare as $classCode){
+                    $oldClassCodePercentages [] = $classCode->pivot->percentage;
+                    $oldSelectedClassCodeObject [] = [
+                        'value' => $classCode->id,
+                        'label' => $classCode->name,
+                    ];
+                    $oldSelectedClassCode [] = $classCode->id;
+                }
+            }
+
+            $oldRecreationalFacilities = $generalLiabilities->recreationalFacilities;
+            $oldRecreationalFacilitiesData = [];
+            if($oldRecreationalFacilities != null){
+                foreach($oldRecreationalFacilities as $recreationalFacility){
+                    $oldRecreationalFacilitiesData [] = [
+                        'value' => $recreationalFacility->id,
+                        'label' => $recreationalFacility->name,
+                    ];
+                }
+            }
 
             if($generalLiabilities){
 
@@ -345,16 +404,98 @@ class GeneralLiabilitiesDataController extends BaseController
                         $multipleState = MultipleState::where('general_liabilities_id', $generalLiabilitiesId)->get();
                         $multipleStateDelete = $multipleState->each->delete();
                     }
+
+                $changes = [
+                    //general liabilities common data
+                    'business_description' => $oldGeneralLiabilities->business_description,
+                    'residential_percentage' => $oldGeneralLiabilities->residential,
+                    'commercial_percentage' => $oldGeneralLiabilities->commercial,
+                    'construction_percentage' => $oldGeneralLiabilities->new_construction,
+                    'repair_remodel_percentage' => $oldGeneralLiabilities->repair,
+                    'self_performing_roofing' => $oldGeneralLiabilities->self_perform_roofing == 1 ? true : false,
+                    'concrete_foundation_work' => $oldGeneralLiabilities->concrete_foundation_work == 1 ? true : false,
+                    'perform_tract_work' => $oldGeneralLiabilities->perform_track_work == 1 ? true : false,
+                    'work_on_condominium' => $oldGeneralLiabilities->is_condo_townhouse == 1 ? true : false,
+                    'perform_remodelling_work' => $oldGeneralLiabilities->perform_multi_dwelling == 1 ? true : false,
+                    'business_entity' => [
+                        'value' => $oldGeneralLiabilities->business_entity,
+                        'label' => $oldGeneralLiabilities->business_entity
+                    ],
+                    'years_in_business' => $oldGeneralLiabilities->years_in_business,
+                    'years_in_profession' => $oldGeneralLiabilities->years_in_professional,
+                    'largest_project' => $oldGeneralLiabilities->largest_project,
+                    'largest_project_amount' => $oldGeneralLiabilities->largest_project_amount,
+                    'contact_license' => $oldGeneralLiabilities->contract_license,
+                    'contact_license_name' => $oldGeneralLiabilities->contract_license_name,
+                    'is_office_home' => $oldGeneralLiabilities->is_office_home == 1 ? true : false,
+                    'expiration_general_liability' => $oldGeneralLiabilities->expiration_of_general_liabilities,
+                    'policy_premium' => $oldGeneralLiabilities->policy_premium,
+                    'cross_sell' => $oldGeneralLiabilities->cross_sell,
+
+                    //objecty for multiple state
+                    'isMultipleStateChecked' => $oldMultipleState->count() > 0 ? true : false,
+                    'multiple_percentage' => $oldMultipleStatePercentage,
+                    'multiple_states' => $oldMultipleStatesData,
+                    'multistateSelectedObject' => $oldMultiplestateSelectedObject,
+
+                    //object for classcode questionare
+                    'classCodeAnswer' => $oldClassCodeAnswer,
+                    'classCodeQuestion' => $oldClassCodeQuestion,
+                    'classCodeid' => $oldClassCodeId,
+
+                    //object for classcode percentage
+                    'classcode_percentage' => $oldClassCodePercentages,
+                    'classcCodeObject' => $oldSelectedClassCodeObject,
+                    'classCode' => $oldSelectedClassCode,
+
+
+                    //object for general liabilities subccontract questionare
+                   'blasting_operation' => $oldGeneralLiabilities->subcontractor->blasting_operation == 1 ? true : false,
+                   'hazardous_waste' => $oldGeneralLiabilities->subcontractor->hazardous_waste == 1 ? true : false,
+                   'asbestos_mold' => $oldGeneralLiabilities->subcontractor->asbestos_mold == 1 ? true : false,
+                   'tall_building' => $oldGeneralLiabilities->subcontractor->three_stories_height == 1 ? true : false,
+
+                    //mode
+                   'isUpdate' => true,
+                   'isEditing' => false,
+
+                   //recreational facilities data
+                  'recreational_facilities' => $oldRecreationalFacilitiesData,
+
+                   //coverage limit data
+                  'limit' => [
+                      'value' => $generalLiabilities->coverageLimit->limit,
+                      'label' => $generalLiabilities->coverageLimit->limit
+                    ],
+                   'medical' => [
+                       'value' => $generalLiabilities->coverageLimit->medical,
+                       'label' => $generalLiabilities->coverageLimit->medical
+                    ],
+                 'fire_damage' => [
+                      'value' => $generalLiabilities->coverageLimit->fire_damage,
+                      'label' => $generalLiabilities->coverageLimit->fire_damage
+                    ],
+                 'deductible' => [
+                      'value' => $generalLiabilities->coverageLimit->deductible,
+                      'label' => $generalLiabilities->coverageLimit->deductible
+                    ],
+                ];
+
+                if(count($changes) > 0){
+                    event(new UpdateGeneralInformationEvent($id, $userProfleId, $changes, now(), 'general-liabilities-update'));
+                }
+                DB::commit();
             }
 
         }catch(\Exception $e){
             Log::error('Error updating General Liability data: '.$e->getMessage());
-            return response()->json(['error' => 'Failed to update data.'], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
     public function edit($id)
     {
+
         $leads = Lead::find($id);
         if(is_null($leads)){
             return $this->sendError('General Liability not found.');
@@ -485,6 +626,13 @@ class GeneralLiabilitiesDataController extends BaseController
             ],
         ];
         return response()->json([$generalLiabilitiesFormData, 'Lead retrieved successfully.']);
+    }
+
+    public function getPreviousGeneralLiabilities($id)
+    {
+        $leadHistory = LeadHistory::find($id);
+        $changes = json_decode($leadHistory->changes, true);
+        return response()->json(['data' => $changes, 'Lead retrieved successfully.']);
     }
 
 }

@@ -1,22 +1,34 @@
 <style>
     .title-card {
-    background-color: #656565; /* Bootstrap primary color */
-    padding: 10px 15px;
-    border-radius: 5px;
-    color: #ffffff;;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-}
+        background-color: #656565;
+        /* Bootstrap primary color */
+        padding: 10px 15px;
+        border-radius: 5px;
+        color: #ffffff;
+        ;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+    }
 
-.title-icon {
-    margin-right: 10px;
-}
+    .title-icon {
+        margin-right: 10px;
+    }
 </style>
+@if ($actionButtons == true)
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <button type="button" class="editBusinessOwnersPolicy btn btn-primary"
+                value="{{ $generalInformation->lead->id }}"><i class="ri-edit-line"></i>
+                Edit</button>
+        </div>
+    </div>
+@endif
 <div class="row mb-4">
     <div class="col-5 title-card">
         <i class="ri-suitcase-line title-icon"></i> <!-- An example icon; adjust as necessary -->
-        <h4 class="card-title mb-0" style="color: #ffffff">Business Owners Information</h4> <!-- mb-0 removes default margin at the bottom -->
+        <h4 class="card-title mb-0" style="color: #ffffff">Business Owners Information</h4>
+        <!-- mb-0 removes default margin at the bottom -->
     </div>
 </div>
 <div class="row mb-4">
@@ -105,13 +117,16 @@
         {{ $generalInformation->businessOwners->amount_policy }}
     </div>
 </div>
-<div class="row"><hr></div>
+<div class="row">
+    <hr>
+</div>
 
 
 <div class="row mb-4">
     <div class="col-5 title-card">
         <i class="ri-building-2-line title-icon"></i> <!-- An example icon; adjust as necessary -->
-        <h4 class="card-title mb-0" style="color: #ffffff">Major Structure Information</h4> <!-- mb-0 removes default margin at the bottom -->
+        <h4 class="card-title mb-0" style="color: #ffffff">Major Structure Information</h4>
+        <!-- mb-0 removes default margin at the bottom -->
     </div>
 </div>
 <div class="row mb-4">
@@ -126,7 +141,7 @@
 </div>
 <div class="row mb-4">
     <div class="col-6">
-    <b>Last Year Plumbing Update:</b>
+        <b>Last Year Plumbing Update:</b>
         {{ $generalInformation->businessOwners->last_update_plumbing }}
     </div>
     <div class="col-6">
@@ -135,12 +150,15 @@
     </div>
 </div>
 
-<div class="row"><hr></div>
+<div class="row">
+    <hr>
+</div>
 
 <div class="row mb-4">
     <div class="col-5 title-card">
         <i class="ri-calendar-event-line title-icon"></i> <!-- An example icon; adjust as necessary -->
-        <h4 class="card-title mb-0" style="color: #ffffff">Previous Business Owners Policy</h4> <!-- mb-0 removes default margin at the bottom -->
+        <h4 class="card-title mb-0" style="color: #ffffff">Previous Business Owners Policy</h4>
+        <!-- mb-0 removes default margin at the bottom -->
     </div>
 </div>
 <div class="row mb-4">
@@ -153,4 +171,25 @@
         {{ $generalInformation->lead->businessOwnersExpirationProduct->prior_carrier }}
     </div>
 </div>
-
+<script>
+    $(document).ready(function() {
+        $('.editBusinessOwnersPolicy').on('click', function(e) {
+            e.preventDefault();
+            var leadId = $(this).val();
+            var url = "{{ env('APP_FORM_URL') }}";
+            $.ajax({
+                url: "{{ route('list-lead-id') }}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: 'json',
+                method: 'POST',
+                data: {
+                    leadId: leadId
+                },
+            });
+            window.open(`${url}business-owners-policy-form/edit`, "s_blank",
+                "width=1000,height=849")
+        });
+    });
+</script>

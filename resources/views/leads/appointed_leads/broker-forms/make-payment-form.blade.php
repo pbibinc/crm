@@ -16,6 +16,8 @@
                                 <option value="">Select Payment Type</option>
                                 <option value="Endorsement">Endorsement</option>
                                 <option value="Audit">Audit</option>
+                                <option value="CCN">CCN</option>
+                                <option value="Reinstate">Reinstate</option>
                                 <option value="Monthly Payment">Monthly Payment</option>
                                 <option value="Direct New">Direct New</option>
                                 <option value="Direct Renewals">Direct Renewals</option>
@@ -150,6 +152,7 @@
                     <input type="hidden" name="statusInput" id="statusInput">
                     <input type="hidden" name="quotationProductId" id="quotationProductId">
                     <input type="hidden" name="selectedQuoteId" id="selectedQuoteId">
+                    <input type="hidden" name="policyDetailId" id="policyDetailId">
             </div>
             <div class="modal-footer">
                 <input type="submit" name="savePaymentInformation" id="savePaymentInformation"
@@ -170,7 +173,7 @@
                 $('#otherCardLabel').attr('hidden', true);
                 $('#otherCard').attr('hidden', true);
             }
-        })
+        });
 
         $('#paymentMethodMakePayment').on('change', function() {
             if ($(this).val() == 'Credit Card') {
@@ -182,7 +185,7 @@
                 $('#otherCardLabel').attr('hidden', true);
                 $('#otherCard').attr('hidden', true);
             }
-        })
+        });
 
         $('#makePaymentForm').on('submit', function(e) {
             e.preventDefault();
@@ -256,6 +259,7 @@
                 }
 
             })
-        })
+        });
+
     });
 </script>

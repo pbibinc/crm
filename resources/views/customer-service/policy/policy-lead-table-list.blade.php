@@ -42,6 +42,7 @@
 @include('customer-service.policy-form.excess-insurance-liability-form', compact('carriers', 'markets'))
 
 @include('customer-service.policy.renewal-form')
+@include('customer-service.policy.cancellation-report-modal')
 <script>
     Dropzone.autoDiscover = false;
     var policyDropzone;
@@ -92,7 +93,6 @@
                 }
             ],
         });
-
 
         policyDropzone = new Dropzone("#policyFileDropZone", {
             url: "{{ route('update-file-policy') }}",
@@ -176,6 +176,7 @@
                     id: id
                 },
                 success: function(response) {
+                    console.log(response);
                     if (response.product.product == 'General Liability') {
                         $('#glPolicyNumber').val(response.policy_detail.policy_number).attr(
                             'readonly', true);
@@ -428,6 +429,7 @@
                         $('#businessOwnersPolicyFormModal').modal('show');
                     }
                     if (response.product.product == 'Tools Equipment') {
+
                         $('#toolsEquipmentPolicyNumber').val(response.policy_detail
                                 .policy_number)
                             .attr('readonly', true);
@@ -850,14 +852,75 @@
 
                 }
             })
-        })
+        });
+
+
+
+    });
+
+    $(document).on('click', '.auditInformationButton', function(e) {
+        var id = $(this).attr('id');
+        console.log('id');
+        $('#hiddenPolicyId').val(id);
+        $('#auditInformationModal').modal('show');
     });
 
     $(document).on('click', '.cancelButton', function(e) {
         e.preventDefault();
         var id = $(this).attr('id');
-        $('#policyId').val(id);
+        $('#cancelleationPolicyId').val(id);
         $('#policyCancellationModal').modal('show');
-
     });
+
+    $(document).on('click', '.intentCancelButton', function(e) {
+        e.preventDefault();
+        var id = $(this).attr('id');
+        var url = "/cancellation/cancellation-report";
+        $.ajax({
+            url: "/cancellation/cancellation-report/" + id + '/edit',
+            type: "GET",
+            data: {
+                id: id
+            },
+            success: function(response) {
+                if (response.status == 'success') {
+                    if (response.data.policyDetail.status == 'Intent') {
+                        $('#isIntent').prop('checked', true);
+                        $('#intent').val('1');
+                        $('input[name="reinstatedDate"]').attr('hidden', false);
+                        $('input[name="reinstatedEligibilityDate"]').attr('hidden', false);
+                        $('#reinstatedDateLabel').attr('hidden', false);
+                        $('#reinstatedEligibilityDateLabel').attr('hidden', false);
+                    } else {
+                        $('#isIntent').prop('checked', false);
+                        $('#intent').val('0');
+                        $('input[name="reinstatedDate"]').attr('hidden', true);
+                        $('input[name="reinstatedEligibilityDate"]').attr('hidden', true);
+                        $('#reinstatedDateLabel').attr('hidden', true);
+                        $('#reinstatedEligibilityDateLabel').attr('hidden', true);
+                    }
+                    $('#typeOfCancellationDropdown').val(response.data.cancellationReport
+                        .type_of_cancellation);
+                    $('#reinstatedDate').val(response.data.cancellationReport.reinstated_date);
+                    $('#reinstatedEligibilityDate').val(response.data.cancellationReport
+                        .reinstated_eligibility_date);
+                    $('#agentRemakrs').val(response.data.cancellationReport.agent_remarks);
+                    $('#recoveryAction').val(response.data.cancellationReport.recovery_action);
+                    $('#cancelleationPolicyId').val(response.data.cancellationReport
+                        .policy_details_id);
+                    $('#action').val('edit');
+                    $('#policyCancellationModal').modal('show');
+                } else {
+                    swal.fire({
+                        title: 'Error',
+                        text: response.message,
+                        icon: 'error',
+                        confirmButtonText: 'Ok'
+                    });
+                }
+            }
+        });
+    });
+
+    $(document).on
 </script>

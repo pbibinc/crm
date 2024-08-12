@@ -332,10 +332,9 @@ class FinancingController extends Controller
             return $autoPay;
         })
         ->addColumn('media', function($data){
-            $url = env('APP_FORM_LINK');
+            $baseUrl = url('/');
             $media = Metadata::find($data['data']['media_id']);
-            $baseUrl = $url;
-            $fullPath = $baseUrl . $media->filepath;
+            $fullPath = $baseUrl . '/' .$media->filepath;
             return '<a href="'.$fullPath.'" target="_blank">'.$media->basename.'</a>';
         })
         ->rawColumns(['media'])

@@ -186,18 +186,19 @@ class RenewalController extends Controller
         }
     }
 
-    public function leadProfileView($productId)
+    public function leadProfileView($policyDetailsId)
     {
-        try {
-            $product = QuotationProduct::find($productId);
+
+            $policyDetail = PolicyDetail::find($policyDetailsId);
+            $product = QuotationProduct::find($policyDetail->quotation_product_id);
             if (!$product) {
-                Log::warning('Product not found', ['Product ID' => $productId]);
+                Log::warning('Product not found', ['Product ID' => $product->id]);
                 return redirect()->route('leads.appointed-leads')->withErrors('Product not found');
             }
 
             $lead = Lead::find($product->QuoteInformation->QuoteLead->leads->id);
             if (!$lead) {
-                Log::warning('Lead not found', ['Product ID' => $productId]);
+                Log::warning('Lead not found', ['Product ID' => $product->id]);
                 return redirect()->route('leads.appointed-leads')->withErrors('Lead not found');
             }
 
@@ -241,17 +242,11 @@ class RenewalController extends Controller
             $templates = Templates::all();
             $userProfile = new UserProfile();
             $complianceOfficer = $userProfile->complianceOfficer();
+            $products = $product->getQuotedProductByQuotedInformationId($product->quote_information_id);
 
-            return view('leads.appointed_leads.renewal-lead-profile-view', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer', 'carriers', 'markets'));
+            return view('leads.appointed_leads.renewal-lead-profile-view.index', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer', 'carriers', 'markets', 'policyDetail', 'products'));
 
-        } catch (Exception $e) {
-            Log::error('Error accessing lead profile view', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'Product ID' => $productId
-            ]);
-            return redirect()->route('leads.appointed-leads')->withErrors('An unexpected error occurred');
-        }
+
 
     }
 
@@ -284,7 +279,7 @@ class RenewalController extends Controller
             })
             ->addColumn('action', function($policiesData){
                 $setEmailSendingButton = '<button type="button" class="btn btn-outline-primary btn-sm waves-effect waves-light sentEmailButton" id="'.$policiesData->id.'" data-product-id="'.$policiesData->QuotationProduct->id.'"><i class="ri-mail-send-line"></i></button>';
-                $viewButton = '<a href="/customer-service/renewal/get-renewal-lead-view/'.$policiesData->quotation_product_id.'"  id="'.$policiesData->policy_details_id.'" class="btn btn-sm btn-outline-info"><i class="ri-eye-line"></i></a>';
+                $viewButton = '<a href="/customer-service/renewal/get-renewal-lead-view/'.$policiesData->id.'"  id="'.$policiesData->policy_details_id.'" class="btn btn-sm btn-outline-info"><i class="ri-eye-line"></i></a>';
                 $renewalQuoteButton = '<button type="button" class="btn btn-outline-success btn-sm waves-effect waves-light renewalReminder" id="'.$policiesData->id.'"><i class=" ri-task-line"></i></button>';
                 return $setEmailSendingButton . ' ' . $viewButton . ' ' . $renewalQuoteButton;
             })

@@ -68,6 +68,10 @@ class BussinessOwnersPolicyDetailsController extends Controller
             $metadata->save();
             $mediaId = $metadata->id;
 
+
+            //code for saving product
+            $quotationProduct = QuotationProduct::find($data['businessOwnersHiddenInputId']);
+
             $policyDetails = new PolicyDetail();
             $policyDetails->selected_quote_id = $data['businessOwnersHiddenQuoteId'];
             $policyDetails->quotation_product_id = $data['businessOwnersHiddenInputId'];
@@ -77,8 +81,26 @@ class BussinessOwnersPolicyDetailsController extends Controller
             $policyDetails->payment_mode = $data['businessOwnersPaymentTermInput'];
             $policyDetails->effective_date = $data['businessOwnersEffectiveDate'];
             $policyDetails->expiration_date = $data['businessOwnersExpirationDate'];
-            $policyDetails->status = 'issued';
             $policyDetails->media_id = $mediaId;
+
+            if($quotationProduct->status == 20 ){
+                $previousPolicy = PolicyDetail::where('quotation_product_id', $quotationProduct->id)->where('status', 'Renewal Request To Bind')->get();
+                foreach($previousPolicy as $policy){
+                    $policy->status = 'old policy';
+                    $policy->save();
+                }
+                $policyDetails->status = 'renewal issued';
+                $quotationProduct->status = 8;
+                $quotationProduct->save();
+            }else if($quotationProduct->status == 26){
+                $policyDetails->status = 'recovered policy issued';
+                $quotationProduct->status = 8;
+                $quotationProduct->save();
+            }else{
+                $policyDetails->status = 'issued';
+                $quotationProduct->status = 8;
+                $quotationProduct->save();
+            }
             $policyDetails->save();
 
             if(isset($data['newBlankLimits']) && isset($data['newBlankValue'])){

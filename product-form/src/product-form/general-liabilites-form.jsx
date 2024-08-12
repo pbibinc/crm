@@ -27,12 +27,14 @@ import Swal from "sweetalert2";
 import axiosClient from "../api/axios.client";
 import "../style/general-information.css";
 import Button from "react-bootstrap/Button";
+import { useGeneralLiabilities } from "../contexts/general-liabilities-context";
 // import { FidgetSpinner } from "react-loader-spinner";
 
 // import Col from "react-bootstrap/esm/Col";
 const GeneralLiabilitiesForm = () => {
-    const { classCodeArray } = useContext(ContextData);
-    const { generalLiabilitiesData } = useContext(ContextData);
+    const { classCodeArray, lead } = useContext(ContextData);
+    const { generalLiabilitiesData } = useGeneralLiabilities();
+    const [isDataReady, setIsDataReady] = useState(false);
 
     const [isLoading, setIsLoading] = useState(false);
     const getLeadStoredData = () => {
@@ -766,6 +768,93 @@ const GeneralLiabilitiesForm = () => {
                 }
             });
     }
+
+    useEffect(() => {
+        if (generalLiabilitiesData) {
+            const storedData = generalLiabilitiesData[0] || {};
+
+            //objects for coverage limit table
+            setSelectedLimit(storedData.limit || null);
+            setSelectedMedical(storedData.medical || "");
+            setSelectedFireDamage(storedData.fire_damage || "");
+            setSelectedDeductible(storedData.deductible || "");
+
+            // //objects for general liabilities common questionare
+            setLeadId(storedData.leadId || "");
+            setBussinessDescription(storedData.business_description || "");
+            setResidentialPercentage(storedData.residential_percentage || 50);
+            setCommercialPercentage(storedData.commercial_percentage || 50);
+            setConstructionPercentage(storedData.construction_percentage || 50);
+            setRepairRemodelPercentage(
+                storedData.repair_remodel_percentage || 50
+            );
+            setSelfPerformingRoofing(
+                storedData.self_performing_roofing || false
+            );
+            setPerfromTractWork(storedData.perform_tract_work || false);
+            setWorkOnCondominium(storedData.work_on_condominium || false);
+            setPerformRemodellingWorkCheckSwitch(
+                storedData.perform_remodelling_work || false
+            );
+            setSelectedBusinessEntity(storedData.business_entity || "");
+            setYearsInBusiness(storedData.years_in_business || "");
+            setYearsInProfession(storedData.years_in_profession || "");
+            setLargestProject(storedData.largest_project || "");
+            setLargestProjectAmount(storedData.largest_project_amount || "");
+            setContactLicense(storedData.contact_license || "");
+            setContactLicenseName(storedData.contact_license_name || "");
+            setPolicyPremium(storedData.policy_premium || "");
+            setSelectedCrossSell(storedData.selectedCrossSell || "");
+
+            //object for mutilple state
+            setIsMultipleStateChecked(
+                storedData.isMultipleStateChecked || false
+            );
+            setMultistateSelectedObject(
+                storedData.multistateSelectedObject || []
+            );
+            setMultipleStatePercentage(storedData.multiple_percentage || [0]);
+            setSelectedStates(storedData.multiple_states || []);
+
+            //object for classcode woodworking
+
+            setSelectedClassCode(storedData.classCode || []);
+            setSelectedClassCodeObject(storedData.classcCodeObject || []);
+            setIsHaveLossesChecked(storedData.isHaveLossesChecked || false);
+            setDateOptionsValue(storedData.dateOptionsValue || 1);
+            setDateOfClaim(storedData.dateOfClaim || null);
+            setAmount(storedData.amount || "");
+            setHaveLossAmount(storedData.haveLossAmount || "");
+
+            setUserProfileId(lead?.data?.userProfileId || "");
+
+            setConcreteFoundationWork(
+                storedData.concrete_foundation_work || false
+            );
+
+            setClassCodePercentage(storedData.classcode_percentage || [0]);
+            setExpirationGeneralLiability(
+                storedData.expirationGeneralLiability || null
+            );
+
+            setBlastingOperation(storedData.blasting_operation || false);
+            setHazardousWaste(storedData.hazardous_waste || false);
+            setAsbestosMold(storedData.asbestos_mold || false);
+            setTallBuilding(storedData.tall_building || false);
+            setSelectedRecreationalFacilities(
+                storedData.recreational_facilities || []
+            );
+            setIsOfficeHome(storedData.is_office_home || false);
+            setIsEditing(storedData.isUpdate !== true);
+            SetIsUpdate(storedData.isUpdate || false);
+
+            setIsDataReady(true);
+        }
+    }, [generalLiabilitiesData]);
+
+    // if (!isDataReady) {
+    //     return <div>Loading...</div>;
+    // }
 
     return (
         <>

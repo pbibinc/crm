@@ -82,7 +82,6 @@ class EmailController extends Controller
                 }
             }
         }
-
     }
 
     public function sendTemplatedEmail(Request $request)

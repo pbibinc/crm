@@ -1,7 +1,29 @@
 @extends('admin.admin_master')
 @section('admin')
+    <style>
+        .fab {
+            position: fixed;
+            width: 56px;
+            height: 56px;
+            bottom: 16px;
+            right: 16px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            z-index: 1000;
+        }
+    </style>
+
     <div class="page-content pt-6">
         <div class="container-fluid">
+            <div class="fab" id="fab">
+                <i class="fas fa-comment"></i>
+            </div>
             <div class="row">
                 <div>
                     @include(
@@ -10,104 +32,118 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-4">
-                    <div class="card mt-3"
+                <div class="col-sm-3">
+                    <div class="card"
                         style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                         <div class="card-body">
-                            <div class="row mb-3">
-                                <h5>Contact Information</h5>
-                            </div>
                             <div class="row mb-2">
+                                <h6 style="font-size: 14px;">Contact Information</h6>
+                            </div>
+                            <div class="row mb-1">
                                 <div class="col-6">
-                                    <strong>Email Address:</strong>
+                                    <strong style="font-size: 12px;">Email Address:</strong>
                                     <br>
-                                    <strong>{{ $leads->GeneralInformation->email_address }}</strong>
+                                    <strong
+                                        style="font-size: 12px;">{{ $leads->GeneralInformation->email_address }}</strong>
                                 </div>
                                 <div class="col-6">
-                                    <strong>Tel Num:</strong>
+                                    <strong style="font-size: 12px;">Tel Num:</strong>
                                     <br>
-                                    <strong> {{ $leads->tel_num }}</strong>
+                                    <strong style="font-size: 12px;">{{ $leads->tel_num }}</strong>
                                 </div>
                             </div>
-                            <div class="row">
-                                <strong>Alt Num:</strong>
+                            <div class="row mb-1">
+                                <strong style="font-size: 12px;">Alt Num:</strong>
                                 <br>
-                                <strong>{{ $leads->GeneralInformation->alt_num ? $leads->GeneralInformation->alt_num : $leads->tel_num }}</strong>
+                                <strong
+                                    style="font-size: 12px;">{{ $leads->GeneralInformation->alt_num ? $leads->GeneralInformation->alt_num : $leads->tel_num }}</strong>
                             </div>
 
                             <div class="row">
-                                <hr>
-                            </div>
-                            <div class="row mb-3">
-                                <h5>Location Details</h5>
+                                <hr style="margin: 5px 0;">
                             </div>
                             <div class="row mb-2">
+                                <h6 style="font-size: 14px;">Location Details</h6>
+                            </div>
+                            <div class="row mb-1">
                                 <div class="col-6">
-                                    <strong>Location:</strong>
+                                    <strong style="font-size: 12px;">Location:</strong>
                                     <br>
-                                    <strong>{{ $usAddress->city . ', ' . $usAddress->state }}</strong>
+                                    <strong
+                                        style="font-size: 12px;">{{ $usAddress->city . ', ' . $usAddress->state }}</strong>
                                 </div>
 
                                 <div class="col-6">
-                                    <strong>Local Time:</strong>
+                                    <strong style="font-size: 12px;">Local Time:</strong>
                                     <br>
-                                    <strong>{{ $localTime->format('M-d-Y g:iA') }}</strong>
+                                    <strong style="font-size: 12px;">{{ $localTime->format('M-d-Y g:iA') }}</strong>
                                 </div>
                             </div>
                             <div class="row mb-1">
                                 <div class="col-6">
-                                    <strong>Address:</strong>
+                                    <strong style="font-size: 12px;">Address:</strong>
                                     <br>
-                                    <strong>{{ $leads->GeneralInformation->address }}</strong>
+                                    <strong style="font-size: 12px;">{{ $leads->GeneralInformation->address }}</strong>
                                 </div>
                             </div>
                             <div class="row">
-                                <hr>
-                            </div>
-                            <div class="row mb-3">
-                                <h5>Company Information</h5>
+                                <hr style="margin: 5px 0;">
                             </div>
                             <div class="row mb-2">
+                                <h6 style="font-size: 14px;">Company Information</h6>
+                            </div>
+                            <div class="row mb-1">
                                 <div class="col-6">
-                                    <strong>Full Time Employee:</strong>
+                                    <strong style="font-size: 12px;">Full Time Employee:</strong>
                                     <br>
-                                    <strong>{{ $leads->GeneralInformation->full_time_employee }}</strong>
+                                    <strong
+                                        style="font-size: 12px;">{{ $leads->GeneralInformation->full_time_employee }}</strong>
                                 </div>
                                 <div class="col-6">
-                                    <strong>Part Time Employee:</strong>
+                                    <strong style="font-size: 12px;">Part Time Employee:</strong>
                                     <br>
-                                    <strong>{{ $leads->GeneralInformation->part_time_employee }}</strong>
+                                    <strong
+                                        style="font-size: 12px;">{{ $leads->GeneralInformation->part_time_employee }}</strong>
                                 </div>
                             </div>
-                            <div class="row mb-2">
+                            <div class="row mb-1">
                                 <div class="col-6">
-                                    <strong>Owners Payroll:</strong>
+                                    <strong style="font-size: 12px;">Owners Payroll:</strong>
                                     <br>
-                                    <strong>${{ number_format($leads->GeneralInformation->owners_payroll, 2, '.', ',') }}</strong>
+                                    <strong
+                                        style="font-size: 12px;">${{ number_format($leads->GeneralInformation->owners_payroll, 2, '.', ',') }}</strong>
                                 </div>
                                 <div class="col-6">
-                                    <strong>Employee Payroll:</strong>
+                                    <strong style="font-size: 12px;">Employee Payroll:</strong>
                                     <br>
-                                    <strong>${{ number_format($leads->GeneralInformation->employee_payroll, 2, '.', ',') }}</strong>
+                                    <strong
+                                        style="font-size: 12px;">${{ number_format($leads->GeneralInformation->employee_payroll, 2, '.', ',') }}</strong>
                                 </div>
                             </div>
-                            <div class="row mb-2">
+                            <div class="row mb-1">
                                 <div class="col-6">
-                                    <strong>Gross Receipt:</strong>
+                                    <strong style="font-size: 12px;">Gross Receipt:</strong>
                                     <br>
-                                    <strong>${{ number_format($leads->GeneralInformation->gross_receipt, 2, '.', ',') }}</strong>
+                                    <strong
+                                        style="font-size: 12px;">${{ number_format($leads->GeneralInformation->gross_receipt, 2, '.', ',') }}</strong>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-8">
-                    <div class="tab-content p-3 text-muted">
+                <div class="col-sm-9">
+                    <div class="tab-content text-muted">
+
                         <div class="tab-pane fade show active" id="summary" role="tabpanel">
-                            @include(
-                                'leads.appointed_leads.apptaker-leads-view.profile-summary',
-                                compact('leads'))
+                            @include('leads.appointed_leads.apptaker-leads-view.profile-summary', [
+                                'leads' => $leads,
+                                'leadId' => $leads->id,
+                                'carriers' => $carriers,
+                                'markets' => $markets,
+                                'templates' => $templates,
+                            ])
                         </div>
+
                         <div class="tab-pane fade show" id="product" role="tabpanel">
                             <div class="card"
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
@@ -192,6 +228,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="tab-pane fade show" id="activityLog" role="tabpanel">
                             <div class="card"
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
@@ -202,6 +239,18 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="tab-pane fade show" id="audit" role="tabpanel">
+                            <div class="card"
+                                style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
+                                <div class="card-body">
+                                    @include('customer-service.audit.audit-information-table', [
+                                        'leadId' => $leads->id,
+                                    ])
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="tab-pane fade show" id="messages" role="tabpanel">
                             <div class="card"
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
@@ -212,6 +261,7 @@
                                 </div>
                             </div>
                         </div>
+
                         {{-- <div class="tab-pane fade show" id="bindocsPfa" role="tabpanel">
                             <div class="card"
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
@@ -223,19 +273,21 @@
                                 </div>
                             </div>
                         </div> --}}
-                        {{-- <div class="tab-pane fade show" id="quotation" role="tabpanel">
+
+                        <div class="tab-pane fade show" id="quotation" role="tabpanel">
                             <div class="card"
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                                 <div class="card-body">
-                                    @include('leads.appointed_leads.qoutation-forms/forms', [
-                                        'product' => $product,
+                                    @include('leads.appointed_leads.leads-quotation-forms.forms', [
+                                        'products' => $products,
                                         'generalInformation' => $leads->generalInformation,
                                         'quotationMarket' => $quationMarket,
                                         'lead' => $leads,
                                     ])
                                 </div>
                             </div>
-                        </div> --}}
+                        </div>
+
                         <div class="tab-pane" id="accounting" role="tabpanel">
                             <div class="card"
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
@@ -246,6 +298,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="tab-pane fade show" id="financingAgreement" role="tabpanel">
                             <div class="card"
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
@@ -259,6 +312,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="tab-pane fade show" id="emails" role="tabpanel">
                             <div class="card"
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
@@ -269,6 +323,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="tab-pane fade show" id="policyList" role="tabpanel">
                             <div class="card"
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
@@ -286,5 +341,57 @@
                 </div>
             </div>
         </div>
+        @include('customer-service.audit.audit-information-modal')
     </div>
+
+
+
+    <!-- Chat Box -->
+    {{-- <div class="chat-box" id="chatBox">
+        <div class="chat-header">
+            <h5>Notes</h5>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <!-- Notes will be displayed here -->
+            <div class="media media-chat media-chat-reverse">
+                <img class="avatar" src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="...">
+                <div class="media-body">
+                    <p>Hi</p>
+                    <p>How are you ...???</p>
+                    <p>What are you doing tomorrow?<br> Can we come up a bar?</p>
+                    <p class="meta"><time datetime="2018">23:58</time></p>
+                </div>
+            </div>
+        </div>
+        <div class="chat-footer p-3">
+            <div class="mb-2">
+                <input type="text" class="form-control form-control-sm" id="noteTitle" placeholder="Title" required>
+                <div class="invalid-feedback" id="noteTitleError"></div>
+            </div>
+            <div class="mb-2">
+                <label for="userToNotifyDropdown" class="form-label">User To Notify</label>
+                <select class="form-select form-select-sm" name="userToNotifyDropdown[]" id="userToNotifyDropdown"
+                    multiple="multiple" required>
+                    <!-- Options will be loaded here -->
+                </select>
+                <div class="invalid-feedback" id="userToNotifyDropdownError"></div>
+            </div>
+            <div class="mb-2">
+                <textarea required class="form-control form-control-sm" rows="2" placeholder="Type a note..."
+                    id="noteDescription"></textarea>
+                <div class="invalid-feedback" id="noteDescriptionError"></div>
+            </div>
+            <button type="button" class="btn btn-outline-primary btn-sm waves-effect waves-light" id="logNote">
+                <i class="ri-send-plane-fill"></i> Log Note
+            </button>
+        </div>
+    </div> --}}
+
+    <script>
+        $(document).ready(function() {
+            $('#fab').on('click', function() {
+                $('#chatBox').toggle();
+            });
+        });
+    </script>
 @endsection

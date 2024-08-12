@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Row from "../element/row-element";
 import Column from "../element/column-element";
 import Label from "../element/label-element";
@@ -15,17 +15,18 @@ import axios from "axios";
 import Swal from "sweetalert2";
 // import { set } from "lodash";
 import axiosClient from "../api/axios.client";
-
+import { ContextData } from "../contexts/context-data-provider";
+import { useExcessLiability } from "../contexts/excess-liability-context";
 const ExcessLiabilitiesForm = () => {
+    const { excessLiabilityData } = useExcessLiability();
+
     const GetExcessLiabilityData = () => {
-        const excessLiabilityData = sessionStorage.getItem(
+        const localExcessLiabilityData = sessionStorage.getItem(
             "excessLiabilityData"
         );
-        if (excessLiabilityData) {
-            return JSON.parse(sessionStorage.getItem("excessLiabilityData"));
-        } else {
-            return [];
-        }
+        return excessLiabilityData
+            ? excessLiabilityData.data
+            : localExcessLiabilityData;
     };
     //setting for update and edit
     const [isEditing, setIsEditing] = useState(() =>
@@ -135,6 +136,7 @@ const ExcessLiabilitiesForm = () => {
         callBackDate: callBackDate,
         leadId: getLeadData()?.data?.id,
         remarks: remarks,
+        userProfileId: getLeadData()?.data?.userProfileId,
     };
 
     useEffect(() => {
@@ -175,10 +177,12 @@ const ExcessLiabilitiesForm = () => {
 
     function submitExcessliabilityForm() {
         const leadId = getLeadData()?.data?.id;
+        console.log("leadId", leadId);
         const url = isUpdate
             ? `/api/excess-liability-data/update/${leadId} `
             : `/api/excess-liability-data/store`;
         const method = isUpdate ? "put" : "post";
+
         axiosClient[method](url, excessLiabilityFormData)
             .then((response) => {
                 console.log(response);
@@ -201,6 +205,39 @@ const ExcessLiabilitiesForm = () => {
                 });
             });
     }
+
+    useEffect(() => {
+        const data = GetExcessLiabilityData();
+        if (data) {
+            setIsEditing(data.isUpdate == true ? false : true);
+            setIsUpdate(data.isUpdate || false);
+            setExcessLimit(data.excessLimit || []);
+            setExcessEffectiveDate(
+                data.excessEffectiveDate
+                    ? new Date(data.excessEffectiveDate)
+                    : new Date()
+            );
+            setInsuranceCarrier(data.insuranceCarrier || "");
+            setPolicyNumber(data.policyNumber || "");
+            setPolicyPremium(data.policyPremium || "");
+            setCrossSell(data.crossSell || []);
+            setEffectiveDate(
+                data.generalLiabilityEffectiveDate
+                    ? new Date(data.generalLiabilityEffectiveDate)
+                    : null
+            );
+            setExpirationDate(
+                data.generalLiabilityExpirationDate
+                    ? new Date(data.generalLiabilityExpirationDate)
+                    : null
+            );
+            setCallBackDate(
+                data.callBackDate ? new Date(data.callBackDate) : new Date()
+            );
+            setRemarks(data.remarks || "");
+        }
+    }, [excessLiabilityData]);
+
     return (
         <>
             <Row

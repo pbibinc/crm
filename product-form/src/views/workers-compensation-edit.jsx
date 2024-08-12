@@ -3,9 +3,10 @@ import { ContextData } from "../contexts/context-data-provider"; // Import the c
 import Header from "../partials-form/header";
 import GeneralLiabilitiesForm from "../product-form/general-liabilites-form";
 import WorkersCompensationForm from "../product-form/workers-compensation_form";
+import { useWorkersCompensation } from "../contexts/workers-compensation-context";
 
 export default function WorkersCompensationFormEdit() {
-    const { workersCompensationData } = useContext(ContextData);
+    const { workersCompensationData } = useWorkersCompensation();
 
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {

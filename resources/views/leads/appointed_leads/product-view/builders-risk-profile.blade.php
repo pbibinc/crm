@@ -1,18 +1,29 @@
 <style>
     .title-card {
-    background-color: #656565; /* Bootstrap primary color */
-    padding: 10px 15px;
-    border-radius: 5px;
-    color: #ffffff;;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-}
+        background-color: #656565;
+        /* Bootstrap primary color */
+        padding: 10px 15px;
+        border-radius: 5px;
+        color: #ffffff;
+        ;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+    }
 
-.title-icon {
-    margin-right: 10px;
-}
+    .title-icon {
+        margin-right: 10px;
+    }
 </style>
+@if ($actionButtons == true)
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <button type="button" class="editBuildersRisk btn btn-primary" value="{{ $generalInformation->lead->id }}"><i
+                    class="ri-edit-line"></i>
+                Edit</button>
+        </div>
+    </div>
+@endif
 <div class="row mb-4">
     <div class="col-5 title-card">
         <i class="ri-community-linetitle-icon"></i>
@@ -38,11 +49,11 @@
     </div>
     <div class="col-6">
         @if ($generalInformation->buildersRisk->has_project_started)
-        <b>Project Started:</b>
-        {{ $generalInformation->buildersRisk->has_project_started ? 'Yes' : 'No' }}
+            <b>Project Started:</b>
+            {{ $generalInformation->buildersRisk->has_project_started ? 'Yes' : 'No' }}
         @else
-        <b>Project Started at:</b>
-        {{ \Carbon\Carbon::parse($generalInformation->buildersRisk->project_started_date)->format('M-j-Y') }}
+            <b>Project Started at:</b>
+            {{ \Carbon\Carbon::parse($generalInformation->buildersRisk->project_started_date)->format('M-j-Y') }}
         @endif
     </div>
 </div>
@@ -94,89 +105,94 @@
         </div>
     </div>
 </div>
-<div class="row"><hr></div>
+<div class="row">
+    <hr>
+</div>
 
 @if ($generalInformation->buildersRisk->construction_status == 2)
-<div class="row mb-4">
-    <div class="col-5 title-card">
-        <i class="ri-hammer-line title-icon"></i>
-        <h4 class="card-title mb-0" style="color: #ffffff">Rennovation</h4>
-    </div>
-</div>
-<div class="row mb-4">
-    <div class="col-6">
-        <b>Last Year Roofing Update:</b>
-        {{ $generalInformation->buildersRisk->renovation->last_update_roofing }}
-    </div>
-    <div class="col-6">
-        <b>Last Year Heating Update:</b>
-        {{ $generalInformation->buildersRisk->renovation->last_update_heating }}
-    </div>
-</div>
-<div class="row mb-4">
-    <div class="col-6">
-        <b>Last Year Plumbing Update:</b>
-        {{ $generalInformation->buildersRisk->renovation->last_update_plumbing }}
-    </div>
-    <div class="col-6">
-        <b>Last Year Electrical Update:</b>
-        {{ $generalInformation->buildersRisk->renovation->last_update_electrical }}
-    </div>
-</div>
-<div class="row mb-4">
-    <div class="col-6">
-        <b>Structure Will be Occupied:</b>
-        {{ $generalInformation->buildersRisk->renovation->stucture_occupied }}
-    </div>
-    <div class="col-6">
-        <b>Structure Built:</b>
-        {{ $generalInformation->buildersRisk->renovation->structure_built }}
-    </div>
-</div>
-<div class="row"><hr></div>
-
-<div class="row">
-    <div class="col-6">
-        <div class="row mb-4">
-            <h4 class="card-title">Rennovation Description</h4>
+    <div class="row mb-4">
+        <div class="col-5 title-card">
+            <i class="ri-hammer-line title-icon"></i>
+            <h4 class="card-title mb-0" style="color: #ffffff">Rennovation</h4>
         </div>
-        <div class="row mb-4">
-            <div>
-                {{ $generalInformation->buildersRisk->renovation->description }}
+    </div>
+    <div class="row mb-4">
+        <div class="col-6">
+            <b>Last Year Roofing Update:</b>
+            {{ $generalInformation->buildersRisk->renovation->last_update_roofing }}
+        </div>
+        <div class="col-6">
+            <b>Last Year Heating Update:</b>
+            {{ $generalInformation->buildersRisk->renovation->last_update_heating }}
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-6">
+            <b>Last Year Plumbing Update:</b>
+            {{ $generalInformation->buildersRisk->renovation->last_update_plumbing }}
+        </div>
+        <div class="col-6">
+            <b>Last Year Electrical Update:</b>
+            {{ $generalInformation->buildersRisk->renovation->last_update_electrical }}
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-6">
+            <b>Structure Will be Occupied:</b>
+            {{ $generalInformation->buildersRisk->renovation->stucture_occupied }}
+        </div>
+        <div class="col-6">
+            <b>Structure Built:</b>
+            {{ $generalInformation->buildersRisk->renovation->structure_built }}
+        </div>
+    </div>
+    <div class="row">
+        <hr>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <div class="row mb-4">
+                <h4 class="card-title">Rennovation Description</h4>
+            </div>
+            <div class="row mb-4">
+                <div>
+                    {{ $generalInformation->buildersRisk->renovation->description }}
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="row mb-4">
+                <h4 class="card-title">Complete Operation Description</h4>
+            </div>
+            <div class="row mb-4">
+                <div>
+                    {{ $generalInformation->buildersRisk->renovation->description_operation }}
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-6">
-        <div class="row mb-4">
-            <h4 class="card-title">Complete Operation Description</h4>
-        </div>
-        <div class="row mb-4">
-            <div>
-                {{ $generalInformation->buildersRisk->renovation->description_operation }}
-            </div>
-        </div>
-    </div>
-</div>
-
-
 @else
-<div class="row mb-4">
-    <div class="col-5 title-card">
-        <i class="ri-hammer-line title-icon"></i>
-        <h4 class="card-title mb-0" style="color: #ffffff">New Construction Description</h4>
+    <div class="row mb-4">
+        <div class="col-5 title-card">
+            <i class="ri-hammer-line title-icon"></i>
+            <h4 class="card-title mb-0" style="color: #ffffff">New Construction Description</h4>
+        </div>
     </div>
-</div>
-<div class="row mb-4">
-    <div>
-        {{ $generalInformation->buildersRisk->newConstruction->description_operation}}
+    <div class="row mb-4">
+        <div>
+            {{ $generalInformation->buildersRisk->newConstruction->description_operation }}
+        </div>
     </div>
-</div>
 @endif
-<div class="row"><hr></div>
+<div class="row">
+    <hr>
+</div>
 <div class="row mb-4">
     <div class="col-5 title-card">
         <i class="ri-calendar-event-line title-icon"></i> <!-- An example icon; adjust as necessary -->
-        <h4 class="card-title mb-0" style="color: #ffffff">Previous Builders Risk Policy</h4> <!-- mb-0 removes default margin at the bottom -->
+        <h4 class="card-title mb-0" style="color: #ffffff">Previous Builders Risk Policy</h4>
+        <!-- mb-0 removes default margin at the bottom -->
     </div>
 </div>
 <div class="row mb-4">
@@ -189,6 +205,25 @@
         {{ $generalInformation->lead->buildersRiskExpirationProduct->prior_carrier }}
     </div>
 </div>
-
-
-
+<script>
+    $(document).ready(function() {
+        $('.editBuildersRisk').on('click', function(e) {
+            e.preventDefault();
+            var leadId = $(this).val();
+            var url = "{{ env('APP_FORM_URL') }}";
+            $.ajax({
+                url: "{{ route('list-lead-id') }}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: 'json',
+                method: 'POST',
+                data: {
+                    leadId: leadId
+                },
+            });
+            window.open(`${url}builders-risk-form/edit`, "s_blank",
+                "width=1000,height=849")
+        });
+    });
+</script>

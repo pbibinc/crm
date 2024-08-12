@@ -65,6 +65,7 @@ class UserProfile extends Model
            ->pluck('total', 'state_abbr')
            ->toArray();
     }
+
     public function fullName()
     {
         return $this->firstname . ' ' . $this->lastname;
@@ -120,6 +121,11 @@ class UserProfile extends Model
         return $this->hasMany(QuotationProduct::class);
     }
 
+    public function RecoverCancelledPolicy()
+    {
+        return $this->hasOne(RecoverCancelledPolicy::class, 'user_profile_id');
+    }
+
     public function renewalPolicy()
     {
         return $this->belongsToMany(PolicyDetail::class, 'renewal_user_profile', 'user_profile_id', 'policy_details_id')->withTimestamps();
@@ -130,6 +136,11 @@ class UserProfile extends Model
         return $this->belongsToMany(PolicyDetail::class, 'renewal_quoted_user_profile', 'user_profile_id', 'policy_details_id')->withTimestamps();
     }
 
+    public function CancelledPolicyForRecall()
+    {
+        return $this->hasMany(CancelledPolicyForRecall::class, 'last_touch_user_profile_id');
+    }
+
     public function handledQuotePolicyRenewal($statuses)
     {
         return $this->renewalPolicy()->whereNotIn('status', $statuses);
@@ -138,6 +149,23 @@ class UserProfile extends Model
     public function brokersAssist()
     {
         return $this->belongsToMany(BrokerHandle::class, 'broker_handle', 'agent_userprofile_id', 'broker_userprofile_id');
+    }
+
+    public function CancellationEndorsement()
+    {
+        return $this->hasOne(CancellationEndorsement::class, 'cancelled_by_id');
+    }
+
+    public function AssignedForRewritePolicy()
+    {
+        return $this->belongsToMany(PolicyDetail::class, 'assigned_rewrite_policy', 'user_profile_id', 'policy_details_id')
+        ->withPivot('assigned_at')
+        ->withTimestamps();
+    }
+
+    public function AuditInformation()
+    {
+        return $this->hasMany(AuditInformation::class, 'processed_by');
     }
 
 

@@ -70,6 +70,9 @@ class BuildersRiskPolicyDetailsController extends Controller
             $metadata->save();
             $mediaId = $metadata->id;
 
+            //code for saving product
+            $quotationProduct = QuotationProduct::find($data['buildersRiskHiddenInputId']);
+
             $policyDetails = new PolicyDetail();
             $policyDetails->selected_quote_id = $data['buildersRiskHiddenQuoteId'];
             $policyDetails->quotation_product_id = $data['buildersRiskHiddenInputId'];
@@ -79,8 +82,25 @@ class BuildersRiskPolicyDetailsController extends Controller
             $policyDetails->payment_mode = $data['buildersRiskPaymentTermInput'];
             $policyDetails->effective_date = $data['buildersRiskEffectiveDate'];
             $policyDetails->expiration_date = $data['buildersRiskExpirationDate'];
-            $policyDetails->status = 'issued';
             $policyDetails->media_id = $mediaId;
+            if($quotationProduct->status == 20 ){
+                $previousPolicy = PolicyDetail::where('quotation_product_id', $quotationProduct->id)->where('status', 'Renewal Request To Bind')->get();
+                foreach($previousPolicy as $policy){
+                    $policy->status = 'old policy';
+                    $policy->save();
+                }
+                $policyDetails->status = 'renewal issued';
+                $quotationProduct->status = 8;
+                $quotationProduct->save();
+            }else if($quotationProduct->status == 26){
+                $policyDetails->status = 'recovered policy issued';
+                $quotationProduct->status = 8;
+                $quotationProduct->save();
+            }else{
+                $policyDetails->status = 'issued';
+                $quotationProduct->status = 8;
+                $quotationProduct->save();
+            }
             $policyDetails->save();
 
             $buildersRiskPolicyDetails = new BuildersRiskPolicyDetails();

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Row from "../element/row-element";
 import Column from "../element/column-element";
 import Label from "../element/label-element";
@@ -15,17 +15,17 @@ import SaveIcon from "@mui/icons-material/Save";
 import Swal from "sweetalert2";
 import axiosClient from "../api/axios.client";
 import "../style/general-information.css";
+import { ContextData } from "../contexts/context-data-provider";
+import { useBuildersRisk } from "../contexts/builders-risk-context";
 const BuilderRiskForm = () => {
+    const { buildersRiskData } = useBuildersRisk();
+
     //setting for getting stored buildersRiskData
     const storedBuildersRiskData = () => {
-        const buildersRiskData = JSON.parse(
-            sessionStorage.getItem("buildersRiskData")
+        const localBuildersRisk = JSON.parse(
+            sessionStorage.getItem("buildersRiskData") || "{}"
         );
-        if (buildersRiskData) {
-            return buildersRiskData;
-        } else {
-            return [];
-        }
+        return buildersRiskData ? buildersRiskData.data : localBuildersRisk;
     };
     //setting for getting stored lead data
     const storedLeads = JSON.parse(sessionStorage.getItem("lead"));
@@ -37,11 +37,7 @@ const BuilderRiskForm = () => {
     const [isUpdate, setIsUpdate] = useState(
         () => storedBuildersRiskData()?.isUpdate || false
     );
-    // const [crossSell, setCrossSell] = useState("");
-    // const [priorCarrier, setPriorCarrier] = useState("");
-    // const [expirationOfIM, setExpirationOfIM] = useState(new Date());
-    // const [dateofClaim, setDateofClaim] = useState(new Date());
-    // const [lossAmount, setLossAmount] = useState("");
+
     const [propertyAddress, setPropertyAddress] = useState(
         () => storedBuildersRiskData()?.propertyAddress || ""
     );
@@ -234,8 +230,8 @@ const BuilderRiskForm = () => {
         haveLossDateOption: haveLossDateOption,
 
         leadId: storedLeads?.data?.id,
+        userProfileId: storedLeads?.data?.userProfileId,
     };
-    console.log(builderRiskFormData);
 
     useEffect(() => {
         const buildersRiskData = {
@@ -314,6 +310,7 @@ const BuilderRiskForm = () => {
         haveLossDateOption,
         isUpdate,
         isEditing,
+        dateProjectStarted,
     ]);
 
     function submitBuilderRiskForm() {

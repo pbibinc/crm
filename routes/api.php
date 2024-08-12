@@ -58,12 +58,14 @@ Route::get('general-information-data/edit/{id}', [GeneralInformationDataControll
 Route::post('general-liabilities-data', [GeneralLiabilitiesDataController::class, 'saveGeneralLiabilities'])->withoutMiddleware(['auth:sanctum']);
 Route::put('general-liabilities-data/{id}', [GeneralLiabilitiesDataController::class, 'updateGeneralLiabilities'])->withoutMiddleware(['auth:sanctum']);
 Route::get('general-liabilities-data/edit/{id}', [GeneralLiabilitiesDataController::class, 'edit'])->withoutMiddleware(['auth:sanctum']);
+Route::get('general-liabilities-data/get/previousGeneralLiabilities/{id}', [GeneralLiabilitiesDataController::class, 'getPreviousGeneralLiabilities'])->withoutMiddleware(['auth:sanctum']);
 
 //route for workers compensation
 Route::post('workers-comp-data/store', [WorkersCompDataController::class, 'saveWorkersComp'])->withoutMiddleware(['auth:sanctum']);
 Route::put('workers-comp-data/{id}', [WorkersCompDataController::class, 'updateWorkersComp'])->withoutMiddleware(['auth:sanctum']);
 Route::get('workers-comp-data/get/{id}', [WorkersCompDataController::class, 'getWorkersCompData'])->withoutMiddleware(['auth:sanctum']);
 Route::get('workers-comp-data/edit/{id}', [WorkersCompDataController::class, 'edit'])->withoutMiddleware(['auth:sanctum']);
+Route::get('workers-comp-data/get/previousWorkersComp/{id}', [WorkersCompDataController::class, 'getPreviousWorkersCompensationoInformation'])->withoutMiddleware(['auth:sanctum']);
 
 //route for commercial auto
 Route::post('commercial-auto-data/store', [CommercialAutoController::class, 'saveCommercialAuto'])->withoutMiddleware(['auth:sanctum']);
@@ -74,18 +76,26 @@ Route::get('commercial-auto-data/get/previousCommercialAutoInformation/{id}', [C
 //route for excess liability
 Route::post('excess-liability-data/store', [ExcessLiabilityController::class, 'saveExcessLiability'])->withoutMiddleware(['auth:sanctum']);
 Route::put('excess-liability-data/update/{id}', [ExcessLiabilityController::class, 'updateExcessLiability'])->withoutMiddleware(['auth:sanctum']);
+Route::get('excess-liability-data/edit/{id}', [ExcessLiabilityController::class, 'edit'])->withoutMiddleware(['auth:sanctum']);
+Route::get('excess-liability-data/get/previousExcessLiabilityInformation/{id}', [ExcessLiabilityController::class, 'getPrviousExcessLiabilityInformation'])->withoutMiddleware(['auth:sanctum']);
 
 //route for tools equipment
 Route::post('tools-equipment/store', [ToolsEquipmentController::class, 'storeToolsEquipment'])->withoutMiddleware(['auth:sanctum']);
 Route::put('tools-equipment/update/{id}', [ToolsEquipmentController::class, 'updateToolsEquipment'])->withoutMiddleware(['auth:sanctum']);
+Route::get('tools-equipment-data/edit/{id}', [ToolsEquipmentController::class, 'edit'])->withoutMiddleware(['auth:sanctum']);
+Route::get('tools-equipment-data/get/previousToolsEquipmentInformation/{id}', [ToolsEquipmentController::class, 'getPreviousToolsEquipmentInformation'])->withoutMiddleware(['auth:sanctum']);
 
 //route for builders risk
 Route::post('builders-risk/store', [BuildersRiskController::class, 'storedBuildersRisk'])->withoutMiddleware(['auth:sanctum']);
 Route::put('builders-risk/update/{id}', [BuildersRiskController::class, 'updateBuildersRisk'])->withoutMiddleware(['auth:sanctum']);
+Route::get('builders-risk/edit/{id}', [BuildersRiskController::class, 'edit'])->withoutMiddleware(['auth:sanctum']);
+Route::get('builders-risk/get/previousBuildersRiskInformation/{id}', [BuildersRiskController::class, 'getPreviousBuildersRiskInformation'])->withoutMiddleware(['auth:sanctum']);
 
 //route for business owners policy
 Route::post('business-owners-policy/store', [BusinessOwnersPolicyController::class, 'storeBusinessOwnersPolicy'])->withoutMiddleware(['auth:sanctum']);
 Route::put('business-owners-policy/update/{id}', [BusinessOwnersPolicyController::class, 'updateBusinessOwnersPolicy'])->withoutMiddleware(['auth:sanctum']);
+Route::get('business-owners-policy/edit/{id}', [BusinessOwnersPolicyController::class, 'edit'])->withoutMiddleware(['auth:sanctum']);
+Route::get('business-owners-policy/get/previousBusinessOwnersPolicyInformation/{id}', [BusinessOwnersPolicyController::class, 'getPreviousBusinessOwnersPolicyInformation'])->withoutMiddleware(['auth:sanctum']);
 
 //route for callback
 Route::post('callback/store', [CallBackController::class, 'store'])->withoutMiddleware(['auth:sanctum']);

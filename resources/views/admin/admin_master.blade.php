@@ -2,6 +2,12 @@
 
 <head>
 
+    <style>
+        body {
+            transform: scale(0.9) !;
+            transform-origin: 0 0;
+        }
+    </style>
 
     {{-- preloader --}}
     @include('layouts.preloader')
@@ -20,9 +26,9 @@
     <link href="{{ asset('backend/assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
 
     {{-- ladda spinner button --}}
-    <link href="https://msurguy.github.io/ladda-bootstrap/dist/ladda-themeless.min.css" rel="stylesheet">
-    <script src="https://msurguy.github.io/ladda-bootstrap/dist/spin.min.js"></script>
-    <script src="https://msurguy.github.io/ladda-bootstrap/dist/ladda.min.js"></script>
+    <link href="{{ asset('backend/assets/libs/ladda-bootstrap/dist/ladda-themeless.min.css') }}" rel="stylesheet">
+    <script src="{{ asset('backend/assets/libs/ladda-bootstrap/dist/spin.min.js') }}"></script>
+    <script src="{{ asset('backend/assets/libs/ladda-bootstrap/dist/ladda.min.js') }}"></script>
 
     @include('partials.vendor-scripts')
 
@@ -74,7 +80,7 @@
     {{-- <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script> --}}
 
     <script src="{{ asset('backend/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    {{-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> --}}
     <script src="{{ asset('backend/assets/libs/select2/js/select2.min.js') }}"></script>
 
     <!-- JAVASCRIPT -->

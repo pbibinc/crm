@@ -44,11 +44,11 @@ class BindingController extends Controller
             return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('policy_number', function($data){
-                if($data->status == 17 || $data->status == 18)
+                if($data->status == 17 || $data->status == 18 || $data->status == 24 || $data->status == 28)
                 {
                     $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
-                    $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
-                    $policy_number = '<a href="" id="'.$policyDetail->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind">'.$selectedQuote->quote_no.'</a>';
+                    $selectedQuote = SelectedQuote::find($data->selected_quote_id);
+                    $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind">'.$selectedQuote->quote_no.'</a>';
                 }else{
                     $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
                     $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind">'.$selectedQuote->quote_no.'</a>';
@@ -82,7 +82,7 @@ class BindingController extends Controller
                         break;
                     case 18:
                         $statusLabel = 'Resend Direct Renewals';
-                        $class = 'bg-danger';
+                        $class = 'bg-warning';
                         break;
                     case 6:
                         $statusLabel = 'Direct New';
@@ -90,7 +90,15 @@ class BindingController extends Controller
                         break;
                     case 15:
                         $statusLabel = 'Resend Direct New';
-                        $class = 'bg-danger';
+                        $class = 'bg-warning';
+                        break;
+                    case 24:
+                        $statusLabel = 'Rewrite/Recovery';
+                        $class = 'bg-warning';
+                        break;
+                    case 28:
+                        $statusLabel = 'Resend Rewrite/Recovery';
+                        $class = 'bg-warning';
                         break;
                     default:
                         $statusLabel = 'Unknown';
@@ -108,9 +116,9 @@ class BindingController extends Controller
     public function requestToBindInformation(Request $request)
     {
         if($request->type == 'renewal'){
-            $policyDetail = PolicyDetail::find($request->id);
-            $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
-            $product = QuotationProduct::find($policyDetail->quotation_product_id);
+
+            $product = QuotationProduct::find($request->id);
+            $selectedQuote = SelectedQuote::find($product->selected_quote_id);
 
         }else{
             $product = QuotationProduct::find($request->id);
@@ -150,23 +158,53 @@ class BindingController extends Controller
                 return $userProfile;
             })
             ->addColumn('policy_number', function($data){
-                $quotationComparison = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
-                $policyNumber = '<a href="/appointed-list/'.$data->QuoteInformation->QuoteLead->leads->id.'"  id="'.$data->id.'" >'.$quotationComparison->quote_no.'</a>';
-                return $policyNumber;
+                // $quotationComparison = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
+                // $policyNumber = '<a href="/appointed-list/'.$data->QuoteInformation->QuoteLead->leads->id.'"  id="'.$data->id.'" >'.$quotationComparison->quote_no.'</a>';
+
+                if($data->status == 23)
+                {
+                    $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
+                    $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+                    $policy_number = '<a href="" id="'.$policyDetail->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind">'.$selectedQuote->quote_no.'</a>';
+                }else{
+                    $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
+                    $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind">'.$selectedQuote->quote_no.'</a>';
+                }
+                return $policy_number;
 
             })
             ->addColumn('total_cost', function($data){
-                $quote_information = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
-                return $quote_information->full_payment;
+                if($data->status == 23)
+                {
+                    $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
+                    $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+                }else{
+                    $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
+                    // $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind">'.$selectedQuote->quote_no.'</a>';
+                }
+                return $selectedQuote->full_payment;
             })
             ->addColumn('effective_date', function($data){
-                $quote_information = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
-                return $quote_information->effective_date;
+                if($data->status == 23)
+                {
+                    $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
+                    $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+                }else{
+                    $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
+                    // $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind">'.$selectedQuote->quote_no.'</a>';
+                }
+                return $selectedQuote->effective_date;
             })
             ->addColumn('market', function($data){
-                $quote_information = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
-                $market = QuoationMarket::find($quote_information->quotation_market_id);
-                return $market->name;
+                if($data->status == 23)
+                {
+                    $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
+                    $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+                }else{
+                    $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
+                    // $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind">'.$selectedQuote->quote_no.'</a>';
+                }
+                return QuoationMarket::find($selectedQuote->quotation_market_id)->name;
             })
             ->rawColumns(['policy_number'])
             ->make(true);
@@ -226,6 +264,10 @@ class BindingController extends Controller
                     $policyDetails->status = 'renewal issued';
                     $quotationProduct->status = 8;
                     $quotationProduct->save();
+                }else if($quotationProduct->status == 26){
+                    $policyDetails->status = 'recovered policy issued';
+                    $quotationProduct->status = 8;
+                    $quotationProduct->save();
                 }else{
                     $policyDetails->status = 'issued';
                     $quotationProduct->status = 8;
@@ -281,10 +323,10 @@ class BindingController extends Controller
         return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('policy_number', function($data){
-            if($data->status == 19){
+            if($data->status == 19 || $data->status == 25){
                 $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
-                $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
-                $policy_number = '<a href="" id="'.$policyDetail->id.'" data-status="'.$data->status.'" name="viewButton" class="viewBindingButton" type="renewal">'.$selectedQuote->quote_no.'</a>';
+                $selectedQuote = SelectedQuote::find($data->selected_quote_id);
+                $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewBindingButton" type="renewal">'.$selectedQuote->quote_no.'</a>';
             }else{
                 $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
                 $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewBindingButton" type="new">'.$selectedQuote->quote_no.'</a>';
@@ -296,20 +338,62 @@ class BindingController extends Controller
             return $company_name;
         })
         ->addColumn('total_cost', function($data){
-            $quote_information = SelectedQuote::where('quotation_product_id', $data->id)->first();
+            $quote_information = SelectedQuote::find($data->selected_quote_id);
             return $quote_information->full_payment;
         })
         ->addColumn('requested_by', function($data) use($broker){
-            $requested_by = $broker->where('quote_product_id', $data->id)->first();
-            $userProfile = UserProfile::find($requested_by->user_profile_id)->fullAmericanName();
-            return $userProfile;
+            $userProfileFullName = '';
+            if ($data->status == 19) {
+                // Retrieve the policy detail based on quotation_product_id and status
+                $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)
+                                            ->where('status', 'Renewal Request To Bind')
+                                            ->first();
+
+                if ($policyDetail) {
+                    // Get the latest quoted renewal user profile
+                    $renewQuotedUserProfile = $policyDetail->quotedRenewalUserprofile()->latest()->first();
+
+                    if ($renewQuotedUserProfile) {
+                        // Get the American name of the latest quoted renewal user profile
+                        $userProfileFullName = $renewQuotedUserProfile->american_name;
+                    }
+                }
+            } else {
+                // Retrieve the broker based on quote_product_id
+                $requested_by = $broker->where('quote_product_id', $data->id)->first();
+
+                if ($requested_by) {
+                    // Get the user profile and then the full American name
+                    $userProfile = UserProfile::find($requested_by->user_profile_id);
+
+                    if ($userProfile) {
+                        $userProfileFullName = $userProfile->fullAmericanName();
+                    }
+                }
+            }
+            return $userProfileFullName;
         })
         ->addColumn('effective_date', function($data){
-            $quote_information = SelectedQuote::where('quotation_product_id', $data->id)->first();
+            $quote_information = SelectedQuote::find($data->selected_quote_id);
             return $quote_information->effective_date;
         })
         ->rawColumns(['policy_number'])
         ->make(true);
+    }
+
+    public function resendRTB(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+            $quotationProduct = QuotationProduct::find($request->id);
+            $quotationProduct->status = $request->status;
+            $quotationProduct->save();
+            DB::commit();
+            return response()->json(['success' => 'Resend RTB successfully']);
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+
     }
 
 }

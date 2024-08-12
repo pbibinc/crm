@@ -4,7 +4,6 @@
         <thead>
             <tr>
                 <th>File Name</th>
-                <th>Product</th>
                 <th>File</th>
                 <th>Date Attached</th>
                 <th>Action</th>
@@ -56,10 +55,6 @@
             columns: [{
                     data: 'basename',
                     name: 'basename'
-                },
-                {
-                    data: 'product',
-                    name: 'product'
                 },
                 {
                     data: 'filepath',

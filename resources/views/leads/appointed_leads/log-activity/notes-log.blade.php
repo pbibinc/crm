@@ -1,157 +1,297 @@
 <style>
-    .message-box {
-        max-width: 70%;
-        /* You can adjust this as per your requirements */
-        clear: both;
+    .ps-container {
+        position: relative;
     }
 
-    .message-box.sender {
-        margin-left: auto;
-        background-color: #DCF8C6;
-        /* Green */
-        color: black;
-        border-radius: 10px 0px 10px 10px !important;
+    .ps-container {
+        -ms-touch-action: auto;
+        touch-action: auto;
+        overflow: hidden !important;
+        -ms-overflow-style: none;
     }
 
-    .message-box.receiver {
-        background-color: #f1f1f1;
-        color: black;
-        padding: 10px;
-        border-radius: 0px 10px 10px 10px !important;
+    .media-chat {
+        padding-right: 64px !important;
+        margin-bottom: 0;
     }
 
-    .message-box.receiver.danger {
-        background-color: #f8d7da;
-        color: black;
-        padding: 10px;
-        border-radius: 0px 10px 10px 10px !important;
+    .media {
+        padding: -1px 12px;
+        -webkit-transition: background-color .2s linear !important;
+        transition: background-color .2s linear !important;
     }
 
-    .message-timestamp {
-        font-size: 0.8rem;
-        text-align: right;
+    .media .avatar {
+        flex-shrink: 0;
     }
 
-    .message-info {
-        font-size: 0.8rem;
-        margin-top: 5px;
+    .avatar {
+        position: relative;
+        display: inline-block;
+        width: 36px;
+        height: 36px;
+        line-height: 36px;
+        text-align: center;
+        border-radius: 100%;
+        background-color: #f5f6f7;
+        color: #8b95a5;
+        text-transform: uppercase;
     }
 
-    .sender-info {
-        text-align: right;
+    .media-chat .media-body {
+        -webkit-box-flex: initial;
+        flex: initial;
+        display: table;
     }
 
-    /* .scrollable {
-        overflow-y: auto;
-        max-height: 350px;
-    } */
+    .media-body {
+        min-width: 0;
+    }
 
-    .message-box.sender.danger {
-        margin-left: auto;
-        background-color: #f8d7da;
-        color: black;
-        border-radius: 10px 0px 10px 10px !important;
+    .media-chat .media-body p {
+        position: relative;
+        padding: 6px 8px;
+        margin: 4px 0;
+        background-color: #f5f6f7;
+        border-radius: 3px;
+        font-weight: 100;
+        color: #9b9b9b;
+    }
 
+    .media>* {
+        margin: 0 8px;
+    }
+
+    .media-chat .media-body p.meta {
+        background-color: transparent !important;
+        padding: 0;
+        opacity: .8;
+    }
+
+    .media-meta-day {
+        -webkit-box-pack: justify;
+        justify-content: space-between;
+        -webkit-box-align: center;
+        align-items: center;
+        margin-bottom: 0;
+        color: #8b95a5;
+        opacity: .8;
+        font-weight: 400;
+    }
+
+    .media-meta-day::before,
+    .media-meta-day::after {
+        content: '';
+        -webkit-box-flex: 1;
+        flex: 1 1;
+        border-top: 1px solid #ebebeb;
+    }
+
+    .media-meta-day::after {
+        margin-left: 16px;
+    }
+
+    .media-chat.media-chat-reverse {
+        padding-right: 12px;
+        padding-left: 680px;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: reverse;
+        flex-direction: row-reverse;
+    }
+
+
+    .media-chat.media-chat-reverse .media-body p {
+        float: right;
+        clear: right;
+        background-color: #48b0f7;
+        color: #fff;
+    }
+
+
+    .border-light {
+        border-color: #f1f2f3 !important;
+    }
+
+    .bt-1 {
+        border-top: 1px solid #ebebeb !important;
+    }
+
+    .publisher {
+        position: relative;
+        display: -webkit-box;
+        display: flex;
+        -webkit-box-align: center;
+        align-items: center;
+        padding: 12px 20px;
+        background-color: #f9fafb;
+    }
+
+    .publisher>*:first-child {
+        margin-left: 0;
+    }
+
+    .publisher>* {
+        margin: 0 8px;
+    }
+
+    .publisher-input {
+        -webkit-box-flex: 1;
+        flex-grow: 1;
+        border: none;
+        outline: none !important;
+        background-color: transparent;
+    }
+
+    button,
+    input,
+    optgroup,
+    select,
+    textarea {
+        font-family: Roboto, sans-serif;
+        font-weight: 300;
+    }
+
+    .publisher-btn {
+        background-color: transparent;
+        border: none;
+        color: #8b95a5;
+        font-size: 16px;
+        cursor: pointer;
+        overflow: -moz-hidden-unscrollable;
+        -webkit-transition: .2s linear;
+        transition: .2s linear;
+    }
+
+    .file-group {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .file-group input[type="file"] {
+        position: absolute;
+        opacity: 0;
+        z-index: -1;
+        width: 20px;
+    }
+
+    .text-info {
+        color: #48b0f7 !important;
     }
 </style>
+
 <div id="notesDiv">
     <div class="card">
         <div class="card-body">
             @php
                 $user = Auth::user();
-                $id = $user->id;
-                $adminData = App\Models\User::find($id);
                 $userProfileId = $user->userProfile->id;
-                $users = App\Models\User::get();
                 $userProfiles = App\Models\UserProfile::get();
-
             @endphp
             <div class="row">
                 <div class="container mt-5 d-flex flex-column">
-                    <div class="scrollable" style="height: 500px; overflow-y: auto;">
-                        @foreach ($generalInformation->lead->notes as $index => $note)
-                            @php
-                                $class = '';
-                                if ($note->status == 'declined-make-payment') {
-                                    $class = 'danger';
-                                } elseif ($note->status == 'Declined Binding') {
-                                    $class = 'danger';
-                                } elseif ($note->status == 'yet-another-status') {
-                                    $class = 'yet-another-class';
-                                }
-                            @endphp
-                            @if ($userProfileId == $note->userProfile->id)
-                                <!-- Sender's Message -->
-                                <div class="message-box sender p-3 rounded {{ $class }}">
-                                    <div> <strong>{{ $note->title }}</strong></div>
-                                    <div class="message-content">
-                                        {{ $note->description }}
-                                    </div>
+                    <div class="ps-container ps-theme-default ps-active-y" id="chat-content"
+                        style="overflow-y: scroll !important; height:400px !important; ">
+
+                        @foreach ($generalInformation->lead->notes as $note)
+                            <div
+                                class="media media-chat {{ $userProfileId == $note->userProfile->id ? 'media-chat-reverse' : 'media-chat ?>' }} d-flex">
+                                @if ($userProfileId != $note->userProfile->id)
+                                    <img class="avatar" src="{{ asset($note->userProfile->media->filepath) }}"
+                                        alt="...">
+                                @endif
+
+                                <div class="media-body">
+                                    <p>
+                                        <strong class="mb-2">{{ $note->title }}</strong><br>
+                                        <span>{{ $note->description }}</span><br>
+                                        <small class="text-muted" style="color: #fff !important;"><i
+                                                class="fa fa-clock-o"></i>
+                                            {{ date('M d, Y H:i', strtotime($note->created_at)) }}</small>
+                                    </p>
                                 </div>
-                                <div class="message-info sender-info">
-                                    <p class="note-date font-2 text-muted">sent by:
-                                        {{ $note->userProfile->fullAmericanName() }}
-                                        {{ date('M d, Y', strtotime($note->created_at)) }}
-                                </div>
-                            @else
-                                <!-- Receiver's Message -->
-                                <div class="message-box receiver p-3 rounded {{ $class }}">
-                                    <div> <strong>{{ $note->title }}</strong></div>
-                                    <div class="message-content">
-                                        {{ $note->description }}
-                                    </div>
-                                </div>
-                                <div class="message-info" style="margin-left: 10px">
-                                    <p class="note-date font-2 text-muted">sent by:
-                                        {{ $note->userProfile->fullAmericanName() }}
-                                        {{ date('M d, Y', strtotime($note->created_at)) }}
-                                </div>
-                            @endif
+                            </div>
                         @endforeach
+
+
+                        <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 0px;">
+                            <div class="ps-scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div>
+                        </div>
+                        <div class="ps-scrollbar-y-rail" style="top: 0px; height: 0px; right: 2px;">
+                            <div class="ps-scrollbar-y" tabindex="0" style="top: 0px; height: 2px;"></div>
+                        </div>
                     </div>
+
+
+                    <div class="mb-2">
+                        <label for="userToNotifyDropdown" class="form-label">User To Notify</label>
+                        <select class="form-select" name="userToNotifyDropdown[]" id="userToNotifyDropdown"
+                            data-placeholder="Choose..." multiple="multiple" required>
+                            @foreach ($userProfiles as $userProfile)
+                                <option value="{{ $userProfile->user_id }}">{{ $userProfile->fullAmericanName() }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <div class="invalid-feedback" id="userToNotifyDropdownError"></div>
+                    </div>
+
+                    <div class="publisher bt-1 border-light">
+
+                        <img class="avatar avatar-xs"
+                            src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="..."
+                            id="toggleSelect">
+                        <div class="row">
+                            <input class="publisher-input" type="text" placeholder="Title" id="noteTitle">
+                        </div>
+
+                        <input class="publisher-input" type="text" placeholder="Write something"
+                            id="noteDescription">
+
+                        <button class="publisher-btn text-info" href="#" data-abc="true"><i
+                                class="fa fa-paper-plane" id="logNote"></i></button>
+                    </div>
+
+
+
                 </div>
-            </div>
-            <div class="row">
-                <hr>
-            </div>
-            <div class="row mb-3">
-                <label for="notes" class="form-label">Title:</label>
-                <div>
-                    <input type="text" class="form-control" id="noteTitle" placeholder="Title" required>
-                    <div class="invalid-feedback" id="noteTitleError"></div>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label for="userToNotifyDropdown" class="form-label">User To Notify</label>
-                <div>
-                    <select class="form-select" name="userToNotifyDropdown[]" id="userToNotifyDropdown"
-                        data-placeholder="Choosee..." multiple="multiple" required>
-                        @foreach ($userProfiles as $userProfile)
-                            <option value="{{ $userProfile->user_id }}">{{ $userProfile->fullAmericanName() }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <div class="invalid-feedback" id="userToNotifyDropdownError"></div>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label for="notesDescription">Description:</label>
-                <div>
-                    <textarea required="" class="form-control" rows="5" placeholder="Type a note..." id="noteDescription" required></textarea>
-                    <div class="invalid-feedback" id="noteDescriptionError"></div>
-                </div>
-            </div>
-            <div>
-                <button type="button" class="btn btn-outline-primary waves-effect waves-light" id="logNote"><i
-                        class="ri-send-plane-fill"></i>Log Note</button>
             </div>
         </div>
+        {{-- <div class="row" id="chatDiv">
+            <div class="mb-2">
+                <label for="notes" class="form-label">Title:</label>
+                <input type="text" class="form-control" id="noteTitle" placeholder="Title" required>
+                <div class="invalid-feedback" id="noteTitleError"></div>
+            </div>
+            <div class="mb-2">
+                <label for="userToNotifyDropdown" class="form-label">User To Notify</label>
+                <select class="form-select" name="userToNotifyDropdown[]" id="userToNotifyDropdown"
+                    data-placeholder="Choose..." multiple="multiple" required>
+                    @foreach ($userProfiles as $userProfile)
+                        <option value="{{ $userProfile->user_id }}">{{ $userProfile->fullAmericanName() }}</option>
+                    @endforeach
+                </select>
+                <div class="invalid-feedback" id="userToNotifyDropdownError"></div>
+            </div>
+            <div class="mb-2">
+                <label for="notesDescription">Description:</label>
+                <textarea required class="form-control" rows="4" placeholder="Type a note..." id="noteDescription"></textarea>
+                <div class="invalid-feedback" id="noteDescriptionError"></div>
+            </div>
+            <button type="button" class="btn btn-outline-primary waves-effect waves-light" id="logNote"><i
+                    class="ri-send-plane-fill"></i>Log Note</button>
+        </div> --}}
+
     </div>
 </div>
 
+
 <script>
     $(document).ready(function() {
-        $('.scrollable').scrollTop($('.scrollable')[0].scrollHeight);
+
+        $('#userToNotifyDropdown').select2({
+            placeholder: "Select User",
+            allowClear: true
+        });
+
         $('#logNote').on('click', function() {
             var noteTitle = $('#noteTitle').val();
             var noteDescription = $('#noteDescription').val();
@@ -171,16 +311,24 @@
                     userToNotify: userToNotify
                 },
                 success: function(data) {
-                    location.reload();
+                    var newNoteHtml = `<div class="message-box sender p-2 rounded">
+                                        <div><strong>${noteTitle}</strong></div>
+                                        <div class="message-content">${noteDescription}</div>
+                                       </div>
+                                       <div class="message-info">
+                                        <p class="note-date font-2 text-muted">sent by: You just now</p>
+                                       </div>`;
+                    $('#notesContainer').append(newNoteHtml);
+                    $('#noteTitle').val('');
+                    $('#noteDescription').val('');
+                    $('#userToNotifyDropdown').val(null).trigger('change');
+                    scrollToBottom();
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     if (jqXHR.status == 422) {
                         const errors = jqXHR.responseJSON.errors;
-                        // Remove any existing errors
                         $('.is-invalid').removeClass('is-invalid');
                         $('.invalid-feedback').empty();
-
-                        // Loop through and display error messages
                         for (let field in errors) {
                             const errorMessage = errors[field];
                             $(`#${field}`).addClass('is-invalid');
@@ -191,9 +339,6 @@
             });
         });
 
-        $('#userToNotifyDropdown').select2({
-            placeholder: "Select User",
-            allowClear: true
-        });
+
     });
 </script>

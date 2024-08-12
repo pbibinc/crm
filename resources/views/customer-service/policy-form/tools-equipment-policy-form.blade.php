@@ -23,7 +23,8 @@
                     <div class="row mb-2">
                         <div class="col-6">
                             <label class="form-label" for="toolsEquipmentMarketInput">Market</label>
-                            <select name="toolsEquipmentMarketInput" id="toolsEquipmentMarketInput" class="form-select">
+                            <select name="toolsEquipmentMarketInput" id="toolsEquipmentMarketInput" class="form-select"
+                                required>
                                 <option value="">Select Market</option>
                                 @foreach ($markets as $market)
                                     <option value="{{ $market->name }}">{{ $market->name }}</option>
@@ -33,7 +34,7 @@
                         <div class="col-6">
                             <label class="form-label" for="toolsEquipmentCarrierInput">Carrier</label>
                             <select name="toolsEquipmentCarrierInput" id="toolsEquipmentCarrierInput"
-                                class="form-select">
+                                class="form-select" required>
                                 <option value="">Select Carrier</option>
                                 @foreach ($carriers as $carrier)
                                     <option value="{{ $carrier->name }}">{{ $carrier->name }}</option>
@@ -46,7 +47,7 @@
                             <div class="form-group">
                                 <label class="form-label" for="toolsEquipmentPaymentTermInput">Payment Term</label>
                                 <select class="form-select" aria-label="Default select example"
-                                    id="toolsEquipmentPaymentTermInput" name="toolsEquipmentPaymentTermInput">
+                                    id="toolsEquipmentPaymentTermInput" name="toolsEquipmentPaymentTermInput" required>
                                     <option selected="">Open this select menu</option>
                                     <option value="PIF">PIF</option>
                                     <option value="Low down">Low down</option>
@@ -105,7 +106,7 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-12">
-                            <input type="file" name="file " id="file"
+                            <input type="file" name="file" id="file"
                                 class="form-control toolsEquipmentPolicyFormFile">
                         </div>
                     </div>

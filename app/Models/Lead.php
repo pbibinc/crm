@@ -53,6 +53,13 @@ class Lead extends Model
         return $this->hasOne(ExpirationProduct::class, 'lead_id')->where('product', 7);
     }
 
+    public function getProducts()
+    {
+        $quoteId = $this->quoteLead->QuoteInformation->id;
+        $products = QuotationProduct::where('quote_information_id', $quoteId)->pluck('product');
+        return $products ? $products->toArray() : [];
+    }
+
     public function leadHistories()
     {
         return $this->hasMany(LeadHistory::class, 'lead_id');
@@ -112,15 +119,20 @@ class Lead extends Model
 
     public static function getAppointedLeadsByUserProfileId($userProfileId)
     {
-        $leads = self::where('disposition_id', 1)
-        ->wherehas('userProfile', function($query) use ($userProfileId){
+        // $leads = self::where('disposition_id', 1)
+        // ->wherehas('userProfile', function($query) use ($userProfileId){
+        //     $query->where('user_id', $userProfileId);
+        // })->with('generalInformation')->select('id', 'company_name', 'tel_num', 'class_code', 'state_abbr', 'created_at')->orderBy('id');
+        // if($leads){
+        //     return $leads;
+        // }
+        // return null;
+        return self::where('disposition_id', 1)
+        ->whereHas('userProfile', function($query) use ($userProfileId) {
             $query->where('user_id', $userProfileId);
-        })->select('id', 'company_name', 'tel_num', 'class_code', 'state_abbr')->orderBy('id');
-
-        if($leads){
-            return $leads;
-        }
-        return null;
+        })
+        ->join('general_information_table', 'general_information_table.leads_id', '=', 'leads.id')
+        ->select('leads.id', 'company_name', 'tel_num', 'class_code', 'state_abbr', 'leads.created_at', 'general_information_table.created_at as general_created_at')->orderBy('general_created_at', 'desc');
     }
 
     public static function getLeads($id)
@@ -193,5 +205,10 @@ class Lead extends Model
 
         // Debugging
         return $callBack;
+    }
+
+    public function getLeadMedias()
+    {
+        return $this->belongsToMany(Metadata::class, 'lead_media_table', 'lead_id', 'metadata_id');
     }
 }

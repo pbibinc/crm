@@ -3,7 +3,7 @@
 <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script>
 
 {{-- ladda spinner button --}}
-<link href="https://msurguy.github.io/ladda-bootstrap/dist/ladda-themeless.min.css" rel="stylesheet">
+{{-- <link href="https://msurguy.github.io/ladda-bootstrap/dist/ladda-themeless.min.css" rel="stylesheet"> --}}
 
 <!-- Bootstrap Css -->
 <link href="{{ asset('backend/assets/css/bootstrap.min.css') }}" id="bootstrap-style" rel="stylesheet" type="text/css" />

@@ -5,12 +5,13 @@ import axiosClient from "../api/axios.client";
 
 const GeneralInformationData = () => {
     const [generalInformation, setGeneralInformation] = useState(null);
+    const { lead } = LeadDetails();
     const getLeadData = JSON.parse(sessionStorage.getItem("lead"));
     useEffect(() => {
         const fetchGenerealInformation = async () => {
             try {
                 const response = await axiosClient.get(
-                    `/api/general-information-data/edit/${getLeadData?.data?.id}`
+                    `/api/general-information-data/edit/${lead?.data?.id}`
                 );
 
                 setGeneralInformation(response);
@@ -19,8 +20,7 @@ const GeneralInformationData = () => {
             }
         };
         fetchGenerealInformation();
-    }, [getLeadData?.data?.id]);
-    console.log(generalInformation);
+    }, [lead?.data?.id]);
     return { generalInformation };
 };
 

@@ -19,6 +19,7 @@
 <script>
     $(document).ready(function() {
         var token = '{{ csrf_token() }}';
+
         $('.bindingProductTable').DataTable({
             processing: true,
             serverSide: true,
@@ -170,6 +171,7 @@
                         .product.product);
                     $('#userToNotify').val(data.userId);
                     $('#productStatus').val(productStatus);
+                    $('#bindingProductStatus').val(productStatus);
                     $('#dataModal').modal('show');
                 },
                 error: function(data) {

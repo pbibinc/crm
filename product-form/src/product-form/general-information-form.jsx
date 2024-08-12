@@ -22,21 +22,20 @@ import SaveAsIcon from "@mui/icons-material/SaveAs";
 console;
 import SaveIcon from "@mui/icons-material/Save";
 import { ContextData } from "../contexts/context-data-provider";
-import { NumericFormat } from "react-number-format";
 import Swal from "sweetalert2";
 import axiosClient from "../api/axios.client";
 import Input from "../element/input-element";
 import NumericFormatInput from "../element/numeric-format";
 import "../style/general-information.css";
+import { useGeneralInformation } from "../contexts/general-information-context";
+// import GeneralInformationDataProvider from "../providers/general-information-provider";
+
 const GeneralInformationForm = () => {
-    const { lead, zipcodes, cities, zipCity, generalInformation } =
-        useContext(ContextData);
+    const { lead, zipcodes, cities, zipCity } = useContext(ContextData);
+    const { generalInformation } = useGeneralInformation();
     const methods = useForm();
     const getStoredGeneralInformation = () => {
         let storedData = sessionStorage.getItem("generalInformationStoredData");
-        if (storedData === null) {
-            storedData = localStorage.getItem("generalInformationStoredData");
-        }
         const storedDataJson = JSON.parse(storedData || "{}");
         return generalInformation
             ? generalInformation.data.data
@@ -260,8 +259,6 @@ const GeneralInformationForm = () => {
             label: city,
         };
     });
-    console.log(subOut);
-
     const onSubmit = (data) => {
         const generalInfomrationFormData = {
             firstname: firstName,

@@ -45,8 +45,8 @@
                     name: 'company_name'
                 },
                 {
-                    data: 'total_cost',
-                    name: 'total_cost'
+                    data: 'policy_total_cost',
+                    name: 'policy_total_cost'
                 },
                 {
                     data: 'effective_date',

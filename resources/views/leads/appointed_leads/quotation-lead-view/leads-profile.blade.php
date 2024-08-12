@@ -104,10 +104,14 @@
                     </div>
                 </div>
                 <div class="col-8">
-                    <div class="tab-content p-3 text-muted">
+                    <div class="tab-content text-muted">
                         <div class="tab-pane fade show active" id="summary" role="tabpanel">
                             @include('leads.appointed_leads.apptaker-leads-view.profile-summary', [
                                 'leads' => $lead,
+                                'leadId' => $lead->id,
+                                'carriers' => $carriers,
+                                'markets' => $markets,
+                                'templates' => $templates,
                             ])
                         </div>
                         <div class="tab-pane fade show" id="product" role="tabpanel">

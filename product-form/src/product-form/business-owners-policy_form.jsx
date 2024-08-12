@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Row from "../element/row-element";
 import Column from "../element/column-element";
 import Label from "../element/label-element";
@@ -15,20 +15,21 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import axiosClient from "../api/axios.client";
 import "../style/general-information.css";
+import { ContextData } from "../contexts/context-data-provider";
+import { useBusinessOwnersPolicy } from "../contexts/business-owners-policy-context";
 const BusinessOwnersPolicyForm = () => {
+    const { businessOwnersPolicyData } = useBusinessOwnersPolicy();
     //setting for getting lead data from session stroage
     const storedLeads = JSON.parse(sessionStorage.getItem("lead"));
 
     //setting for getting the businessOwnersPolicyData from session storage
     const storedBusinessOwnersPolicyData = () => {
-        const businessOwnersPolicyData = JSON.parse(
-            sessionStorage.getItem("BusinessOwnersPolicyData")
-        );
-        if (businessOwnersPolicyData) {
-            return businessOwnersPolicyData;
-        } else {
-            return [];
-        }
+        const businessOwnersStoredData =
+            JSON.parse(sessionStorage.getItem("BusinessOwnersPolicyData")) ||
+            {};
+        return businessOwnersPolicyData
+            ? businessOwnersPolicyData.data
+            : businessOwnersStoredData;
     };
 
     // setting for most of the variables
@@ -226,6 +227,7 @@ const BusinessOwnersPolicyForm = () => {
         expirationOfIM,
         priorCarrier,
         amountOfBusinessOwnersPolicy,
+        userProfileId: storedLeads?.data?.userProfileId,
 
         isHaveLossChecked,
         dateOfLoss: dateOfLoss,
@@ -233,7 +235,6 @@ const BusinessOwnersPolicyForm = () => {
 
         leadId: storedLeads?.data?.id,
     };
-    console.log(BusinessOwnersPolicyFormData);
 
     useEffect(() => {
         const BusinessOwnersPolicyData = {

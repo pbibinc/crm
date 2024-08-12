@@ -26,7 +26,10 @@ use App\Http\Controllers\AssignLeadController;
 use App\Http\Controllers\AppTakerLeadsController;
 use App\Http\Controllers\AssignAgentToBrokerController;
 use App\Http\Controllers\AssignAppointedLeadController;
+use App\Http\Controllers\AssignForRewritePolicyController;
 use App\Http\Controllers\AssignQuotedRenewalPolicyController;
+use App\Http\Controllers\AuditInformationController;
+use App\Http\Controllers\AuditRequiredFileController;
 use App\Http\Controllers\BindingController;
 use App\Http\Controllers\BindingDocsController;
 use App\Http\Controllers\BoundController;
@@ -35,7 +38,12 @@ use App\Http\Controllers\BrokerHandleController;
 use App\Http\Controllers\BuildersRiskPolicyDetailsController;
 use App\Http\Controllers\BussinessOwnersPolicyDetailsController;
 use App\Http\Controllers\CallBackController;
+use App\Http\Controllers\CancellationController;
+use App\Http\Controllers\CancellationEndorsementController;
 use App\Http\Controllers\CancellationReportController;
+use App\Http\Controllers\CancelledPolicyController;
+use App\Http\Controllers\CancelledPolicyForRecall as ControllersCancelledPolicyForRecall;
+use App\Http\Controllers\CancelledPolicyForRecallController;
 use App\Http\Controllers\CommercialAutoPolicyController;
 use App\Http\Controllers\DepartmentListController;
 use App\Http\Controllers\DashboardControllerNew;
@@ -48,6 +56,8 @@ use App\Http\Controllers\ExcessLiabilityInsurancePolicyController;
 use App\Http\Controllers\FinanceAgreementPolicyList;
 use App\Http\Controllers\FinancingCompanyController;
 use App\Http\Controllers\FinancingController;
+use App\Http\Controllers\ForRewriteMakePaymentController;
+use App\Http\Controllers\ForRewriteQuotationController;
 use App\Http\Controllers\InsurerController;
 use App\Http\Controllers\IntentController;
 use App\Http\Controllers\MarketingTemplateController;
@@ -67,11 +77,17 @@ use App\Http\Controllers\QuotedController;
 use App\Http\Controllers\RenewalController;
 use App\Http\Controllers\RenewalPolicyController;
 use App\Http\Controllers\RenewalQuoteController;
+use App\Http\Controllers\RequestForCancellationController;
+use App\Http\Controllers\RewriteBindingController;
+use App\Http\Controllers\RewritePolicyController;
+use App\Http\Controllers\ScrubbedDncController;
 use App\Http\Controllers\SelectedQuoteController;
 use App\Http\Controllers\ToolsEquipmentPolicyController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\WebsiteController;
 use App\Http\Controllers\WorkersCompPolicyController;
+use App\Models\CancellationEndorsement;
+use App\Models\CancelledPolicyForRecall;
 use App\Models\FinancingAgreement;
 use App\Models\PricingBreakdown;
 use Faker\Provider\ar_EG\Payment;
@@ -128,6 +144,8 @@ Route::middleware(['auth'])->group(function (){
         Route::get('/accounting-payable', [PaymentController::class, 'index'])->name('accounting-payable');
         Route::post('/save-payment-information', [PaymentController::class, 'storePaymentInformation'])->name('save-payment-information');
         Route::get('/get-payment-information', [PaymentController::class, 'getPaymentInformation'])->name('get-payment-information');
+        Route::post('/declined-payment', [PaymentController::class, 'declinedPayment'])->name('declined-payment');
+        Route::post('/resend-payment-information', [PaymentController::class, 'resendPaymentInformation'])->name('resend-payment-information');
 
         //route for payment charged
         Route::post('/store-payment-charged', [PaymentChargedController::class, 'store'])->name('payment-charged.store');
@@ -144,8 +162,6 @@ Route::middleware(['auth'])->group(function (){
     //general information route module
     route::resource('general-information', GeneralInformationController::class);
 
-
-
     //route for file uploading functionalities
     Route::post('/file-upload', [UploadController::class, 'store'])->name('file-upload');
     Route::post('/delete-quotation-file', [UploadController::class, 'deleteQuotationFile'])->name('delete-quotation-file');
@@ -155,6 +171,7 @@ Route::middleware(['auth'])->group(function (){
       Route::get('leads', [LeadController::class, 'index'])->name('leads');
       Route::get('leads/{leads}/edit', [LeadController::class, 'edit'])->name('leads.edit');
       Route::put('leads/{leads}/update', [LeadController::class, 'update'])->name('leads.update');
+      Route::post('leads/{leads}/storeAdditonalCompany', [LeadController::class, 'storeAdditionalCompany'])->name('leads.storeAdditionalCompany');
 
       Route::get('leads-export', [LeadController::class, 'export'])->name('leads.export');
       Route::get('check-export', [LeadController::class, 'checkExport'])->name('check-export');
@@ -186,11 +203,71 @@ Route::middleware(['auth'])->group(function (){
       Route::resource('pricing-breakdown', PricingBreakdownController::class);
 
       //route for cancellation report
-      Route::prefix('canncellation')->group(function(){
+      Route::prefix('cancellation')->group(function(){
+        //cancellation report controller
         Route::resource('cancellation-report', CancellationReportController::class);
+
+        //intent
         Route::resource('intent', IntentController::class);
         Route::post('intent/get-intent-list', [IntentController::class, 'getIntentList'])->name('intent.get-intent-list');
+
+        //cancellation
+        Route::resource('primary-cancellation', CancellationController::class);
+        Route::post('/get-request-by-customer-cancellation-list', [CancellationController::class, 'getRequestByCustomerCancellationList'])->name('get-request-by-customer-cancellation-list');
+        Route::post('/get-request-for-cancellation-list', [CancellationController::class, 'getRequestForCancellationList'])->name('get-request-for-cancellation-list');
+        Route::post('/get-request-for-approval-data', [CancellationController::class, 'getRequestForApprovalData'])->name('get-request-for-approval-data');
+
+        //cancellation endorsementphp art
+        Route::resource('cancellation-endorsement', CancellationEndorsementController::class);
+
+        //route for cancellation request
+        Route::resource('request-cancellation', RequestForCancellationController::class);
+        Route::post('request-pending-cancellation', [RequestForCancellationController::class, 'pendingCancellation'])->name('request-pending-cancellation');
+
+
+        //rewrite policy controller
+        Route::resource('rewrite-policy', RewritePolicyController::class);
+        Route::post('rewrite-policy/get-subject-for-rewrite-list', [RewritePolicyController::class, 'getSubjectForRewriteList'])->name('rewrite-policy.get-subject-for-rewrite-list');
+        Route::post('rewrite-policy/get-for-rewrite-policy', [RewritePolicyController::class, 'getForRewritePolicy'])->name('rewrite-policy.get-for-rewrite-policy');
+        Route::post('handled-rewrite-policy', [RewritePolicyController::class, 'handledPolicy'])->name('handled-rewrite-policy');
+
+        //cancelled policy
+        Route::resource('cancelled-policy', CancelledPolicyController::class);
+        Route::post('cancelled-policy/get-cancelled-policy-list', [CancelledPolicyController::class, 'cancelledPolicyList'])->name('cancelled-policy.get-cancelled-policy-list');
+        Route::post('cancelled-policy/get-policy-approved-for-cancellation', [CancelledPolicyController::class, 'getPolicyApprovedForCancellation'])->name('cancelled-policy.get-policy-approved-for-cancellation');
+        Route::post('cancellation-policy/save-cancelled-policy', [CancelledPolicyController::class, 'saveCancelledPolicy'])->name('cancellation-policy.save-cancelled-policy');
+        Route::post('cancellation-policy/get-cancelled-policy', [CancelledPolicyController::class, 'getCancelledPolicy'])->name('cancellation-policy.get-cancelled-policy');
+        Route::post('get-first-touched-policy-data', [CancelledPolicyController::class, 'firstTouchCancelledPolicy'])->name('get-first-touched-policy-data');
+        Route::post('get-second-touched-policy-data', [CancelledPolicyController::class, 'secondTouchCancelledPolicy'])->name('get-second-touched-policy-data');
+        Route::post('get-touched-policies', [CancelledPolicyController::class, 'getTouchedPolicies'])->name('get-touched-policies');
+
+        //asssign for rewrite policy
+        Route::resource('assign-for-rewrite-policy', AssignForRewritePolicyController::class);
+        Route::post('get-user-profile-cancelled-policy',[AssignForRewritePolicyController::class, 'getuserProfileAndCancelledPolicy'])->name('get-user-profile-cancelled-policy');
+
+        //for recall cancelled policy
+        Route::resource('cancelled-policy-for-recall', CancelledPolicyForRecallController::class);
+        Route::post('get-cancelled-policy-for-recall-initial-data', [CancelledPolicyForRecallController::class, 'getCancelledPolicyForRecallIntialData'])->name('get-cancelled-policy-for-recall-initial-data');
+        Route::post('change-status-for-cancelled-policy-recall', [CancelledPolicyForRecallController::class, 'changeStatusForCancelledPolicyRecall'])->name('change-status-for-cancelled-policy-recall');
+
+
+        //quotation for rewrite policy
+        Route::resource('for-rewrite-quotation', ForRewriteQuotationController::class);
+        Route::post('get-for-rewrite-quotation', [ForRewriteQuotationController::class, 'getForRewriteQuotation'])->name('get-for-rewrite-quotation');
+        Route::get('/get-for-rewrite-product-lead-view/{productId}', [ForRewriteQuotationController::class, 'rewriteProfileView'])->name('get-for-rewrite-product-lead-view');
+
+
+        //rewrite make payment
+        Route::resource('for-rewrite-make-payment', ForRewriteMakePaymentController::class);
+        Route::post('get-for-rewrite-make-payment', [ForRewriteMakePaymentController::class, 'getForRewriteMakePayment'])->name('get-for-rewrite-make-payment');
+
+        //rewrite binding
+        Route::resource('rewrite-binding-policy', RewriteBindingController::class);
+        Route::post('get-rewrite-binding-policy', [RewriteBindingController::class, 'getRewriteBindingPolicy'])->name('get-rewrite-binding-policy');
       });
+
+      Route::resource('scrubbed-dnc', ScrubbedDncController::class);
+      Route::post('scrubbed-dnc-store-reques-for-dnc', [ScrubbedDncController::class, 'requestForDnc'])->name('scrubbed-dnc-store-request-for-dnc');
 
 
         //route for assigning leads
@@ -234,6 +311,8 @@ Route::middleware(['auth'])->group(function (){
          Route::get('/appointed-leads', [QuotationController::class, 'appointedLeadsView'])->name('appointed-leads');
          Route::post('/lead-profile', [QuotationController::class, 'leadProfile'])->name('lead-profile');
          Route::get('/lead-profile-view/{productId}', [QuotationController::class, 'leadProfileView'])->name('lead-profile-view');
+
+         Route::get('/sync-selected-quote_id', [QuotationController::class, 'syncSelectedQuoteId'])->name('sync-selected-quote_id');
 
          Route::post('/save-quotation-product', [QuotationController::class, 'saveQuotationProduct'])->name('save-quotation-product');
          Route::get('/get-comparison-data', [QuotationController::class, 'getComparisonData'])->name('get-comparison-data');
@@ -336,6 +415,7 @@ Route::middleware(['auth'])->group(function (){
             Route::post('binding/request-to-bind-information', [BindingController::class, 'requestToBindInformation'])->withoutMiddleware(['auth:sanctum'])->name('request-to-bind-information');
             Route::post('/binding/incomplete-binding-list', [BindingController::class, 'incompleteBindingList'])->withoutMiddleware(['auth:sanctum'])->name('incomplete-binding-list');
             Route::post('/binding-view-list', [BindingController::class, 'bindingViewList'])->name('binding-view-list');
+            Route::post('/resend-rtb', [BindingController::class, 'resendRtb'])->name('resend-rtb');
 
             Route::post('/bound/list', [BoundController::class, 'index'])->name('bound-list');
             Route::post('/bound/get-bound-information', [BoundController::class, 'getBoundInformation'])->name('get-bound-information');
@@ -388,6 +468,7 @@ Route::middleware(['auth'])->group(function (){
             Route::post('/client-policy-list', [PoliciesController::class, 'getClienPolicyList'])->name('client-policy-list');
             Route::post('/get-policy-information', [PoliciesController::class, 'getPolicyInformation'])->name('get-policy-information');
             Route::post('/update-file-policy', [PoliciesController::class, 'updatePolicyFile'])->name('update-file-policy');
+            Route::post('/change-policy-status', [PoliciesController::class, 'changePolicyStatus'])->name('change-policy-status');
 
             //routes for bound
             Route::post('/save-bound-information', [BoundController::class, 'saveBoundInformation'])->name('save-bound-information');
@@ -397,6 +478,7 @@ Route::middleware(['auth'])->group(function (){
             Route::get('/binding-docs', [BindingDocsController::class, 'index'])->name('binding-docs');
             Route::post('/upload-file-binding-docs', [BindingDocsController::class, 'uploadFile'])->name('upload-file-binding-docs');
             Route::post('/delete-binding-docs', [BindingDocsController::class, 'deleteBindingDocs'])->name('delete-binding-docs');
+            Route::post('/get-binding-docs', [BindingDocsController::class, 'getMedia'])->name('get-binding-docs');
 
             //route financing
             Route::prefix('financing')->group(function(){
@@ -427,14 +509,23 @@ Route::middleware(['auth'])->group(function (){
                 Route::post('/renewal/get-renewal-for-quote', [RenewalQuoteController::class, 'getForQuoteRenewal'])->name('renewal.get-renewal-for-quote');
                 Route::post('/renewal/get-quoted-renewal', [RenewalQuoteController::class, 'getQuotedRenewal'])->name('renewal.get-quoted-renewal');
                 Route::post('/renewal-handled-policy', [RenewalQuoteController::class, 'renewalHandledPolicy'])->name('renewal-handled-policy');
+                Route::post('/renewal-quote/edit-renewal-quote', [RenewalQuoteController::class, 'editRenewalQuote'])->name('renewal-quote.edit-renewal-quote');
 
 
+            });
+
+            //route for audit
+            Route::prefix('audit')->group(function(){
+                Route::resource('/audit', AuditInformationController::class);
+                Route::post('/get-audit-information-table', [AuditInformationController::class, 'getAuditInformationTable'])->name('get-audit-information-table');
+                Route::resource('/required-audit-file', AuditRequiredFileController::class);
             });
 
         });
 
         Route::prefix('product')->group(function(){
             Route::post('/save-media', [ProductController::class, 'saveMedia'])->name('product-save-media');
+            Route::post('/get-media', [ProductController::class, 'getRTBMedia'])->name('product-get-rtb-media');
         });
 
         //email for quotation leads
@@ -475,6 +566,12 @@ Route::middleware(['auth'])->group(function (){
          Route::post('/sic/update', [SICController::class, 'update'])->name('sic.update');
 
          Route::post('/search-lead', [LeadController::class, 'searchLead'])->name('search-lead');
+         Route::post('/search-lead-by-search', [LeadController::class, 'getLeadDataBySearch'])->name('get-leads-by-search-data');
+
+         Route::post('/store-request-for-dnc', [LeadController::class, 'requestForDnc'])->name('store-request-for-dnc');
+         Route::get('/dnc/{id}/edit', [LeadController::class, 'editDnc'])->name('edit-dnc');
+         Route::post('/dnc/update', [LeadController::class, 'updateDnc'])->name('update-dnc');
+         Route::post('/dnc/delete', [LeadController::class, 'deleteDnc'])->name('delete-dnc');
         });
 
         Route::prefix('non-callback')->group(function(){

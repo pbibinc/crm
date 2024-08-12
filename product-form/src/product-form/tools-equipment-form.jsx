@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Row from "../element/row-element";
 import Column from "../element/column-element";
 import Label from "../element/label-element";
@@ -16,15 +16,17 @@ import SaveIcon from "@mui/icons-material/Save";
 import Swal from "sweetalert2";
 import axiosClient from "../api/axios.client";
 import "../style/general-information.css";
+import { ContextData } from "../contexts/context-data-provider";
+import { useToolsEquipment } from "../contexts/tools-equipment-context";
 const ToolsEquipmentForm = () => {
     //setting for getting values toolsequipment from sessionstorage
+    const { toolsEquipmentData } = useToolsEquipment();
     const storedToolsEquipment = () => {
-        const toolsEquipmentData = sessionStorage.getItem("toolsEquipmentData");
-        if (toolsEquipmentData) {
-            return JSON.parse(toolsEquipmentData);
-        } else {
-            return [];
-        }
+        const localSessionStorage =
+            sessionStorage.getItem("toolsEquipmentData") || "{}";
+        return toolsEquipmentData
+            ? toolsEquipmentData.data
+            : JSON.parse(localSessionStorage);
     };
 
     //setting for getting values from sesssion storage
@@ -50,8 +52,10 @@ const ToolsEquipmentForm = () => {
     );
 
     //setting for select equipment type
-    const [typeOfEquipment, setTypeOfEquipment] = useState(
-        () => storedToolsEquipment()?.typeOfEquipment || {}
+    const [typeOfEquipment, setTypeOfEquipment] = useState(() =>
+        Array.isArray(storedToolsEquipment()?.typeOfEquipment)
+            ? storedToolsEquipment().typeOfEquipment
+            : []
     );
     const [fixedTypeOfEquipment, setFixedTypeOfEquipment] = useState(
         () => storedToolsEquipment()?.fixedTypeOfEquipment || {}
@@ -97,9 +101,14 @@ const ToolsEquipmentForm = () => {
         () => storedToolsEquipment()?.firstEquipmentInformation || [{}]
     );
     const allEquipmentInformation = [
-        firstEquipmentInformation,
-        ...equipmentInformation,
+        { ...firstEquipmentInformation, equipmentType: fixedTypeOfEquipment },
+        ...equipmentInformation.map((info, index) => ({
+            ...info,
+            equipmentType: typeOfEquipment[index] || {},
+        })),
     ];
+
+    // const allType = [fixedTypeOfEquipment, ...typeOfEquipment];
 
     const handleAddEquipment = () => {
         setEquipmentInformation([...equipmentInformation, {}]);
@@ -214,6 +223,7 @@ const ToolsEquipmentForm = () => {
         crossSell: crossSell,
 
         leadId: storedLeads?.data?.id,
+        userProfileId: storedLeads?.data?.userProfileId,
     };
 
     useEffect(() => {
@@ -264,6 +274,37 @@ const ToolsEquipmentForm = () => {
         typeOfEquipment,
         haveLossDateOption,
     ]);
+
+    useEffect(() => {
+        const data = storedToolsEquipment();
+        if (data) {
+            setIsEditing(data.isUpdate == true ? false : true);
+            setIsUpdate(data.isUpdate || false);
+            setMiscellaneousTools(data.miscellaneousTools || "");
+            setRentedLeasedEquipment(data.rentedLeasedEquipment || "");
+            setScheduledEquipment(data.scheduledEquipment || "");
+            setTypeOfEquipment(
+                Array.isArray(data.typeOfEquipment) ? data.typeOfEquipment : []
+            );
+            setFixedTypeOfEquipment(data.fixedTypeOfEquipment || {});
+            setEquipmentInformation(data.equipmentInformation || [{}]);
+            setFirstEquipmentInformation(
+                data.firstEquipmentInformation || [{}]
+            );
+            setDeductibleAmount(data.deductibleAmount || {});
+            setExpirationOfIM(
+                data.expirationOfIM ? new Date(data.expirationOfIM) : new Date()
+            );
+            setPriorCarrier(data.priorCarrier || "");
+            setIsHaveLossChecked(data.isHaveLossChecked || false);
+            setHaveLossDateOption(data.haveLossDateOption || 1);
+            setDateOfClaim(
+                data.dateOfClaim ? new Date(data.dateOfClaim) : new Date()
+            );
+            setLossAmount(data.lossAmount || "");
+            setCrossSell(data.crossSell || {});
+        }
+    }, [toolsEquipmentData]);
 
     function submitToolsEquipmentForm() {
         const leadId = storedLeads?.data?.id;
@@ -399,7 +440,7 @@ const ToolsEquipmentForm = () => {
                                     onClick={handleAddEquipment}
                                     disabled={!isEditing}
                                 >
-                                    Add Vehicle
+                                    Add Equipment
                                 </Button>
                             }
                         />,
@@ -1074,7 +1115,6 @@ const ToolsEquipmentForm = () => {
                                         <Row
                                             rowContent={
                                                 <DatePicker
-                                                    //   selected={dateofClaim}
                                                     placeholderText="MM/DD/YYYY"
                                                     showMonthDropdown
                                                     showYearDropdown
@@ -1093,7 +1133,6 @@ const ToolsEquipmentForm = () => {
                                         <Row
                                             rowContent={
                                                 <DatePicker
-                                                    //   selected={dateofClaim}
                                                     dateFormat="MM/yyyy"
                                                     placeholderText="MM/YYYY"
                                                     showMonthYearPicker

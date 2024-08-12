@@ -23,7 +23,7 @@ class PaymentController extends Controller
     public function index(Request $request)
     {
         $paymentInformation = new PaymentInformation();
-        $paymentInformationData = $paymentInformation->where('status', 'pending')->get();
+        $paymentInformationData = $paymentInformation->whereIn('status', ['pending', 'declined', 'resend'])->get();
         if($request->ajax())
         {
             return DataTables::of($paymentInformationData)
@@ -44,9 +44,33 @@ class PaymentController extends Controller
                 $product = $paymentInformationData->QuoteComparison->QuotationProduct->product;
                 return $product;
             })
-            ->addColumn('status', function($paymentInformationData){
-                $status = $paymentInformationData->QuoteComparison->QuotationProduct->status;
-                return $status;
+            ->addColumn('payment-information_status', function($paymentInformationData){
+                $status = $paymentInformationData->status;
+                $statusLabel = '';
+                $class = '';
+                Switch ($status) {
+                    case 'pending':
+                        $statusLabel ='Pending';
+                        $class = 'bg-warning';
+                        break;
+                    case 'charged':
+                        $statusLabel = 'Paid';
+                        $class = 'bg-success';
+                        break;
+                    case 'declined':
+                        $statusLabel = 'Declined';
+                        $class = 'bg-danger';
+                        break;
+                    case 'resend':
+                        $statusLabel = 'Resend';
+                        $class = 'bg-warning';
+                        break;
+                    default:
+                        $statusLabel = 'Unknown';
+                        $class = 'bg-secondary';
+                        break;
+                }
+                return "<span class='badge {$class}'>{$statusLabel}</span>";
             })
             ->addColumn('requested_date', function($paymentInformationData){
                 $requestedDate = $paymentInformationData->created_at->format('M-d-Y H:i:s');
@@ -57,9 +81,13 @@ class PaymentController extends Controller
                 return $requestedBy;
             })
             ->addColumn('action', function($paymentInformationData){
-                $viewButton = '<button type="button" id="'.$paymentInformationData->id.'" data-user-id="'. $paymentInformationData->QuoteComparison->QuotationProduct->brokerQuotation->user_profile_id.'" class="btn btn-sm btn-primary viewPaymentInformationButton"><i class="ri-eye-line"></i></button>';
-                return $viewButton;
+                $leadId = $paymentInformationData->QuoteComparison->QuotationProduct->QuoteInformation->QuoteLead->leads->id;
+                $viewFormButton = '<button type="button" id="'.$paymentInformationData->id.'" data-user-id="'. $paymentInformationData->QuoteComparison->QuotationProduct->brokerQuotation->user_profile_id.'" class="btn btn-sm btn-success viewPaymentInformationButton"><i class=" ri-file-list-3-line"></i></button>';
+                $viewProfileButton = '<a href="'.route('appointed-list-profile-view', ['leadsId' => $paymentInformationData->QuoteComparison->QuotationProduct->QuoteInformation->QuoteLead->leads->id]).'" class="btn btn-sm btn-primary"><i class="ri-eye-line"></i></a>';
+                $noteButton = '<button type="button" id="'.$leadId.'" class="btn btn-sm btn-info viewNoteButton"><i class="ri-message-2-line"></i></button>';
+                return $viewFormButton . ' ' .$viewProfileButton . ' ' . $noteButton;
             })
+            ->rawColumns(['action', 'payment-information_status'])
             ->make(true);
         }
         return view('admin.accounting.accounts-revceivable.index');
@@ -78,6 +106,7 @@ class PaymentController extends Controller
             ]);
             if($request->paymentInformationId){
                 $paymentInformation = PaymentInformation::find($request->paymentInformationId);
+                $paymentInformation->status = 'resend';
                 $selectedQuote = $paymentInformation->SelectedQuote;
                 $selectedQuote->quote_no = $request->quoteNumber;
                 $selectedQuote->save();
@@ -94,8 +123,12 @@ class PaymentController extends Controller
 
             //direct renewals make a payment
             if($request->paymentType == 'Direct Renewals'){
-                $policyDetails = PolicyDetail::where('quotation_product_id', $selectedQuote->QuotationProduct->id)->first();
+                $policyDetails = PolicyDetail::find($request->policyDetailId);
                 $policyDetails->status = 'Renewal Make A Payment';
+                $policyDetails->save();
+            }else if($request->paymentType == 'CCN'){
+                $policyDetails = PolicyDetail::find($request->policyDetailId);
+                $policyDetails->status = 'For Rewrite Make A Payment';
                 $policyDetails->save();
             }
 
@@ -140,12 +173,32 @@ class PaymentController extends Controller
         }
     }
 
+    public function declinedPayment(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+            $paymentInformation = PaymentInformation::find($request->paymentInformationId);
+            $paymentInformation->status = 'declined';
+            $paymentInformation->save();
+            DB::commit();
+            return response()->json(['success' => 'Payment Information has been declined.'], 200);
+        }catch(\Exception $e){
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function resendPaymentInformation(Request $request)
+    {
+
+    }
+
     public function getPaymentInformation(Request $request)
     {
         $paymentInformation = PaymentInformation::find($request->id);
         $lead = $paymentInformation->QuoteComparison->QuotationProduct->QuoteInformation->QuoteLead->leads;
         $generalInformation = $lead->GeneralInformation;
-        $quoteComparison = SelectedQuote::where('quotation_product_id', $paymentInformation->QuoteComparison->QuotationProduct->id)->first();
+        $quoteComparison = SelectedQuote::find($paymentInformation->selected_quote_id);
 
         $medias = $paymentInformation->QuoteComparison->media;
         $fullName = $generalInformation->customerFullName();
@@ -154,4 +207,5 @@ class PaymentController extends Controller
         $userId = User::find($quotationProduct->brokerQuotation->user_profile_id)->id;
         return response()->json(['paymentInformation' => $paymentInformation, 'lead' => $lead, 'generalInformation' => $generalInformation, 'quoteComparison' => $quoteComparison, 'market' => $market, 'fullName' => $fullName, 'quotationProduct' => $quotationProduct, 'medias' => $medias, 'userId' => $userId], 200);
     }
+
 }

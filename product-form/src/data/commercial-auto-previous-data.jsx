@@ -19,7 +19,6 @@ const CommercialAutoPreviousData = () => {
         };
         fetchCommercialAutoData();
     }, [getLeadData?.data?.activityId]);
-    console.log("commercialAutoPreviousData", commercialAutoPreviousData);
     return { commercialAutoPreviousData };
 };
 

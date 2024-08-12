@@ -255,8 +255,10 @@
                             <span>Cancellation</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
-                            <li><a href="{{ route('intent.index') }}">Intent</a></li>
-
+                            <li><a href="{{ route('primary-cancellation.index') }}">Primary CCN</a></li>
+                            <li><a href="{{ route('request-cancellation.index') }}">Request Cancellation</a></li>
+                            <li><a href="{{ route('rewrite-policy.index') }}">Rewrite Policy</a></li>
+                            <li><a href="{{ route('cancelled-policy.index') }}">Cancelled Policy</a></li>
                         </ul>
                     </li>
                 @endcan

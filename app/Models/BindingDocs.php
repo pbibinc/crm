@@ -12,7 +12,19 @@ class BindingDocs extends Model
     public function getBindingLeadsId($quotationProductId)
     {
         $lead = Lead::find($quotationProductId);
-        $medias = $lead->quoteLead->QuoteInformation->QuotationProduct->medias;
-        return $medias;
+        $docs = $lead->getLeadMedias()->get();
+        // foreach($quotationProductIds as $quotationProductId){
+        //     $productMedia = QuotationProduct::find($quotationProductId)->medias();
+        //     $medias[] = $productMedia;
+        // }
+        return $docs;
     }
+
+    public function getMediaByProductId($quotationProductId)
+    {
+        $productMedia = QuotationProduct::find($quotationProductId)->medias();
+        return $productMedia;
+    }
+
+
 }

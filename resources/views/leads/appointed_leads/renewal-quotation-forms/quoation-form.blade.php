@@ -9,16 +9,13 @@
     use App\Models\PolicyDetail;
     use App\Models\SelectedQuote;
     use App\Models\PaymentInformation;
-    $policyDetail = PolicyDetail::where('quotation_product_id', $quoteProduct->id)->first();
-    $policyDetailsIds = PolicyDetail::where('quotation_product_id', $quoteProduct->id)->pluck('selected_quote_id');
-    $selectedQuoteData = SelectedQuote::where('quotation_product_id', $quoteProduct->id)
-        ->whereNotIn('id', $policyDetailsIds)
+
+    $selectedQuoteData = SelectedQuote::find($product->selected_quote_id)
         ->latest()
         ->first();
 
     $selectedQuote = $selectedQuoteData ? $selectedQuoteData : null;
     $selectedQuoteId = $selectedQuote ? $selectedQuote->id : null;
-    echo $selectedQuoteId;
     $paymentInformation = null; // Initialize $paymentInformation with null
     if ($selectedQuote) {
         $paymentInformation = PaymentInformation::where('selected_quote_id', $selectedQuote->id)->first();
@@ -64,7 +61,7 @@
     </table>
 </div>
 
-@if ($selectedQuote)
+@if ($product->selected_quote_id)
     <div class="row mb-2">
         <div class="col-6 title-card">
             <h4 class="card-title mb-0" style="color: #ffffff">Selected Quote Information</h4>
@@ -815,6 +812,54 @@
                     });
                 }
             });
+        });
+
+        $(document).on('click', '.oldRenewQuotation', function(e) {
+            e.preventDefault();
+            var id = $(this).attr('id');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Making this quote as old one!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes!',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('renewal-quote.edit-renewal-quote') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                'content')
+                        },
+                        method: "POST",
+                        data: {
+                            id: id
+                        },
+                        success: function() {
+                            Swal.fire({
+                                title: 'Success',
+                                text: 'Quote has been made as old one',
+                                icon: 'success'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    $('#qoutation-table').DataTable()
+                                        .ajax
+                                        .reload();
+                                }
+                            })
+                        },
+                        error: function() {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Something went wrong',
+                                icon: 'error'
+                            });
+                        }
+                    })
+                }
+            });
+
         });
 
     });

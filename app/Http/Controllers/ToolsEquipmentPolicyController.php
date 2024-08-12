@@ -68,6 +68,9 @@ class ToolsEquipmentPolicyController extends Controller
             $metadata->save();
             $mediaId = $metadata->id;
 
+            //code for saving product
+            $quotationProduct = QuotationProduct::find($data['toolsEquipmentHiddenInputId']);
+
             $policyDetails = new PolicyDetail();
             $policyDetails->selected_quote_id = $data['toolsEquipmentHiddenQuoteId'];
             $policyDetails->quotation_product_id = $data['toolsEquipmentHiddenInputId'];
@@ -78,8 +81,26 @@ class ToolsEquipmentPolicyController extends Controller
             $policyDetails->effective_date = $data['toolsEquipmentEffectiveDate'];
             $policyDetails->expiration_date = $data['toolsEquipmentExpirationDate'];
             $policyDetails->media_id = $mediaId;
-            $policyDetails->status = 'issued';
+            if($quotationProduct->status == 20 ){
+                $previousPolicy = PolicyDetail::where('quotation_product_id', $quotationProduct->id)->where('status', 'Renewal Request To Bind', 'renewal issued')->get();
+                foreach($previousPolicy as $policy){
+                    $policy->status = 'old policy';
+                    $policy->save();
+                }
+                $policyDetails->status = 'renewal issued';
+                $quotationProduct->status = 8;
+                $quotationProduct->save();
+            }else if($quotationProduct->status == 26){
+                $policyDetails->status = 'recovered policy issued';
+                $quotationProduct->status = 8;
+                $quotationProduct->save();
+            }else{
+                $policyDetails->status = 'issued';
+                $quotationProduct->status = 8;
+                $quotationProduct->save();
+            }
             $policyDetails->save();
+
 
             $toolsEquipmentPolicy = new ToolsEquipmentPolicy();
             $toolsEquipmentPolicy->policy_details_id = $policyDetails->id;

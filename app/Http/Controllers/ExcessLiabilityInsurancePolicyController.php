@@ -92,6 +92,10 @@ class ExcessLiabilityInsurancePolicyController extends Controller
                 $policyDetails->status = 'renewal issued';
                 $quotationProduct->status = 8;
                 $quotationProduct->save();
+            }else if($quotationProduct->status == 26){
+                $policyDetails->status = 'recovered policy issued';
+                $quotationProduct->status = 8;
+                $quotationProduct->save();
             }else{
                 $policyDetails->status = 'issued';
                 $quotationProduct->status = 8;

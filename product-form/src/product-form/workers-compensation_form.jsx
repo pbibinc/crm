@@ -21,10 +21,12 @@ import "../style/general-information.css";
 import { ContextData } from "../contexts/context-data-provider";
 import { get } from "jquery";
 import Button from "react-bootstrap/Button";
+import { useWorkersCompensation } from "../contexts/workers-compensation-context";
 // import { Audio, ThreeDots } from "react-loader-spinner";
 
 const WorkersCompensationForm = () => {
-    const { workersCompensationData } = useContext(ContextData);
+    const { workersCompensationData } = useWorkersCompensation();
+    const { lead } = useContext(ContextData);
     const getWorkersCompensationData = () => {
         let storedData =
             JSON.parse(sessionStorage.getItem("storeWorkersCompData")) || {};
@@ -50,8 +52,8 @@ const WorkersCompensationForm = () => {
             : [""]
     );
     const [employeeNumber, setEmployeeNumber] = useState(() =>
-        getWorkersCompensationData()?.numberOfEmployee
-            ? getWorkersCompensationData()?.numberOfEmployee
+        getWorkersCompensationData()?.employeeNumber
+            ? getWorkersCompensationData()?.employeeNumber
             : [0]
     );
 
@@ -149,6 +151,9 @@ const WorkersCompensationForm = () => {
             expirationDate: expirationDate,
             priorCarrier: priorCarrier,
             workersCompensationAmount: workersCompensationAmount,
+            employeeNumber: employeeNumber,
+            employeeDescription: employeeDescription,
+            isOwnerPayrollIncluded: payrollDropdownValue,
             policyLimit: {
                 value: policyLimit?.value,
                 label: policyLimit?.label,
@@ -203,6 +208,7 @@ const WorkersCompensationForm = () => {
         totalPayroll,
         employeePayroll,
         ownersPayroll,
+        payrollDropdownValue,
     ]);
 
     useEffect(() => {
@@ -363,6 +369,7 @@ const WorkersCompensationForm = () => {
     const workersCompFormData = {
         //workers comp object data common information
         lead_id: leadInstance?.data.id || null,
+        userProfileId: leadInstance?.data.userProfileId || null,
         is_owner_payroll_included: payrollDropdownValue.value,
         total_payroll: totalPayroll,
         specific_employee_description: specificDescriptionOfEmployee,
@@ -443,6 +450,55 @@ const WorkersCompensationForm = () => {
                 }
             });
     }
+
+    useEffect(() => {
+        if (workersCompensationData) {
+            const workersCompData = workersCompensationData[0] || {};
+
+            setTotalEmployee(workersCompData.totalEmployee || 0);
+            setEmployeeDescription(workersCompData.employeeDescription || [""]);
+            setEmployeeNumber(workersCompData.employeeNumber || [0]);
+            setTotalEmployeeSum(workersCompData.totalEmployee || 0);
+            setEmployeePayroll(Number(workersCompData.employeePayroll) || 0);
+            setOwnersPayroll(workersCompData.ownersPayroll || 0);
+            setTotalPayroll(workersCompData.totalPayroll || 0);
+            setIsHaveLossChecked(workersCompData.ishaveLossChecked || false);
+            setHaveLossDateOption(workersCompData.haveLossDateOption || 1);
+            setPayrollDropdownValue(workersCompData.payrollDropdownValue || 1);
+            setSpecificDescriptionOfEmployee(
+                workersCompData.specificDescriptionOfEmployee || ""
+            );
+            setFeinValue(workersCompData.feinValue || "");
+            setSsnValue(workersCompData.ssnValue || "");
+            setExpirationDate(
+                workersCompData.expirationDate
+                    ? new Date(workersCompData.expirationDate)
+                    : new Date()
+            );
+            setPriorCarrier(workersCompData.priorCarrier || "");
+            setWorkersCompensationAmount(
+                workersCompData.workersCompensationAmount || ""
+            );
+            setPolicyLimit(workersCompData.policyLimit || 0);
+            setEachAccident(workersCompData.eachAccident || 0);
+            setEachEmployee(workersCompData.eachEmployee || 0);
+            setRemarks(workersCompData.remarks || "");
+            setDateofClaim(
+                workersCompData.dateofClaim
+                    ? new Date(workersCompData.dateofClaim)
+                    : new Date()
+            );
+            setLossAmount(workersCompData.lossAmount || 0);
+            SetIsEditing(workersCompData.isEditing !== false);
+            SetIsUpdate(workersCompData.isUpdate || false);
+            setCallBackDate(
+                workersCompData.callBackDate
+                    ? new Date(workersCompData.callBackDate)
+                    : new Date()
+            );
+            setIsCallBack(workersCompData.isCallBack || false);
+        }
+    }, [workersCompensationData]);
 
     return (
         <>

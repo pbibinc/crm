@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\BrokerQuotation;
+use App\Models\PaymentInformation;
 use App\Models\QuotationProduct;
 use App\Models\QuoteComparison;
 use App\Models\SelectedQuote;
@@ -22,7 +23,9 @@ class BrokerAssistantController extends Controller
     public function index()
     {
         //
-        return view('leads.broker_leads.index');
+        $userProfile = new UserProfile();
+        $complianceOfficer = $userProfile->complianceOfficer();
+        return view('leads.broker_leads.index', compact('complianceOfficer'));
     }
 
     /**
@@ -259,6 +262,7 @@ class BrokerAssistantController extends Controller
         $quotationProduct = new BrokerQuotation();
         $userProfileId = Auth::user()->userProfile->id;
         $data = $quotationProduct->getAssignQoutedLead($userProfileId, [9, 10]);
+        // dd($data);
         return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('companyName', function($data){
@@ -279,20 +283,28 @@ class BrokerAssistantController extends Controller
         //     return $complianceOfficerName ? $complianceOfficerName : 'UNKNOWN';
         // })
         ->addColumn('status', function($data){
+            $selectedQuote = SelectedQuote::find($data->selected_quote_id);
+            $paymentInformation = PaymentInformation::where('selected_quote_id', $selectedQuote->id)->latest()->first();
+            $paymentInformationStatus = $paymentInformation ? $paymentInformation->status : 'Unknown';
+            // return $data->id;
             $statusLabel = '';
             $class = '';
-            Switch ($data->status) {
-                case 9:
-                    $statusLabel = 'Pending';
+            Switch ($paymentInformationStatus) {
+                case 'pending':
+                    $statusLabel ='Pending';
                     $class = 'bg-warning';
                     break;
-                case 10:
+                case 'charged':
                     $statusLabel = 'Paid';
                     $class = 'bg-success';
                     break;
-                case 13:
+                case 'declined':
                     $statusLabel = 'Declined';
                     $class = 'bg-danger';
+                    break;
+                case 'resend':
+                    $statusLabel = 'Resend';
+                    $class = 'bg-warning';
                     break;
                 default:
                     $statusLabel = 'Unknown';
@@ -302,12 +314,22 @@ class BrokerAssistantController extends Controller
             return "<span class='badge {$class}'>{$statusLabel}</span>";
         })
         ->addColumn('action', function($data){
+            $paymentInformation = PaymentInformation::where('selected_quote_id', $data->selected_quote_id)->latest()->first();
+            $paymentInformationId = $paymentInformation ? $paymentInformation->id : 0;
+            $paymentInformationStatus = $paymentInformation ? $paymentInformation->status : 'Unknown';
             $viewButton = '<button class="edit btn btn-outline-info btn-sm viewButton" id="'.$data->id.'"><i class="ri-eye-line"></i></button>';
+            $resendButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light resendButton" id="'.$paymentInformationId.'"><i class="  ri-repeat-2-line"></i></button>';
+            $editButton = '<button class="btn btn-outline-primary btn-sm editButton" id="'.$paymentInformationId.'"><i class="ri-pencil-line"></i></button>';
             $processButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light processButton" id="'.$data->id.'"><i class=" ri-task-line"></i></button>';
-            if($data->status == 9){
+            if($paymentInformationStatus == 'pending'){
                 return $viewButton;
-            }elseif($data->status == 10){
+            }elseif($paymentInformationStatus == 'charged'){
                 return $viewButton . ' ' . $processButton;
+            }elseif(($paymentInformationStatus == 'declined') || ($paymentInformationStatus == 'resend')){
+
+                return $viewButton. ' ' . $resendButton;
+            }else{
+                return $viewButton;
             }
         })
         ->rawColumns(['action', 'status'])
@@ -386,7 +408,7 @@ class BrokerAssistantController extends Controller
                     return $viewButton;
                     break;
                 case 14:
-                    return $viewButton . ' ' . $viewNotedButton . ' ' . $resendBindButton;
+                    return $viewButton . ' ' . $viewNotedButton;
                     break;
                 case 15:
                     return $viewButton;

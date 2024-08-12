@@ -8,8 +8,10 @@
         'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
             'General Liability',
             $lead->quoteLead->QuoteInformation->id),
+        'policyDetail' => $policyDetail,
     ])
 @endif
+
 
 @if ($product->product == 'Workers Compensation')
     @include('leads.appointed_leads.quoted-renewal-policy-form.quoation-form', [

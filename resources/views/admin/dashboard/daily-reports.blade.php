@@ -207,8 +207,9 @@
                     type: 'donut',
                     height: '543'
                 },
-                series: {!! json_encode($totalSalesPerType) !!},
-                labels: ['Direct New', 'Direct Renewals', 'Audit', 'Endorsements'],
+                // series: {!! json_encode($totalSalesPerType) !!},
+                series: [25, 15, 44, 55, 41],
+                labels: ['Direct New', 'Direct Renewals', 'Recover', 'Audit', 'Endorsements'],
                 plotOptions: {
                     pie: {
                         size: '20%',

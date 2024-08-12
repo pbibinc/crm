@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Events\UpdateGeneralInformationEvent;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Callback;
 use App\Models\ClasscodePerEmployee;
 use App\Models\GeneralInformation;
+use App\Models\LeadHistory;
 use App\Models\QuotationProduct;
 use App\Models\QuoteInformation;
 use App\Models\WorkersCompensation;
@@ -108,10 +110,6 @@ class WorkersCompDataController extends BaseController
             Log::info("Error for Workers Compensation", [$e->getMessage()]);
             return response()->json(['message' => $e->getMessage()], 500);
         }
-
-
-
-
     }
 
     public function updateWorkersComp (Request $request, $id)
@@ -121,8 +119,11 @@ class WorkersCompDataController extends BaseController
             $data = $request->all();
 
             $generalInformationId = GeneralInformation::where('leads_id', $id)->first()->id;
+            $generalInformation = GeneralInformation::find($generalInformationId);
+            $oldGeneralInformation = GeneralInformation::find($generalInformationId);
             $workersCompenSationId = WorkersCompensation::where('general_information_id', $generalInformationId)->first()->id;
             $workersCompensation = WorkersCompensation::where('id', $workersCompenSationId)->first();
+            $oldWorkersCompensation = WorkersCompensation::where('id', $workersCompenSationId)->first();
             $workersCompensation->is_owners_payroll_included = $data['is_owner_payroll_included'];
             $workersCompensation->payroll_amount = $data['total_payroll'];
             $workersCompensation->fein_number = $data['fein'];
@@ -178,6 +179,7 @@ class WorkersCompDataController extends BaseController
             }
 
             $classCodePerEmployee = ClasscodePerEmployee::where('workers_compensation_id', $workersCompenSationId)->get();
+            $oldClassCodePerEmployee = ClasscodePerEmployee::where('workers_compensation_id', $workersCompenSationId)->get();
             $classCodePerEmployeeDelete = $classCodePerEmployee->each->delete();
             if($classCodePerEmployeeDelete){
              $mergedClassCodePerEmployee = array_map(function($employeeDescription, $numberOfEmployee) {
@@ -193,7 +195,49 @@ class WorkersCompDataController extends BaseController
                  $classCodePerEmployee->employee_description = $classCodePerEmployeeData['employee_description'];
                  $classCodePerEmployee->number_of_employee = $classCodePerEmployeeData['number_of_employee'];
                  $classCodePerEmployee->save();
-             }
+             };
+            }
+            $changes = [
+                //employee description common data
+                'feinValue' => $oldWorkersCompensation->fein_number,
+                'ssnValue' => $oldWorkersCompensation->ssin_number,
+                'expirationDate' => $oldWorkersCompensation->expiration,
+                'priorCarrier' => $oldWorkersCompensation->prior_carrier,
+                'workersCompensationAmount' => strval($oldWorkersCompensation->workers_compensation_amount),
+                'policyLimit' => [
+                    'value' => $oldWorkersCompensation->policy_limit,
+                    'label' => $oldWorkersCompensation->policy_limit
+                ],
+                'eachAccident' => [
+                    'value' => $oldWorkersCompensation->each_accident,
+                    'label' => $oldWorkersCompensation->each_accident
+                ],
+                'eachEmployee' => [
+                    'value' => $oldWorkersCompensation->each_employee,
+                    'label' => $oldWorkersCompensation->each_employee
+                ],
+
+                //employee description
+                'employeeNumber' => $oldClassCodePerEmployee->pluck('number_of_employee')->toArray(),
+                'employeeDescription' => $oldClassCodePerEmployee->pluck('employee_description')->toArray(),
+                'totalEmployee' => $oldGeneralInformation->full_time_employee + $oldGeneralInformation->part_time_employee,
+
+                //updataion function
+                'isUpdate' => true,
+                'isEditing' => false,
+
+                //data for clients payroll
+                'isOwnerPayrollIncluded' => [
+                    'value' => $oldWorkersCompensation->is_owners_payroll_included,
+                    'label' => $oldWorkersCompensation->is_owners_payroll_included == 1 ? "Included" : "Excluded"
+                ],
+                'employeePayroll' => $oldGeneralInformation->employee_payroll,
+                'ownersPayroll' => $oldGeneralInformation->owners_payroll,
+                'totalPayroll' => $oldWorkersCompensation->payroll_amount,
+            ];
+
+            if(count($changes) > 0){
+                event(new UpdateGeneralInformationEvent($id, $data['userProfileId'], $changes, now(), 'workers-compensation-update'));
             }
             DB::commit();
         }catch(\Exception $e){
@@ -201,8 +245,6 @@ class WorkersCompDataController extends BaseController
             Log::info("Error for Workers Compensation", [$e->getMessage()]);
             return response()->json(['message' => $e->getMessage()], 500);
         }
-
-
     }
 
     public function getWorkersCompData($id)
@@ -218,50 +260,66 @@ class WorkersCompDataController extends BaseController
 
     public function edit($id)
     {
-        $generalInformation = GeneralInformation::where('leads_id', $id)->first();
-        $workersCompensation = WorkersCompensation::where('general_information_id', $generalInformation->id)->first();
-        if(is_null($workersCompensation)){
-            return response()->json(['error' => 'Workers Compensation Data not found!'], 404);
+        try{
+            $generalInformation = GeneralInformation::where('leads_id', $id)->first();
+            $workersCompensation = WorkersCompensation::where('general_information_id', $generalInformation->id)->first();
+            $classCodePerEmployee = ClasscodePerEmployee::where('workers_compensation_id', $workersCompensation->id)->get();
+            if(is_null($workersCompensation)){
+                return response()->json(['error' => 'Workers Compensation Data not found!'], 404);
+            }
+            $workersCompensationData = [
+                'feinValue' => $workersCompensation->fein_number,
+                'ssnValue' => $workersCompensation->ssin_number,
+                'expirationDate' => $workersCompensation->expiration,
+                'priorCarrier' => $workersCompensation->prior_carrier,
+                'workersCompensationAmount' => strval($workersCompensation->workers_compensation_amount),
+                'employeeNumber' => $classCodePerEmployee->pluck('number_of_employee')->toArray(),
+                'employeeDescription' => $classCodePerEmployee->pluck('employee_description')->toArray(),
+                'policyLimit' => [
+                    'value' => $workersCompensation->policy_limit,
+                    'label' => $workersCompensation->policy_limit
+                ],
+                'eachAccident' => [
+                    'value' => $workersCompensation->each_accident,
+                    'label' => $workersCompensation->each_accident
+                ],
+                'eachEmployee' => [
+                    'value' => $workersCompensation->each_employee,
+                    'label' => $workersCompensation->each_employee
+                ],
+
+                'isUpdate' => true,
+                'isEditing' => false,
+
+                'employeeDescription' => $workersCompensation->classCodePerEmployee->pluck('employee_description'),
+                'numberOfEmployee' => $workersCompensation->classCodePerEmployee->pluck('number_of_employee'),
+                'totalEmployee' => $generalInformation->full_time_employee + $generalInformation->part_time_employee,
+
+                //data for clients payroll
+                'isOwnerPayrollIncluded' => [
+                    'value' => $workersCompensation->is_owners_payroll_included,
+                    'label' => $workersCompensation->is_owners_payroll_included == 1 ? "Included" : "Excluded"
+                ],
+                'employeePayroll' => $generalInformation->employee_payroll,
+                'ownersPayroll' => $generalInformation->owners_payroll,
+                'totalPayroll' => $workersCompensation->payroll_amount,
+
+
+            ];
+            Log::info("Workers Compensation Data", [$workersCompensationData]);
+            return response()->json([$workersCompensationData, 'Workers Compensation Retrieved successfully']);
+        }catch(\Exception $e){
+            Log::info("Error for Workers Compensation", [$e->getMessage()]);
+            return response()->json(['message' => $e->getMessage()], 500);
         }
-        $workersCompensationData = [
-            'feinValue' => $workersCompensation->fein_number,
-            'ssnValue' => $workersCompensation->ssin_number,
-            'expirationDate' => $workersCompensation->expiration,
-            'priorCarrier' => $workersCompensation->prior_carrier,
-            'workersCompensationAmount' => strval($workersCompensation->workers_compensation_amount),
-            'policyLimit' => [
-                'value' => $workersCompensation->policy_limit,
-                'label' => $workersCompensation->policy_limit
-            ],
-            'eachAccident' => [
-                'value' => $workersCompensation->each_accident,
-                'label' => $workersCompensation->each_accident
-            ],
-            'eachEmployee' => [
-                'value' => $workersCompensation->each_employee,
-                'label' => $workersCompensation->each_employee
-            ],
 
-            'isUpdate' => true,
-            'isEditing' => false,
+    }
 
-            'employeeDescription' => $workersCompensation->classCodePerEmployee->pluck('employee_description'),
-            'numberOfEmployee' => $workersCompensation->classCodePerEmployee->pluck('number_of_employee'),
-            'totalEmployee' => $generalInformation->full_time_employee + $generalInformation->part_time_employee,
-
-            //data for clients payroll
-            'isOwnerPayrollIncluded' => [
-                'value' => $workersCompensation->is_owners_payroll_included,
-                'label' => $workersCompensation->is_owners_payroll_included == 1 ? "Included" : "Excluded"
-            ],
-            'employeePayroll' => $generalInformation->employee_payroll,
-            'ownersPayroll' => $generalInformation->owners_payroll,
-            'totalPayroll' => $workersCompensation->payroll_amount,
-
-
-        ];
-        Log::info("Workers Compensation Data", [$workersCompensationData]);
-        return response()->json([$workersCompensationData, 'Workers Compensation Retrieved successfully']);
+    public function getPreviousWorkersCompensationoInformation($id)
+    {
+        $leadHistory = LeadHistory::find($id);
+        $changes = json_decode($leadHistory->changes, true);
+        return response()->json(['data' => $changes, 'Lead History Retrieved successfully']);
     }
 }
 
