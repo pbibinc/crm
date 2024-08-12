@@ -56,7 +56,9 @@
                                     @include('leads.broker_leads.for-follow-up-product-view')
                                 </div>
                                 <div class="tab-pane" id="makePayment" role="tabpanel">
-                                    @include('leads.broker_leads.make-a-payment-list-view')
+                                    @include('leads.broker_leads.make-a-payment-list-view', [
+                                        'complianceOfficer' => $complianceOfficer,
+                                    ])
                                 </div>
                                 <div class="tab-pane" id="requestToBind" role="tabpanel">
                                     @include('leads.broker_leads.request-to-bind-product-view')
@@ -68,8 +70,117 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="resendRTBModal" tabindex="-1" aria-labelledby="addQuoteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl " role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="fileViewingModalTitle">File Upload</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="" class="dropzone mt-4 border-dashed" id="resendRTBDropzoneBroker"
+                        enctype="multipart/form-data">
+                    </form>
+                    <input type="hidden" id="mediaIds" value="">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="changeStatusButton" class="btn btn-success">Resend</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         $(document).ready(function() {
+            Dropzone.autoDiscover = false;
+            var myBrokerDropzone;
+            var dropzoneElement = document.querySelector("#resendRTBDropzoneBroker");
+            if (dropzoneElement) {
+                myBrokerDropzone = new Dropzone("#resendRTBDropzoneBroker", {
+                    url: "{{ route('upload-file-binding-docs') }}",
+                    method: "post",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    autoProcessQueue: true,
+                    clickable: true,
+                    addRemoveLinks: true,
+                    maxFiles: 10,
+                    init: function() {
+                        this.on("addedfile", function(file) {
+                            file.previewElement.addEventListener("click", function() {
+                                var url = "{{ env('APP_FORM_LINK') }}";
+                                var fileUrl = url + file.url;
+                                Swal.fire({
+                                    title: 'File Options',
+                                    text: 'Choose an action for the file',
+                                    showDenyButton: true,
+                                    confirmButtonText: `Download`,
+                                    denyButtonText: `View`,
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        var downloadLink = document
+                                            .createElement("a");
+                                        downloadLink.href = fileUrl;
+                                        downloadLink.download = file.name;
+                                        document.body.appendChild(downloadLink);
+                                        downloadLink.click();
+                                        document.body.removeChild(downloadLink);
+                                    } else if (result.isDenied) {
+                                        window.open(fileUrl, '_blank');
+                                    }
+                                });
+                            });
+                        });
+                        this.on('sending', function(file, xhr, formData) {
+                            formData.append('hiddenId', $('#mediaIds').val());
+                        });
+                        this.on('removedfile', function(file) {
+                            $.ajax({
+                                url: "{{ route('delete-binding-docs') }}",
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                        'content')
+                                },
+                                method: "POST",
+                                data: {
+                                    id: file.id
+                                },
+                                success: function() {
+                                    // Optional: Handle success
+                                },
+                                error: function() {
+                                    Swal.fire({
+                                        title: 'Error',
+                                        text: 'Something went wrong',
+                                        icon: 'error'
+                                    });
+                                }
+                            });
+                        });
+                    }
+                });
+            } else {
+                console.error("Dropzone element not found");
+            }
+
+            function addExistingFiles(files) {
+                files.forEach(file => {
+                    var mockFile = {
+                        id: file.id,
+                        name: file.basename,
+                        size: parseInt(file.size),
+                        type: file.type,
+                        status: Dropzone.ADDED,
+                        url: file.filepath // URL to the file's location
+                    };
+                    myBrokerDropzone.emit("addedfile", mockFile);
+                    // myBrokerDropzone.emit("thumbnail", mockFile, file.filepath); // If you have thumbnails
+                    myBrokerDropzone.emit("complete", mockFile);
+                });
+            };
+
             $('#assignPendingLeadsTable').DataTable({
                 processing: true,
                 serverSide: true,
@@ -198,6 +309,32 @@
                     }
                 })
             });
+
+            $(document).on('click', '.resendBindButton', function() {
+                var id = $(this).attr('id');
+                $.ajax({
+                    url: "{{ route('get-binding-docs') }}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    method: "POST",
+                    data: {
+                        id: id
+                    },
+                    success: function(data) {
+                        addExistingFiles(data);
+                        $('#resendRTBModal').modal('show');
+                    },
+                    error: function() {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Something went wrong',
+                            icon: 'error'
+                        });
+                    }
+                });
+            });
+
         });
     </script>
 @endsection

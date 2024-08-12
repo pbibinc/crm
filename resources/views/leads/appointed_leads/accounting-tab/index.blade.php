@@ -37,7 +37,6 @@
     var myDropzone;
     $(document).ready(function() {
         var id = {{ $generalInformation->lead->id }};
-        console.log(id);
         $('#accountingTable').DataTable({
             processing: true,
             serverSide: true,
@@ -157,9 +156,6 @@
                     _token: "{{ csrf_token() }}"
                 },
                 success: function(data) {
-                    // $('#viewInvoiceModal').modal('show');
-                    // $('#viewInvoiceModalBody').html(data);
-                    // console.log(data);
                     addExistingFiles(data.media);
                     $('#fileViewingModal').modal('show');
                 }

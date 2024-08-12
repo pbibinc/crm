@@ -3,7 +3,25 @@
     use App\Models\Callback;
     use Carbon\Carbon;
 @endphp
+
+<div class="modal fade" id="viewLeadModal" tabindex="-1" aria-labelledby="viewLeadModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addLeadsModalLabel">Add Lead</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="leadsLink">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <header id="page-topbar">
+
     <div class="navbar-header">
         <div class="d-flex">
             <!-- LOGO -->
@@ -146,24 +164,58 @@
                 </button>
             </div>
 
+
         </div>
+
     </div>
+
+
 </header>
 <script>
     $(document).ready(function() {
         $('#searchLead').on('submit', function(e) {
             var url = "{{ env('APP_FORM_LINK') }}";
             e.preventDefault();
+            $('#viewLeadModal').modal('show');
+
             $.ajax({
-                url: "{{ route('search-lead') }}",
+                url: "{{ route('get-leads-by-search-data') }}",
                 type: 'POST',
                 data: {
                     _token: "{{ csrf_token() }}",
                     search: $(this).find('input').val()
                 },
                 success: function(data) {
-                    var leadId = data.leadId;
-                    window.open(`${url}appointed-list/${leadId}`, '_blank');
+                    var leads = Array.isArray(data) ? data : [data];
+                    $('#leadsLink').empty();
+                    var table = $(
+                        '<table class="table table-bordered"><thead><tr><th>Name</th><th>Phone</th><th>Customer Name</th></tr></thead><tbody></tbody></table>'
+                    );
+                    console.log(leads);
+                    leads[0].leads.forEach(function(lead) {
+                        var row = $('<tr></tr>');
+                        row.append('<td>' + lead.company_name + '</td>');
+                        row.append('<td>' + lead.tel_num + '</td>');
+                        row.append(lead.general_information ? '<td>' + lead
+                            .general_information.firstname + ' ' + lead
+                            .general_information.lastname + '</td>' :
+                            '<td>No Profile</td>')
+                        row.append((function() {
+                            if (lead.general_information) {
+                                return '<td><a href="' +
+                                    url +
+                                    'appointed-list/' + lead
+                                    .id +
+                                    '" target="_blank">View</a></td>'
+                            } else if (lead.deleted_at) {
+                                return '<td>DNC Number</td>'
+                            } else {
+                                return '<td>No Profile</td>'
+                            }
+                        })());
+                        table.find('tbody').append(row);
+                    });
+                    $('#leadsLink').append(table);
                 },
                 error: function(err) {
                     Swal.fire({

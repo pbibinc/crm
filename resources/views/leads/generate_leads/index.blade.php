@@ -8,8 +8,6 @@
     </style>
     <div class="page-content pt-6">
         <div class="container-fluid">
-
-
             <div class="row">
                 <div class="col-6">
                     <div class="card">
@@ -145,13 +143,9 @@
                                         <th>Tel Number</th>
                                         <th>State abbr</th>
                                         <th>Website Originated</th>
+                                        <th>Imported Date</th>
                                         <th>Action</th>
                                     </tr>
-
-                                    {{-- <th>Class Code</th>
-                                    <th>Website Originated</th> --}}
-                                    {{-- <th>Status</th> --}}
-                                    {{-- <th>Imported at</th> --}}
                                 </thead>
                                 <tbody>
 
@@ -174,22 +168,23 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
-                                <form action="{{ route('dnc.lead.import') }}" method="POST" id="dnc-import-form"
-                                    enctype="multipart/form-data">
-                                    @csrf
-                                    <input type="file" name="dnc-file" class="form-control">
-                                    <br>
-                                    <div class="row">
-                                        <div class="button-container">
-                                            <button type="submit" class="btn btn-danger"><i
-                                                    class="mdi mdi-alert-plus"></i> Import DNC Leads</button>
-                                            <button class="btn btn-danger" id="addDnc"><i
-                                                    class="mdi mdi-phone-off"></i> Add DNC</button>
-                                            <button class="btn btn-danger" id="deleteLeads"><i
-                                                    class="mdi mdi-trash-can-outline"></i>Delete Lead</button>
-                                        </div>
+                                {{-- <form action="{{ route('dnc.lead.import') }}" method="POST" id="dnc-import-form"
+                                    enctype="multipart/form-data"> --}}
+                                {{-- @csrf --}}
+                                {{-- <input type="file" name="dnc-file" class="form-control"> --}}
+                                <br>
+                                <div class="row">
+                                    <div class="button-container">
+                                        <button id="scurbbedDncLeadButton"
+                                            class="btn btn-danger scurbbedDncLeadButton ladda-button"
+                                            data-style="expand-right"><i class="mdi mdi-alert-plus"></i> Scrubbed DNC
+                                            Leads</button>
+
+                                        <button class="btn btn-danger" id="deleteLeads"><i
+                                                class="mdi mdi-trash-can-outline"></i>Delete Lead</button>
                                     </div>
-                                </form>
+                                </div>
+                                {{-- </form> --}}
                             </div>
                             <br>
                             <div class="row">
@@ -368,17 +363,21 @@
                         name: 'website_originated'
                     },
                     {
+                        data: 'formatted_created_at',
+                        name: 'formatted_created_at'
+                    },
+                    {
                         data: 'action_button',
                         name: 'action_button',
                     }
-
                 ]
             });
 
             $('#dncDataTable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('leads.dnc') }}",
+                ajax: "{{ route('scrubbed-dnc.index') }}",
+                method: 'GET',
                 columns: [{
                         data: 'checkbox',
                         name: 'checkbox',
@@ -474,7 +473,6 @@
                 });
             });
 
-
             $('#submitDeleteLeads').on('click', function(e) {
                 e.preventDefault();
                 $.ajax({
@@ -532,6 +530,37 @@
                         },
                         error: function(xhr) {
 
+                            var errorMessage = 'An Error Occured';
+                            if (xhr.responseJSON && xhr.responseJSON.error) {
+                                errorMessage = xhr.responseJSON.error;
+                            }
+                            laddaButton.stop();
+                            Swal.fire({
+                                title: 'Error',
+                                text: errorMessage,
+                                icon: 'error'
+                            });
+                        }
+                    });
+                } else if ($('#action').val() == 'addCompany') {
+                    $.ajax({
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        url: "leads/" + $('#hidden_id').val() + "/storeAdditonalCompany",
+                        data: $(this).serialize(),
+                        success: function(response) {
+                            laddaButton.stop();
+                            Swal.fire({
+                                title: 'Success',
+                                text: 'Success the company has been added',
+                                icon: 'success'
+                            }).then(function() {
+                                location.reload();
+                            });
+                        },
+                        error: function(xhr) {
                             var errorMessage = 'An Error Occured';
                             if (xhr.responseJSON && xhr.responseJSON.error) {
                                 errorMessage = xhr.responseJSON.error;
@@ -655,6 +684,62 @@
                     }
                 });
             });
+
+            $(document).on('click', '.btnAdd', function(e) {
+                e.preventDefault();
+                var btnAddId = $(this).data('id');
+                $.ajax({
+                    type: 'GET',
+                    url: "leads/" + btnAddId + "/edit",
+                    success: function(response) {
+                        if (response.status == 404) {
+                            Swal.fire({
+                                title: 'Error',
+                                text: response.message,
+                                icon: 'error'
+                            });
+                        } else {
+                            if (response.lead) {
+                                $('#addLeadsModalLabel').val('Edit Lead');
+                                $('#addLeadsModalLabel').text('Edit Lead');
+                                $('#action_button').val('Add Company');
+                                $('#companyName').val(response.lead.company_name);
+                                $('#addTelNum').val(response.lead.tel_num);
+                                var classCode = response.lead.class_code.toLowerCase().trim();
+                                $('#classCodeLeadDropdown option').each(function() {
+                                    var optionValue = $(this).text().toLowerCase()
+                                        .trim();
+                                    if (optionValue === classCode) {
+                                        $(this).prop('selected', true);
+                                        return false; // break the loop
+                                    }
+                                });
+                                $('#leadTypeDropdown').val(response.lead.prime_lead);
+                                $('#stateAbbreviation').val(response.lead.state_abbr);
+                                // $('#websiteOriginated').val(response.lead.website_originated);
+                                // Your initial data (e.g., coming from an AJAX response)
+                                $('#websiteOriginated').val(response.website && response.website
+                                    .name ? response.website.name : '');
+                                $('#hidden_id').val(btnAddId);
+                                $('#addLeadsModal').modal('show');
+                                $('#action').val('addCompany');
+                            }
+                        }
+                    },
+                    error: function(xhr) {
+                        var errorMessage = 'An Error Occured';
+                        if (xhr.responseJSON && xhr.responseJSON.error) {
+                            errorMessage = xhr.responseJSON.error;
+                        }
+                        Swal.fire({
+                            title: 'Error',
+                            text: errorMessage,
+                            icon: 'error'
+                        });
+                    }
+                });
+            });
+
             $(document).on('submit', '#export-form', function(e) {
                 var button = $('#dated-export-button');
                 var laddaButton = Ladda.create(button[0]);
@@ -676,6 +761,33 @@
                         }
                     });
                 }, 2300);
+            });
+
+            $('#scurbbedDncLeadButton').on('click', function(e) {
+                e.preventDefault();
+                var ladddButton = Ladda.create(this);
+                ladddButton.start();
+
+                $.ajax({
+                    url: "{{ route('scrubbed-dnc.store') }}",
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        ladddButton.stop();
+                        $('#dncDataTable').DataTable().ajax.reload();
+                    },
+                    error: function(xhr) {
+
+                        Swal.fire({
+                            title: 'Error',
+                            text: errorMessage,
+                            icon: 'error'
+                        });
+                    }
+                })
+
             });
         });
     </script>

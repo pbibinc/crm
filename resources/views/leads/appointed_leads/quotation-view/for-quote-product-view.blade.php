@@ -6,6 +6,7 @@
         </tr>
     </thead>
     <tbody>
+
         @foreach ($groupedProducts as $company => $groupedProduct)
             @php
                 $displayCompany = false;
@@ -25,7 +26,7 @@
                     {{-- <td><strong><b>Action</b></strong></td> --}}
                 </tr>
                 @foreach ($groupedProduct as $product)
-                    @if ($product['product']->status == 2)
+                    @if ($product['product']->status == 2 || $product['product']->status == 1)
                         <tr>
                             <td></td>
                             <td>

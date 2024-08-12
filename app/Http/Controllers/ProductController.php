@@ -14,7 +14,6 @@ class ProductController extends Controller
 
     public function saveMedia(Request $request)
     {
-
        try{
         DB::beginTransaction();
         $files = $request->file('files');
@@ -49,6 +48,13 @@ class ProductController extends Controller
         return response()->json(['error' => $e->getMessage()]);
         DB::rollback();
        }
+    }
+
+    public function getRTBMedia(Request $request)
+    {
+        $product = QuotationProduct::find($request->id);
+        $medias = $product->medias;
+        return response()->json(['medias' => $medias]);
     }
 
     // public function getProductInformation(Request $request)

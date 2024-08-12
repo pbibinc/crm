@@ -18,11 +18,11 @@
                 </div>
             </div>
             <div class="d-flex">
-                <div class="mr-2" style="margin-right: .5rem">
+                {{-- <div class="mr-2" style="margin-right: .5rem">
                     <button class="btn btn-outline-primary waves-effect waves-light btn-lg btnEdit"
                         id="editGeneralInformationButton" name="edit" type="button">EDIT</button>
-                </div>
-                <div class="mr-2" style="margin-right: .5rem">
+                </div> --}}
+                {{-- <div class="mr-2" style="margin-right: .5rem">
                     <button
                         class="btn btn-outline-success waves-effect waves-light
                     btn-lg callButton"
@@ -39,7 +39,7 @@
                         class="btn btn-outline-success waves-effect waves-light
                     btn-lg callButton"
                         name="edit" type="button">CALL</button>
-                </div>
+                </div> --}}
             </div>
         </div>
 

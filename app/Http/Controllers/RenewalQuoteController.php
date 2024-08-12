@@ -123,18 +123,39 @@ class RenewalQuoteController extends Controller
         //
     }
 
+    public function editRenewalQuote(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+            // Retrieve the model instance
+            $renewalQuotation = RenewalQuote::where('quote_comparison_id', $request->id)->first();
+
+            if ($renewalQuotation) {
+                // Update the status
+                $renewalQuotation->status = 'Old Quote';
+                $renewalQuotation->save();
+            } else {
+                return response()->json(['error' => 'Renewal quotation not found.'], 404);
+            }
+            DB::commit();
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
     public function getForQuoteRenewal(Request $request)
     {
         try{
             $policyDetails = new PolicyDetail();
             $policiesData = $policyDetails->getPolicyForRenewal()->where('status', 'Renewal Quote');
+            // dd($policiesData);
             if($request->ajax()){
                 $dataTable =  DataTables($policiesData)
                 ->addIndexColumn()
                 ->addColumn('policy_no', function($policiesData){
                     $policyNumber = $policiesData->policy_number;
                     $productId =  $policiesData->quotation_product_id;
-                    return '<a href="/customer-service/renewal/get-renewal-lead-view/'.$productId.'"  id="'.$policiesData->policy_details_id.'">'.$policyNumber.'</a>';
+                    return '<a href="/customer-service/renewal/get-renewal-lead-view/'.$policiesData->id.'"  id="'.$policiesData->policy_details_id.'">'.$policyNumber.'</a>';
                 })
                 ->addColumn('company_name', function($policiesData){
                     $lead = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;
@@ -172,7 +193,7 @@ class RenewalQuoteController extends Controller
                 ->addColumn('policy_no', function($policiesData){
                     $policyNumber = $policiesData->policy_number;
                     $productId =  $policiesData->quotation_product_id;
-                    return '<a href="/customer-service/renewal/get-renewal-lead-view/'.$productId.'"  id="'.$policiesData->policy_details_id.'">'.$policyNumber.'</a>';
+                    return '<a href="/customer-service/renewal/get-renewal-lead-view/'.$policiesData->id.'"  id="'.$policiesData->policy_details_id.'">'.$policyNumber.'</a>';
                 })
                 ->addColumn('company_name', function($policiesData){
                     $lead = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;
@@ -211,7 +232,7 @@ class RenewalQuoteController extends Controller
                 ->addColumn('policy_no', function($policiesData){
                     $policyNumber = $policiesData->policy_number;
                     $productId =  $policiesData->quotation_product_id;
-                    return '<a href="/customer-service/renewal/get-renewal-lead-view/'.$productId.'"  id="'.$policiesData->policy_details_id.'">'.$policyNumber.'</a>';
+                    return '<a href="/customer-service/renewal/get-renewal-lead-view/'.$policiesData->id.'"  id="'.$policiesData->policy_details_id.'">'.$policyNumber.'</a>';
                 })
                 ->addColumn('company_name', function($policiesData){
                     $lead = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;

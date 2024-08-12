@@ -20,9 +20,10 @@ import "../style/general-information.css";
 
 import Button from "react-bootstrap/Button";
 import { ContextData } from "../contexts/context-data-provider";
-import { isArray, isEmpty } from "lodash";
+import { useCommercialAuto } from "../contexts/commercial-auto-context";
+
 const CommercialAutoForm = () => {
-    const { commercialAutoData } = useContext(ContextData);
+    const { commercialAutoData } = useCommercialAuto();
     const storeWorkersCompData = JSON.parse(
         sessionStorage.getItem("storeWorkersCompData")
     );
@@ -433,6 +434,55 @@ const CommercialAutoForm = () => {
                 }
             });
     }
+
+    useEffect(() => {
+        const data = getCommercialAutoData();
+        if (data) {
+            setIsEditing(data.isUpdate == true ? false : true);
+            setIsUpdate(data.isUpdate || false);
+            setFein(data.feinValue || "");
+            setSsn(data.ssnValue || "");
+            SetIsFeinDisabled(data.feinValue != 0);
+            SetIsSsnDisabled(data.ssnValue != 0);
+            setVehicleInformation(data.vehicleInformation || [{}]);
+            setFirstVehicleInformation(data.firstVehicleInformation || {});
+            setAllVehicleInformationData(data.allVehicleInformation || []);
+            setGarageAddress(data.garageAddress || "");
+            setDriverQuantity(data.driverQuantity || 0);
+            setNumberOfDriverToBeInsured(data.driverInformation || [{}]);
+            setIsVehiceMaintenanceProgramChecked(
+                data.vehicle_maintenance_program || false
+            );
+            setIsVehicleCustomizedChecked(data.is_vehicle_customized || false);
+            setIsVehicleOwnedProspect(
+                data.is_vehicle_owned_by_prospect || false
+            );
+            setIsDeclinedCanceledNonRenewed(
+                data.declined_canceled_nonrenew_policy || false
+            );
+            setIsProspectLoss(data.prospect_loss || false);
+            setIsVehicleUsedTowing(data.vehicle_use_for_towing || false);
+            setVehicleMaintenanceDescription(
+                data.vehicle_maintenace_description || ""
+            );
+            setVehicleCustomizedDescription(
+                data.vehicle_customized_description || ""
+            );
+            setExpirationOfAuto(
+                data.expirationOfAuto
+                    ? new Date(data.expirationOfAuto)
+                    : new Date()
+            );
+            setPriorCarrier(data.priorCarrier || "");
+            setIsHaveLossChecked(data.isHaveLossChecked || false);
+            setDateOfClaim(
+                data.dateOfClaim ? new Date(data.dateOfClaim) : new Date()
+            );
+            setLossAmount(data.lossAmount || "");
+            setCrossSell(data.crossSell || []);
+            setHaveLossDateOption(data.haveLossDateOption || 1);
+        }
+    }, [commercialAutoData]);
 
     return (
         <>

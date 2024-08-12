@@ -28,6 +28,7 @@ class LeadDetailController extends BaseController
             return $this->sendError('Lead not found.');
         }
         $lead->productId = $productId ? $productId : null;
+        $lead->products = $lead->getProducts();
         $lead->userProfileId = $userProfileId ? $userProfileId : null;
         $lead->activityId = $activityId ? $activityId : null;
         return $this->sendResponse($lead->toArray(), 'Lead retrieved successfully.');

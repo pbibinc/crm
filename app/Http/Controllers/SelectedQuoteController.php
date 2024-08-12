@@ -48,6 +48,7 @@ class SelectedQuoteController extends Controller
             $data = $request->all();
             $quoteComparison = QuoteComparison::find($data['id']);
             $quotationProduct = QuotationProduct::find($quoteComparison->quotation_product_id);
+
             // $selectedQuotes = SelectedQuote::where('quotation_product_id', $quotationProduct->id)->get();
             // foreach ($selectedQuotes as $selectedQuote) {
             //     $selectedQuote->recommended = 3;
@@ -59,6 +60,7 @@ class SelectedQuoteController extends Controller
 
             $pricingBreakdown = PricingBreakdown::find($quoteComparison->pricing_breakdown_id);
 
+
             if (!$pricingBreakdown) {
                 throw new \Exception("Pricing Breakdown not found.");
             }
@@ -67,6 +69,7 @@ class SelectedQuoteController extends Controller
 
             SelectedPricingBreakDown::create($pricingBreakdown->toArray());
             $selectedQuote = SelectedQuote::create($quoteComparison->toArray());
+            $quotationProduct->update(['selected_quote_id' => $selectedQuote->id]);
             $selectedQuote->media()->attach($mediaIds);
 
             DB::commit();

@@ -14,6 +14,7 @@
     </div>
 
     @include('customer-service.policy.renewal-form')
+    @include('customer-service.policy.cancellation-report-modal')
 </div>
 
 
@@ -155,34 +156,34 @@
             }
         })
 
-        $('#cancellationForm').on('submit', function(e) {
-            e.preventDefault();
-            var form = $(this);
-            $.ajax({
-                url: "{{ route('cancellation-report.index') }}",
-                method: "POST",
-                data: form.serialize(),
-                success: function(data) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: 'Policy has been cancelled!',
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $('#dataTable').DataTable().ajax.reload();
-                            $('#policyCancellationModal').modal('hide');
-                        }
-                    })
-                },
-                error: function(data) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Something went wrong!',
-                    })
-                }
-            })
-        })
+        // $('#cancellationForm').on('submit', function(e) {
+        //     e.preventDefault();
+        //     var form = $(this);
+        //     $.ajax({
+        //         url: "{{ route('cancellation-report.index') }}",
+        //         method: "POST",
+        //         data: form.serialize(),
+        //         success: function(data) {
+        //             Swal.fire({
+        //                 icon: 'success',
+        //                 title: 'Success',
+        //                 text: 'Policy has been cancelled!',
+        //             }).then((result) => {
+        //                 if (result.isConfirmed) {
+        //                     $('#dataTable').DataTable().ajax.reload();
+        //                     $('#policyCancellationModal').modal('hide');
+        //                 }
+        //             })
+        //         },
+        //         error: function(data) {
+        //             Swal.fire({
+        //                 icon: 'error',
+        //                 title: 'Error',
+        //                 text: 'Something went wrong!',
+        //             })
+        //         }
+        //     })
+        // })
 
 
     })

@@ -38,7 +38,11 @@ class BoundController extends Controller
                 ->addColumn('policy_number', function($data){
                     if($data->status == 20){
                         $policyDetail =PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
-                        $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+                        $selectedQuote = SelectedQuote::find($data->selected_quote_id);
+                        $policyNumber = '<a href="" id="'.$policyDetail->id.'" type="renewal" name="showPolicyForm" class="showPolicyForm" data-product='.$data->product.'>'.$selectedQuote->quote_no.'</a>';
+                    }else if($data->status == 26){
+                        $policyDetail =PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Dead policy')->first();
+                        $selectedQuote = SelectedQuote::find($data->selected_quote_id);
                         $policyNumber = '<a href="" id="'.$policyDetail->id.'" type="renewal" name="showPolicyForm" class="showPolicyForm" data-product='.$data->product.'>'.$selectedQuote->quote_no.'</a>';
                     }else{
                         $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
@@ -46,19 +50,19 @@ class BoundController extends Controller
                     }
                     return $policyNumber;
                 })
-                ->addColumn('total_cost', function($data){
+                ->addColumn('policy_total_cost', function($data){
                     if($data->status == 20){
                         $policyDetail =PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
-                        $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+                        $selectedQuote = SelectedQuote::find($data->selected_quote_id);
                     }else{
                         $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
                     }
-                    return $selectedQuote ? $selectedQuote->total_cost : 0;
+                    return $selectedQuote ? $selectedQuote->TotalCost() : 0;
                 })
                 ->addColumn('effective_date', function($data){
                     if($data->status == 20){
                         $policyDetail =PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
-                        $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+                        $selectedQuote = SelectedQuote::find($data->selected_quote_id);
                     }else{
                         $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
                     }
@@ -75,8 +79,11 @@ class BoundController extends Controller
         $policyDetail = null;
         if($request->type == 'renewal'){
             $policyDetail = PolicyDetail::find($request->id);
-            $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+            // $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+            // $product = QuotationProduct::find($policyDetail->quotation_product_id);
             $product = QuotationProduct::find($policyDetail->quotation_product_id);
+            $selectedQuote = SelectedQuote::find($product->selected_quote_id);
+
         }else{
             $product = QuotationProduct::find($request->id);
             $selectedQuote = SelectedQuote::where('quotation_product_id', $request->id)->first();
@@ -93,16 +100,28 @@ class BoundController extends Controller
             DB::beginTransaction();
             $userProfileId = Auth::user()->userProfile->id;
             if($request['productStatus'] == 19){
-                $policyDetail = PolicyDetail::find($request['id']);
-                $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+                $product = QuotationProduct::find($request->id);
+                $selectedQuote = SelectedQuote::find($product->selected_quote_id);
                 $boundStatus = 'Direct Renewals';
-                $quotationProductId = $policyDetail->quotation_product_id;
+                $quotationProductId = $product->id;
+            }else if($request['productStatus'] == 25){
+                $product = QuotationProduct::find($request->id);
+                $selectedQuote = SelectedQuote::find($product->selected_quote_id);
+                $boundStatus = 'Rewrite/Recovery';
+                $quotationProductId = $request->id;
+
+                $policyDetail = PolicyDetail::where('quotation_product_id', $request->id)->where('status', 'Rewrite Request To Bind')->latest()->first();
+                $policyDetail->status = 'Dead Policy';
+                $policyDetail->save();
             }else{
+                $product = QuotationProduct::find($request->id);
                 $selectedQuote = SelectedQuote::where('quotation_product_id', $request->id)->first();
                 $boundStatus = 'Direct New';
                 $quotationProductId = $request->id;
             }
             $paymentInformation = PaymentInformation::where('selected_quote_id', $selectedQuote->id)->first();
+
+            //for pfa if the client choose spilit low down and low down
             if($paymentInformation->payment_term == 'Split low down' || $paymentInformation->payment_term == 'Low down')
             {
                 $financingStatus = new FinancingStatus();
@@ -111,6 +130,18 @@ class BoundController extends Controller
                 $financingStatus->status = "Request For Financing";
                 $financingStatus->save();
             }
+            $mediaIds = [];
+            $medias = $product->medias()->get();
+            foreach($medias as $media){
+                $mediaIds[] = $media->id;
+            }
+
+            $lead = $product->QuoteInformation->QuoteLead->leads;
+            foreach($mediaIds as $mediaId){
+                $lead->getLeadMedias()->attach($mediaId);
+                $product->medias()->detach($mediaId);
+            }
+
             $boundInformation = new BoundInformation();
             $boundInformation->quoatation_product_id  = $quotationProductId;
             $boundInformation->user_profile_id = $userProfileId;
@@ -121,8 +152,8 @@ class BoundController extends Controller
             DB::commit();
             return response()->json(['message' => 'Bound Information has been saved.'], 200);
         }catch(\Exception $e){
-            Log::error($e->getMessage());
-            return response()->json(['message' => 'Something went wrong. Please try again later.'], 500);
+            Log::info($e->getMessage());
+            return response()->json(['message' => $e->getMessage()], 500);
         }
     }
 }

@@ -15,15 +15,23 @@ class QuotationProduct extends Model
 
     protected $fillable = [
         'quote_information_id',
+        'selected_quote_id',
         'product',
         'sent_out_date',
+        'call_back_data',
         'status',
+        'user_profile_id',
     ];
 
     public function QouteComparison()
     {
         return $this->hasMany(SelectedQuote::class, 'quotation_product_id');
     }
+
+    // public function SelectedQuote()
+    // {
+    //     return $this->hasMany(SelectedQuote::class, 'quotation_product_id');
+    // }
 
     public function QuoteInformation()
     {
@@ -141,7 +149,6 @@ class QuotationProduct extends Model
         return null;
     }
 
-
     public static function getProductByUserProfileId($userProfileId)
     {
         $query = self::where('user_profile_id', $userProfileId)->where('status', 2)->get();
@@ -153,25 +160,25 @@ class QuotationProduct extends Model
 
     public function getRequestToBind()
     {
-        $query = $this->whereIn('status', [6, 15, 17, 18])->get();
+        $query = $this->whereIn('status', [6, 15, 17, 18, 24, 28])->get();
         return $query ? $query : null;
     }
 
     public function getBoundList()
     {
-        $query = $this->whereIn('status', [11, 20])->get();
+        $query = $this->whereIn('status', [11, 20, 26])->get();
         return $query ? $query : null;
     }
 
     public function getIncompleteBinding()
     {
-        $query = $this->where('status', 14)->get();
+        $query = $this->whereIn('status', [14, 23, 27])->get();
         return $query ? $query : null;
     }
 
     public function getBinding()
     {
-        $query = $this->whereIn('status', [12, 19])->get();
+        $query = $this->whereIn('status', [12, 19, 25])->get();
         return $query ? $query : null;
     }
 

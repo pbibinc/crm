@@ -1,3 +1,55 @@
+<style>
+    .message-box {
+        max-width: 70%;
+        clear: both;
+    }
+
+    .message-box.sender {
+        margin-left: auto;
+        background-color: #DCF8C6;
+
+        /* Green */
+        color: black;
+        border-radius: 10px 0px 10px 10px !important;
+    }
+
+    .message-box.receiver {
+        background-color: #f1f1f1;
+        color: black;
+        padding: 10px;
+        border-radius: 0px 10px 10px 10px !important;
+    }
+
+    .message-box.receiver.danger {
+        background-color: #f8d7da;
+        color: black;
+        padding: 10px;
+        border-radius: 0px 10px 10px 10px !important;
+    }
+
+    .message-timestamp {
+        font-size: 0.8rem;
+        text-align: right;
+    }
+
+    .message-info {
+        font-size: 0.8rem;
+        margin-top: 5px;
+    }
+
+    .sender-info {
+        text-align: right;
+    }
+
+    .message-box.sender.danger {
+        margin-left: auto;
+        background-color: #f8d7da;
+        color: black;
+        border-radius: 10px 0px 10px 10px !important;
+
+    }
+</style>
+
 <div class="modal fade" id="notesModal" tabindex="-1" aria-labelledby="notesModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">

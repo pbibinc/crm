@@ -41,7 +41,7 @@ class PolicyDetail extends Model
 
     public function SelectedQuote()
     {
-        return $this->belongsTo(SelectedQuote::class, 'selected_quote_id');
+        return $this->hasOne(SelectedQuote::class, 'selected_quote_id');
     }
 
     public function NewPoicyList()
@@ -58,7 +58,6 @@ class PolicyDetail extends Model
         return $recentBound;
     }
 
-
     public function getPolicyDetailByLeadsId($leadsId)
     {
         $lead = Lead::find($leadsId);
@@ -70,15 +69,16 @@ class PolicyDetail extends Model
 
     public function getPolicyForRenewal()
     {
-        // Today's date
-        $today = Carbon::now()->format('Y-m-d');
+         // Today's date
+         $today = Carbon::now()->format('Y-m-d');
 
-        // Date 60 days from now
-        $dateRange = Carbon::now()->addDays(60)->format('Y-m-d');
+         // Date 60 days from now
+         $dateRange = Carbon::now()->addDays(60)->format('Y-m-d');
 
-        // Fetch policies with expiration dates between today and the next 60 days
-        $recentPolicies = self::where('expiration_date', '<=', $dateRange)->get();
-        return $recentPolicies ? $recentPolicies : null;
+          // Fetch policies with expiration dates between today and the next 60 days
+          $recentPolicies = self::whereBetween('expiration_date', [$today, $dateRange])->get();
+
+         return $recentPolicies;
     }
 
     public function getPolicyQuotedRenewal()
@@ -113,9 +113,42 @@ class PolicyDetail extends Model
         return $this->belongsTo(CancellationReport::class, 'policy_details_id');
     }
 
+    public function CancellationEndorsement()
+    {
+        return $this->hasOne(CancellationEndorsement::class, 'policy_details_id');
+    }
+
+    public function AssignedForRewritePolicy()
+    {
+
+        return $this->belongsToMany(UserProfile::class, 'assigned_rewrite_policy', 'policy_details_id', 'user_profile_id')
+        ->withPivot('assigned_at')
+        ->withTimestamps();
+    }
+
+    public function CancelledPolicyForRecall()
+    {
+        return $this->hasOne(CancelledPolicyForRecall::class, 'policy_details_id');
+    }
+
+    public function PolicyDetail()
+    {
+        return $this->hasMany(PolicyDetail::class, 'policy_details_id');
+    }
+
+    public function RecoverCancelledPolicy()
+    {
+        return $this->hasOne(RecoverCancelledPolicy::class, 'policy_details_id');
+    }
+
     public function getIntentList()
     {
         return $this->where('status', 'Intent')->get();
+    }
+
+    public function getRequestedByCustomerCancellationPolicyList()
+    {
+        return $this->where('status', 'Cancellation Request By Customer')->get();
     }
 
     public function getPolicyForRenewalProcess()
@@ -179,5 +212,45 @@ class PolicyDetail extends Model
         }
         return $totalSales;
     }
+
+    public function getRequestForCancellation()
+    {
+        return $this->whereIn('status', ['Request For Cancellation', 'Request For Cancellation Pending', 'Request For Cancellation Declined', 'Request For Cancellation Resend', 'Request For Cancellation Approved', 'Cancellation Endorsement']);
+    }
+
+    public function getPendingForCancellation()
+    {
+        return $this->whereIn('status', ['Request For Cancellation', 'Request For Cancellation Pending', 'Request For Cancellation Declined', 'Request For Cancellation Resend', 'Cancellation Endorsement']);
+    }
+
+    public function getSubjectForRewriteList()
+    {
+        return $this->whereIn('status', ['Subject For Rewrite', 'Rewrite']);
+    }
+
+    public function getCancelledPolicyList()
+    {
+        return $this->whereIn('status', ['Cancelled'])->doesntHave('cancelledPolicyForRecall');
+    }
+
+    public static function getForRewritePolicyByStatusAndUserProfileId($status, $userProfileId)
+    {
+        $statueses = is_array($status) ? $status : [$status];
+        return self::whereIn('status', $statueses)->whereHas('AssignedForRewritePolicy', function ($query) use ($userProfileId) {
+            $query->where('user_profile_id', $userProfileId);
+        });
+    }
+
+    public static function getForRewritePolicyByProductStatusAndUserProfileId($status, $userProfileId)
+    {
+        $statueses = is_array($status) ? $status : [$status];
+        return self::whereHas('AssignedForRewritePolicy', function ($query) use ($userProfileId) {
+            $query->where('user_profile_id', $userProfileId);
+        })->whereHas('QuotationProduct', function ($query) use ($statueses) {
+            $query->whereIn('status', $statueses);
+        });
+    }
+
+
 
 }

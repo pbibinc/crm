@@ -2,14 +2,10 @@
     use App\Models\PolicyDetail;
     use App\Models\SelectedQuote;
     use App\Models\PaymentInformation;
-    $policyDetail = PolicyDetail::where('quotation_product_id', $quoteProduct->id)->first();
-    $policyDetailsIds = PolicyDetail::where('quotation_product_id', $quoteProduct->id)->pluck('selected_quote_id');
-    $selectedQuoteData = SelectedQuote::where('quotation_product_id', $quoteProduct->id)
-        ->whereNotIn('id', $policyDetailsIds)
-        ->first();
+    $selectedQuoteData = SelectedQuote::find($quoteProduct->selected_quote_id);
     $selectedQuote = $selectedQuoteData ? $selectedQuoteData : null;
     $selectedQuoteId = $selectedQuote ? $selectedQuote->id : null;
-    $paymentInformation = PaymentInformation::where('selected_quote_id', $selectedQuoteId)->first();
+    $paymentInformation = PaymentInformation::where('selected_quote_id', $selectedQuoteId)->latest()->first();
 @endphp
 
 <style>
@@ -41,7 +37,7 @@
 </div>
 
 <div class="row">
-    <table id="qoutation-table" class="table table-bordered dt-responsive nowrap"
+    <table id="qoutation-table" class="table table-bordered dt-responsive nowrap qoutation-table"
         style="border-collapse: collapse; border-spacing: 0; width: 100%;">
         <thead>
             <tr>
@@ -70,7 +66,7 @@
                 <button class="btn btn-primary editSelectedQuote" id="editSelectedQuote">
                     EDIT QUOTE
                 </button>
-                @if ($paymentInformation)
+                @if ($paymentInformation && $paymentInformation->status == 'Pending')
                     <button class="btn btn-primary editMakePayment" id="makePaymentButton">
                         EDIT MAKE PAYMENT
                     </button>
@@ -86,7 +82,7 @@
     <div class="row">
         @include(
             'leads.appointed_leads.broker-quotation-forms.selected-quotation-form',
-            compact('quoteProduct'));
+            compact('quoteProduct', 'policyDetail', 'selectedQuote', 'paymentInformation'));
     </div>
 @endif
 
@@ -280,12 +276,61 @@
     </div>
 </div>
 
+@include(
+    'leads.appointed_leads.broker-quotation-forms.selected-quote-edit-form',
+    compact('selectedQuoteId'))
 @include('leads.appointed_leads.broker-forms.make-payment-form', compact('complianceOfficer'))
 
 <script>
     Dropzone.autoDiscover = false;
     var myDropzone;
     $(document).ready(function() {
+        var id = {{ $quoteProduct->id }};
+        $('.qoutation-table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                        'content')
+                },
+                url: "{{ route('get-general-liabilities-quotation-table') }}",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    id: id
+                }
+            },
+            columns: [{
+                    data: 'market_name',
+                    name: 'market_name'
+                },
+                {
+                    data: 'full_payment',
+                    name: 'full_payment'
+                },
+                {
+                    data: 'down_payment',
+                    name: 'down_payment'
+                },
+                {
+                    data: 'monthly_payment',
+                    name: 'monthly_payment'
+                },
+                {
+                    data: 'broker_fee',
+                    name: 'broker_fee'
+                },
+                {
+                    data: 'renewal_status',
+                    name: 'renewal_status'
+                },
+                {
+                    data: 'renewal-quoted_action',
+                    name: 'renewal-quoted_action',
+                    orderable: false
+                }
+            ]
+        });
         var url = "{{ env('APP_FORM_URL') }}" + "/upload";
         myDropzone = new Dropzone(".dropzone", {
             clickable: true,
@@ -387,52 +432,7 @@
             }
         });
 
-        var id = {{ $quoteProduct->id }};
-        $('#qoutation-table').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                        'content')
-                },
-                url: "{{ route('get-general-liabilities-quotation-table') }}",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    id: id
-                }
-            },
-            columns: [{
-                    data: 'market_name',
-                    name: 'market_name'
-                },
-                {
-                    data: 'full_payment',
-                    name: 'full_payment'
-                },
-                {
-                    data: 'down_payment',
-                    name: 'down_payment'
-                },
-                {
-                    data: 'monthly_payment',
-                    name: 'monthly_payment'
-                },
-                {
-                    data: 'broker_fee',
-                    name: 'broker_fee'
-                },
-                {
-                    data: 'renewal_status',
-                    name: 'renewal_status'
-                },
-                {
-                    data: 'renewal-quoted_action',
-                    name: 'renewal-quoted_action',
-                    orderable: false
-                }
-            ]
-        });
+
 
         //checkbox for recommended
         $('#reccomended').change(function() {
@@ -801,6 +801,7 @@
     //broker side make payment button
     $(document).on('click', '.makePaymentButton', function() {
         var id = "{{ $selectedQuoteId }}";
+        var policyId = "{{ $policyDetail->id }}";
         $.ajax({
             url: "{{ route('edit-selected-quote') }}",
             method: "POST",
@@ -824,6 +825,7 @@
                 $('#quoteComparisonId').val(id);
                 $('#selectedQuoteId').val(id);
                 $('#makePaymentEffectiveDate').val(response.data.effective_date);
+                $('#policyDetailId').val(policyId);
                 $('#makePaymentModal').modal('show');
 
             }
@@ -910,6 +912,117 @@
                         });
                     }
                 });
+            }
+        });
+    });
+
+    //edit make payment
+    $(document).on('click', '.editMakePayment', function() {
+        $.ajax({
+            url: "{{ route('get-payment-information') }}",
+            method: "GET",
+            data: {
+                id: "{{ $paymentInformation ? $paymentInformation->id : '' }}",
+                _token: "{{ csrf_token() }}"
+            },
+            dataType: "json",
+            success: function(response) {
+                var paymentMethod = response.paymentInformation.payment_method;
+                $('#paymentType').val(response.paymentInformation.payment_type);
+                $('#insuranceCompliance').val(response.paymentInformation.compliance_by);
+                $('#market').val(response.market.name);
+                $('#firstName').val(response.generalInformation.firstname);
+                $('#companyName').val(response.lead.company_name);
+                $('#makePaymentEffectiveDate').val(response.quoteComparison.effective_date);
+                $('#quoteNumber').val(response.quoteComparison.quote_no);
+                $('#paymentTerm').val(response.paymentInformation.payment_term);
+                $('#lastName').val(response.generalInformation.lastname);
+                $('#emailAddress').val(response.generalInformation.email_address);
+                // Set the payment method dropdown based on the fetched payment method
+                if (paymentMethod.toLowerCase() == 'checking') {
+                    $('#paymentMethodMakePayment').val('Checking').trigger('change');
+                } else {
+                    $('#paymentMethodMakePayment').val("Credit Card").trigger('change');
+                    // Handling other card types
+                    if (['Visa', 'Master Card', 'American Express'].includes(paymentMethod)) {
+                        $('#cardType').val(paymentMethod).trigger('change');
+                    } else {
+                        $('#cardType').val('Other').trigger('change');
+                        $('#otherCard').val(paymentMethod);
+                    }
+                }
+                $('#totalPremium').val(response.quoteComparison.full_payment);
+                $('#brokerFeeAmount').val(response.quoteComparison.broker_fee);
+                $('#chargedAmount').val(response.paymentInformation.amount_to_charged);
+                $('#note').val(response.paymentInformation.note);
+                $('#generalInformationId').val(response.generalInformation.id);
+                $('#leadsId').val(response.lead.id);
+                $('#quoteComparisonId').val(response.quoteComparison.id);
+                $('#paymentInformationId').val(response.paymentInformation.id);
+                $('#selectedQuoteId').val({{ $selectedQuoteId }});
+                $('#makePaymentModal').modal('show');
+            }
+        })
+    });
+
+    $(document).on('click', '.editSelectedQuote', function(e) {
+        e.preventDefault();
+        var baseUrl = "{{ url('quoatation/selected-quote') }}";
+        var id = "{{ $selectedQuoteId }}";
+        var url = `${baseUrl}/${id}/edit`;
+        $('#action').val('edit');
+        $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
+        $.ajax({
+            url: url,
+            method: "GET",
+            data: {
+                id: id,
+                _token: "{{ csrf_token() }}"
+            },
+            dataType: "json",
+            success: function(response) {
+                // console.log(response.data.id)
+                var url = `{{ asset('${response.media.filepath}') }}`;
+                var filename = response.data.basename;
+                console.log(response.data);
+                //pricing breakdown inputs
+                $('#selectedPremium').val(response.pricingBreakdown.premium);
+                $('#selectedEndorsements').val(response.pricingBreakdown.endorsements);
+                $('#selectedPolicyFee').val(response.pricingBreakdown.policy_fee);
+                $('#selectedInspectionFee').val(response.pricingBreakdown
+                    .inspection_fee);
+                $('#selectedStampingFee').val(response.pricingBreakdown.stamping_fee);
+                $('#selectedSurplusLinesTax').val(response.pricingBreakdown
+                    .surplus_lines_tax);
+                $('#selectedPlacementFee').val(response.pricingBreakdown.placement_fee);
+                $('#selectedMiscellaneousFee').val(response.pricingBreakdown
+                    .miscellaneous_fee);
+
+                //quote comparison inputs
+                $('#selectedMarketDropdown').val(String(response.data
+                    .quotation_market_id));
+                $('#selectedFullPayment').val(response.data.full_payment);
+                $('#selectedDownPayment').val(response.data.down_payment);
+                $('#selectedMonthlyPayment').val(response.data.monthly_payment);
+                $('#selectedNumberOfPayment').val(response.data.number_of_payments);
+                $('#selectedBrokerFee').val(response.data.broker_fee);
+                $('#selectedProduct_hidden_id').val(response.data.id);
+                $('#selectedProductId').val(response.data.quotation_product_id);
+                $('#selectedQuoteNo').val(response.data.quote_no);
+                $('#selectedCurrentMarketId').val(response.data.quotation_market_id);
+                $('#selectedEffectiveDate').val(response.data.effective_date);
+
+                $('#medias').hide();
+                $('#mediaLabelId').hide();
+                $('#selectedQuoteAction_button').val('Update');
+                if (response.data.recommended == 1) {
+                    $('#reccomended').prop('checked', true);
+                    $('#selectedRecommended_hidden').val(1);
+                } else {
+                    $('#reccomended').prop('checked', false);
+                    $('#selectedRecommended_hidden').val(0);
+                }
+                $('#editSelectedQuoteModal').modal('show');
             }
         });
     });

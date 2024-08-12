@@ -21,7 +21,7 @@ class PolicyForRenewalController extends Controller
     {
         $policyDetail = new PolicyDetail();
         $forRenewal = $policyDetail->getPolicyForRenewal();
-        $policiesData = $forRenewal->where('status', 'issued');
+        $policiesData = $forRenewal->whereIn('status', ['issued', 'renewal issued', 'reinstated']);
         if($request->ajax()){
             return DataTables($policiesData)
             ->addIndexColumn()

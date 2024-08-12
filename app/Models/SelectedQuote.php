@@ -55,7 +55,6 @@ class SelectedQuote extends Model
         return $this->belongsTo(SelectedPricingBreakDown::class, 'pricing_breakdown_id');
     }
 
-
     public function RenewalQuotation()
     {
         return $this->hasOne(RenewalQuote::class, 'quote_comparison_id');
@@ -64,6 +63,23 @@ class SelectedQuote extends Model
     public function PolicyDetail()
     {
         return $this->hasOne(PolicyDetail::class, 'selected_quote_id');
+    }
+
+    public function FinancingAgreement()
+    {
+        return $this->hasOne(FinancingAgreement::class, 'selected_quote_id', 'id');
+    }
+
+    public function TotalCost()
+    {
+        if($this->FinancingAgreement)
+        {
+            $totalMonthlyCost = (int)$this->monthly_payment * (int)$this->number_of_payments;
+            $totalCostForInstallment = $totalMonthlyCost + (int)$this->down_payment;
+            return $totalCostForInstallment;
+        }else{
+            return $this->full_payment;
+        }
     }
 
 }

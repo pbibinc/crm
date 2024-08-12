@@ -180,7 +180,7 @@ class CommercialAutoController extends BaseController
             $commercialAuto->save();
 
             $vehicleInformation = VehicleInformation::getVehicleInformation($commercialAutoId);
-            $oldVehicleInformation = $vehicleInformation;
+            $oldVehicleInformation = VehicleInformation::getVehicleInformation($commercialAutoId);
             // $oldVehicleInformation = $vehicleInformation->map(function($data){
             //     return [
             //         'year' => $data->year,
@@ -218,7 +218,7 @@ class CommercialAutoController extends BaseController
             }
 
             $driverInformation = DriverInformation::getDriverInformation($commercialAutoId);
-            $oldDriverInformation = $driverInformation;
+            $oldDriverInformation = DriverInformation::getDriverInformation($commercialAutoId);
             // $oldDriverInformation = $driverInformation->map(function($data){
             //     return [
             //         'fullname' => $data->fullname,
@@ -263,7 +263,7 @@ class CommercialAutoController extends BaseController
                 }
             }
             $supplementalQuestionare = CommercialAutoSupllemental::getCommercialSupplementalAuto($commercialAutoId);
-            $oldSupplementalQuestionare = $supplementalQuestionare;
+            $oldSupplementalQuestionare = CommercialAutoSupllemental::getCommercialSupplementalAuto($commercialAutoId);
             $supplementalUpdatedQuestionare = [
                 'commercial_auto_id' => $commercialAutoId,
                 'vehicle_maintenance_program' => $data['vehicle_maintenance_program'],
@@ -290,7 +290,7 @@ class CommercialAutoController extends BaseController
 
             //updatinf for expiration product
             $expirationAuto = ExpirationProduct::getExpirationProductByLeadIdProduct($id, 3);
-            $oldExpirationProduct = $expirationAuto;
+            $oldExpirationProduct = ExpirationProduct::getExpirationProductByLeadIdProduct($id, 3);
             $updatedExpirationProduct = [
                 'lead_id' => $data['leadId'],
                 'product' => 3,
@@ -327,10 +327,11 @@ class CommercialAutoController extends BaseController
                 );
             } else {
                 $haveLossRecord = HaveLoss::where('lead_id', $data['leadId'])->where('product', 3)->first();
+                $oldHaveLoss =  HaveLoss::where('lead_id', $data['leadId'])->where('product', 3)->first();
                 if($haveLossRecord) {
                     $haveLossRecord->delete();
                 }
-                $oldHaveLoss = $haveLossRecord;
+
             }
             $firstVehicle = $oldVehicleInformation->first();
             $otherVehicles = $oldVehicleInformation->slice(1);
@@ -502,5 +503,6 @@ class CommercialAutoController extends BaseController
         $changes = json_decode($leadHistroy->changes, true);
         return response()->json(['data' => $changes, 'Lead History Retrieved successfully']);
     }
+
 
 }

@@ -55,12 +55,6 @@
                     name: 'effective_date'
                 }
             ],
-            createdRow: function(row, data, dataIndex) {
-                var status = data.status;
-                if (status == 15) {
-                    $(row).addClass('table-warning');
-                }
-            },
             language: {
                 emptyTable: "No data available in the table"
             },
@@ -89,6 +83,12 @@
                     break;
                 case 15:
                     status = 12;
+                    break;
+                case 24:
+                    status = 25;
+                    break;
+                case 28:
+                    status = 25;
                     break;
                 default:
                     status = 12;

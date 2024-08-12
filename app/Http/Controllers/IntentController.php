@@ -96,7 +96,6 @@ class IntentController extends Controller
         {
             $policyDetail = new PolicyDetail();
             $data = $policyDetail->getIntentList();
-
             return DataTables($data)
             ->addIndexColumn()
             ->addColumn('quote_number', function($data){
@@ -129,7 +128,15 @@ class IntentController extends Controller
                 $CancellationReport = CancellationReport::where('policy_details_id', $data->id)->first();
                 return $CancellationReport->reinstated_eligibility_date;
             })
-            ->rawColumns(['quote_number'])
+            ->addColumn('action', function($data){
+                $leadId = $data->QuotationProduct->QuoteInformation->QuoteLead->leads_id;
+                $viewButton = '<a href="/appointed-list/'.$leadId.'" data-toggle="tooltip" data-id="'.$data->id.'" data-original-title="View" class="view btn btn-primary btn-sm viewCancellation"><i class="ri-eye-line"></i></a>';
+                $intentInformatioViewButton = '<button type="button" class="btn btn-warning btn-sm waves-effect waves-light intentInformatioViewButton" id="'.$data->id.'"><i class="ri ri-creative-commons-nc-line"></i></button>';
+                $cancelButton = '<button type="button" class="btn btn-danger btn-sm waves-effect waves-light cancelButton" id="'.$data->id.'"><i class="mdi mdi-book-cancel-outline"></i></button>';
+                $requestForApprovalButton = '<button type="button" class="btn btn-success btn-sm waves-effect waves-light requestForApproval" id="'.$data->id.'"><i class="mdi mdi-book-information-variant"></i></button>';
+                return $viewButton . ' ' . $requestForApprovalButton . ' ' . $cancelButton;
+            })
+            ->rawColumns(['quote_number', 'action'])
             ->make(true);
         }
     }

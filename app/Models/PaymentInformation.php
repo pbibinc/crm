@@ -52,7 +52,6 @@ class PaymentInformation extends Model
         return $data;
     }
 
-
     public function getPaymentInformationByLeadId($id)
     {
         $quoteInformationData = [];

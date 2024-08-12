@@ -4,6 +4,7 @@
     @include('leads.appointed_leads.renewal-quotation-forms.quoation-form', [
         'generalInformation' => $generalInformation,
         'quationMarket' => $quationMarket->getMarketByProduct('General Liability'),
+        'policyDetail' => $policyDetail,
         'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
             'General Liability',
             $lead->quoteLead->QuoteInformation->id),

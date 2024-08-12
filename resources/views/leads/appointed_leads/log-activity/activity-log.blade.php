@@ -141,6 +141,38 @@
                         @endforeach
                     </ul>
                 </div>
+            @elseif(isset($changes->changes) && $changes->type == 'general-liabilities-update')
+                <div class="cd-timeline-img cd-success">
+                    <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
+                        class="me-3 rounded-circle avatar-xs" alt="user-pic">
+                </div>
+                <div class="cd-timeline-content">
+                    <p class="mb-0 text-muted font-14 mb-3">General Liability Updated By:
+                        {{ $leadHistory->userProfile->fullName() }}.</p>
+                    <span
+                        class="cd-date ">{{ \Carbon\Carbon::parse($changes->sent_out_date)->format('M-j-Y g:iA') }}</span>
+                    <p>
+                        <button class="btn btn-sm btn-outline-primary viewChangesButton" value="{{ $leadHistory->id }}"
+                            id="{{ $leadHistory->lead_id }}" form="general-liabilities-form">View
+                            Changes</button>
+                    </p>
+                </div>
+            @elseif(isset($changes->changes) && $changes->type == 'workers-compensation-update')
+                <div class="cd-timeline-img cd-success">
+                    <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
+                        class="me-3 rounded-circle avatar-xs" alt="user-pic">
+                </div>
+                <div class="cd-timeline-content">
+                    <p class="mb-0 text-muted font-14 mb-3">Workers Compensation Updated By:
+                        {{ $leadHistory->userProfile->fullName() }}.</p>
+                    <span
+                        class="cd-date ">{{ \Carbon\Carbon::parse($changes->sent_out_date)->format('M-j-Y g:iA') }}</span>
+                    <p>
+                        <button class="btn btn-sm btn-outline-primary viewChangesButton" value="{{ $leadHistory->id }}"
+                            id="{{ $leadHistory->lead_id }}" form="workers-compensation-form">View
+                            Changes</button>
+                    </p>
+                </div>
             @elseif(isset($changes->changes) && $changes->type == 'commercial-auto-update')
                 <div class="cd-timeline-img cd-success">
                     <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
@@ -152,8 +184,75 @@
                     <span
                         class="cd-date ">{{ \Carbon\Carbon::parse($changes->sent_out_date)->format('M-j-Y g:iA') }}</span>
                     <p>
-                        <button class="btn btn-sm btn-outline-primary viewPreviousCommercialAutoButton"
-                            value="{{ $leadHistory->id }}" id="{{ $leadHistory->lead_id }}">View
+                        <button class="btn btn-sm btn-outline-primary viewChangesButton" value="{{ $leadHistory->id }}"
+                            id="{{ $leadHistory->lead_id }}" form="commercial-auto-form">View
+                            Changes</button>
+                    </p>
+                </div>
+            @elseif(isset($changes->changes) && $changes->type == 'excess-liability-update')
+                <div class="cd-timeline-img cd-success">
+                    <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
+                        class="me-3 rounded-circle avatar-xs" alt="user-pic">
+                </div>
+                <div class="cd-timeline-content">
+                    <p class="mb-0 text-muted font-14 mb-3">Excess Liability Updated By:
+                        {{ $leadHistory->userProfile->fullName() }}.</p>
+                    <span
+                        class="cd-date ">{{ \Carbon\Carbon::parse($changes->sent_out_date)->format('M-j-Y g:iA') }}</span>
+                    <p>
+                        <button class="btn btn-sm btn-outline-primary viewChangesButton" value="{{ $leadHistory->id }}"
+                            id="{{ $leadHistory->lead_id }}" form="excess-liability-form">View
+                            Changes</button>
+                    </p>
+                </div>
+            @elseif(isset($changes->changes) && $changes->type == 'tools-equipment-update')
+                <div class="cd-timeline-img cd-success">
+                    <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
+                        class="me-3 rounded-circle avatar-xs" alt="user-pic">
+                </div>
+                <div class="cd-timeline-content">
+                    <p class="mb-0 text-muted font-14 mb-3">Tools Equipment Updated By:
+                        {{ $leadHistory->userProfile->fullName() }}.</p>
+                    <span
+                        class="cd-date ">{{ \Carbon\Carbon::parse($changes->sent_out_date)->format('M-j-Y g:iA') }}</span>
+                    <p>
+                        <button class="btn btn-sm btn-outline-primary viewChangesButton"
+                            value="{{ $leadHistory->id }}" id="{{ $leadHistory->lead_id }}"
+                            form="tools-equipment-form">View
+                            Changes</button>
+                    </p>
+                </div>
+            @elseif(isset($changes->changes) && $changes->type == 'builders-risk-update')
+                <div class="cd-timeline-img cd-success">
+                    <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
+                        class="me-3 rounded-circle avatar-xs" alt="user-pic">
+                </div>
+                <div class="cd-timeline-content">
+                    <p class="mb-0 text-muted font-14 mb-3">Builders Risk Updated By:
+                        {{ $leadHistory->userProfile->fullName() }}.</p>
+                    <span
+                        class="cd-date ">{{ \Carbon\Carbon::parse($changes->sent_out_date)->format('M-j-Y g:iA') }}</span>
+                    <p>
+                        <button class="btn btn-sm btn-outline-primary viewChangesButton"
+                            value="{{ $leadHistory->id }}" id="{{ $leadHistory->lead_id }}"
+                            form="builders-risk-form">View
+                            Changes</button>
+                    </p>
+                </div>
+            @elseif(isset($changes->changes) && $changes->type == 'business-owners-policy-update')
+                <div class="cd-timeline-img cd-success">
+                    <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
+                        class="me-3 rounded-circle avatar-xs" alt="user-pic">
+                </div>
+                <div class="cd-timeline-content">
+                    <p class="mb-0 text-muted font-14 mb-3">Business Owners Policy Updated By:
+                        {{ $leadHistory->userProfile->fullName() }}.</p>
+                    <span
+                        class="cd-date ">{{ \Carbon\Carbon::parse($changes->sent_out_date)->format('M-j-Y g:iA') }}</span>
+                    <p>
+                        <button class="btn btn-sm btn-outline-primary viewChangesButton"
+                            value="{{ $leadHistory->id }}" id="{{ $leadHistory->lead_id }}"
+                            form="business-owners-form">View
                             Changes</button>
                     </p>
                 </div>
@@ -163,10 +262,11 @@
 </section>
 <script>
     $(document).ready(function() {
-        $('.viewPreviousCommercialAutoButton').on('click', function(e) {
+        $('.viewChangesButton').on('click', function(e) {
             e.preventDefault();
             var activityId = $(this).val();
             var id = $(this).attr('id');
+            var form = $(this).attr('form');
             var url = "{{ env('APP_FORM_URL') }}";
             $.ajax({
                 url: "{{ route('list-lead-id') }}",
@@ -180,7 +280,7 @@
                     activityId: activityId
                 },
             });
-            window.open(`${url}commercial-auto-form/previous-product-information`, "s_blank",
+            window.open(`${url}${form}/previous-product-information`, "s_blank",
                 "width=1000,height=849")
         });
     });

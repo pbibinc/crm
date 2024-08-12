@@ -13,6 +13,7 @@
                                     <tr>
                                         <th>Company Name</th>
                                         <th>Tel Num</th>
+                                        <th>Created At</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -46,36 +47,18 @@
                         name: 'tel_num'
                     },
                     {
+                        data: 'formatted_created_at',
+                        name: 'formatted_created_at'
+                    },
+                    {
                         data: 'action',
                         name: 'action'
                     }
+                ],
+                order: [
+                    [2, 'asc']
                 ]
             });
-            // $('#appointedCallback').DataTable({
-            //     processing: true,
-            //     serverSide: true,
-            //     headers: {
-            //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            //     },
-            //     ajax: {
-            //         url: "{{ route('leads-appointed-callback') }}"
-            //     },
-            //     columns: [{
-            //             data: 'company_name',
-            //             name: 'company_name'
-            //         },
-            //         {
-            //             data: 'date_formatted',
-            //             name: 'date_formatted'
-            //         },
-            //         {
-            //             data: 'action',
-            //             name: 'action'
-            //         },
-
-            //     ]
-            // });
-
         })
     </script>
 @endsection

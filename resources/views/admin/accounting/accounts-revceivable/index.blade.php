@@ -36,6 +36,7 @@
                                             <th>Company Name</th>
                                             <th>Requested By</th>
                                             <th>Requested Date</th>
+                                            <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -45,6 +46,8 @@
                     </div>
                 </div>
             </div>
+
+            @include('leads.appointed_leads.log-activity.note-modal')
 
         </div>
 
@@ -218,6 +221,7 @@
                             <input type="hidden" value="" id="hiddenPaymentType" name="hiddenPaymentType">
                             <input type="hidden" value="" id="quoteComparisonId" name="quoteComparisonId">
                             <input type="hidden" value="" id="quotationProductId" name="quotationProductId">
+                            <input type="hidden" value="" id="policyDetailId" name="policyDetailId">
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button"
@@ -243,8 +247,8 @@
                         <div class="row mb-3">
                             {{-- <label for="notesDescription">Description:</label> --}}
                             <div>
-                                <textarea required="" class="form-control" rows="5" placeholder="Type a note..." id="noteDescription"
-                                    required></textarea>
+                                <textarea required="" class="form-control noteDescription" rows="5" placeholder="Type a note..."
+                                    id="noteDescription" required></textarea>
                                 <div class="invalid-feedback" id="noteDescriptionError"></div>
                             </div>
                         </div>
@@ -255,8 +259,8 @@
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" id="bactkToViewInforationButton">Back</button>
-                        <button type="button" class="btn btn-outline-primary waves-effect waves-light" id="logNote"><i
-                                class="ri-send-plane-fill"></i>Log Note</button>
+                        <button type="button" class="btn btn-outline-primary waves-effect waves-light logDeclinedNote"
+                            id="logDeclinedNote"><i class="ri-send-plane-fill"></i>Log Note</button>
                     </div>
 
                 </div>
@@ -265,6 +269,7 @@
 
 
     </div>
+
     <script>
         Dropzone.autoDiscover = false;
         var myDropzone;
@@ -307,6 +312,10 @@
                         name: 'requested_date'
                     },
                     {
+                        data: 'payment-information_status',
+                        name: 'payment-information_status'
+                    },
+                    {
                         data: 'action',
                         name: 'action'
                     }
@@ -314,15 +323,76 @@
                 order: [
                     [5, 'desc']
                 ],
-                createdRow: function(row, data, dataIndex) {
-                    var status = data.status;
-                    if (status == 13) {
-                        $(row).addClass('table-danger');
-                    } else if (status == 16) {
-                        $(row).addClass('table-warning');
-                    }
-                }
 
+            });
+
+            $(document).on('click', '.logDeclinedNote', function(e) {
+                e.preventDefault();
+                console.log('log');
+                var noteTitle = $('#declinedHiddenTitle').val();
+                var status = 'declined-make-payment';
+                var productId = $('#declinedHiddenProductId').val();
+                var leadId = $('#declinedLeadId').val();
+                var noteDescription = $('.noteDescription').val();
+                var userToNotify = $('#userToNotify').val();
+                var paymentInformationId = $('#paymentInformationId').val();
+                console.log(noteDescription);
+                $.ajax({
+                    url: "{{ route('create-notes') }}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                            'content')
+                    },
+                    method: "POST",
+                    data: {
+                        icon: 'error',
+                        userToNotify: [userToNotify],
+                        noteTitle: noteTitle,
+                        noteDescription: noteDescription,
+                        leadId: leadId,
+                        status: status,
+                        productId: productId
+                    },
+                    success: function(data) {
+                        $.ajax({
+                            url: "{{ route('declined-payment') }}",
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                    'content')
+                            },
+                            method: "POST",
+                            data: {
+                                id: productId,
+                                status: 13,
+                                paymentInformationId: paymentInformationId
+                            },
+                            success: function() {
+                                Swal.fire({
+                                    title: 'Success',
+                                    text: 'has been saved',
+                                    icon: 'success'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        $('#declinedPaymentForm').modal(
+                                            'hide');
+                                        $('#account-payable-table')
+                                            .DataTable().ajax.reload();
+                                    }
+                                });
+                            },
+                            error: function() {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: 'Something went wrong',
+                                    icon: 'error'
+                                });
+                            }
+                        })
+                    },
+                    error: function(jqXHR, testStatus, errorThrown) {
+
+                    }
+                });
             });
 
             myDropzone = new Dropzone(".dropzone", {
@@ -516,71 +586,55 @@
                 $('#dataModal').modal('show');
             });
 
-            $('#logNote').on('click', function(e) {
-                e.preventDefault();
-                var noteTitle = $('#declinedHiddenTitle').val();
-                var status = 'declined-make-payment';
-                var productId = $('#declinedHiddenProductId').val();
-                var leadId = $('#declinedLeadId').val();
-                var noteDescription = $('#noteDescription').val();
-                var userToNotify = $('#userToNotify').val();
-                var paymentInformationId = $('#paymentInformationId').val();
-                $.ajax({
-                    url: "{{ route('create-notes') }}",
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                            'content')
-                    },
-                    method: "POST",
-                    data: {
-                        icon: 'error',
-                        userToNotify: [userToNotify],
-                        noteTitle: noteTitle,
-                        noteDescription: noteDescription,
-                        leadId: leadId,
-                        status: status,
-                        productId: productId
-                    },
-                    success: function(data) {
-                        $.ajax({
-                            url: "{{ route('change-quotation-status') }}",
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                                    'content')
-                            },
-                            method: "POST",
-                            data: {
-                                id: productId,
-                                status: 13,
-                                paymentInformationId: paymentInformationId
-                            },
-                            success: function() {
-                                Swal.fire({
-                                    title: 'Success',
-                                    text: 'has been saved',
-                                    icon: 'success'
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        $('#account-payable-table')
-                                            .DataTable().ajax.reload();
-                                    }
-                                });
-                            },
-                            error: function() {
-                                Swal.fire({
-                                    title: 'Error',
-                                    text: 'Something went wrong',
-                                    icon: 'error'
-                                });
-                            }
-                        })
-                    },
-                    error: function(jqXHR, testStatus, errorThrown) {
 
+
+            $(document).on('click', '.viewNoteButton', function() {
+                var id = $(this).attr('id');
+                var url = `/note/${id}/get-lead-note`;
+                var departmentIds = [2, 3];
+                $.ajax({
+                    url: url,
+                    type: "get",
+                    data: {
+                        id: id
+                    },
+                    success: function(response) {
+                        var html =
+                            '<div class="scrollable" style="height: 500px; overflow-y: auto;">';
+                        var notes = Array.isArray(response.notes) ? response.notes : Array
+                            .isArray(response) ? response : [];
+                        notes.forEach(function(note) {
+                            var noteClass = '';
+                            if (note.status === 'declined-make-payment' || note
+                                .status === 'Declined Binding') {
+                                noteClass = 'danger';
+                            } else if (note.status === 'yet-another-status') {
+                                noteClass = 'yet-another-class';
+                            }
+                            var senderOrReceiverClass = (response.userProfileId == note
+                                .user_profile_id) ? 'sender' : 'receiver';
+                            var userInfo = (response.userProfileId == note
+                                    .user_profile_id) ?
+                                'sender-info' : '';
+                            var marginLeft = (response.userProfileId != note
+                                    .user_profile_id) ?
+                                'style="margin-left: 10px"' : '';
+
+                            html += `<div class="message-box ${senderOrReceiverClass} p-3 rounded ${noteClass}">
+                        <div><strong>${note.title}</strong></div>
+                        <div class="message-content">${note.description}</div>
+                    </div>
+                    <div class="message-info ${userInfo}" ${marginLeft}>
+                        <p class="note-date font-2 text-muted">sent by: ${note.user_profile.american_name} ${new Date(note.created_at).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}</p>
+                    </div>`;
+                        });
+                        $('#notesContainer').html(html);
+                        $('#departmentIds').val(JSON.stringify(departmentIds));
+                        $('#leadId').val(id);
+                        $('#notesModal').modal('show');
                     }
                 });
             });
-
         })
     </script>
 @endsection

@@ -6,6 +6,7 @@ use App\Events\SendRenewalReminderEvent;
 use App\Http\Controllers\Controller;
 use App\Models\BuildersRiskPolicyDetails;
 use App\Models\BusinessOwnersPolicyDetails;
+use App\Models\CancellationReport;
 use App\Models\CommercialAutoPolicy;
 use App\Models\ExcessLiabilityInsurancePolicy;
 use App\Models\GeneralLiabilities;
@@ -187,6 +188,7 @@ class PoliciesController extends Controller
             DB::beginTransaction();
             $userId = auth()->user()->id;
             $userProfileId = UserProfile::where('user_id', $userId)->first();
+
             $policyDetail = PolicyDetail::find($id);
             $policyDetail->status = $request['status'];
             $policyDetail->save();
@@ -197,7 +199,7 @@ class PoliciesController extends Controller
                 event(new SendRenewalReminderEvent($leadId, $policyDetail->policy_number, $quotationProduct->product, $userProfileId->id));
             }
             DB::commit();
-            return response()->json(['sucess' => 'Success']);
+            return response()->json(['sucess' => 'Success'], 200);
         }catch(\Exception $e){
             Log::info($e);
             return response()->json(['error' => $e->getMessage()], 500);
@@ -224,122 +226,88 @@ class PoliciesController extends Controller
             })
             ->addColumn('policyStatus', function($data){
                 $policyStatus = $data->status;
-                $statusLabel = '';
-                $class = '';
-                switch ($policyStatus){
+                $statusLabel = $policyStatus;;
+                $class = 'bg-secondary';
+                switch ($policyStatus) {
                     case 'issued':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-success';
-                        break;
                     case 'Renewal Issued':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-success';
-                        break;
                     case 'Rewrite':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-success';
-                        break;
-                    case 'Cancelled':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-danger';
-                        break;
-                    case 'Declined':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-danger';
-                        break;
-                    case 'Endorsing':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-warning';
-                        break;
-                    case 'Notice of Cancellation':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-warning';
-                        break;
-                    case 'Renewal Notice of Cancellation':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-warning';
-                        break;
-                    case 'Intent':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-warning';
-                        break;
-                    case 'Potential For Rewrite':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-warning';
-                        break;
-                    case 'Not Interested':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-warning';
-                        break;
-                    case 'Process Renewal':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-warning';
-                        break;
-                    case 'Renewal Quote':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-warning';
-                        break;
                     case 'Renewal Quoted':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-success';
-                        break;
-                    case 'Renewal Quoted Assigned':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-warning';
-                        break;
-                    case 'Follow Up Renewal':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-warning';
-                        break;
-                    case 'Renewal Make A Payment':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-warning';
-                        break;
-                    case 'Renewal Declined Payment':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-danger';
-                        break;
-                    case 'Renewal Request To Bind':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-warning';
-                        break;
-                    case 'Renewal Binding Declined':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-danger';
-                        break;
-                    case 'Renewal Payment Processed':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-success';
-                        break;
                     case 'renewal issued':
-                        $statusLabel = $policyStatus;
+                    case 'Renewal Payment Processed':
+                    case 'Reinstate':
+                    case 'recovered policy issued':
                         $class = 'bg-success';
                         break;
-                    case 'old policy':
-                        $statusLabel = $policyStatus;
-                        $class = 'bg-secondary';
+
+                    case 'Cancelled':
+                    case 'Declined':
+                    case 'Renewal Declined Payment':
+                    case 'Renewal Binding Declined':
+                    case 'Cancellation Request By Customer':
+                        $class = 'bg-danger';
                         break;
-                    default:
-                        $statusLabel = $policyStatus;
+
+                    case 'Endorsing':
+                    case 'Notice of Cancellation':
+                    case 'Renewal Notice of Cancellation':
+                    case 'Intent':
+                    case 'Potential For Rewrite':
+                    case 'Not Interested':
+                    case 'Process Renewal':
+                    case 'Renewal Quote':
+                    case 'Renewal Quoted Assigned':
+                    case 'Follow Up Renewal':
+                    case 'Renewal Make A Payment':
+                    case 'Renewal Request To Bind':
+                        $class = 'bg-warning';
+                        break;
+
+                    case 'old policy':
                         $class = 'bg-secondary';
                         break;
                 }
                 // $status = now()->isAfter($effectiveDate) ? 'Inactive' : 'Active';
                 // $class = now()->isAfter($effectiveDate) ? 'bg-danger' : 'bg-success';
+                // Special case for 'Notice of Cancellation'
+                if ($policyStatus === 'Notice of Cancellation') {
+                   $cancellationStatus = CancellationReport::where('policy_details_id', $data->id)->latest()->first();
+                   $statusLabel = $cancellationStatus->type_of_cancellation ?? $policyStatus;
+                }
                 return "<span class='badge {$class}'>$statusLabel</span>";
             })
             ->addColumn('effectiveDate', function($data){
                 $expirationDate = $data->expiration_date;
                 $effectiveDate = $data->effective_date;
-                // $status = now()->isAfter($expirationDate) ? expirationDate : 'Active';
-                $class = now()->isAfter($expirationDate) ? 'bg-danger' : 'bg-success';
-                return "<span class='badge {$class}'>$effectiveDate - $expirationDate</span>";
+
+                $class = now()->isAfter($expirationDate) || $data->status == 'Dead Policy'  ? 'bg-danger' : 'bg-success';
+                return"$effectiveDate - $expirationDate";
             })
             ->addColumn('action', function($data){
+                if($data->status == 'Intent' || $data->status == 'Notice of Cancellation'){
+                    $cancelButton = '<button type="button" class="btn btn-danger btn-sm waves-effect waves-light intentCancelButton" id="'.$data->id.'"><i class="mdi mdi-book-cancel-outline"></i></button>';
+                }else{
+                    $cancelButton = '<button type="button" class="btn btn-danger btn-sm waves-effect waves-light cancelButton" id="'.$data->id.'"><i class="mdi mdi-book-cancel-outline"></i></button>';
+                }
                 $viewButton = '<button type="button" class="btn btn-primary btn-sm waves-effect waves-light viewButton" id="'.$data->id.'"><i class="ri-eye-line"></i></button>';
                 $uploadFileButton = '<button type="button" class="btn btn-success btn-sm waves-effect waves-light uploadPolicyFileButton" id="'.$data->id.'"><i class="ri-upload-2-line"></i></button>';
-                $cancelButton = '<button type="button" class="btn btn-danger btn-sm waves-effect waves-light cancelButton" id="'.$data->id.'"><i class="mdi mdi-book-cancel-outline"></i></button>';
-                return $viewButton. ' ' . $uploadFileButton .  ' ' . $cancelButton;
+                $editButton = '<button type="button" class="btn btn-info btn-sm waves-effect waves-light editButton" id="'.$data->id.'"><i class="ri-pencil-line"></i></button>';
+                $auditInformationButton = '<button type="button" class="btn btn-warning btn-sm waves-effect waves-light auditInformationButton" id="'.$data->id.'"><i class="ri-file-list-3-line"></i></button>';
+                $dropdown = '
+                <div class="dropdown">
+                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="actionMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                        Actions
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="actionMenu">
+                        <li><a class="dropdown-item viewButton text-primary" href="#" id="'.$data->id.'"><i class="ri-eye-line"></i> View</a></li>
+                        <li><a class="dropdown-item editButton text-info" href="#" id="'.$data->id.'"><i class="ri-pencil-line"></i> Edit</a></li>
+                        <li><a class="dropdown-item uploadPolicyFileButton text-success" href="#" id="'.$data->id.'"><i class="ri-upload-2-line"></i> Upload File</a></li>
+                        <li><a class="dropdown-item auditInformationButton text-warning" href="#" id="'.$data->id.'"><i class="mdi mdi-book-search-outline"></i> Audit Info</a></li>
+                        <li><a class="dropdown-item '.($data->status == 'Intent' || $data->status == 'Notice of Cancellation' ? 'intentCancelButton' : 'cancelButton').' text-danger" href="#" id="'.$data->id.'"><i class="mdi mdi-book-cancel-outline"></i> Cancel</a></li>
+                    </ul>
+                </div>';
+                // return $viewButton. ' ' .  ' '. $editButton . ' ' . $uploadFileButton .  ' '. $auditInformationButton . ' ' . $cancelButton;
+                return $dropdown;
             })
             ->rawColumns(['policyStatus', 'action', 'effectiveDate'])
             ->make(true);
@@ -378,6 +346,25 @@ class PoliciesController extends Controller
 
             DB::commit();
             return response()->json(['success' => 'Success']);
+        }catch(\Exception $e){
+            DB::rollBack();
+            Log::info($e);
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function changePolicyStatus(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+            $data = $request->all();
+
+            $policyDetail = PolicyDetail::find($data['id']);
+            $policyDetail->status = $data['status'];
+            $policyDetail->save();
+
+            DB::commit();
+            return response()->json(['success' => 'Success'], 200);
         }catch(\Exception $e){
             DB::rollBack();
             Log::info($e);

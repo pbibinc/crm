@@ -30,4 +30,19 @@ class Metadata extends Model
     {
         return $this->hasOne(PolicyDetail::class, 'media_id');
     }
+
+    public function lead()
+    {
+        return $this->belongsToMany(Lead::class, 'lead_media_table', 'metadata_id', 'lead_id');
+    }
+
+    public function auditInformation()
+    {
+        return $this->hasOne(AuditInformation::class, 'audit_letter_id');
+    }
+
+    public function auditRequiredFile()
+    {
+        return $this->belongsToMany(AuditInformation::class, 'audit_required_file', 'media_id', 'audit_information_id');
+    }
 }

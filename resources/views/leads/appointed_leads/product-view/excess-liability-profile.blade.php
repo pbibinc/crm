@@ -64,3 +64,24 @@
         {{ \Carbon\Carbon::parse($generalInformation->excessLiability->general_liability_expiration_date)->format('M-j-Y') }}
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+        $('.editExcessLiability').on('click', function() {
+            var url = "{{ env('APP_FORM_URL') }}";
+            var leadId = $(this).val();
+            $.ajax({
+                url: "{{ route('list-lead-id') }}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: 'json',
+                method: 'POST',
+                data: {
+                    leadId: leadId
+                },
+            });
+            window.open(`${url}excess-liability-form/edit`, "s_blank",
+                "width=1000,height=849")
+        });
+    });
+</script>

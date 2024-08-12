@@ -49,6 +49,7 @@
 
     }
 </style>
+
 <div class="row">
     <table id="requestToBind" class="table table-bordered dt-responsive nowrap requestToBind"
         style="border-collapse: collapse; border-spacing: 0; width: 100%;">
@@ -66,10 +67,32 @@
     </table>
 </div>
 
+<div class="modal fade" id="resendRTBModal" tabindex="-1" aria-labelledby="addQuoteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fileViewingModalTitle">File Upload</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="" class="dropzone mt-4 border-dashed" id="resendRTBDropzoneBrokerLead"
+                    enctype="multipart/form-data">
+                </form>
+                <input type="hidden" id="mediaIds" value="">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="changeStatusButton" class="btn btn-success">Resend</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @include('leads.appointed_leads.log-activity.note-modal')
 
 <script>
     $(document).ready(function() {
+
         $('.requestToBind').DataTable({
             processing: true,
             serverSide: true,
@@ -155,10 +178,30 @@
             });
         });
 
-        $(document).on('click', '.resendBindButton', function() {
-            var id = $(this).attr('id');
-            console.log(id);
-        });
+        // $(document).on('click', '.resendBindButton', function() {
+        //     var id = $(this).attr('id');
+        //     $.ajax({
+        //         url: "{{ route('get-binding-docs') }}",
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         },
+        //         method: "POST",
+        //         data: {
+        //             id: id
+        //         },
+        //         success: function(data) {
+        //             addExistingFiles(data);
+        //             $('#resendRTBModal').modal('show');
+        //         },
+        //         error: function() {
+        //             Swal.fire({
+        //                 title: 'Error',
+        //                 text: 'Something went wrong',
+        //                 icon: 'error'
+        //             });
+        //         }
+        //     });
+        // });
 
     });
 </script>

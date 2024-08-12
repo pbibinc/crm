@@ -148,6 +148,7 @@
                     <input type="hidden" name="declinedHiddenProductId" id="declinedHiddenProductId">
                     <input type="hidden" id="declinedHiddenTitle" name="declinedHiddenTitle">
                     <input type="hidden" id="userToNotify" name="userToNotify">
+                    <input type="hidden" id="bindingProductStatus" name="bindingProductStatus">
                 </div>
             </div>
             <div class="modal-footer">
@@ -173,6 +174,9 @@
                     break;
                 case 12:
                     status = 11;
+                    break;
+                case 25:
+                    status = 26;
                     break;
                 default:
                     status = 11;
@@ -243,6 +247,20 @@
             var leadId = $('#declinedLeadId').val();
             var noteDescription = $('#noteDescription').val();
             var userToNotify = $('#userToNotify').val();
+            var bindingProductStatus = $('#bindingProductStatus').val();
+            var status = 14;
+            if (bindingProductStatus == 19) {
+                status = 23;
+            } else if (bindingProductStatus == 18) {
+                status = 23;
+            } else if (bindingProductStatus == 25) {
+                status = 27;
+            } else if (bindingProductStatus == 28) {
+                status = 27;
+            } else {
+                status = 14;
+            }
+
             $.ajax({
                 url: "{{ route('create-notes') }}",
                 headers: {
@@ -259,6 +277,7 @@
                     status: 'Declined Binding'
                 },
                 success: function(data) {
+                    // $productStatus = $product
                     $.ajax({
                         url: "{{ route('change-quotation-status') }}",
                         headers: {
@@ -268,7 +287,7 @@
                         method: "POST",
                         data: {
                             id: productId,
-                            status: 14,
+                            status: status,
                         },
                         success: function() {
                             Swal.fire({
@@ -281,8 +300,9 @@
                                         .DataTable().ajax.reload();
                                     $('.incompleteBindingTable')
                                         .DataTable().ajax.reload();
-                                    $('#declinedBindingModal').modal(
-                                        'hide')
+                                    $('#declinedBindingModal')
+                                        .modal(
+                                            'hide')
                                 }
                             });
                         },
@@ -300,5 +320,6 @@
                 }
             });
         });
+
     });
 </script>

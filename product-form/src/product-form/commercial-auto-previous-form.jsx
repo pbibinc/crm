@@ -51,6 +51,7 @@ const CommercialAutoPreviousForm = () => {
             ? storeWorkersCompData?.feinValue
             : getCommercialAutoData()?.feinValue
     );
+
     const [ssn, setSsn] = useState(() =>
         storeWorkersCompData?.ssnValue
             ? storeWorkersCompData?.ssnValue
