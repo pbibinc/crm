@@ -50,6 +50,9 @@ class FinancingAgreement extends Model
         {
             $financingAgreement = [];
             $selectedQuote = SelectedQuote::find($data->selected_quote_id);
+            if(!$selectedQuote){
+                continue;
+            };
             $leadId = QuotationProduct::find($selectedQuote->quotation_product_id)->QuoteInformation->QuoteLead->leads->id;
             $financingAgreement[] = [
                 'lead_id' => $leadId,
@@ -61,4 +64,26 @@ class FinancingAgreement extends Model
         });
         return $data ? $data : [];
     }
+
+    // public function getCustomersPfa($leadId)
+    // {
+    //     // Assuming you have a method in SelectedQuote that can directly give you QuotationProducts
+    //     // that are linked to a specific lead ID through nested relationships.
+    //     $selectedQuotes = SelectedQuote::whereHas('quotationProduct.quoteInformation.quoteLead', function ($query) use ($leadId) {
+    //         $query->where('leads.id', $leadId);
+    //     })->get();
+
+    //     $financingAgreements = [];
+
+    //     foreach ($selectedQuotes as $selectedQuote) {
+    //         // Each selectedQuote should already be filtered by the leadId due to the whereHas clause above.
+    //         $data = $selectedQuote->quotationProduct; // Access the QuotationProduct directly if needed
+    //         $financingAgreements[] = [
+    //             'lead_id' => $leadId,
+    //             'data' => $data, // Adjust according to what 'data' needs to contain
+    //         ];
+    //     }
+
+    //     return $financingAgreements;
+    // }
 }
