@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Validation\ValidationException;
 
@@ -317,68 +318,75 @@ class BindingController extends Controller
 
     public function bindingViewList(Request $request)
     {
-        $quotationProduct = new QuotationProduct();
-        $data = $quotationProduct->getBinding();
-        $broker = new BrokerQuotation();
-        return DataTables::of($data)
-        ->addIndexColumn()
-        ->addColumn('policy_number', function($data){
-            if($data->status == 19 || $data->status == 25){
-                $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
-                $selectedQuote = SelectedQuote::find($data->selected_quote_id);
-                $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewBindingButton" type="renewal">'.$selectedQuote->quote_no.'</a>';
-            }else{
-                $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
-                $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewBindingButton" type="new">'.$selectedQuote->quote_no.'</a>';
-            }
-            return $policy_number;
-        })
-        ->addColumn('company_name', function($data){
-            $company_name = $data->QuoteInformation->QuoteLead->leads->company_name;
-            return $company_name;
-        })
-        ->addColumn('total_cost', function($data){
-            $quote_information = SelectedQuote::find($data->selected_quote_id);
-            return $quote_information->full_payment;
-        })
-        ->addColumn('requested_by', function($data) use($broker){
-            $userProfileFullName = '';
-            if ($data->status == 19) {
-                // Retrieve the policy detail based on quotation_product_id and status
-                $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)
-                                            ->where('status', 'Renewal Request To Bind')
-                                            ->first();
+        try{
+            $quotationProduct = new QuotationProduct();
+            $data = $quotationProduct->getBinding();
+            $broker = new BrokerQuotation();
+            return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('policy_number', function($data){
+                if($data->status == 19 || $data->status == 25){
+                    $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
+                    $selectedQuote = SelectedQuote::find($data->selected_quote_id);
+                    $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewBindingButton" type="renewal">'.$selectedQuote->quote_no.'</a>';
+                }else{
+                    $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
+                    $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewBindingButton" type="new">'.$selectedQuote->quote_no.'</a>';
+                }
+                return $policy_number;
+            })
+            ->addColumn('company_name', function($data){
+                $company_name = $data->QuoteInformation->QuoteLead->leads->company_name;
+                return $company_name;
+            })
+            ->addColumn('total_cost', function($data){
+                $quote_information = SelectedQuote::find($data->selected_quote_id);
+                return $quote_information->full_payment;
+            })
+            ->addColumn('requested_by', function($data) use($broker){
+                $userProfileFullName = '';
+                if ($data->status == 19) {
+                    // Retrieve the policy detail based on quotation_product_id and status
+                    $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)
+                                                ->where('status', 'Renewal Request To Bind')
+                                                ->first();
 
-                if ($policyDetail) {
-                    // Get the latest quoted renewal user profile
-                    $renewQuotedUserProfile = $policyDetail->quotedRenewalUserprofile()->latest()->first();
+                    if ($policyDetail) {
+                        // Get the latest quoted renewal user profile
+                        $renewQuotedUserProfile = $policyDetail->quotedRenewalUserprofile()->latest()->first();
 
-                    if ($renewQuotedUserProfile) {
-                        // Get the American name of the latest quoted renewal user profile
-                        $userProfileFullName = $renewQuotedUserProfile->american_name;
+                        if ($renewQuotedUserProfile) {
+                            // Get the American name of the latest quoted renewal user profile
+                            $userProfileFullName = $renewQuotedUserProfile->american_name;
+                        }
+                    }
+                } else {
+                    // Retrieve the broker based on quote_product_id
+                    $requested_by = $broker->where('quote_product_id', $data->id)->first();
+
+                    if ($requested_by) {
+                        // Get the user profile and then the full American name
+                        $userProfile = UserProfile::find($requested_by->user_profile_id);
+
+                        if ($userProfile) {
+                            $userProfileFullName = $userProfile->fullAmericanName();
+                        }
                     }
                 }
-            } else {
-                // Retrieve the broker based on quote_product_id
-                $requested_by = $broker->where('quote_product_id', $data->id)->first();
+                return $userProfileFullName;
+            })
+            ->addColumn('effective_date', function($data){
+                $quote_information = SelectedQuote::find($data->selected_quote_id);
+                return $quote_information->effective_date;
+            })
+            ->rawColumns(['policy_number'])
+            ->make(true);
 
-                if ($requested_by) {
-                    // Get the user profile and then the full American name
-                    $userProfile = UserProfile::find($requested_by->user_profile_id);
+        }catch(\Exception $e){
+            Log::error("Error in bindingViewList: " . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
 
-                    if ($userProfile) {
-                        $userProfileFullName = $userProfile->fullAmericanName();
-                    }
-                }
-            }
-            return $userProfileFullName;
-        })
-        ->addColumn('effective_date', function($data){
-            $quote_information = SelectedQuote::find($data->selected_quote_id);
-            return $quote_information->effective_date;
-        })
-        ->rawColumns(['policy_number'])
-        ->make(true);
     }
 
     public function resendRTB(Request $request)
