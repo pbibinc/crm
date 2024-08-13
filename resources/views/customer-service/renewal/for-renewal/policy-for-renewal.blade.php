@@ -6,6 +6,7 @@
             <th>Product</th>
             <th>Previous Policy Cost</th>
             <th>Renewal Date</th>
+            <th></th>
         </tr>
     </thead>
 </table>
@@ -35,6 +36,12 @@
                     data: 'expiration_date',
                     name: 'expiration_date'
                 },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                }
             ]
         })
 

@@ -28,13 +28,13 @@ class PolicyForRenewalController extends Controller
             ->addColumn('policy_no', function($policiesData){
                 $policyNumber = $policiesData->policy_number;
                 $policyNumberLink = '<a href="" class="proccessRenewal" id="'.$policiesData->id.'">'.$policyNumber.'</a>';
-                return $policyNumberLink;
+                return $policyNumber;
             })
             ->addColumn('company_name', function($policiesData){
                 $lead = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;
                 $productId = $policiesData->quotation_product_id;
                 $companyName = '<a href="/customer-service/renewal/get-renewal-lead-view/'.$productId.'">'.$lead->company_name.'</a>';
-                return $companyName;
+                return $lead->company_name;
             })
             ->addColumn('product', function($policiesData){
                 return $policiesData->QuotationProduct->product;
@@ -43,7 +43,12 @@ class PolicyForRenewalController extends Controller
                 $quote = SelectedQuote::where('quotation_product_id', $policiesData->selected_quote_id)->first();
                 return $quote ? $quote->full_payment : 'N/A';
             })
-            ->rawColumns(['company_name', 'policy_no'])
+            ->addColumn('action', function($policiesData){
+                $viewButton = '<a href="/customer-service/renewal/get-renewal-lead-view/'.$policiesData->id.'" class="btn btn-sm btn-outline-primary"><i class="ri-eye-line"></i></a>';
+                $processButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light proccessRenewal" id="'.$policiesData->id.'"><i class=" ri-task-line"></i></button>';
+                return $viewButton . ' ' . $processButton;
+            })
+            ->rawColumns(['company_name', 'policy_no', 'action'])
             ->make(true);
         }
         return view('customer-service.renewal.for-renewal.index');
