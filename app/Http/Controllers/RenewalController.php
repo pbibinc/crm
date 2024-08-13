@@ -39,6 +39,7 @@ class RenewalController extends Controller
         $userProfiles = $userProfile->userProfiles();
         $data = $policyDetail->getPolicyForRenewal();
         $groupedPolicy = collect($data)->groupBy('company');
+
         if($request->ajax()){
             $userProfileId = $request->marketSpecialistId ? $request->marketSpecialistId : $request->accountProfileId;
             $userProfileData = UserProfile::find($userProfileId) ?? new UserProfile();
@@ -57,7 +58,7 @@ class RenewalController extends Controller
             ->rawColumns(['checkBox'])
             ->make(true);
         }
-        return view('customer-service.renewal.assig-policy-for-renewal.index', compact('renewals', 'userProfiles', 'data', 'groupedPolicy'));
+        return view('customer-service.renewal.assig-policy-for-renewal.index', compact('renewals', 'userProfiles', 'data', 'groupedPolicy',));
     }
 
     /**
@@ -245,9 +246,6 @@ class RenewalController extends Controller
             $products = $product->getQuotedProductByQuotedInformationId($product->quote_information_id);
 
             return view('leads.appointed_leads.renewal-lead-profile-view.index', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer', 'carriers', 'markets', 'policyDetail', 'products'));
-
-
-
     }
 
     public function getRenewalReminder(Request $request)
@@ -287,6 +285,5 @@ class RenewalController extends Controller
             ->make(true);
         }
     }
-
 
 }

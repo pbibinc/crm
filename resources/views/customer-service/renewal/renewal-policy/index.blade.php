@@ -52,7 +52,7 @@
                         <div class="tab-pane" id="renewalMakeAPayment" role="tabpanel">
                             @include(
                                 'customer-service.renewal.renewal-policy.policy-renewal-make-payment',
-                                compact('userProfiles'))
+                                compact('userProfiles', 'complianceOfficer'))
                         </div>
                         <div class="tab-pane" id="requestToBind" role="tabpanel">
                             @include(

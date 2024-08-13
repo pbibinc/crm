@@ -27,8 +27,10 @@ class RenewalPolicyController extends Controller
      */
     public function index()
     {
+        $userProfile = new UserProfile();
         $userProfiles = UserProfile::orderBy('firstname')->get();
-        return view('customer-service.renewal.renewal-policy.index', compact('userProfiles'));
+        $complianceOfficer = $userProfile->complianceOfficer();
+        return view('customer-service.renewal.renewal-policy.index', compact('userProfiles', 'complianceOfficer'));
     }
 
     /**
@@ -301,16 +303,18 @@ class RenewalPolicyController extends Controller
             })
             ->addColumn('action', function($policiesData){
                 $paymentInformation = PaymentInformation::where('selected_quote_id', QuotationProduct::find($policiesData->quotation_product_id)->selected_quote_id)->first();
-                $resendButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light resendButton" id="'.$paymentInformation->id.'"><i class="  ri-repeat-2-line"></i></button>';
+                $lead = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;
+                $resendButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light resendButton" id="'.$paymentInformation->id.'" data-policy-id="'.$policiesData->id.'"><i class="  ri-repeat-2-line"></i></button>';
                 $viewProfileButton = '<a href="'.route('get-renewal-policy-view', ['productId' => $policiesData->id]).'" class="btn btn-sm btn-outline-primary"><i class="ri-eye-line"></i></a>';
                 $processButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light processButton" id="'.$policiesData->quotation_product_id.'"><i class=" ri-task-line"></i></button>';
+                $viewButton = '<button class="edit btn btn-outline-info btn-sm viewButton" id="'. $viewNotedButton = '<button class="btn btn-outline-primary btn-sm waves-effect waves-light viewNoteButton" id="'.$lead->id.'"><i class="ri-message-2-line"></i></button>';
                 // $processButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light processButton" id="'.$data->id.'"><i class=" ri-task-line"></i></button>';
                 if($paymentInformation->status == 'declined'){
-                    return $viewProfileButton . ' ' . $resendButton;
+                    return $viewProfileButton . ' ' . $viewNotedButton . ' ' . $resendButton;
                 }elseif($paymentInformation->status == 'pending'){
-                    return $viewProfileButton;
+                    return $viewProfileButton . ' ' . $viewNotedButton;
                 }elseif($paymentInformation->status == 'charged'){
-                    return $viewProfileButton . ' ' . $processButton;
+                    return $viewProfileButton . ' ' . $viewNotedButton . ' ' . $processButton;
                 }
 
             })
