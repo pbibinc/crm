@@ -10,7 +10,7 @@ const ToolsEquipmentPreviousData = () => {
         const fetchToolsEquipmentPreviousData = async () => {
             try {
                 const response = await axiosClient.get(
-                    `/api/tools-equipment-data/get/previousToolsEquipmentInformation/${getLeadData?.data?.activityId}`
+                    `/api/tools-equipment-data/get/previousToolsEquipmentInformation/${lead?.data?.activityId}`
                 );
                 setToolsEquipmentPreviousData(response.data);
             } catch (error) {
@@ -18,7 +18,7 @@ const ToolsEquipmentPreviousData = () => {
             }
         };
         fetchToolsEquipmentPreviousData();
-    }, [getLeadData?.data?.activityId]);
+    }, [lead?.data?.activityId]);
     return { toolsEquipmentPreviousData };
 };
 

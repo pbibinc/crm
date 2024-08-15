@@ -26,81 +26,81 @@ export const ContextData = createContext();
 
 const ContextDataProvider = ({ children }) => {
     const { lead, loading } = LeadDetails();
-    const [additionalData, setAdditionalData] = useState(null);
+    // const [additionalData, setAdditionalData] = useState(null);
 
-    useEffect(() => {
-        if (lead && !loading) {
-            const loadAdditionalData = async () => {
-                const [
-                    zipcodes,
-                    cities,
-                    zipCity,
-                    classCodeArray,
-                    generalInformation,
-                    generalLiabilitiesData,
-                    generalLiabilityPreviousData,
-                    workersCompensationData,
-                    workersCompensationPreviousData,
-                    commercialAutoData,
-                    commercialAutoPreviousData,
-                    excessLiabilityData,
-                    excessLiabilityPreviousData,
-                    toolsEquipmentData,
-                    toolsEquipmentPreviousData,
-                    buildersRiskData,
-                    buildersRiskPreviousData,
-                    businessOwnersPolicyData,
-                    businessOwnersPolicyPreviousData,
-                ] = await Promise.all([
-                    LeadZipcode(),
-                    LeadCity(),
-                    LeadZipCodeCities(),
-                    ClassCodeData(),
-                    GeneralInformationData(),
-                    GeneralLiabilitiesData(),
-                    GeneralLiabilitiPreviousData(),
-                    WorkersCompensationData(),
-                    WorkersCompensationPreviousData(),
-                    CommercialAutoData(),
-                    CommercialAutoPreviousData(),
-                    ExcessLiabilityData(),
-                    ExcessLiabilityPreviousData(),
-                    ToolsEquipmentData(),
-                    ToolsEquipmentPreviousData(),
-                    BuildersRiskData(),
-                    BuildersRiskPreviousData(),
-                    BusinessOwnersPolicyData(),
-                    BusinessOwnersPolicyPreviousData(),
-                ]);
+    // useEffect(() => {
+    //     if (lead && !loading) {
+    //         const loadAdditionalData = async () => {
+    //             const [
+    //                 zipcodes,
+    //                 cities,
+    //                 zipCity,
+    //                 classCodeArray,
+    //                 generalInformation,
+    //                 generalLiabilitiesData,
+    //                 generalLiabilityPreviousData,
+    //                 workersCompensationData,
+    //                 workersCompensationPreviousData,
+    //                 commercialAutoData,
+    //                 commercialAutoPreviousData,
+    //                 excessLiabilityData,
+    //                 excessLiabilityPreviousData,
+    //                 toolsEquipmentData,
+    //                 toolsEquipmentPreviousData,
+    //                 buildersRiskData,
+    //                 buildersRiskPreviousData,
+    //                 businessOwnersPolicyData,
+    //                 businessOwnersPolicyPreviousData,
+    //             ] = await Promise.all([
+    //                 LeadZipcode(),
+    //                 LeadCity(),
+    //                 LeadZipCodeCities(),
+    //                 ClassCodeData(),
+    //                 GeneralInformationData(),
+    //                 GeneralLiabilitiesData(),
+    //                 GeneralLiabilitiPreviousData(),
+    //                 WorkersCompensationData(),
+    //                 WorkersCompensationPreviousData(),
+    //                 CommercialAutoData(),
+    //                 CommercialAutoPreviousData(),
+    //                 ExcessLiabilityData(),
+    //                 ExcessLiabilityPreviousData(),
+    //                 ToolsEquipmentData(),
+    //                 ToolsEquipmentPreviousData(),
+    //                 BuildersRiskData(),
+    //                 BuildersRiskPreviousData(),
+    //                 BusinessOwnersPolicyData(),
+    //                 BusinessOwnersPolicyPreviousData(),
+    //             ]);
 
-                setAdditionalData({
-                    zipcodes,
-                    cities,
-                    zipCity,
-                    classCodeArray,
-                    generalInformation,
-                    generalLiabilitiesData,
-                    generalLiabilityPreviousData,
-                    workersCompensationData,
-                    workersCompensationPreviousData,
-                    commercialAutoData,
-                    commercialAutoPreviousData,
-                    excessLiabilityData,
-                    excessLiabilityPreviousData,
-                    toolsEquipmentData,
-                    toolsEquipmentPreviousData,
-                    buildersRiskData,
-                    buildersRiskPreviousData,
-                    businessOwnersPolicyData,
-                    businessOwnersPolicyPreviousData,
-                });
-            };
+    //             setAdditionalData({
+    //                 zipcodes,
+    //                 cities,
+    //                 zipCity,
+    //                 classCodeArray,
+    //                 generalInformation,
+    //                 generalLiabilitiesData,
+    //                 generalLiabilityPreviousData,
+    //                 workersCompensationData,
+    //                 workersCompensationPreviousData,
+    //                 commercialAutoData,
+    //                 commercialAutoPreviousData,
+    //                 excessLiabilityData,
+    //                 excessLiabilityPreviousData,
+    //                 toolsEquipmentData,
+    //                 toolsEquipmentPreviousData,
+    //                 buildersRiskData,
+    //                 buildersRiskPreviousData,
+    //                 businessOwnersPolicyData,
+    //                 businessOwnersPolicyPreviousData,
+    //             });
+    //         };
 
-            loadAdditionalData();
-        }
-    }, [lead, loading]); // Depend on `lead` and `loading`
+    //         loadAdditionalData();
+    //     }
+    // }, [lead, loading]); // Depend on `lead` and `loading`
     return (
-        <ContextData.Provider value={{ lead, loading, ...additionalData }}>
+        <ContextData.Provider value={{ lead, loading }}>
             {children}
         </ContextData.Provider>
     );

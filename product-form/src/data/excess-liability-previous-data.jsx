@@ -10,7 +10,7 @@ const ExcessLiabilityPreviousData = () => {
         const fetchExcessLiability = async () => {
             try {
                 const response = await axiosClient.get(
-                    `api/general-liabilities-data/get/previousGeneralLiabilities/${getLeadData?.data?.activityId}`
+                    `api/general-liabilities-data/get/previousGeneralLiabilities/${lead?.data?.activityId}`
                 );
                 setExcessLiabilityPreviousData(response.data);
             } catch (error) {
@@ -21,7 +21,7 @@ const ExcessLiabilityPreviousData = () => {
             }
         };
         fetchExcessLiability();
-    }, [getLeadData?.data?.activityId]);
+    }, [lead?.data?.activityId]);
     return { excessLiabilityPreviousData };
 };
 

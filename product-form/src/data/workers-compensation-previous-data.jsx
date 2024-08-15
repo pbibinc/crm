@@ -10,7 +10,7 @@ const WorkersCompensationPreviousData = () => {
         const fetchWorkersCompensation = async () => {
             try {
                 const response = await axiosClient.get(
-                    `/api/workers-comp-data/get/previousWorkersComp/${getLeadData?.data?.activityId}`
+                    `/api/workers-comp-data/get/previousWorkersComp/${lead?.data?.activityId}`
                 );
                 setWorkersCompenationPreviousData(response.data);
             } catch (error) {
@@ -18,7 +18,7 @@ const WorkersCompensationPreviousData = () => {
             }
         };
         fetchWorkersCompensation();
-    }, [getLeadData?.data?.activityId]);
+    }, [lead?.data?.activityId]);
     return { workersCompensationPreviousData };
 };
 

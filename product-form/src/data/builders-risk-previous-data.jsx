@@ -11,7 +11,7 @@ const BuildersRiskPreviousData = () => {
         const fetchBuildersRiskData = async () => {
             try {
                 const response = await axiosClient.get(
-                    `/api/builders-risk/get/previousBuildersRiskInformation/${getLeadData?.data?.activityId}`
+                    `/api/builders-risk/get/previousBuildersRiskInformation/${lead?.data?.activityId}`
                 );
                 setBuildersRiskPreviousData(response.data);
             } catch (error) {
@@ -19,7 +19,7 @@ const BuildersRiskPreviousData = () => {
             }
         };
         fetchBuildersRiskData();
-    }, [getLeadData?.data?.activityId]);
+    }, [lead?.data?.activityId]);
     console.log("builders risk", buildersRiskPreviousData);
     return { buildersRiskPreviousData };
 };

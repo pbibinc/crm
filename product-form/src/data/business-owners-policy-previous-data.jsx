@@ -13,7 +13,7 @@ const BusinessOwnersPolicyPreviousData = () => {
         const fetchBusinessOwnersPolicyPreviousData = async () => {
             try {
                 const response = await axiosClient.get(
-                    `/api/business-owners-policy/get/previousBusinessOwnersPolicyInformation/${getLeadData?.data?.activityId}`
+                    `/api/business-owners-policy/get/previousBusinessOwnersPolicyInformation/${lead?.data?.activityId}`
                 );
                 setBusinessOwnersPolicyPreviousData(response.data);
             } catch (error) {
@@ -21,7 +21,7 @@ const BusinessOwnersPolicyPreviousData = () => {
             }
         };
         fetchBusinessOwnersPolicyPreviousData();
-    }, [getLeadData?.data?.activityId]);
+    }, [lead?.data?.activityId]);
     return { businessOwnersPolicyPreviousData };
 };
 
