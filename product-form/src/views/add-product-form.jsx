@@ -32,7 +32,7 @@ import BuildersRiskDataProvider from "../providers/builders-risk-provider.jsx";
 import BusinessOwnersPolicyDataProvider from "../providers/business-owners-policy-provider.jsx";
 
 export default function AddProductForm() {
-    const { generalInformation } = useGeneralInformation();
+    const { generalInformation } = useGeneralInformation() || {};
     const { lead } = useContext(ContextData);
     const { generalLiabilitiesData } = useGeneralLiabilities();
     // const { generalLiabilitiesData } = useGeneralLiabilities();

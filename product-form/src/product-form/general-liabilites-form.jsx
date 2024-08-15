@@ -33,7 +33,7 @@ import { useGeneralLiabilities } from "../contexts/general-liabilities-context";
 // import Col from "react-bootstrap/esm/Col";
 const GeneralLiabilitiesForm = () => {
     const { classCodeArray, lead } = useContext(ContextData);
-    const { generalLiabilitiesData } = useGeneralLiabilities();
+    const { generalLiabilitiesData } = useGeneralLiabilities() || {};
     const [isDataReady, setIsDataReady] = useState(false);
 
     const [isLoading, setIsLoading] = useState(false);

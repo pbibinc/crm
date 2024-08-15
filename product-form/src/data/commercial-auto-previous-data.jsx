@@ -5,7 +5,6 @@ const CommercialAutoPreviousData = () => {
     const [commercialAutoPreviousData, setCommercialAutoPreviousData] =
         useState(null);
     const getLeadData = JSON.parse(sessionStorage.getItem("lead"));
-
     useEffect(() => {
         const fetchCommercialAutoData = async () => {
             try {
@@ -19,6 +18,7 @@ const CommercialAutoPreviousData = () => {
         };
         fetchCommercialAutoData();
     }, [getLeadData?.data?.activityId]);
+
     return { commercialAutoPreviousData };
 };
 

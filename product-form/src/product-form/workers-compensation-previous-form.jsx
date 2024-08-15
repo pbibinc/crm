@@ -21,10 +21,12 @@ import "../style/general-information.css";
 import { ContextData } from "../contexts/context-data-provider";
 import { get } from "jquery";
 import Button from "react-bootstrap/Button";
+import { useWorkersCompensationPrevious } from "../contexts/workers-compensation-previous-data-context";
 // import { Audio, ThreeDots } from "react-loader-spinner";
 
 const WorkersCompensationPreviousForm = () => {
-    const { workersCompensationPreviousData } = useContext(ContextData);
+    const { workersCompensationPreviousData } =
+        useWorkersCompensationPrevious();
     const getWorkersCompensationData = () => {
         let storedData =
             JSON.parse(sessionStorage.getItem("storeWorkersCompData")) || {};

@@ -17,9 +17,10 @@ import Swal from "sweetalert2";
 import axiosClient from "../api/axios.client";
 import "../style/general-information.css";
 import { ContextData } from "../contexts/context-data-provider";
+import { useToolsEquipmentPrevious } from "../contexts/tools-equipment-previous-data-context";
 const ToolsEquipmentPreviousForm = () => {
     //setting for getting values toolsequipment from sessionstorage
-    const { toolsEquipmentPreviousData } = useContext(ContextData);
+    const { toolsEquipmentPreviousData } = useToolsEquipmentPrevious();
     const storedToolsEquipment = () => {
         const localSessionStorage =
             sessionStorage.getItem("toolsEquipmentData") || "{}";

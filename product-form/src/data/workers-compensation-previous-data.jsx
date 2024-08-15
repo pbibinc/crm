@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../api/axios.client";
-
+import LeadDetails from "./lead-details";
 const WorkersCompensationPreviousData = () => {
     const [workersCompensationPreviousData, setWorkersCompenationPreviousData] =
         useState(null);
     const getLeadData = JSON.parse(sessionStorage.getItem("lead"));
-
+    const { lead } = LeadDetails();
     useEffect(() => {
         const fetchWorkersCompensation = async () => {
             try {

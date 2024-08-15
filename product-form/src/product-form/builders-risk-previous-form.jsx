@@ -16,8 +16,9 @@ import Swal from "sweetalert2";
 import axiosClient from "../api/axios.client";
 import "../style/general-information.css";
 import { ContextData } from "../contexts/context-data-provider";
+import { useBuildersRiskPrevious } from "../contexts/builders-risk-previous-data-context";
 const BuilderRiskPreviousForm = () => {
-    const { buildersRiskPreviousData } = useContext(ContextData);
+    const { buildersRiskPreviousData } = useBuildersRiskPrevious();
 
     //setting for getting stored buildersRiskData
     const storedBuildersRiskData = () => {

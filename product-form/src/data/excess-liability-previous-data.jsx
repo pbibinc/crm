@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../api/axios.client";
-
+import LeadDetails from "./lead-details";
 const ExcessLiabilityPreviousData = () => {
     const [excessLiabilityPreviousData, setExcessLiabilityPreviousData] =
         useState(null);
     const getLeadData = JSON.parse(sessionStorage.getItem("lead"));
-
+    const { lead } = LeadDetails();
     useEffect(() => {
         const fetchExcessLiability = async () => {
             try {
@@ -14,7 +14,10 @@ const ExcessLiabilityPreviousData = () => {
                 );
                 setExcessLiabilityPreviousData(response.data);
             } catch (error) {
-                console.error("Error fetching commercial auto data", error);
+                console.error(
+                    "Error fetching excess liability previous data",
+                    error
+                );
             }
         };
         fetchExcessLiability();

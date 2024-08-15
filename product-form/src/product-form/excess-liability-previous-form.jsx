@@ -16,8 +16,9 @@ import Swal from "sweetalert2";
 // import { set } from "lodash";
 import axiosClient from "../api/axios.client";
 import { ContextData } from "../contexts/context-data-provider";
+import { useExcessLiabilityPrevious } from "../contexts/excess-liability-previous-data-context";
 const ExcessLiabilitiesPreviousForm = () => {
-    const { excessLiabilityPreviousData } = useContext(ContextData);
+    const { excessLiabilityPreviousData } = useExcessLiabilityPrevious();
     const GetExcessLiabilityData = () => {
         const localExcessLiabilityData = sessionStorage.getItem(
             "excessLiabilityData"

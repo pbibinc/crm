@@ -2,9 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { ContextData } from "../contexts/context-data-provider"; // Import the context object
 import Header from "../partials-form/header";
 import CommercialAutoPreviousForm from "../product-form/commercial-auto-previous-form";
+import { useCommercialAutoPrevious } from "../contexts/commercial-auto-previous-data-context";
 
 export default function CommercialAutoPrevious() {
-    const { commercialAutoPreviousData } = useContext(ContextData);
+    const { commercialAutoPreviousData } = useCommercialAutoPrevious();
 
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {

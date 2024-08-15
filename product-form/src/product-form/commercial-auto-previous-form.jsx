@@ -21,8 +21,9 @@ import "../style/general-information.css";
 import Button from "react-bootstrap/Button";
 import { ContextData } from "../contexts/context-data-provider";
 import { isArray, isEmpty } from "lodash";
+import { useCommercialAutoPrevious } from "../contexts/commercial-auto-previous-data-context";
 const CommercialAutoPreviousForm = () => {
-    const { commercialAutoPreviousData } = useContext(ContextData);
+    const { commercialAutoPreviousData } = useCommercialAutoPrevious();
     const storeWorkersCompData = JSON.parse(
         sessionStorage.getItem("storeWorkersCompData")
     );

@@ -27,12 +27,13 @@ import Swal from "sweetalert2";
 import axiosClient from "../api/axios.client";
 import "../style/general-information.css";
 import Button from "react-bootstrap/Button";
+import { useGeneralLiabilitiesPrevious } from "../contexts/general-liabilities-previous-data-context";
 // import { FidgetSpinner } from "react-loader-spinner";
 
 // import Col from "react-bootstrap/esm/Col";
 const GeneralLiabilitiesPreviousForm = () => {
     const { classCodeArray } = useContext(ContextData);
-    const { generalLiabilityPreviousData } = useContext(ContextData);
+    const { generalLiabilityPreviousData } = useGeneralLiabilitiesPrevious();
 
     const [isLoading, setIsLoading] = useState(false);
     const getLeadStoredData = () => {

@@ -16,8 +16,10 @@ import Swal from "sweetalert2";
 import axiosClient from "../api/axios.client";
 import "../style/general-information.css";
 import { ContextData } from "../contexts/context-data-provider";
+import { useBusinessOwnersPolicyPrevious } from "../contexts/business-owners-previous-data-context";
 const BusinessOwnersPolicyPreviousForm = () => {
-    const { businessOwnersPolicyPreviousData } = useContext(ContextData);
+    const { businessOwnersPolicyPreviousData } =
+        useBusinessOwnersPolicyPrevious();
     //setting for getting lead data from session stroage
     const storedLeads = JSON.parse(sessionStorage.getItem("lead"));
 

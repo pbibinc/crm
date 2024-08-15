@@ -2,10 +2,12 @@ import React, { useContext, useEffect, useState } from "react";
 import { ContextData } from "../contexts/context-data-provider"; // Import the context object
 import Header from "../partials-form/header";
 import BusinessOwnersPolicyPreviousForm from "../product-form/business-owners-policy-previous-form";
+import { useBusinessOwnersPolicyPrevious } from "../contexts/business-owners-previous-data-context";
 
 export default function BusinessOwnersPolicyPrevious() {
-    const { businessOwnersPolicyPreviousData } = useContext(ContextData);
-
+    const { businessOwnersPolicyPreviousData } =
+        useBusinessOwnersPolicyPrevious();
+    console.log(businessOwnersPolicyPreviousData);
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
         if (businessOwnersPolicyPreviousData) {

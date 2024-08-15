@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../api/axios.client";
+import LeadDetails from "./lead-details";
 
 const GeneralLiabilitiPreviousData = () => {
     const [generalLiabilityPreviousData, setGeneralLiabilityPreviousData] =
         useState(null);
     const getLeadData = JSON.parse(sessionStorage.getItem("lead"));
-
+    const { lead } = LeadDetails();
     useEffect(() => {
         const fetchGeneralLiability = async () => {
             try {

@@ -32,7 +32,7 @@ import { useGeneralInformation } from "../contexts/general-information-context";
 
 const GeneralInformationForm = () => {
     const { lead, zipcodes, cities, zipCity } = useContext(ContextData);
-    const { generalInformation } = useGeneralInformation();
+    const { generalInformation } = useGeneralInformation() || {};
     const methods = useForm();
     const getStoredGeneralInformation = () => {
         let storedData = sessionStorage.getItem("generalInformationStoredData");

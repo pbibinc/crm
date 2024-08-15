@@ -26,6 +26,15 @@ import ExcessLiabilityDataProvider from "./providers/excess-liability-provider.j
 import ToolsEquipmentDataProvider from "./providers/tools-equipment-provider.jsx";
 import BuildersRiskDataProvider from "./providers/builders-risk-provider.jsx";
 import BusinessOwnersPolicyDataProvider from "./providers/business-owners-policy-provider.jsx";
+import { GeneralLiabilitiesPreviousDataContext } from "./contexts/general-liabilities-previous-data-context.jsx";
+import GeneralLiabilitiPreviousData from "./data/general-liabilities-previous-data.jsx";
+import GeneralLiabilitiesPreviousDataProvider from "./providers/general-liabilities-previous-provider.jsx";
+import WorkersCompensationPreviousDataProvider from "./providers/workers-compensation-previous-data-provider.jsx";
+import CommercialAutoPreviousDataProvider from "./providers/commercial-auto-previous-data-provider.jsx";
+import ExcessLiabilityPreviousDataProvider from "./providers/excess-liability-previous-data-provider.jsx";
+import ToolsEquipmentPreviousDataProvider from "./providers/tools-equipment-previous-data-provider.jsx";
+import BuildersRiskPreviousDataProvider from "./providers/builders-risk-previous-data-provider.jsx";
+import BusinessOwnersPreviousDataProvider from "./providers/business-owners-previous-data-provider.jsx";
 
 const router = createBrowserRouter([
     {
@@ -136,7 +145,9 @@ const router = createBrowserRouter([
         path: "/general-liabilities-form/previous-product-information",
         element: (
             <ContextDataProvider>
-                <GeneralLiabilitiesPrevious />
+                <GeneralLiabilitiesPreviousDataProvider>
+                    <GeneralLiabilitiesPrevious />
+                </GeneralLiabilitiesPreviousDataProvider>
             </ContextDataProvider>
         ),
     },
@@ -144,7 +155,9 @@ const router = createBrowserRouter([
         path: "/workers-compensation-form/previous-product-information",
         element: (
             <ContextDataProvider>
-                <WorkersCompensationPrevious />
+                <WorkersCompensationPreviousDataProvider>
+                    <WorkersCompensationPrevious />
+                </WorkersCompensationPreviousDataProvider>
             </ContextDataProvider>
         ),
     },
@@ -152,7 +165,9 @@ const router = createBrowserRouter([
         path: "/commercial-auto-form/previous-product-information",
         element: (
             <ContextDataProvider>
-                <CommercialAutoPrevious />
+                <CommercialAutoPreviousDataProvider>
+                    <CommercialAutoPrevious />
+                </CommercialAutoPreviousDataProvider>
             </ContextDataProvider>
         ),
     },
@@ -160,7 +175,9 @@ const router = createBrowserRouter([
         path: "/excess-liability-form/previous-product-information",
         element: (
             <ContextDataProvider>
-                <ExcessLiabilityPrevious />
+                <ExcessLiabilityPreviousDataProvider>
+                    <ExcessLiabilityPrevious />
+                </ExcessLiabilityPreviousDataProvider>
             </ContextDataProvider>
         ),
     },
@@ -168,7 +185,9 @@ const router = createBrowserRouter([
         path: "/tools-equipment-form/previous-product-information",
         element: (
             <ContextDataProvider>
-                <ToolsEquipmentPrevious />
+                <ToolsEquipmentPreviousDataProvider>
+                    <ToolsEquipmentPrevious />
+                </ToolsEquipmentPreviousDataProvider>
             </ContextDataProvider>
         ),
     },
@@ -176,7 +195,9 @@ const router = createBrowserRouter([
         path: "/builders-risk-form/previous-product-information",
         element: (
             <ContextDataProvider>
-                <BuildersRiskPrevious />
+                <BuildersRiskPreviousDataProvider>
+                    <BuildersRiskPrevious />
+                </BuildersRiskPreviousDataProvider>
             </ContextDataProvider>
         ),
     },
@@ -184,7 +205,9 @@ const router = createBrowserRouter([
         path: "/business-owners-form/previous-product-information",
         element: (
             <ContextDataProvider>
-                <BusinessOwnersPolicyPrevious />
+                <BusinessOwnersPreviousDataProvider>
+                    <BusinessOwnersPolicyPrevious />
+                </BusinessOwnersPreviousDataProvider>
             </ContextDataProvider>
         ),
     },

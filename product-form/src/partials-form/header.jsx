@@ -14,7 +14,7 @@ const Header = () => {
     localStorage.setItem("leadId", JSON.stringify(lead?.data?.id));
     const storedLeadData = JSON.parse(sessionStorage.getItem("lead"));
     const storedLeadId = JSON.parse(
-        localStorage.getItem("generalInformationStoredData")
+        localStorage.getItem("generalInformationStoredDatap")
     );
 
     if (storedLeadData?.data?.id !== storedLeadId?.id) {
