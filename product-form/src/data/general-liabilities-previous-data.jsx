@@ -19,7 +19,7 @@ const GeneralLiabilitiPreviousData = () => {
             }
         };
         fetchGeneralLiability();
-    }, [getLeadData?.data?.activityId, lead]);
+    }, [getLeadData?.data]);
     return { generalLiabilityPreviousData };
 };
 
