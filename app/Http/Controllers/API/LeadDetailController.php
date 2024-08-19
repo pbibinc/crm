@@ -28,11 +28,14 @@ class LeadDetailController extends BaseController
             return $this->sendError('Lead not found.');
         }
         $lead->productId = $productId ? $productId : null;
-        $lead->products = $lead->getProducts();
+        if($productId){
+            $lead->products = $lead->getProducts() ;
+        }
         $lead->userProfileId = $userProfileId ? $userProfileId : null;
         $lead->activityId = $activityId ? $activityId : null;
         return $this->sendResponse($lead->toArray(), 'Lead retrieved successfully.');
     }
+
     public function leadAddress()
     {
         $leadId = Cache::get('lead_id');
@@ -42,6 +45,23 @@ class LeadDetailController extends BaseController
             return $this->sendError('State not found.');
         }
         return $this->sendResponse($leadAddress, 'State retrieved successfully.');
+    }
+
+    public function getLeadInstanceById($id)
+    {
+        $lead = Lead::find($id);
+        if (is_null($lead)) {
+            return $this->sendError('Lead not found.');
+        }
+        return $this->sendResponse($lead->toArray(), 'Lead retrieved successfully.');
+    }
+
+    public function getAppointedSalesPerPerson()
+    {
+        $userName = ['Vincent Eniosas', 'RJ Vibar', 'Maechael Elchico'];
+        $appointedSales = ['25', '30', '35'];
+        $appointedSalesPerPerson = array_combine($userName, $appointedSales);
+        return $this->sendResponse($appointedSalesPerPerson, 'Appointed Sales Per Person retrieved successfully.');
     }
 }
 

@@ -50,6 +50,9 @@ Route::get('leads', [LeadDetailController::class, 'index'])->withoutMiddleware([
 Route::get('leads/lead-details', [LeadDetailController::class, 'show'])->withoutMiddleware(['auth:sanctum']);
 Route::get('leads/lead-details/lead-address', [LeadDetailController::class, 'leadAddress'])->withoutMiddleware(['auth:sanctum']);
 Route::get('get/lead-instance-by-id/{id}', [LeadDetailController::class, 'getLeadInstanceById'])->withoutMiddleware(['auth:sanctum']);
+Route::get('get-appointed-sales-per-person', [LeadDetailController::class, 'getAppointedSalesPerPerson'])->withoutMiddleware(['auth:sanctum']);
+
+
 Route::get('classcode/data', [ClassCodeDataController::class, 'index'])->withoutMiddleware(['auth:sanctum']);
 Route::get('states', [StateAddressController::class, 'states'])->withoutMiddleware(['auth:sanctum']);
 Route::get('recreational', [RecreationalController::class, 'recreationalFactilies'])->withoutMiddleware(['auth:sanctum']);
