@@ -60,7 +60,17 @@ class LeadDetailController extends BaseController
     {
         $userName = ['Vincent Eniosas', 'RJ Vibar', 'Maechael Elchico'];
         $appointedSales = ['25', '30', '35'];
-        $appointedSalesPerPerson = array_combine($userName, $appointedSales);
+        $department = ['Sales', 'Sales', 'Sales'];
+        $appointedSalesPerPerson = [];
+
+        foreach ($userName as $key => $value) {
+            $appointedSalesPerPerson[] = [
+                'username' => $value,
+                'appointed' => $appointedSales[$key],
+                'department' => $department[$key]
+            ];
+        }
+
         return $this->sendResponse($appointedSalesPerPerson, 'Appointed Sales Per Person retrieved successfully.');
     }
 }
