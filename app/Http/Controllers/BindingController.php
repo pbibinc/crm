@@ -61,7 +61,7 @@ class BindingController extends Controller
                 return $company_name;
             })
             ->addColumn('total_cost', function($data){
-                $quote_information = SelectedQuote::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
+                $quote_information = SelectedQuote::find($data->selected_quote_id);
                 return $quote_information->full_payment;
             })
             ->addColumn('requested_by', function($data) use($broker){
@@ -70,7 +70,7 @@ class BindingController extends Controller
                 return $userProfile;
             })
             ->addColumn('effective_date', function($data){
-                $quote_information = SelectedQuote::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
+                $quote_information = SelectedQuote::find($data->selected_quote_id);
                 return $quote_information->effective_date;
             })
             ->addColumn('bindingType', function($data){
@@ -142,11 +142,11 @@ class BindingController extends Controller
 
     public function incompleteBindingList(Request $request)
     {
+        try{
         $quoationProduct = new QuotationProduct();
         $data = $quoationProduct->getIncompleteBinding();
-        if($request->ajax())
-        {
-            return DataTables::of($data)
+        // dd($data);
+        return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('company_name', function($data){
                 $company_name = $data->QuoteInformation->QuoteLead->leads->company_name;
@@ -159,16 +159,13 @@ class BindingController extends Controller
                 return $userProfile;
             })
             ->addColumn('policy_number', function($data){
-                // $quotationComparison = QuoteComparison::where('quotation_product_id', $data->id)->where('recommended', 3)->first();
-                // $policyNumber = '<a href="/appointed-list/'.$data->QuoteInformation->QuoteLead->leads->id.'"  id="'.$data->id.'" >'.$quotationComparison->quote_no.'</a>';
-
                 if($data->status == 23)
                 {
                     $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
-                    $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+                    $selectedQuote = SelectedQuote::find($data->selected_quote_id);
                     $policy_number = '<a href="" id="'.$policyDetail->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind">'.$selectedQuote->quote_no.'</a>';
                 }else{
-                    $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
+                    $selectedQuote = SelectedQuote::find($data->selected_quote_id);
                     $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind">'.$selectedQuote->quote_no.'</a>';
                 }
                 return $policy_number;
@@ -178,9 +175,9 @@ class BindingController extends Controller
                 if($data->status == 23)
                 {
                     $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
-                    $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+                    $selectedQuote = SelectedQuote::find($data->selected_quote_id);
                 }else{
-                    $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
+                    $selectedQuote = SelectedQuote::find($data->selected_quote_id);
                     // $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind">'.$selectedQuote->quote_no.'</a>';
                 }
                 return $selectedQuote->full_payment;
@@ -189,9 +186,9 @@ class BindingController extends Controller
                 if($data->status == 23)
                 {
                     $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
-                    $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+                    $selectedQuote = SelectedQuote::find($data->selected_quote_id);
                 }else{
-                    $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
+                    $selectedQuote = SelectedQuote::find($data->selected_quote_id);
                     // $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind">'.$selectedQuote->quote_no.'</a>';
                 }
                 return $selectedQuote->effective_date;
@@ -200,16 +197,22 @@ class BindingController extends Controller
                 if($data->status == 23)
                 {
                     $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
-                    $selectedQuote = SelectedQuote::find($policyDetail->selected_quote_id);
+                    $selectedQuote = SelectedQuote::find($data->selected_quote_id);
                 }else{
-                    $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
+                    $selectedQuote = SelectedQuote::find($data->selected_quote_id);
                     // $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind">'.$selectedQuote->quote_no.'</a>';
                 }
                 return QuoationMarket::find($selectedQuote->quotation_market_id)->name;
             })
             ->rawColumns(['policy_number'])
             ->make(true);
+
+
+        }catch(\Exception $e){
+            Log::error("Error in incompleteBindingList: " . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
         }
+
     }
 
     public function saveGeneralLiabilitiesPolicy(Request $request)
@@ -313,6 +316,50 @@ class BindingController extends Controller
                     'message' => 'Validation failed'
                 ], 422);
             }
+        }
+    }
+
+    public function updateGeneralLiabilitiesPolicy(Request $request, $id)
+    {
+        try{
+            DB::beginTransaction();
+
+            $data = $request->all();
+
+            //policy detail uploading
+            $policyDetails = PolicyDetail::find($id);
+            $policyDetails->policy_number = $data['glPolicyNumber'];
+            $policyDetails->carrier = $data['carriersInput'];
+            $policyDetails->market = $data['glMarketInput'];
+            $policyDetails->payment_mode = $data['glPaymentTermInput'];
+            $policyDetails->save();
+
+             //general liabilities policy details saving
+             $generalLiabilitiesDetails = GeneralLiabilitiesPolicyDetails::where('policy_details_id', $id)->first();
+             $generalLiabilitiesDetails->policy_details_id  = $policyDetails->id;
+             $generalLiabilitiesDetails->is_commercial_gl = isset($data['commercialGl']) && $data['commercialGl'] ? 1 : 0;
+             $generalLiabilitiesDetails->is_occur = isset($data['occur']) && $data['occur'] ? 1 : 0;
+             $generalLiabilitiesDetails->is_policy = isset($data['policy']) && $data['policy'] ? 1 : 0;
+             $generalLiabilitiesDetails->is_project = isset($data['project']) && $data['project']  ? 1 : 0;
+             $generalLiabilitiesDetails->is_loc = isset($data['loc']) && $data['loc'] ? 1 : 0;
+             $generalLiabilitiesDetails->is_additional_insd = isset($data['glAddlInsd']) && $data['glAddlInsd'] ? 1 : 0;
+             $generalLiabilitiesDetails->is_subr_wvd = isset($data['glSubrWvd']) && $data['glSubrWvd'] ? 1 : 0;
+             $generalLiabilitiesDetails->is_claims_made = isset($data['claimsMade']) && $data['claimsMade'] ? 1 : 0;
+             $generalLiabilitiesDetails->each_occurence = $data['eachOccurence'];
+             $generalLiabilitiesDetails->damage_to_rented = $data['rentedDmg'];
+             $generalLiabilitiesDetails->medical_expenses = $data['medExp'];
+             $generalLiabilitiesDetails->per_adv_injury = $data['perAdvInjury'];
+             $generalLiabilitiesDetails->gen_aggregate = $data['genAggregate'];
+             $generalLiabilitiesDetails->product_comp = $data['comp'];
+             $generalLiabilitiesDetails->status = 'issued';
+             $generalLiabilitiesDetails->save();
+
+            DB::commit();
+            return response()->json(['success' => 'policy successfully update'], 200);
+        }catch(\Exception $e){
+            DB::rollBack();
+            Log::info("message: " . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 

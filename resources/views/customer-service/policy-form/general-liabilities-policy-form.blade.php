@@ -13,8 +13,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label class="form-label" for="glPolicyNumber">Policy Number</label>
-                                <input type="text" class="form-control" id="glPolicyNumber" name="glPolicyNumber"
-                                    required>
+                                <input class="form-control" id="glPolicyNumber" name="glPolicyNumber" required>
                             </div>
                         </div>
                         <div class="col-6">
@@ -255,6 +254,8 @@
                     <input type="hidden" id="glHiddenInputId" name="glHiddenInputId">
                     <input type="hidden" name="glHiddenQuoteId" id="hiddenQuoteId">
                     <input type="hidden" name="glHiddenSelectedQuoteId" id="glHiddenSelectedQuoteId">
+                    <input type="hidden" name="glHiddenPolicyId" id="glHiddenPolicyId">
+                    <input type="hidden" name="generalLiabilityAction" id="generalLiabilityAction">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary waves-effect waves-light"
@@ -301,19 +302,83 @@
 
         updateCheckboxStates();
 
+        // $('#generalLiabilitiesForm').on('submit', function(e) {
+        //     e.preventDefault();
+        //     var formData = new FormData(this);
+        //     var action = $('#generalLiabilityAction').val();
+        //     var policyId = $('#glHiddenPolicyId').val();
+        //     var url = action == 'edit' ? "route('binding.update-general-liabilities-policy', ':id')"
+        //         .replace(':id', policyId) :
+        //         "{{ route('binding.save-general-liabilities-policy') }}";
+        //     var method = action == 'edit' ? 'PUT' : 'POST';
+        //     console.log(action);
+        //     formData.append('media', $('#attachedFile')[0].files[0]);
+        //     $.ajax({
+        //         url: url,
+        //         type: method,
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         },
+        //         data: formData,
+        //         processData: false, // Prevent jQuery from processing the data
+        //         contentType: false,
+        //         dataType: "json",
+        //         success: function(data) {
+        //             Swal.fire({
+        //                 title: 'Success!',
+        //                 text: 'General Liability Policy Form has been saved.',
+        //                 icon: 'success',
+        //             }).then(function() {
+        //                 // $('#generalLiabilitiesPolicyForm').modal('hide');
+        //                 // $('.boundProductTable').DataTable().ajax.reload();
+        //                 // $('.newPolicyList').DataTable().ajax.reload();
+        //                 $('#generalLiabilitiesPolicyForm').modal('hide');
+        //                 location.reload();
+        //             });
+        //         },
+        //         error: function(data) {
+        //             alert('error');
+        //         }
+        //     });
+        // });
+
         $('#generalLiabilitiesForm').on('submit', function(e) {
             e.preventDefault();
             var formData = new FormData(this);
-            // formData.append('media', $('#attachedFile')[0].files[0]);
+            var action = $('#generalLiabilityAction').val();
+            var policyId = $('#glHiddenPolicyId').val();
+
+            // Define the URL based on the action
+            var url = action == 'edit' ?
+                `{{ route('binding.update-general-liabilities-policy', ':id') }}`
+                .replace(':id', policyId) :
+                "{{ route('binding.save-general-liabilities-policy') }}";
+
+            var method = 'POST';
+
+            // Append the file to formData only if it exists and is required
+            var fileInput = $('#attachedFile')[0];
+            if (fileInput && fileInput.files && fileInput.files[0]) {
+                formData.append('media', fileInput.files[0]);
+                console.log('File appended:', fileInput.files[0].name);
+            } else {
+                console.error('No file selected or file input not found.');
+            }
+
+            if (action == 'edit') {
+                formData.append('_method', 'PUT');
+            }
+
+            // AJAX request to submit the form data
             $.ajax({
-                url: "{{ route('binding.save-general-liabilities-policy') }}",
-                type: "POST",
+                url: url,
+                method: method,
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 data: formData,
                 processData: false, // Prevent jQuery from processing the data
-                contentType: false,
+                contentType: false, // Let the browser set the Content-Type
                 dataType: "json",
                 success: function(data) {
                     Swal.fire({
@@ -321,17 +386,18 @@
                         text: 'General Liability Policy Form has been saved.',
                         icon: 'success',
                     }).then(function() {
-                        // $('#generalLiabilitiesPolicyForm').modal('hide');
-                        // $('.boundProductTable').DataTable().ajax.reload();
-                        // $('.newPolicyList').DataTable().ajax.reload();
                         $('#generalLiabilitiesPolicyForm').modal('hide');
-                        location.reload();
+                        location
+                            .reload(); // Reloading the current page to reflect changes
                     });
                 },
                 error: function(data) {
-                    alert('error');
+                    alert('Error occurred while saving the form.');
                 }
             });
+
         });
+
+
     });
 </script>

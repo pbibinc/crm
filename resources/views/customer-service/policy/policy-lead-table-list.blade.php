@@ -1,16 +1,22 @@
-<table id="policyList" class="table table-bordered dt-responsive nowrap policyList"
-    style="border-collapse: collapse; width: 100%;">
-    <thead style="background-color: #f0f0f0;">
-        <th>Effective Date</th>
-        <th>Policy Number</th>
-        <th>Product</th>
-        <th>Market</th>
-        {{-- <th>Insurer</th>
+<div class="card">
+    <div class="card-body">
+        <table id="policyList" class="table table-bordered dt-responsive nowrap policyList"
+            style="border-collapse: collapse; width: 100%;">
+            <thead style="background-color: #f0f0f0;">
+                <th>Effective Date</th>
+                <th>Policy Number</th>
+                <th>Product</th>
+                <th>Market</th>
+                {{-- <th>Insurer</th>
         <th>Total Cost</th> --}}
-        <th>Status</th>
-        <th></th>
-    </thead>
-</table>
+                <th>Status</th>
+                <th></th>
+            </thead>
+        </table>
+    </div>
+
+</div>
+
 
 {{-- modal for upload viewing and deletion of file --}}
 <div class="modal fade" id="uploadPolicyFile" tabindex="-1" aria-labelledby="addQuoteModalLabel" aria-hidden="true">
@@ -33,13 +39,15 @@
 </div>
 
 {{-- policy form --}}
-@include('customer-service.policy-form.commercial-auto-policy-form', compact('carriers', 'markets'))
+
 @include('customer-service.policy-form.general-liabilities-policy-form', compact('carriers', 'markets'))
 @include('customer-service.policy-form.workers-compensation-policy-form', compact('carriers', 'markets'))
 @include('customer-service.policy-form.tools-equipment-policy-form', compact('carriers', 'markets'))
 @include('customer-service.policy-form.business-owners-policy-form', compact('carriers', 'markets'))
 @include('customer-service.policy-form.builders-risk-policy-form', compact('carriers', 'markets'))
 @include('customer-service.policy-form.excess-insurance-liability-form', compact('carriers', 'markets'))
+
+@include('customer-service.policy-form.commercial-auto-policy-form', compact('carriers', 'markets'))
 
 @include('customer-service.policy.renewal-form')
 @include('customer-service.policy.cancellation-report-modal')
@@ -238,7 +246,7 @@
                         $('#commerciarlAutoPolicyNumber').val(response.policy_detail
                                 .policy_number)
                             .attr('readonly', true);
-                        $('#commercialAutoInsuredInput').val(response.general_information
+                        $('#commercialAutoInsuredInput').val(response.lead
                             .company_name).attr('readonly', true);
                         $('#commercialAutoMarketInput').val(response.policy_detail.market)
                             .prop('disabled', true);
@@ -855,7 +863,6 @@
         });
 
 
-
     });
 
     $(document).on('click', '.auditInformationButton', function(e) {
@@ -922,5 +929,683 @@
         });
     });
 
-    $(document).on
+    $(document).on('click', '.editButton', function(e) {
+        e.preventDefault();
+        var id = $(this).attr('id');
+        $.ajax({
+            url: "{{ route('get-policy-information') }}",
+            type: "POST",
+            data: {
+                id: id
+            },
+            success: function(response) {
+                console.log(response);
+                if (response.product.product == 'General Liability') {
+                    $('#glPolicyNumber').val(response.policy_detail.policy_number);
+                    $('#glInsuredInput').val(response.lead.company_name);
+                    $('#glMarketInput').val(response.policy_detail.market);
+                    $('#carriersInput').val(response.policy_detail.carrier);
+                    $('#glPaymentTermInput').val(response.paymentInformation
+                        .payment_term);
+                    $('#commercialGl').prop('checked', response.productPolicyInformation
+                        .is_commercial_gl == 1);
+                    $('#claimsMade').prop('checked', response.productPolicyInformation
+                        .is_claims_made == 1);
+                    $('#occur').prop('checked', response.productPolicyInformation
+                        .is_occur == 1);
+                    $('#glSubrWvd').prop('checked', response.productPolicyInformation
+                        .is_subr_wvd == 1);
+                    $('#policy').prop('checked', response.productPolicyInformation
+                        .is_policy == 1);
+                    $('#project').prop('checked', response.productPolicyInformation
+                        .is_project == 1);
+                    $('#loc').prop('checked', response.productPolicyInformation
+                        .is_loc == 1);
+                    $('#eachOccurence').val(response.productPolicyInformation
+                        .each_occurence);
+                    $('#rentedDmg').val(response.productPolicyInformation
+                        .damage_to_rented);
+                    $('#medExp').val(response.productPolicyInformation
+                        .medical_expenses);
+                    $('#perAdvInjury').val(response.productPolicyInformation
+                        .per_adv_injury);
+                    $('#genAggregate').val(response.productPolicyInformation
+                        .product_comp);
+                    $('#comp').val(response.productPolicyInformation
+                        .gen_aggregate);
+                    $('#glEffectiveDate').val(response.policy_detail.effective_date);
+                    $('#expirationDate').val(response.policy_detail
+                        .expiration_date);
+                    $('#glHiddenPolicyId').val(response.policy_detail.id);
+                    $('#attachedFileLabel').attr('hidden', true);
+                    $('#attachedFiles').attr('hidden', true);
+                    $('#generalLiabilityAction').val('edit');
+                    $('#statusDropdownLabel');
+                    $('#statusDropdowm');
+                    $('#saveGeneralLiabilitiesPolicyForm');
+                    $('#generalLiabilitiesPolicyForm').modal('show');
+                }
+                if (response.product.product == 'Commercial Auto') {
+                    $('#commerciarlAutoPolicyNumber').val(response.policy_detail.policy_number);
+                    $('#commercialAutoInsuredInput').val(response.lead.company_name);
+                    $('#commercialAutoMarketInput').val(response.policy_detail.market);
+                    $('#commercialAutoCarrierInput').val(response.policy_detail.carrier);
+                    $('#commercialAutoPaymentTermInput').val(response.paymentInformation
+                        .payment_term);
+                    $('#anyAuto').prop('checked', response.productPolicyInformation
+                        .is_any_auto == 1);
+                    $('#ownedAuto').prop('checked', response.productPolicyInformation
+                        .is_owned_auto == 1);
+                    $('#scheduledAuto').prop('checked', response
+                        .productPolicyInformation
+                        .is_scheduled_auto == 1);
+                    $('#hiredAutos').prop('checked', response
+                        .productPolicyInformation
+                        .is_hired_auto == 1);
+                    $('#nonOwned').prop('checked', response
+                        .productPolicyInformation
+                        .is_non_owned_auto == 1);
+                    $('#commercialAddlInsd').prop('checked', response
+                        .productPolicyInformation
+                        .is_addl_insd == 1);
+                    $('#commercialAutoSubrWvd').prop('checked', response
+                        .productPolicyInformation
+                        .is_subr_wvd == 1);
+                    $('#biPerPerson').val(response.productPolicyInformation
+                        .bi_per_person)
+                    $('#biPerAccident').val(response.productPolicyInformation
+                        .bi_per_accident);
+                    $('#combineUnit').val(response.productPolicyInformation
+                        .combined_single_unit);
+                    $('#propertyDamage').val(response.productPolicyInformation
+                        .property_damage)
+
+                    if (response.policyAdditionalValues.length > 0) {
+                        response.policyAdditionalValues.forEach(function(limit) {
+                            // Create a new row div
+                            var newRow = $('<div class="row mb-2"></div>');
+
+                            var nameDiv = $('<div class="col-6"></div>');
+                            var nameLabel = $(
+                                '<label class="form-label">Blank Limits</label>');
+                            var nameInput = $(
+                                '<input type="text" class="form-control" name="newBlankLimits[]">'
+                            );
+                            nameInput.val(limit.name); // Set the value of the input
+                            nameDiv.append(nameLabel,
+                                nameInput); // Append label and input to the div
+
+                            // Create a div for the limit value
+                            var valueDiv = $('<div class="col-6"></div>');
+                            var valueLabel = $(
+                                '<label class="form-label">Blank Value</label>');
+                            var valueInput = $('<div class="input-group"></div>');
+                            var valueInputField = $(
+                                '<input type="text" class="form-control input-mask text-left" data-inputmask="\'alias\': \'numeric\', \'groupSeparator\': \',\', \'digits\': 2, \'digitsOptional\': false, \'prefix\': \'$ \', \'placeholder\': \'0\'" inputmode="decimal" name="newBlankValue[]" style="text-align: right;">'
+                            );
+                            valueInputField.val(limit.value); // Set the value of the input
+                            var addButton = $(
+                                '<button class="btn btn-outline-success addMore" type="button">+</button>'
+                            );
+                            var deleteButton = $(
+                                '<button class="btn btn-outline-danger deleteRow" type="button">-</button>'
+                            );
+
+                            valueInput.append(valueInputField, addButton,
+                                deleteButton
+                            ); // Append input field and buttons to the input group
+                            valueDiv.append(valueLabel,
+                                valueInput); // Append label and input group to the div
+
+                            // Append the name and value divs to the new row
+                            newRow.append(nameDiv, valueDiv);
+
+                            // Insert the dynamically created input fields above the effective date inputs
+                            var effectiveDateRow = $('#commercialAutoEffectiveDate')
+                                .closest('.row');
+                            effectiveDateRow.before(newRow);
+
+                            $('#commercialAutoForm input[type="text"]').each(
+                                function() {
+                                    if ($(this).val() === '') {
+                                        $(this).closest('.row')
+                                            .remove(); // Remove the parent row if the input has no value
+                                    }
+                                }
+                            );
+
+                            // Re-initialize input masks for new inputs
+                            $('.input-mask').inputmask({
+                                'alias': 'numeric',
+                                'groupSeparator': ',',
+                                'digits': 2,
+                                'digitsOptional': false,
+                                'prefix': '$ ',
+                                'placeholder': '0'
+                            });
+
+                        });
+                    }
+
+                    $('#commercialFileDiv').attr('hidden', true);
+                    $('#commercialAutoEffectiveDate').val(response.policy_detail
+                        .effective_date);
+                    $('#commercialAutoExpirationDate').val(response.policy_detail
+                        .expiration_date);
+                    $('#commercialAutoHiddenPolicyid').val(response.policy_detail.id);
+                    $('.commercialAutoPolicyActionButton').val('update');
+                    $('#commercialAutoPolicyForm').modal('show');
+                }
+                if (response.product.product == 'Business Owners') {
+                    $('#businessOwnersNumber').val(response.policy_detail.policy_number);
+                    $('#businessOwnersInsuredInput').val(response.lead
+                        .company_name);
+                    $('#businessOwnersMarketInput').val(response.policy_detail.market);
+                    $('#businessOwnersCarrierInput').val(response.policy_detail.carrier);
+                    $('#businessOwnersPaymentTermInput').val(response.paymentInformation
+                        .payment_term);
+                    $('#businessOwnersAddlInsd').prop('checked', response
+                        .productPolicyInformation
+                        .is_addl_insd == 1);
+                    $('#businessOwnersSubrWvd').prop('checked', response
+                        .productPolicyInformation
+                        .is_subr_wvd == 1);
+                    if (response.policyAdditionalValues.length > 0) {
+                        response.policyAdditionalValues.forEach(function(limit) {
+                            var newRow = $('<div class="row mb-2"></div>');
+
+                            var nameDiv = $('<div class="col-6"></div>');
+                            var nameLabel = $(
+                                '<label class="form-label" for="blankLimits">' +
+                                limit.name + '</label>');
+                            var nameInput = $(
+                                '<input type="text" class="form-control" id="blankLimits" name="newBlankLimits[]" >'
+                            );
+                            nameInput.val(limit
+                                .name); // Set the value of the input
+                            nameDiv.append(nameLabel,
+                                nameInput); // Append label and input to the div
+
+                            // Create a div for the limit value
+                            var valueDiv = $('<div class="col-6"></div>');
+                            var valueLabel = $(
+                                '<label class="form-label" for="blankValue">Blank Value</label>'
+                            );
+                            var valueInput = $(
+                                '<div class="input-group"></div>');
+                            var valueInputField = $(
+                                '<input type="text" class="form-control input-mask text-left" data-inputmask="\'alias\': \'numeric\', \'groupSeparator\': \',\', \'digits\': 2, \'digitsOptional\': false, \'prefix\': \'$ \', \'placeholder\': \'0\'" inputmode="decimal" style="text-align: right;" id="blankValue" name="newBlankValue[]">'
+                            );
+                            valueInputField.val(limit
+                                .value);
+                            var addButton = $(
+                                '<button class="btn btn-outline-success addMore" type="button">+</button>'
+                            );
+                            var deleteButton = $(
+                                '<button class="btn btn-outline-danger deleteRow" type="button">-</button>'
+                            );
+                            // Set the value of the input
+                            // var addButton = $(
+                            //     '<button class="btn btn-outline-success addMore" type="button" id="addMore">+</button>'
+                            // );
+                            valueInput.append(valueInputField, addButton,
+                                deleteButton
+                            ); // Append input field and add button to the input group
+                            valueDiv.append(valueLabel,
+                                valueInput
+                            ); // Append label and input group to the div
+
+                            // Append the name and value divs to the new row
+                            newRow.append(nameDiv, valueDiv);
+
+                            // Insert the dynamically created input fields above the effective date inputs
+                            var effectiveDateRow = $(
+                                    '#businessOwnersEffectiveDate')
+                                .closest('.row');
+                            effectiveDateRow.before(newRow);
+
+                            // Remove any input fields with no data
+                            $('#businessOwnersPolicyForm input[type="text"]')
+                                .each(
+                                    function() {
+                                        if ($(this).val() === '') {
+                                            $(this).closest('.row')
+                                                .remove(); // Remove the parent row if the input has no value
+                                        }
+                                    }
+                                );
+
+                            // Re-initialize input masks for new inputs
+                            $('.input-mask').inputmask({
+                                'alias': 'numeric',
+                                'groupSeparator': ',',
+                                'digits': 2,
+                                'digitsOptional': false,
+                                'prefix': '$ ',
+                                'placeholder': '0'
+                            });
+                        });
+                    }
+                    $('#businessOwnersEffectiveDate').val(response.policy_detail
+                        .effective_date);
+                    $('#businessOwnersExpirationDate').val(response.policy_detail
+                        .expiration_date);
+                    $('#businessOwnersPolicyId').val(response.policy_detail.id);
+                    $('#businessOwnersFileDiv').attr('hidden', true);
+                    $('.businessOwnersPolicyActionButton').val('Update');
+                    $('#businessOwnersPolicyFormModal').modal('show');
+                }
+                if (response.product.product == 'Tools Equipment') {
+
+                    $('#toolsEquipmentPolicyNumber').val(response.policy_detail
+                        .policy_number);
+                    $('#toolsEquipmentInsuredInput').val(response.lead
+                        .company_name);
+                    $('#toolsEquipmentMarketInput').val(response.policy_detail.market);
+                    $('#toolsEquipmentCarrierInput').val(response.policy_detail.carrier);
+                    $('#toolsEquipmentPaymentTermInput').val(response.paymentInformation
+                        .payment_term);
+                    $('#toolsEquipmentAddlInsd').prop('checked', response
+                        .productPolicyInformation
+                        .is_addl_insd == 1);
+                    $('#toolsEquipmentSubrWvd').prop('checked', response
+                        .productPolicyInformation
+                        .is_subr_wvd == 1);
+                    if (response.policyAdditionalValues.length > 0) {
+                        response.policyAdditionalValues.forEach(function(limit) {
+                            var newRow = $('<div class="row mb-2"></div>');
+
+                            var nameDiv = $('<div class="col-6"></div>');
+                            var nameLabel = $(
+                                '<label class="form-label" for="blankLimits">' +
+                                limit.name + '</label>');
+                            var nameInput = $(
+                                '<input type="text" class="form-control" id="blankLimits" name="newBlankLimits[]" >'
+                            );
+                            nameInput.val(limit
+                                .name); // Set the value of the input
+                            nameDiv.append(nameLabel,
+                                nameInput); // Append label and input to the div
+
+                            // Create a div for the limit value
+                            var valueDiv = $('<div class="col-6"></div>');
+                            var valueLabel = $(
+                                '<label class="form-label" for="blankValue">Blank Value</label>'
+                            );
+                            var valueInput = $(
+                                '<div class="input-group"></div>');
+                            var valueInputField = $(
+                                '<input type="text" class="form-control input-mask text-left" data-inputmask="\'alias\': \'numeric\', \'groupSeparator\': \',\', \'digits\': 2, \'digitsOptional\': false, \'prefix\': \'$ \', \'placeholder\': \'0\'" inputmode="decimal" style="text-align: right;" id="blankValue" name="newBlankValue[]" >'
+                            );
+                            valueInputField.val(limit
+                                .value); // Set the value of the input
+                            // var addButton = $(
+                            //     '<button class="btn btn-outline-success addMore" type="button" id="addMore">+</button>'
+                            // );
+
+                            var addButton = $(
+                                '<button class="btn btn-outline-success addMore" type="button">+</button>'
+                            );
+                            var deleteButton = $(
+                                '<button class="btn btn-outline-danger deleteRow" type="button">-</button>'
+                            );
+
+
+                            valueInput.append(valueInputField, addButton,
+                                deleteButton
+
+                            ); // Append input field and add button to the input group
+                            valueDiv.append(valueLabel,
+                                valueInput
+                            ); // Append label and input group to the div
+
+                            // Append the name and value divs to the new row
+                            newRow.append(nameDiv, valueDiv);
+
+                            // Insert the dynamically created input fields above the effective date inputs
+                            var effectiveDateRow = $(
+                                    '#toolsEquipmentEffectiveDate')
+                                .closest('.row');
+                            effectiveDateRow.before(newRow);
+
+                            // Remove any input fields with no data
+                            $('#toolsEquipmentForm input[type="text"]')
+                                .each(
+                                    function() {
+                                        if ($(this).val() === '') {
+                                            $(this).closest('.row')
+                                                .remove(); // Remove the parent row if the input has no value
+                                        }
+                                    }
+                                );
+
+                            // Re-initialize input masks for new inputs
+                            $('.input-mask').inputmask({
+                                'alias': 'numeric',
+                                'groupSeparator': ',',
+                                'digits': 2,
+                                'digitsOptional': false,
+                                'prefix': '$ ',
+                                'placeholder': '0'
+                            });
+
+                        });
+                    }
+                    $('#toolsEquipmentEffectiveDate').val(response.policy_detail
+                        .effective_date);
+                    $('#toolsEquipmentExpirationDate').val(response.policy_detail
+                        .expiration_date);
+                    $('#toolsEquipmentHiddenPolicyId').val(response.policy_detail.id);
+                    $('#toolsEquipmentFileDiv').attr('hidden', true);
+                    $('.toolsEquipmentPolicyFornActionButton').val('Update');
+                    $('#toolsEquipmentPolicyFormModal').modal('show');
+                }
+                if (response.product.product == 'Excess Liability') {
+                    $('#excessInsuranceNumber').val(response.policy_detail
+                        .policy_number);
+                    $('#excessInsuranceInsuredInput').val(response.lead
+                        .company_name);
+                    $('#excessInsuranceMarketInput').val(response.policy_detail.market);
+                    $('#excessInsuranceCarrierInput').val(response.policy_detail
+                        .carrier);
+                    $('#excessInsurancePaymentTermInput').val(response
+                        .paymentInformation
+                        .payment_term);
+                    $('#excessInsuranceUmbrellaLiabl').prop('checked', response
+                        .productPolicyInformation
+                        .is_umbrella_liability == 1);
+                    $('#excessInsuranceExcessLiability').prop('checked', response
+                        .productPolicyInformation
+                        .is_excess_liability == 1);
+                    $('#excessInsuranceOccur').prop('checked', response
+                        .productPolicyInformation
+                        .is_occur == 1);
+                    $('#excessInsuranceClaimsMade').prop('checked', response
+                        .productPolicyInformation
+                        .is_claims_made == 1);
+                    $('#excessInsuranceDed').prop('checked', response
+                        .productPolicyInformation
+                        .is_ded == 1);
+                    $('#excessInsuranceRetention').prop('checked', response
+                        .productPolicyInformation
+                        .is_retention == 1);
+                    $('#excessInsuranceAddlInsd').prop('checked', response
+                        .productPolicyInformation
+                        .is_addl_insd == 1);
+                    $('#excessInsuranceSubrWvd').prop('checked', response
+                        .productPolicyInformation
+                        .is_subr_wvd == 1);
+                    $('#excessInsuranceEachOccurrence').val(response
+                        .productPolicyInformation
+                        .each_occurrence);
+                    $('#excessInsuranceAggregate').val(response
+                        .productPolicyInformation
+                        .aggregate);
+                    if (response.policyAdditionalValues.length > 0) {
+                        response.policyAdditionalValues.forEach(function(limit) {
+                            var newRow = $('<div class="row mb-2"></div>');
+
+                            var nameDiv = $('<div class="col-6"></div>');
+                            var nameLabel = $(
+                                '<label class="form-label" for="blankLimits">' +
+                                limit.name + '</label>');
+                            var nameInput = $(
+                                '<input type="text" class="form-control" id="blankLimits" name="newBlankLimits[]" >'
+                            );
+                            nameInput.val(limit
+                                .name); // Set the value of the input
+                            nameDiv.append(nameLabel,
+                                nameInput); // Append label and input to the div
+
+                            // Create a div for the limit value
+                            var valueDiv = $('<div class="col-6"></div>');
+                            var valueLabel = $(
+                                '<label class="form-label" for="blankValue">Blank Value</label>'
+                            );
+                            var valueInput = $(
+                                '<div class="input-group"></div>');
+                            var valueInputField = $(
+                                '<input type="text" class="form-control input-mask text-left" data-inputmask="\'alias\': \'numeric\', \'groupSeparator\': \',\', \'digits\': 2, \'digitsOptional\': false, \'prefix\': \'$ \', \'placeholder\': \'0\'" inputmode="decimal" style="text-align: right;" id="blankValue" name="newBlankValue[]">'
+                            );
+
+                            var addButton = $(
+                                '<button class="btn btn-outline-success addMore" type="button">+</button>'
+                            );
+                            var deleteButton = $(
+                                '<button class="btn btn-outline-danger deleteRow" type="button">-</button>'
+                            );
+                            valueInputField.val(limit
+                                .value); // Set the value of the input
+                            // var addButton = $(
+                            //     '<button class="btn btn-outline-success addMore" type="button" id="addMore">+</button>'
+                            // );
+                            valueInput.append(valueInputField, addButton, deleteButton
+
+                            ); // Append input field and add button to the input group
+                            valueDiv.append(valueLabel,
+                                valueInput
+                            ); // Append label and input group to the div
+
+                            // Append the name and value divs to the new row
+                            newRow.append(nameDiv, valueDiv);
+
+                            // Insert the dynamically created input fields above the effective date inputs
+                            var effectiveDateRow = $(
+                                    '#excessInsuranceEffectiveDate')
+                                .closest('.row');
+                            effectiveDateRow.before(newRow);
+
+                            // Remove any input fields with no data
+                            $('#excessInsurancePolicyForm input[type="text"]')
+                                .each(
+                                    function() {
+                                        if ($(this).val() === '') {
+                                            $(this).closest('.row')
+                                                .remove(); // Remove the parent row if the input has no value
+                                        }
+                                    }
+                                );
+                        });
+                    }
+                    $('#excessInsuranceEffectiveDate').val(response.policy_detail
+                        .effective_date);
+                    $('#excessInsuranceExpirationDate').val(response.policy_detail
+                        .expiration_date);
+                    $('#excessLiabilityHiddenPolicyId').val(response.policy_detail.id);
+                    $('.excessInsruancePolicyFormFile').attr('hidden', true);
+                    $('.excessInsurancePolicyFormActionButton').val('Update');
+                    $('#excessInsurancePolicyFormModal').modal('show');
+                }
+                if (response.product.product == 'Workers Compensation') {
+                    $('#workersCompensationPolicyNumber').val(response.policy_detail
+                        .policy_number);
+                    $('#workersCompensationInsuredInput').val(response.lead
+                        .company_name);
+                    $('#workersCompensationMarketInput').val(response.policy_detail
+                        .market);
+                    $('#workersCompensationCarrierInput').val(response.policy_detail
+                        .carrier);
+                    $('#workersCompensationPaymentTermInput').val(response
+                        .paymentInformation
+                        .payment_term);
+                    $('#workersCompSubrWvd').prop('checked', response
+                        .productPolicyInformation
+                        .is_subr_wvd == 1);
+                    $('#workersPerstatute').prop('checked', response
+                        .productPolicyInformation
+                        .is_per_statute == 1);
+                    $('#elEachAccident').val(response.productPolicyInformation
+                        .el_each_accident);
+                    $('#elDiseasePolicyLimit').val(response.productPolicyInformation
+                        .el_disease_policy_limit);
+                    $('#elDiseaseEachEmployee').val(response.productPolicyInformation
+                        .el_disease_each_employee);
+                    if (response.policyAdditionalValues.length > 0) {
+                        response.policyAdditionalValues.forEach(function(limit) {
+                            var newRow = $('<div class="row mb-2"></div>');
+
+                            var nameDiv = $('<div class="col-6"></div>');
+                            var nameLabel = $(
+                                '<label class="form-label" for="blankLimits">' +
+                                limit.name + '</label>');
+                            var nameInput = $(
+                                '<input type="text" class="form-control" id="blankLimits" name="newBlankLimits[]" >'
+                            );
+                            nameInput.val(limit
+                                .name); // Set the value of the input
+                            nameDiv.append(nameLabel,
+                                nameInput); // Append label and input to the div
+
+                            // Create a div for the limit value
+                            var valueDiv = $('<div class="col-6"></div>');
+                            var valueLabel = $(
+                                '<label class="form-label" for="blankValue">Blank Value</label>'
+                            );
+                            var valueInput = $(
+                                '<div class="input-group"></div>');
+                            var valueInputField = $(
+                                '<input type="text" class="form-control input-mask text-left" data-inputmask="\'alias\': \'numeric\', \'groupSeparator\': \',\', \'digits\': 2, \'digitsOptional\': false, \'prefix\': \'$ \', \'placeholder\': \'0\'" inputmode="decimal" style="text-align: right;" id="blankValue" name="newBlankValue[]" >'
+                            );
+
+                            var addButton = $(
+                                '<button class="btn btn-outline-success addMore" type="button">+</button>'
+                            );
+                            var deleteButton = $(
+                                '<button class="btn btn-outline-danger deleteRow" type="button">-</button>'
+                            );
+                            valueInputField.val(limit
+                                .value); // Set the value of the input
+                            // var addButton = $(
+                            //     '<button class="btn btn-outline-success addMore" type="button" id="addMore">+</button>'
+                            // );
+                            valueInput.append(valueInputField, addButton, deleteButton
+
+                            ); // Append input field and add button to the input group
+                            valueDiv.append(valueLabel,
+                                valueInput
+                            ); // Append label and input group to the div
+
+                            // Append the name and value divs to the new row
+                            newRow.append(nameDiv, valueDiv);
+
+                            // Insert the dynamically created input fields above the effective date inputs
+                            var effectiveDateRow = $(
+                                    '#workersCompensationEffectiveDate')
+                                .closest('.row');
+                            effectiveDateRow.before(newRow);
+
+                            // Remove any input fields with no data
+                            $('#workersCompensationForm input[type="text"]')
+                                .each(
+                                    function() {
+                                        if ($(this).val() === '') {
+                                            $(this).closest('.row')
+                                                .remove(); // Remove the parent row if the input has no value
+                                        }
+                                    });
+                        });
+                    }
+                    $('#workersCompensationEffectiveDate').val(response.policy_detail
+                        .effective_date);
+                    $('#workersCompensationExpirationDate').val(response.policy_detail
+                        .expiration_date);
+                    $('#workersCompensationHiddenPolicyId').val(response.policy_detail.id);
+                    $('.workersCompensationPolicyFormFile').attr('hidden', true);
+                    $('.workersCompensationPolicyActionButton').val('Update');
+                    $('#workersCompensationModalForm').modal('show');
+                }
+                if (response.product.product == 'Builders Risk') {
+                    $('#buildersRiskPolicyNumber').val(response.policy_detail
+                        .policy_number);
+                    $('#buildersRiskInsuredInput').val(response.lead
+                        .company_name);
+                    $('#buildersRiskMarketInput').val(response.policy_detail
+                        .market);
+                    $('#buildersRiskCarrierInput').val(response.policy_detail
+                        .carrier);
+                    $('#buildersRiskPaymentTermInput').val(response
+                        .paymentInformation
+                        .payment_term);
+                    $('#buildersRiskAddlInsd').prop('checked', response
+                        .productPolicyInformation
+                        .is_addl_insd == 1);
+                    $('#buildersRiskSubrWvd').prop('checked', response
+                        .productPolicyInformation
+                        .is_subr_wvd == 1);
+                    if (response.policyAdditionalValues.length > 0) {
+                        response.policyAdditionalValues.forEach(function(limit) {
+                            var newRow = $('<div class="row mb-2"></div>');
+
+                            var nameDiv = $('<div class="col-6"></div>');
+                            var nameLabel = $(
+                                '<label class="form-label" for="blankLimits">' +
+                                limit.name + '</label>');
+                            var nameInput = $(
+                                '<input type="text" class="form-control" id="blankLimits" name="newBlankLimits[]" >'
+                            );
+                            nameInput.val(limit
+                                .name); // Set the value of the input
+                            nameDiv.append(nameLabel,
+                                nameInput); // Append label and input to the div
+
+                            // Create a div for the limit value
+                            var valueDiv = $('<div class="col-6"></div>');
+                            var valueLabel = $(
+                                '<label class="form-label" for="blankValue">Blank Value</label>'
+                            );
+                            var valueInput = $(
+                                '<div class="input-group"></div>');
+                            var valueInputField = $(
+                                '<input type="text" class="form-control input-mask text-left" data-inputmask="\'alias\': \'numeric\', \'groupSeparator\': \',\', \'digits\': 2, \'digitsOptional\': false, \'prefix\': \'$ \', \'placeholder\': \'0\'" inputmode="decimal" style="text-align: right;" id="blankValue" name="newBlankValue[]" >'
+                            );
+                            var addButton = $(
+                                '<button class="btn btn-outline-success addMore" type="button">+</button>'
+                            );
+                            var deleteButton = $(
+                                '<button class="btn btn-outline-danger deleteRow" type="button">-</button>'
+                            );
+                            valueInputField.val(limit
+                                .value); // Set the value of the input
+                            // var addButton = $(
+                            //     '<button class="btn btn-outline-success addMore" type="button" id="addMore">+</button>'
+                            // );
+                            valueInput.append(valueInputField, addButton, deleteButton
+
+                            ); // Append input field and add button to the input group
+                            valueDiv.append(valueLabel,
+                                valueInput
+                            ); // Append label and input group to the div
+
+                            // Append the name and value divs to the new row
+                            newRow.append(nameDiv, valueDiv);
+
+                            // Insert the dynamically created input fields above the effective date inputs
+                            var effectiveDateRow = $(
+                                    '#buildersRiskEffectiveDate')
+                                .closest('.row');
+                            effectiveDateRow.before(newRow);
+
+                            // Remove any input fields with no data
+                            $('#buildersRiskForm input[type="text"]')
+                                .each(
+                                    function() {
+                                        if ($(this).val() === '') {
+                                            $(this).closest('.row')
+                                                .remove(); // Remove the parent row if the input has no value
+                                        }
+                                    });
+                        });
+                    }
+                    $('#buildersRiskEffectiveDate').val(response.policy_detail
+                        .effective_date);
+                    $('#buildersRiskExpirationDate').val(response.policy_detail
+                        .expiration_date);
+                    $('#buildersRiskHiddenPolicyId').val(response.policy_detail.id);
+                    $('.buildersRiskPolicyFormFile').attr('hidden', true);
+                    $('.buildersRiskPolicyActionButton').val('Update');
+                    $('#buildersRiskPolicyFormModal').modal('show');
+                }
+            }
+        });
+    });
 </script>

@@ -79,6 +79,8 @@
             })
         })
 
+        $(document).on('click', '.')
+
         $(document).on('click', '.cancelButton', function(e) {
             e.preventDefault();
             var id = $(this).attr('id');

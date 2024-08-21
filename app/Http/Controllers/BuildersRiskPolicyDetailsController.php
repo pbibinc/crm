@@ -172,7 +172,53 @@ class BuildersRiskPolicyDetailsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try{
+            DB::beginTransaction();
+            $data = $request->all();
+
+
+            $policyDetails = PolicyDetail::find($id);
+            $policyDetails->policy_number = $data['buildersRiskPolicyNumber'];
+            $policyDetails->carrier = $data['buildersRiskCarrierInput'];
+            $policyDetails->market = $data['buildersRiskMarketInput'];
+            $policyDetails->payment_mode = $data['buildersRiskPaymentTermInput'];
+            $policyDetails->effective_date = $data['buildersRiskEffectiveDate'];
+            $policyDetails->expiration_date = $data['buildersRiskExpirationDate'];
+            $policyDetails->save();
+
+            $buildersRiskPolicyDetails = BuildersRiskPolicyDetails::where('policy_details_id', $id)->first();
+            $buildersRiskPolicyDetails->policy_details_id = $policyDetails->id;
+            $buildersRiskPolicyDetails->is_subr_wvd = $request->has('buildersRiskAddlInsd') ? '1' : '0';
+            $buildersRiskPolicyDetails->is_addl_insd = $request->has('buildersRiskSubrWvd') ? '1' : '0';
+            $buildersRiskPolicyDetails->save();
+
+            if(isset($data['newBlankLimits']) && isset($data['newBlankValue'])){
+                $blankLimits = $data['newBlankLimits'];
+                $blankValues = $data['newBlankValue'];
+                $oldValued = PolicyAdditionalValue::where('policy_details_id', $id)->get();
+                foreach($oldValued as $oldValue){
+                    $oldValue->delete();
+                }
+                foreach($blankLimits as $key => $limit){
+                    if(isset($blankValues[$key])){
+                        $value = $blankValues[$key];
+                        $policyAdditionalValue = new PolicyAdditionalValue();
+                        $policyAdditionalValue->policy_details_id = $policyDetails->id;
+                        $policyAdditionalValue->name = $limit;
+                        $policyAdditionalValue->value = $value;
+                        $policyAdditionalValue->save();
+                    }
+                }
+            }
+
+
+            DB::commit();
+            return response()->json(['message' => 'Builders Risk Policy Details updated successfully'], 200);
+        }catch(\Exception $e){
+            Log::info($e->getMessage());
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**

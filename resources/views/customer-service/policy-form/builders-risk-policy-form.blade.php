@@ -110,6 +110,7 @@
                     </div>
                     <input type="hidden" name="buildersRiskHiddenInputId" id="buildersRiskHiddenInputId">
                     <input type="hidden" name="buildersRiskHiddenQuoteId" id="buildersRiskHiddenQuoteId">
+                    <input type="hidden" name="buildersRiskHiddenPolicyId" id="buildersRiskHiddenPolicyId">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Close</button>
@@ -142,8 +143,16 @@
         $('#buildersRiskForm').on('submit', function(e) {
             e.preventDefault();
             var formData = new FormData(this);
+            var action = $('.buildersRiskPolicyActionButton').val();
+            var id = $('#buildersRiskHiddenPolicyId').val();
+            var url = action == 'Update' ? `{{ route('builders-risk-policy.update', ':id') }}`.replace(
+                    ':id', id) :
+                "{{ route('builders-risk-policy.store') }}";
+            if (action == 'Update') {
+                formData.append('_method', 'PUT');
+            }
             $.ajax({
-                url: "{{ route('builders-risk-policy.store') }}",
+                url: url,
                 type: "POST",
                 data: formData,
                 processData: false, // Prevent jQuery from processing the data
@@ -213,6 +222,10 @@
 
         $(document).on('click', '.deleteRow', function() {
             $(this).closest('.row.mb-2').remove();
+        });
+
+        $(document).on('hidden.bs.modal', '#buildersRiskPolicyFormModal', function() {
+            $('#buildersRiskForm').trigger('reset');
         });
     })
 </script>

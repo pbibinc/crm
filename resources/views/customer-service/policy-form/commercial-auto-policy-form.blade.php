@@ -1,13 +1,14 @@
 <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
     aria-hidden="true" id="commercialAutoPolicyForm">
-    <div class="modal-dialog modal-dialog-centered modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Commercial Auto Policy Form</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <form id="commercialAutoForm" enctype="multipart/form-data">
+            <form id="commercialAutoForm" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-6">
                             <label class="form-label" for="commerciarlAutoPolicyNumber">Policy Number</label>
@@ -17,7 +18,7 @@
                         <div class="col-6">
                             <label class="form-label" for="commercialAutoInsuredInput">Insured</label>
                             <input type="text" class="form-control" id="commercialAutoInsuredInput"
-                                name="commercialAutoInsuredInput">
+                                name="commercialAutoInsuredInput" readonly>
                         </div>
                     </div>
                     <div class="row mb-2">
@@ -48,7 +49,7 @@
                                 <label class="form-label" for="commercialAutoPaymentTermInput">Payment Term</label>
                                 <select class="form-select" aria-label="Default select example"
                                     id="commercialAutoPaymentTermInput" name="commercialAutoPaymentTermInput">
-                                    <option selected="">Open this select menu</option>
+                                    <option value="">Open this select menu</option>
                                     <option value="PIF">PIF</option>
                                     <option value="Low down">Low down</option>
                                     <option value="Split PIF">Split PIF</option>
@@ -56,6 +57,7 @@
                                 </select>
                             </div>
                         </div>
+
                     </div>
                     <div class="row mb-2">
                         <div class="col-4">
@@ -97,7 +99,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="row mb-2">
 
                         <div class="col-4">
@@ -180,18 +181,21 @@
                         </div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-12">
+                        <div class="col-12" id="commercialFileDiv">
                             <input type="file" name="file" id="file" class="form-control">
                         </div>
                     </div>
                     <input type="hidden" name="commercialAutoHiddenInputId" id="commercialAutoHiddenInputId">
                     <input type="hidden" name="commercialAutoHiddenQuoteId" id="commercialAutoHiddenQuoteId">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Close</button>
-                <input type="submit" name="action_button" id="action_button" value="Add"
-                    class="btn btn-primary ladda-button commercialAutoPolicyActionButton" data-style="expand-right">
-            </div>
+                    <input type="hidden" name="commercialAutoHiddenPolicyid" id="commercialAutoHiddenPolicyid">
+                    {{-- <input type="hidden" name="commercialAutoAct" id=""> --}}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Close</button>
+                    <input type="submit" name="action_button" id="action_button" value="Add"
+                        class="btn btn-primary ladda-button commercialAutoPolicyActionButton"
+                        data-style="expand-right">
+                </div>
             </form>
         </div>
     </div>
@@ -216,9 +220,23 @@
         $('#commercialAutoForm').on('submit', function(e) {
             e.preventDefault();
             var formData = new FormData(this);
+
+            var action = $('.commercialAutoPolicyActionButton').val();
+            var policyId = $('#commercialAutoHiddenPolicyid').val();
+            var method = 'POST';
+            if (action == 'update') {
+                formData.append('_method', 'PUT');
+                formData.delete('file'); // If you want to exclude the file input
+            }
+            var url = action == 'update' ? `{{ route('commercial-auto-policy.update', ':id') }}`
+                .replace(':id', policyId) : "{{ route('commercial-auto-policy.store') }}";
+
             $.ajax({
-                url: "{{ route('commercial-auto-policy.store') }}",
-                type: "POST",
+                url: url,
+                method: method,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 data: formData,
                 processData: false, // Prevent jQuery from processing the data
                 contentType: false,
@@ -230,11 +248,6 @@
                         icon: 'success',
                         confirmButtonText: 'Ok'
                     }).then((result) => {
-                        // if (result.isConfirmed) {
-                        //     $('#commercialAutoPolicyForm').modal('hide');
-                        //     $('.boundProductTable').DataTable().ajax.reload();
-                        //     $('.newPolicyList').DataTable().ajax.reload();
-                        // }
                         $('#commercialAutoPolicyForm').modal('hide');
                         location.reload();
                     });
@@ -248,8 +261,12 @@
                         confirmButtonText: 'Ok'
                     })
                 }
-            })
+            });
+        });
 
+
+        $(document).on('hidden.bs.modal', '#commercialAutoPolicyForm', function() {
+            $('#commercialAutoForm').trigger('reset');
         });
 
         $(document).on('click', '.addMore', function() {
@@ -285,6 +302,7 @@
                 'placeholder': '0'
             });
         });
+
         $(document).on('click', '.deleteRow', function() {
             $(this).closest('.row.mb-2').remove();
         });

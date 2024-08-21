@@ -171,7 +171,51 @@ class ToolsEquipmentPolicyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try{
+            DB::beginTransaction();
+            $data = $request->all();
+
+            $policyDetails = PolicyDetail::find($id);
+            $policyDetails->policy_number = $data['toolsEquipmentPolicyNumber'];
+            $policyDetails->carrier = $data['toolsEquipmentCarrierInput'];
+            $policyDetails->market = $data['toolsEquipmentMarketInput'];
+            $policyDetails->payment_mode = $data['toolsEquipmentPaymentTermInput'];
+            $policyDetails->save();
+
+
+
+            if(isset($data['newBlankLimits']) && isset($data['newBlankValue'])){
+                $blankLimits = $data['newBlankLimits'];
+                $blankValues = $data['newBlankValue'];
+                $oldValued = PolicyAdditionalValue::where('policy_details_id', $id)->get();
+                foreach($oldValued as $oldValue){
+                    $oldValue->delete();
+                }
+                foreach($blankLimits as $key => $limit){
+                    if(isset($blankValues[$key])){
+                        $value = $blankValues[$key];
+                        $policyAdditionalValue = new PolicyAdditionalValue();
+                        $policyAdditionalValue->policy_details_id = $policyDetails->id;
+                        $policyAdditionalValue->name = $limit;
+                        $policyAdditionalValue->value = $value;
+                        $policyAdditionalValue->save();
+                    }
+                }
+            }
+
+            $toolsEquipmentPolicy = ToolsEquipmentPolicy::where('policy_details_id', $id)->first();
+            $toolsEquipmentPolicy->is_subr_wvd = $request->has('toolsEquipmentSubrWvd') ? '1' : '0';
+            $toolsEquipmentPolicy->is_addl_insd = $request->has('toolsEquipmentAddlInsd') ? '1' : '0';
+            $toolsEquipmentPolicy->save();
+
+
+            DB::commit();
+            return response()->json(['success' => 'Tools Equipment Policy Details has been saved successfully']);
+        }catch(\Exception $e){
+            Log::error($e->getMessage());
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()]);
+        }
     }
 
     /**

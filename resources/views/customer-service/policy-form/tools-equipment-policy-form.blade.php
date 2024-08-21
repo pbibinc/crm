@@ -105,13 +105,14 @@
                         </div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-12">
+                        <div class="col-12" id='toolsEquipmentFileDiv'>
                             <input type="file" name="file" id="file"
                                 class="form-control toolsEquipmentPolicyFormFile">
                         </div>
                     </div>
                     <input type="hidden" name="toolsEquipmentHiddenInputId" id="toolsEquipmentHiddenInputId">
                     <input type="hidden" name="toolsEquipmentHiddenQuoteId" id="toolsEquipmentHiddenQuoteId">
+                    <input type="hidden" name="toolsEquipmentHiddenPolicyId" id="toolsEquipmentHiddenPolicyId">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Close</button>
@@ -145,9 +146,19 @@
         $('#toolsEquipmentForm').on('submit', function(e) {
             e.preventDefault();
             var formData = new FormData(this);
+            var action = $('.toolsEquipmentPolicyFornActionButton').val();
+            var policyId = $('#toolsEquipmentHiddenPolicyId').val();
+            var url = action == 'Update' ?
+                `{{ route('tools-equipment-policy.update', ':id') }}`.replace(':id', policyId) :
+                "{{ route('tools-equipment-policy.store') }}";
+            var method = 'POST';
+            if (action == 'Update') {
+                formData.append('_method', 'PUT');
+                formData.delete('file'); // If you want to exclude the file input
+            }
             $.ajax({
-                url: "{{ route('tools-equipment-policy.store') }}",
-                type: "POST",
+                url: url,
+                type: method,
                 data: formData,
                 processData: false, // Prevent jQuery from processing the data
                 contentType: false,
@@ -217,6 +228,10 @@
 
         $(document).on('click', '.deleteRow', function() {
             $(this).closest('.row.mb-2').remove();
+        });
+
+        $(document).on('hidden.bs.modal', '#toolsEquipmentPolicyFormModal', function() {
+            $('#toolsEquipmentForm')[0].reset();
         });
     })
 </script>

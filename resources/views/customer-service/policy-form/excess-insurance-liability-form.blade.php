@@ -7,6 +7,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="excessInsurancePolicyForm" enctype="multipart/form-data">
+                @csrf
                 <div class="modal-body">
                     <div class="row mb-2">
                         <div class="col-6">
@@ -188,6 +189,7 @@
                 </div>
                 <input type="hidden" name="excessInsuranceHiddenInputId" id="excessInsuranceHiddenInputId">
                 <input type="hidden" name="excessInsuranceHiddenQuoteId" id="excessInsuranceHiddenQuoteId">
+                <input type="hidden" name="excessLiabilityHiddenPolicyId" id="excessLiabilityHiddenPolicyId">
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Close</button>
                     <input type="submit" name="action_button" id="action_button" value="Add"
@@ -276,29 +278,34 @@
         $('#excessInsurancePolicyForm').on('submit', function(e) {
             e.preventDefault();
             var formData = new FormData(this);
+            var action = $('.excessInsurancePolicyFormActionButton').val();
+            var policyId = $('#excessLiabilityHiddenPolicyId').val();
+            var method = 'POST';
+            if (action == 'Update') {
+                formData.append('_method', 'PUT');
+                // formData.delete('file');
+            }
+            var url = action == 'Update' ? `{{ route('excess-insurance-policy.update', ':id') }}`
+                .replace(':id', policyId) : "{{ route('excess-insurance-policy.store') }}";
+
+            console.log(url);
             $.ajax({
-                url: "{{ route('excess-insurance-policy.store') }}",
-                method: "POST",
-                data: formData,
-                contentType: false,
-                cache: false,
-                processData: false,
-                beforeSend: function() {
-                    $('#action_button').attr('disabled', 'disabled');
-                    $('#action_button').html('Sending...');
+                url: url,
+                method: method,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
+                data: formData,
+                processData: false, // Prevent jQuery from processing the data
+                contentType: false,
+                dataType: "json",
                 success: function(data) {
                     Swal.fire({
                         title: 'Success!',
-                        text: 'Tools Equipment Policy has been added!',
+                        text: 'Excess Liability Policy has been added successfully!',
                         icon: 'success',
                         confirmButtonText: 'Ok'
                     }).then((result) => {
-                        // if (result.isConfirmed) {
-                        //     $('#excessInsurancePolicyFormModal').modal('hide');
-                        //     $('.boundProductTable').DataTable().ajax.reload();
-                        //     $('.newPolicyList').DataTable().ajax.reload();
-                        // }
                         $('#excessInsurancePolicyFormModal').modal('hide');
                         location.reload();
                     });

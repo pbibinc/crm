@@ -181,7 +181,61 @@ class ExcessLiabilityInsurancePolicyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try{
+            DB::beginTransaction();
+            $data = $request->all();
+
+            $policyDetails = PolicyDetail::find($id);
+            $policyDetails->policy_number = $data['excessInsuranceNumber'];
+            $policyDetails->carrier = $data['excessInsuranceCarrierInput'];
+            $policyDetails->market = $data['excessInsuranceMarketInput'];
+            $policyDetails->payment_mode = $data['excessInsurancePaymentTermInput'];
+            $policyDetails->effective_date = $data['excessInsuranceEffectiveDate'];
+            $policyDetails->expiration_date = $data['excessInsuranceExpirationDate'];
+            $policyDetails->save();
+
+
+            $excessLiability = ExcessLiabilityInsurancePolicy::where('policy_details_id', $id)->first();
+            $excessLiability->policy_details_id = $policyDetails->id;
+            $excessLiability->is_umbrella_liability = $request->has('excessInsuranceUmbrellaLiabl') ? '1' : '0';
+            $excessLiability->is_excess_liability = $request->has('excessInsuranceExcessLiability') ? '1' : '0';
+            $excessLiability->is_occur = $request->has('excessInsuranceOccur') ? '1' : '0';
+            $excessLiability->is_claims_made = $request->has('excessInsuranceClaimsMade') ? '1' : '0';
+            $excessLiability->is_ded = $request->has('excessInsuranceDed') ? '1' : '0';
+            $excessLiability->is_retention = $request->has('excessInsuranceRetention') ? '1' : '0';
+            $excessLiability->is_addl_insd = $request->has('excessInsuranceAddlInsd') ? '1' : '0';
+            $excessLiability->is_subr_wvd = $request->has('excessInsuranceSubrWvd') ? '1' : '0';
+            $excessLiability->each_occurrence = $data['excessInsuranceEachOccurrence'];
+            $excessLiability->aggregate = $data['excessInsuranceAggregate'];
+            $excessLiability->save();
+
+            if(isset($data['newBlankLimits']) && isset($data['newBlankValue'])){
+                $blankLimits = $data['newBlankLimits'];
+                $blankValues = $data['newBlankValue'];
+                $oldValued = PolicyAdditionalValue::where('policy_details_id', $id)->get();
+                foreach($oldValued as $oldValue){
+                    $oldValue->delete();
+                }
+                foreach($blankLimits as $key => $limit){
+                    if(isset($blankValues[$key])){
+                        $value = $blankValues[$key];
+                        $policyAdditionalValue = new PolicyAdditionalValue();
+                        $policyAdditionalValue->policy_details_id = $policyDetails->id;
+                        $policyAdditionalValue->name = $limit;
+                        $policyAdditionalValue->value = $value;
+                        $policyAdditionalValue->save();
+                    }
+                }
+            }
+
+
+            DB::commit();
+            return response()->json(['message' => 'Excess Liability Insurance Policy has been updated successfully'], 200);
+        }catch(\Exception $e){
+            Log::info($e->getMessage());
+            DB::rollBack();
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 
     /**

@@ -104,13 +104,14 @@
                         </div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-12">
+                        <div class="col-12" id="businessOwnersFileDiv">
                             <input type="file" name="file" id="file"
                                 class="form-control businessOwnersPolicyFile">
                         </div>
                     </div>
                     <input type="hidden" name="businessOwnersHiddenInputId" id="businessOwnersHiddenInputId">
                     <input type="hidden" name="businessOwnersHiddenQuoteId" id="businessOwnersHiddenQuoteId">
+                    <input type="hidden" name="businessOwnersPolicyId" id="businessOwnersPolicyId">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Close</button>
@@ -143,9 +144,19 @@
         $('#businessOwnersPolicyForm').on('submit', function(e) {
             e.preventDefault();
             var formData = new FormData(this);
+            var id = $('#businessOwnersPolicyId').val();
+            var action = $('.businessOwnersPolicyActionButton').val();
+            var url = action == 'Update' ? "{{ route('business-owner-policy.update', ':id') }}".replace(
+                    ':id', id) :
+                "{{ route('business-owner-policy.store') }}";
+            var method = 'POST';
+            if (action == 'Update') {
+                formData.append('_method', 'PUT');
+                formData.delete('file'); // If you want to exclude the file input
+            }
             $.ajax({
-                url: "{{ route('business-owner-policy.store') }}",
-                type: "POST",
+                url: url,
+                type: method,
                 data: formData,
                 processData: false, // Prevent jQuery from processing the data
                 contentType: false,
@@ -214,6 +225,10 @@
 
         $(document).on('click', '.deleteRow', function() {
             $(this).closest('.row.mb-2').remove();
+        });
+
+        $(document).on('hide.bs.modal', '#businessOwnersPolicyFormModal', function() {
+            $('#businessOwnersPolicyForm')[0].reset();
         });
     })
 </script>

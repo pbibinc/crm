@@ -422,6 +422,7 @@ Route::middleware(['auth'])->group(function (){
 
             //saving of product policies
             Route::post('binding/save-general-liabilities-policy', [BindingController::class, 'saveGeneralLiabilitiesPolicy'])->name('binding.save-general-liabilities-policy');
+            Route::put('binding/update-general-liabilities-policy/{id}', [BindingController::class, 'updateGeneralLiabilitiesPolicy'])->name('binding.update-general-liabilities-policy');
 
 
             //route for commercial auto policies
@@ -468,7 +469,7 @@ Route::middleware(['auth'])->group(function (){
             Route::post('/client-policy-list', [PoliciesController::class, 'getClienPolicyList'])->name('client-policy-list');
             Route::post('/get-policy-information', [PoliciesController::class, 'getPolicyInformation'])->name('get-policy-information');
             Route::post('/update-file-policy', [PoliciesController::class, 'updatePolicyFile'])->name('update-file-policy');
-            Route::post('/change-policy-status', [PoliciesController::class, 'changePolicyStatus'])->name('change-policy-status');
+            Route::post('/change-policy-status', [PoliciesController::class, 'changePolicyStatus'])->name('change-status-for-policy');
 
             //routes for bound
             Route::post('/save-bound-information', [BoundController::class, 'saveBoundInformation'])->name('save-bound-information');
@@ -537,6 +538,7 @@ Route::middleware(['auth'])->group(function (){
 
         //storiing for callback
         Route::prefix('call-back')->group(function (){
+
          //callback routes
          Route::post('/store', [CallBackController::class, 'store'])->name('call-back.store');
          Route::post('/store-appointed-callback', [CallBackController::class, 'storeAppointedCallback'])->name('call-back.store-appointed-callback');

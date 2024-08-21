@@ -182,7 +182,57 @@ class CommercialAutoPolicyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try{
+            DB::beginTransaction();
+            $data = $request->all();
+
+            $policyDetails = PolicyDetail::find($id);
+            $policyDetails->policy_number = $data['commerciarlAutoPolicyNumber'];
+            $policyDetails->carrier = $data['commercialAutoCarrierInput'];
+            $policyDetails->market = $data['commercialAutoMarketInput'];
+            $policyDetails->payment_mode = $data['commercialAutoPaymentTermInput'];
+            $policyDetails->save();
+
+            $commercialAutoPolicy = CommercialAutoPolicy::where('policy_details_id', $id)->first();
+            $commercialAutoPolicy->is_any_auto =  $request->has('anyAuto') ? '1' : '0';
+            $commercialAutoPolicy->is_owned_auto =  $request->has('ownedAuto') ? '1' : '0';
+            $commercialAutoPolicy->is_scheduled_auto =  $request->has('scheduledAuto') ? '1' : '0';
+            $commercialAutoPolicy->is_hired_auto =  $request->has('hiredAutos') ? '1' : '0';
+            $commercialAutoPolicy->is_non_owned_auto =  $request->has('nonOwned') ? '1' : '0';
+            $commercialAutoPolicy->is_addl_insd =  $request->has('commercialAddlInsd') ? '1' : '0';
+            $commercialAutoPolicy->is_subr_wvd =  $request->has('commercialAutoSubrWvd') ? '1' : '0';
+            $commercialAutoPolicy->combined_single_unit = $data['combineUnit'];
+            $commercialAutoPolicy->bi_per_person = $data['biPerPerson'];
+            $commercialAutoPolicy->bi_per_accident = $data['biPerAccident'];
+            $commercialAutoPolicy->property_damage = $data['propertyDamage'];
+            $commercialAutoPolicy->save();
+
+            if(isset($data['newBlankLimits']) && isset($data['newBlankValue'])){
+                $blankLimits = $data['newBlankLimits'];
+                $blankValues = $data['newBlankValue'];
+                $oldValued = PolicyAdditionalValue::where('policy_details_id', $id)->get();
+                foreach($oldValued as $oldValue){
+                    $oldValue->delete();
+                }
+                foreach($blankLimits as $key => $limit){
+                    if(isset($blankValues[$key])){
+                        $value = $blankValues[$key];
+                        $policyAdditionalValue = new PolicyAdditionalValue();
+                        $policyAdditionalValue->policy_details_id = $policyDetails->id;
+                        $policyAdditionalValue->name = $limit;
+                        $policyAdditionalValue->value = $value;
+                        $policyAdditionalValue->save();
+                    }
+                }
+            }
+
+            DB::commit();
+            return response()->json(['status' => 'success', 'message' => 'Commercial Auto Policy has been updated successfully'], 200);
+        }catch(\Exception $e){
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
     }
 
     /**

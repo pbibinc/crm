@@ -8,6 +8,7 @@
             </div>
             <div class="modal-body">
                 <form id="workersCompensationForm" enctype="multipart/form-data">
+                    @csrf
                     <div class="row mb-2">
                         <div class="col-6">
                             <label class="form-label" for="workersCompensationPolicyNumber">Policy Number</label>
@@ -138,6 +139,8 @@
                         id="workersCompensationHiddenInputId">
                     <input type="hidden" name="workersCompensationHiddenQuoteId"
                         id="workersCompensationHiddenQuoteId">
+                    <input type="hidden" name="workersCompensationHiddenPolicyId"
+                        id="workersCompensationHiddenPolicyId">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Close</button>
@@ -192,8 +195,15 @@
         $('#workersCompensationForm').on('submit', function(e) {
             e.preventDefault();
             var formData = new FormData(this);
+            var policyId = $('#workersCompensationHiddenPolicyId').val();
+            var action = $('.workersCompensationPolicyActionButton').val();
+            if (action == 'Update') {
+                formData.append('_method', 'PUT');
+            }
+            var url = action == 'Update' ? `{{ route('workers-compensation-policy.update', ':id') }}`
+                .replace(':id', policyId) : "{{ route('workers-compensation-policy.store') }}";
             $.ajax({
-                url: "{{ route('workers-compensation-policy.store') }}",
+                url: url,
                 type: "POST",
                 data: formData,
                 processData: false, // Prevent jQuery from processing the data
@@ -235,6 +245,10 @@
             expirationDate.setFullYear(effectiveDate.getFullYear() + 1);
             var formattedExpirationDate = expirationDate.toISOString().split('T')[0];
             $('#workersCompensationExpirationDate').val(formattedExpirationDate);
+        });
+
+        $(document).on('hidden.bs.modal', '#workersCompensationModalForm', function() {
+            $('#workersCompensationForm').trigger('reset');
         });
     });
 </script>
