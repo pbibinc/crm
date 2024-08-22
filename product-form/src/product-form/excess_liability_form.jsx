@@ -18,7 +18,7 @@ import axiosClient from "../api/axios.client";
 import { ContextData } from "../contexts/context-data-provider";
 import { useExcessLiability } from "../contexts/excess-liability-context";
 const ExcessLiabilitiesForm = () => {
-    const { excessLiabilityData } = useExcessLiability();
+    const { excessLiabilityData } = useExcessLiability() || {};
 
     const GetExcessLiabilityData = () => {
         const localExcessLiabilityData = sessionStorage.getItem(

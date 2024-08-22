@@ -23,7 +23,7 @@ import { ContextData } from "../contexts/context-data-provider";
 import { useCommercialAuto } from "../contexts/commercial-auto-context";
 
 const CommercialAutoForm = () => {
-    const { commercialAutoData } = useCommercialAuto();
+    const { commercialAutoData } = useCommercialAuto() || {};
     const storeWorkersCompData = JSON.parse(
         sessionStorage.getItem("storeWorkersCompData")
     );
