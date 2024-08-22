@@ -18,7 +18,7 @@ class LeadUserProfileSeeder extends Seeder
     {
         $lead = Lead::find(1);
         $userProfile = UserProfile::find(1);
-        $lead->userProfile()->attch($userProfile, [
+        $lead->userProfile()->attach($userProfile, [
             'assigned_at' => now(),
             'current_user_id' => $userProfile->id
         ]);
