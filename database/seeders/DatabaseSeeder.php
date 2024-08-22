@@ -18,17 +18,17 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
         $this->call(LeadSeeder::class);
-        $this->call(PermissionSeeder::class);
-        $this->call(RoleSeeder::class);
-        $this->call(UserSeeder::class);
-        $this->call(DepartmenSeeder::class);
-        $this->call(PositionSeeder::class);
-        $this->call(RolePermissionSeeder::class);
-        $this->call(MediaSeeder::class);
-        $this->call(UserProfileSeeder::class);
-        $this->call(QuotationMarketSeeder::class);
-        $this->call(WebsiteOriginatedSeeder::class);
-        $this->call(InsurerSeeder::class);
-        $this->call(FinanceCompanySeeder::class);
+        // $this->call(PermissionSeeder::class);
+        // $this->call(RoleSeeder::class);
+        // $this->call(UserSeeder::class);
+        // $this->call(DepartmenSeeder::class);
+        // $this->call(PositionSeeder::class);
+        // $this->call(RolePermissionSeeder::class);
+        // $this->call(MediaSeeder::class);
+        // $this->call(UserProfileSeeder::class);
+        // $this->call(QuotationMarketSeeder::class);
+        // $this->call(WebsiteOriginatedSeeder::class);
+        // $this->call(InsurerSeeder::class);
+        // $this->call(FinanceCompanySeeder::class);
     }
 }

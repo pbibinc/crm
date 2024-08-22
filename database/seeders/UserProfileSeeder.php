@@ -20,7 +20,7 @@ class UserProfileSeeder extends Seeder
             'id' => 1,
             'firstname' => 'Maechael',
             'lastname' => 'Elchico',
-            'american_surname' => 'Blippi',
+            'american_name' => 'Blippi',
             'id_num' => 001,
             'position_id' => 1,
             'is_active' => 1,
