@@ -15,8 +15,10 @@
 
         </div>
         <div>
-            <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addQuoteModal"
+
+            <a href="#" class="btn btn-success createRecord" data-bs-toggle="modal" data-bs-target="#addQuoteModal"
                 id="create_record">
+
                 ADD QUOTE
             </a>
             @if ($quoteProduct->status == 2)
@@ -233,6 +235,7 @@
         </div>
     </div>
 </div>
+
 <script>
     Dropzone.autoDiscover = false;
     var myDropzone;
@@ -438,7 +441,10 @@
             });
         });
 
-        $(document).on('click', '#create_record', function(e) {
+
+
+        $(document).on('click', `#create_record`, function(e) {
+            console.log('clicked', formId);
             e.preventDefault();
             $('#action').val('add');
             $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
@@ -508,6 +514,10 @@
                 }
             });
         });
+
+        $(document).on('click', '.createRecord', function(e) {
+            console.log('Clicked on:', $(this).attr('id'));
+        })
 
 
 
@@ -717,6 +727,7 @@
             });
         });
     });
+
 
 
     //function for parsing

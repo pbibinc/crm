@@ -8,8 +8,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form class="dropzone mt-4 border-dashed" id="dropzone" action="{{ url('/file-upload') }}"
-                    method="post" enctype="multipart/form-data">
+                <form class="quotationDropzone mt-4 border-dashed" id="quotationDropzone"
+                    action="{{ url('/file-upload') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                     <input type="hidden" value="" id="hidden_id">
@@ -43,6 +43,8 @@
                     'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
                         'General Liability',
                         $lead->quoteLead->QuoteInformation->id),
+                    'formId' => 'form_' . $product->id,
+                    'productForm' => 'General_Liability',
                 ])
             @elseif ($product->product == 'Workers Compensation')
                 @include(
@@ -53,6 +55,8 @@
                         'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
                             'Workers Compensation',
                             $lead->quoteLead->QuoteInformation->id),
+                        'formId' => 'form_' . $product->id,
+                        'productForm' => 'Workers_Compensation',
                     ]
                 )
             @elseif ($product->product == 'Commercial Auto')
@@ -62,6 +66,8 @@
                     'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
                         'Commercial Auto',
                         $lead->quoteLead->QuoteInformation->id),
+                    'formId' => 'form_' . $product->id,
+                    'productForm' => 'Commercial_Auto',
                 ])
             @elseif ($product->product == 'Excess Liability')
                 @include('leads.appointed_leads.leads-quotation-forms.excess-liability-quoation-form', [
@@ -70,6 +76,8 @@
                     'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
                         'Excess Liability',
                         $lead->quoteLead->QuoteInformation->id),
+                    'formId' => 'form_' . $product->id,
+                    'productForm' => 'Excess_Liability',
                 ])
             @elseif ($product->product == 'Tools Equipment')
                 @include('leads.appointed_leads.leads-quotation-forms.tools-equipment-quoation-form', [
@@ -78,6 +86,8 @@
                     'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
                         'Tools Equipment',
                         $lead->quoteLead->QuoteInformation->id),
+                    'formId' => 'form_' . $product->id,
+                    'productForm' => 'Tools_Equipment',
                 ])
             @elseif ($product->product == 'Builders Risk')
                 @include('leads.appointed_leads.leads-quotation-forms.builders-risk-quoation-form', [
@@ -86,6 +96,8 @@
                     'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
                         'Builders Risk',
                         $lead->quoteLead->QuoteInformation->id),
+                    'formId' => 'form_' . $product->id,
+                    'productForm' => 'Builders_Risk',
                 ])
             @elseif ($product->product == 'Business Owners')
                 @include('leads.appointed_leads.leads-quotation-forms.business-owners-quoation-form', [
@@ -94,6 +106,8 @@
                     'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
                         'Business Owners',
                         $lead->quoteLead->QuoteInformation->id),
+                    'formId' => 'form_' . $product->id,
+                    'productForm' => 'Business_Owners',
                 ])
             @endif
         </div>
@@ -108,8 +122,9 @@
     var quotationDropzone
     $(document).ready(function() {
 
+
         var url = "{{ env('APP_FORM_URL') }}" + "/upload";
-        quotationDropzone = new Dropzone(".dropzone", {
+        quotationDropzone = new Dropzone(".quotationDropzone", {
             clickable: true,
             init: function() {
                 this.on("sending", function(file, xhr, formData) {
@@ -396,9 +411,19 @@
         const products = ['Workers_Compensation', 'General_Liability', 'Commercial_Auto',
             'Excess_Liability', 'Tools_Equipment', 'Builders_Risk', 'Business_Owners'
         ]; // Add other products
-        products.forEach(handleFormSubmission);
-        products.forEach(handleRecommended);
 
+        products.forEach(function(product) {
+            console.log(`Binding events for ${product}`);
+            handleFormSubmission(product);
+            handleRecommended(product);
+            handleModalOpen(product);
+            bindCalculateInput(product);
+
+        })
+        // products.forEach(handleFormSubmission);
+        // products.forEach(handleRecommended);
+        // products.forEach(handleModalOpen);
+        // products.forEach(bindCalculateInput);
 
 
         //checkbox for recommended
@@ -479,6 +504,19 @@
             });
         }
 
+        function handleModalOpen(product) {
+            $(`#create_record_${product}`).on('click', function(e) {
+                e.preventDefault();
+                console.log('General_Liability');
+                $('#action').val('add');
+                $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
+                $(`#addQuoteModal_${product}`).modal('show');
+                $('#action_button').val('Add');
+                $('#medias').show();
+                $('#mediaLabelId').show();
+            });
+        }
+
         //function for parsing
         function parseCurrency(num) {
             if (num === undefined || num === null || num.trim() === "") {
@@ -487,8 +525,21 @@
             return parseFloat(num.replace(/[^0-9-.]/g, ''));
         }
 
-        //calculate total premium
-        function calculateFullPayment() {
+        // $('.calculateInput').on('input', function() {
+        //     // calculateFullPayment();
+        //     console.log('inputing');
+        // });
+
+
+
+        function bindCalculateInput(product) {
+            $(`#premium${product}, #endorsements${product}, #policyFee${product}, #inspectionFee${product}, #stampingFee${product}, #suplusLinesTax${product}, #placementFee${product}, #brokerFee${product}, #miscellaneousFee${product}`)
+                .on('input', function() {
+                    calculateFullPayment(product);
+                });
+        }
+
+        function calculateFullPayment(product) {
             let premium = parseCurrency($(`#premium${product}`).val()) || 0;
             let endorsements = parseCurrency($(`#endorsements${product}`).val()) || 0;
             let policyFee = parseCurrency($(`#policyFee${product}`).val()) || 0;
@@ -502,13 +553,9 @@
             let fullPayment = premium + endorsements + policyFee + inspectionFee + stampingFee +
                 suplusLinesTax +
                 placementFee + brokerFee + miscellaneousFee;
-            $(`#fullPayment${product}`).val('$ ' + fullPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
-                '$&,'));
-        }
 
-        $('.calculateInput').on('input', function() {
-            calculateFullPayment();
-        });
+            $(`#fullPayment${product}`).val('$ ' + fullPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+        }
 
     });
 </script>
