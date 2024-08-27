@@ -68,7 +68,7 @@ class PaymentInformation extends Model
 
 
         $data = array_filter($quoteInformationData, function($item) use($id){
-            return $item['lead_id'] == $id && $item['status'] == 'charged';
+            return $item['lead_id'] == $id;
         });
 
         return $data ? $data : [];

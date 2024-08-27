@@ -20,7 +20,7 @@ import { ContextData } from "../contexts/context-data-provider";
 import { useToolsEquipment } from "../contexts/tools-equipment-context";
 const ToolsEquipmentForm = () => {
     //setting for getting values toolsequipment from sessionstorage
-    const { toolsEquipmentData } = useToolsEquipment();
+    const { toolsEquipmentData } = useToolsEquipment() || {};
     const storedToolsEquipment = () => {
         const localSessionStorage =
             sessionStorage.getItem("toolsEquipmentData") || "{}";

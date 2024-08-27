@@ -233,4 +233,9 @@ class QuotationProduct extends Model
         return number_format($percentage, 2);
     }
 
+    // public function getSelectedQuote()
+    // {
+    //     return $this->hasMany(SelectedQuote::class, 'quotation)
+    // }
+
 }

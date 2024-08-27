@@ -87,7 +87,7 @@ class CancellationReportController extends Controller
     public function edit($id)
     {
         try{
-            $cancellationReport = CancellationReport::where('policy_details_id', $id)->first();
+            $cancellationReport = CancellationReport::where('policy_details_id', $id)->latest()->first();
             $policyDetail = PolicyDetail::find($id);
             return response()->json(['status' => 'success', 'data' => ['cancellationReport' => $cancellationReport, 'policyDetail' => $policyDetail]]);
 

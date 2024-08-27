@@ -18,7 +18,7 @@ import "../style/general-information.css";
 import { ContextData } from "../contexts/context-data-provider";
 import { useBuildersRisk } from "../contexts/builders-risk-context";
 const BuilderRiskForm = () => {
-    const { buildersRiskData } = useBuildersRisk();
+    const { buildersRiskData } = useBuildersRisk() || {};
 
     //setting for getting stored buildersRiskData
     const storedBuildersRiskData = () => {

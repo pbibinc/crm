@@ -98,6 +98,7 @@ class AppTakerLeadsController extends Controller
     }
 
     public function listLeadId(Request $request){
+
         $leadId = $request->input('leadId');
         $user = Auth::user();
         $productId = $request->input('productId');
@@ -113,14 +114,17 @@ class AppTakerLeadsController extends Controller
             }else{
                 Cache::put('product_id', $productId, 60 * 60);
             }
+        }else{
+            Cache::forget('product_id');
         }
-
         if($activityId){
             if($activityId == $cachedActivityId){
                 Cache::get('activity_id');
             }else{
                 Cache::put('activity_id', $activityId, 60 * 60);
             }
+        }else{
+            Cache::forget('activity_id');
         }
 
         if($leadId == $cachedLeadId){

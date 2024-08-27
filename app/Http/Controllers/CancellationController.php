@@ -94,7 +94,7 @@ class CancellationController extends Controller
     public function getRequestForApprovalData(Request $request)
     {
         $data = PolicyDetail::find($request->id);
-        $cancellationReport = CancellationReport::where('policy_details_id', $request->id)->latest()->first();
+        $cancellationReport = CancellationReport::where('policy_details_id', $request->id)->orderBy('created_at', 'desc')->first();
         $lead = $data->QuotationProduct->QuoteInformation->QuoteLead->leads;
         $product = $data->QuotationProduct;
         $generalInformation = $lead->GeneralInformation;

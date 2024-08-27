@@ -271,7 +271,7 @@ Route::middleware(['auth'])->group(function (){
 
 
         //route for assigning leads
-        Route::get('/', [AssignLeadController::class, 'index'])->name('assign');
+        Route::get('/leads-assigning', [AssignLeadController::class, 'index'])->name('assign');
         Route::get('/getDataTableLeads', [AssignLeadController::class, 'getDataTableLeads'])->name('getDataTableLeads');
         Route::post('/assign-leads', [AssignLeadController::class, 'assign'])->name('assign-leads');
         Route::post('/assign-random-leads', [AssignLeadController::class, 'assignRandomLeads'])->name('assign-random-leads');
@@ -313,6 +313,7 @@ Route::middleware(['auth'])->group(function (){
          Route::get('/lead-profile-view/{productId}', [QuotationController::class, 'leadProfileView'])->name('lead-profile-view');
 
          Route::get('/sync-selected-quote_id', [QuotationController::class, 'syncSelectedQuoteId'])->name('sync-selected-quote_id');
+         Route::post('/get-quote-list-table', [QuotationController::class, 'getQuoteListTable'])->name('get-quote-list-table');
 
          Route::post('/save-quotation-product', [QuotationController::class, 'saveQuotationProduct'])->name('save-quotation-product');
          Route::get('/get-comparison-data', [QuotationController::class, 'getComparisonData'])->name('get-comparison-data');
