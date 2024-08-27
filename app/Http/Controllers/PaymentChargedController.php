@@ -161,24 +161,76 @@ class PaymentChargedController extends Controller
             })
             ->addColumn('invoice_number', function($paymentInformationData){
                 $paymentCharged = PaymentCharged::where('payment_information_id', $paymentInformationData['data']->id)->first();
-                return $paymentCharged->invoice_number ? $paymentCharged->invoice_number : 'N/A';
+                return $paymentCharged ? $paymentCharged->invoice_number : 'N/A';
             })
             ->addColumn('charged_by', function($paymentInformationData){
                 $paymentCharged = PaymentCharged::where('payment_information_id', $paymentInformationData['data']->id)->first();
-                return $paymentCharged->userProfile ? $paymentCharged->userProfile->fullName() : 'N/A';
+                return $paymentCharged ? $paymentCharged->userProfile->fullName() : 'N/A';
             })
             ->addColumn('charged_date', function($paymentInformationData){
                 $paymentCharged = PaymentCharged::where('payment_information_id', $paymentInformationData['data']->id)->first();
-                return $paymentCharged->charged_date;
+                return $paymentCharged ? $paymentCharged->charged_date : 'N/A';
+            })
+            ->addColumn('payment-information_status', function($paymentInformationData){
+                $status = $paymentInformationData['data']->status;
+                $statusLabel = '';
+                $class = '';
+                Switch ($status) {
+                    case 'pending':
+                        $statusLabel ='Pending';
+                        $class = 'bg-warning';
+                        break;
+                    case 'charged':
+                        $statusLabel = 'Paid';
+                        $class = 'bg-success';
+                        break;
+                    case 'declined':
+                        $statusLabel = 'Declined';
+                        $class = 'bg-danger';
+                        break;
+                    case 'resend':
+                        $statusLabel = 'Resend';
+                        $class = 'bg-warning';
+                        break;
+                    default:
+                        $statusLabel = 'Unknown';
+                        $class = 'bg-secondary';
+                        break;
+                }
+                return "<span class='badge {$class}'>{$statusLabel}</span>";
             })
             ->addColumn('action', function($paymentInformationData){
                 $paymentCharged = PaymentCharged::where('payment_information_id', $paymentInformationData['data']->id)->first();
                 // $media = $paymentCharged->medias;
                 // $action = '<a href="'.route('admin.accounting.accounts-for-charged.show', $paymentCharged->id).'" class="btn btn-sm btn-primary">View</a>';
-                $viewInvoiceButton = '<button type="button" id="'.$paymentCharged->id.'" class="btn btn-sm btn-success viewInvoiceButton"><i class="ri-file-list-3-line"></i></button>';
 
-                return $viewInvoiceButton;
+                if($paymentCharged){
+                    $viewInvoiceButton = '<button type="button" id="'.$paymentCharged->id.'" class="btn btn-sm btn-success viewInvoiceButton"><i class="ri-file-list-3-line"></i></button>';
+                    $editPaymentInformationButton = '<button type="button" id="'.$paymentInformationData['data']->id.'" class="btn btn-info btn-sm waves-effect waves-light editChargedPaymentInformation" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-pencil-line"></i></button>';
+                    $dropdown = '<div class="btn-group">
+                    <button type="button" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #6c757d; color: white; border: none; padding: 5px; font-size: 16px; line-height: 1; border-radius: 50%; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center;">
+                        <i class="ri-more-line"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><button class="dropdown-item viewInvoiceButton" id="' . $paymentCharged->id . '"><i class="ri-upload-2-line"></i> View Invoice File</button></li>
+                        <li><button class="dropdown-item deletePaymentInformation" id="' . $paymentInformationData['data']->id . '"><i class="ri-delete-bin-line"></i> Delete</button></li>
+                    </ul>
+                 </div>';
+                    return  $editPaymentInformationButton . ' ' . $dropdown;
+                }else{
+                    $dropdown = '<div class="btn-group">
+                    <button type="button" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #6c757d; color: white; border: none; padding: 5px; font-size: 16px; line-height: 1; border-radius: 50%; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center;">
+                        <i class="ri-more-line"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><button class="dropdown-item deletePaymentInformation" id="' . $paymentInformationData['data']->id . '"><i class="ri-delete-bin-line"></i> Delete</button></li>
+                    </ul>
+                 </div>';
+                    $editPaymentInformationButton = '<button type="button" id="'.$paymentInformationData['data']->id.'" class="btn btn-info btn-sm waves-effect waves-light editPaymentInformationButton" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-pencil-line"></i></button>';
+                    return $editPaymentInformationButton . ' ' . $dropdown;
+                }
             })
+            ->rawColumns(['payment-information_status', 'action'])
             ->make(true);
         }
     }
