@@ -60,6 +60,13 @@ class Lead extends Model
         return $products ? $products->toArray() : [];
     }
 
+    public function getQuotationProducts()
+    {
+        $quoteId = $this->quoteLead->QuoteInformation->id;
+        $products = QuotationProduct::where('quote_information_id', $quoteId)->get();
+        return $products;
+    }
+
     public function leadHistories()
     {
         return $this->hasMany(LeadHistory::class, 'lead_id');
@@ -211,4 +218,8 @@ class Lead extends Model
     {
         return $this->belongsToMany(Metadata::class, 'lead_media_table', 'lead_id', 'metadata_id');
     }
+
+
+
+
 }

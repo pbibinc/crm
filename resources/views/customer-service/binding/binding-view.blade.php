@@ -142,6 +142,7 @@
                 },
                 dataType: "json",
                 success: function(data) {
+                    console.log(data);
                     $('#companyName').text(data.lead.company_name);
                     $('#insuredName').text(data.generalInformation.firstname + ' ' +
                         data.generalInformation.lastname);

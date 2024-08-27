@@ -295,15 +295,16 @@
                                 text: 'has been saved',
                                 icon: 'success'
                             }).then((result) => {
-                                if (result.isConfirmed) {
-                                    $('.getConfimedProductTable')
-                                        .DataTable().ajax.reload();
-                                    $('.incompleteBindingTable')
-                                        .DataTable().ajax.reload();
-                                    $('#declinedBindingModal')
-                                        .modal(
-                                            'hide')
-                                }
+                                location.reload();
+                                // if (result.isConfirmed) {
+                                //     $('.getConfimedProductTable')
+                                //         .DataTable().ajax.reload();
+                                //     $('.incompleteBindingTable')
+                                //         .DataTable().ajax.reload();
+                                //     $('#declinedBindingModal')
+                                //         .modal(
+                                //             'hide')
+                                // }
                             });
                         },
                         error: function() {

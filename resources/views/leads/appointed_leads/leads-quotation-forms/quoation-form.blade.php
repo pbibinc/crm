@@ -5,22 +5,42 @@
     }
 </style>
 
-
+@php
+    $productIds = [];
+    foreach ($products as $product) {
+        $productIds[] = $product->id;
+    }
+@endphp
 <div class="row mb-2">
-    <div class="col-6 title-card">
-        <h4 class="card-title mb-0" style="color: #ffffff">General Liablity Quotattions</h4>
-    </div>
-    <div class="d-flex justify-content-between">
-        <div>
-
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="card"
+            style="background-color: white; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); border-radius: 8px; overflow: hidden; padding: 10px;">
+            <div class="row">
+                <div class="col-6">
+                    <label for="product" class="form-label">Product</label>
+                    <select name="product" id="tableProductDropdown" class="form-select form-select-sm">
+                        <option value="">Select Product</option>
+                        @foreach ($productsDropdown as $product)
+                            <option value="{{ $product }}">{{ $product }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-6">
+                    <label for="Status" class="form-label">Filter By Status</label>
+                    <select name="status" id="tableStatusDropdown" class="form-select form-select-sm">
+                        <option value="New Quote">New Quote</option>
+                        <option value="Old Quote">Old Quote</option>
+                    </select>
+                </div>
+            </div>
         </div>
-        <div>
-            <button class="btn btn-success createRecord" id="create_record_{{ $productForm }}"
-                data-product='General_Liability' data-bs-target="#addQuoteModal_{{ $formId }}"> ADD
-                QUOTE</button>
+
+        <div class="ms-3">
+            <button class="btn btn-success btn-sm createRecord" id="create_record_" data-product=''
+                data-bs-target="#addQuoteModal_{{ $formId }}">ADD QUOTE</button>
 
             @if ($quoteProduct->status == 2)
-                <button href="#" class="btn btn-primary" id="sendQuoteButton">SEND QUOTE</button>
+                <button class="btn btn-primary btn-sm" id="sendQuoteButton">SEND QUOTE</button>
             @endif
         </div>
     </div>
@@ -31,11 +51,12 @@
         style="border-collapse: collapse; border-spacing: 0; width: 100%;">
         <thead>
             <tr>
+                <th>Quote No/Policy No</th>
+                <th>Product</th>
                 <th>Market</th>
                 <th>Full Payment</th>
-                <th>Down Payment</th>
-                <th>Monthly Payment</th>
-                <th>Broker Fee</th>
+                <th>Status</th>
+                <th>Created At</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -43,22 +64,21 @@
     </table>
 </div>
 
-<div class="modal fade " id="addQuoteModal_{{ $productForm }}" tabindex="-1" aria-labelledby="addQuoteModalLabel"
-    aria-hidden="true">
+<div class="modal fade " id="addQuoteModal" tabindex="-1" aria-labelledby="addQuoteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addQuoteModalLabel">Add Quotation</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="quotationForm{{ $productForm }}" enctype="multipart/form-data">
+            <form id="quotationForm" enctype="multipart/form-data">
                 <div class="modal-body">
 
                     @csrf
                     <div class="row mb-2">
                         <div class="col-6">
-                            <label for="marketDropdownGeneral_Liability">Market</label>
-                            <select name="marketDropdown" id="marketDropdownGeneral_Liability" class="form-select">
+                            <label for="marketDropdown">Market</label>
+                            <select name="marketDropdown" id="marketDropdown" class="form-select">
                                 <option value="">Select Market</option>
                                 @foreach ($quationMarket as $market)
                                     <option value={{ $market->id }}>{{ $market->name }}</option>
@@ -66,106 +86,91 @@
                             </select>
                         </div>
                         <div class="col-6">
-                            <label for="quoteNoGeneral_Liability" class="form-label">Policy No/Quote No:</label>
-                            <input type="text" class="form-control" id="quoteNoGeneral_Liability" name="quoteNo"
-                                required autocomplete="off">
+                            <label for="quoteNo" class="form-label">Policy No/Quote No:</label>
+                            <input type="text" class="form-control" id="quoteNo" name="quoteNo" required
+                                autocomplete="off">
                         </div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">
-                            <label for="premium{{ $productForm }}">Premium</label>
-                            <input type="text"
-                                class="form-control calculateInput{{ $productForm }} input-mask text-left"
-                                id="premium{{ $productForm }}" name="premium"
+                            <label for="product">Product</label>
+                            <select name="productDropdown" id="productDropdown" class="form-select">
+                                <option value="">Select Product</option>
+                                @foreach ($productsDropdown as $product)
+                                    <option value="{{ $product }}">{{ $product }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label for="premium">Premium</label>
+                            <input type="text" class="form-control calculateInput input-mask text-left"
+                                id="premium" name="premium"
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
                                 inputmode="decimal" style="text-align: right;" required autocomplete="off">
                         </div>
                         <div class="col-6">
-                            <label for="endorsements{{ $productForm }}">Endorsements</label>
-                            <input type="text"
-                                class="form-control input-mask text-left calculateInput{{ $productForm }}"
-                                id="endorsements{{ $productForm }}" name="endorsements"
+                            <label for="endorsements">Endorsements</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="endorsements" name="endorsements"
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
                                 inputmode="decimal" style="text-align: right;" autocomplete="off">
                         </div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">
-                            <label for="policyFee{{ $productForm }}">Policy Fee</label>
-                            <input type="text"
-                                class="form-control input-mask text-left calculateInput{{ $productForm }}"
-                                id="policyFee{{ $productForm }}" name="policyFee"
+                            <label for="policyFee">Policy Fee</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="policyFee" name="policyFee"
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
                                 inputmode="decimal" style="text-align: right;" autocomplete="off">
                         </div>
                         <div class="col-6">
-                            <label for="inspectionFe{{ $productForm }}">Inspection Fee</label>
-                            <input type="text"
-                                class="form-control input-mask text-left calculateInput{{ $productForm }}"
-                                id="inspectionFee{{ $productForm }}" name="inspectionFee"
-                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
-                                inputmode="decimal" style="text-align: right;" autocomplete="off">
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-6">
-                            <label for="stampingFee{{ $productForm }}">Stamping Fee</label>
-                            <input type="text"
-                                class="form-control input-mask text-left calculateInput{{ $productForm }}"
-                                id="stampingFee{{ $productForm }}" name="stampingFee"
-                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
-                                inputmode="decimal" style="text-align: right;" autocomplete="off">
-                        </div>
-                        <div class="col-6">
-                            <label for="surplusLinesTa{{ $productForm }}">Surplus lines Tax</label>
-                            <input type="text"
-                                class="form-control input-mask text-left calculateInput{{ $productForm }}"
-                                id="surplusLinesTax{{ $productForm }}" name="surplusLinesTax"
+                            <label for="inspectionFe">Inspection Fee</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="inspectionFee" name="inspectionFee"
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
                                 inputmode="decimal" style="text-align: right;" autocomplete="off">
                         </div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">
-                            <label for="placementFee{{ $productForm }}">Placement Fee</label>
-                            <input type="text"
-                                class="form-control input-mask text-left calculateInput{{ $productForm }}"
-                                id="placementFee{{ $productForm }}" name="placementFee"
+                            <label for="stampingFee">Stamping Fee</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="stampingFee" name="stampingFee"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" autocomplete="off">
+                        </div>
+                        <div class="col-6">
+                            <label for="surplusLinesTa">Surplus lines Tax</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="surplusLinesTax" name="surplusLinesTax"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label for="placementFee">Placement Fee</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="placementFee" name="placementFee"
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
                                 inputmode="decimal" style="text-align: right;" required autocomplete="off">
                         </div>
                         <div class="col-6">
-                            <label for="brokerFee{{ $productForm }}">Broker Fee</label>
-                            <input type="text"
-                                class="form-control input-mask text-left calculateInput{{ $productForm }}"
-                                id="brokerFee{{ $productForm }}" name="brokerFee"
+                            <label for="brokerFee">Broker Fee</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="brokerFee" name="brokerFee"
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
                                 inputmode="decimal" style="text-align: right;" required autocomplete="off">
                         </div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-6">
-                            <label for="miscellaneousFee{{ $productForm }}">Miscellaneous Fee</label>
-                            <input type="text"
-                                class="form-control input-mask text-left calculateInput{{ $productForm }}"
-                                id="miscellaneousFee{{ $productForm }}" name="miscellaneousFee"
-                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
-                                inputmode="decimal" style="text-align: right;" required autocomplete="off">
-                        </div>
-                    </div>
-
-                    <div class="row mb-2">
-                        <div class="col-6">
-                            <label for="fullPayment{{ $productForm }}" class="form-label">Full Payment</label>
-                            <input type="text" class="form-control input-mask text-left"
-                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
-                                inputmode="decimal" style="text-align: right;" id="fullPayment{{ $productForm }}"
-                                name="fullPayment" required readonly>
-                        </div>
-                        <div class="col-6">
-                            <label for="downPayment{{ $productForm }}" class="form-label">Down Payment</label>
-                            <input type="text" class="form-control input-mask text-left"
-                                id="downPayment{{ $productForm }}" name="downPayment"
+                            <label for="miscellaneousFee">Miscellaneous Fee</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="miscellaneousFee" name="miscellaneousFee"
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
                                 inputmode="decimal" style="text-align: right;" required autocomplete="off">
                         </div>
@@ -173,27 +178,43 @@
 
                     <div class="row mb-2">
                         <div class="col-6">
-                            <label for="monthlyPayment{{ $productForm }}" class="form-label">Monthly
+                            <label for="fullPayment" class="form-label">Full Payment</label>
+                            <input type="text" class="form-control input-mask text-left"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" id="fullPayment" name="fullPayment"
+                                required readonly>
+                        </div>
+                        <div class="col-6">
+                            <label for="downPayment" class="form-label">Down Payment</label>
+                            <input type="text" class="form-control input-mask text-left" id="downPayment"
+                                name="downPayment"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" required autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label for="monthlyPayment" class="form-label">Monthly
                                 Payment</label>
-                            <input type="text" class="form-control input-mask text-left"
-                                id="monthlyPayment{{ $productForm }}" name="monthlyPayment"
+                            <input type="text" class="form-control input-mask text-left" id="monthlyPayment"
+                                name="monthlyPayment"
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
                                 inputmode="decimal" style="text-align: right;" required autocomplete="off">
                         </div>
                         <div class="col-6">
-                            <label for="numberOfPayment{{ $productForm }}" class="form-label">Number of
+                            <label for="numberOfPayment" class="form-label">Number of
                                 Paymment</label>
-                            <input type="number" class="form-control" id="numberOfPayment{{ $productForm }}"
-                                name="numberOfPayment">
+                            <input type="number" class="form-control" id="numberOfPayment" name="numberOfPayment">
                         </div>
 
                     </div>
 
                     <div class="row mb-2">
                         <div class="col-6">
-                            <label for="effectiveDate{{ $productForm }}">Effective Date</label>
-                            <input type="date" class="form-control" id="effectiveDate{{ $productForm }}"
-                                name="effectiveDate" required>
+                            <label for="effectiveDate">Effective Date</label>
+                            <input type="date" class="form-control" id="effectiveDate" name="effectiveDate"
+                                required>
                         </div>
                     </div>
 
@@ -203,21 +224,18 @@
                             <input type="file" class="form-control" name="photos[]" id="medias" multiple />
                         </div>
                     </div>
-                    <input type="hidden" name="action" id="action{{ $productForm }}" value="add">
-                    <input type="hidden" name="product_hidden_id" id="product_hidden_id{{ $productForm }}" />
-                    <input type="hidden" name="productId" id="productId{{ $productForm }}"
-                        value="{{ $quoteProduct->id }}">
-                    <input type="hidden" name="recommended" id="recommended_hidden{{ $productForm }}"
-                        value="0" />
-                    <input type="hidden" name="currentMarketId" id="currentMarketId{{ $productForm }}">
-                    <input type="hidden" name="sender" id="sender{{ $productForm }}" value="marketSpecialist">
-                    <input type="hidden" name="renewalQuote" id="renewalQuote{{ $productForm }}" value="false">
+                    <input type="hidden" name="action" id="action" value="add">
+                    <input type="hidden" name="product_hidden_id" id="product_hidden_id" />
+                    <input type="hidden" name="productId" id="productId" value="{{ $quoteProduct->id }}">
+                    <input type="hidden" name="recommended" id="recommended_hidden" value="0" />
+                    <input type="hidden" name="currentMarketId" id="currentMarketId">
+                    <input type="hidden" name="sender" id="sender" value="marketSpecialist">
+                    <input type="hidden" name="renewalQuote" id="renewalQuote" value="false">
 
                 </div>
                 <div class="modal-footer d-flex justify-content-between">
                     <div class="form-check form-switch mb-3">
-                        <input type="checkbox" class="form-check-input" id="reccomended{{ $productForm }}"
-                            checked="">
+                        <input type="checkbox" class="form-check-input" id="reccomended" checked="">
                         <label class="form-check-label" for="reccomended">Reccomend this Quote</label>
                     </div>
                     <div>
@@ -233,11 +251,10 @@
 
 
 <script>
-    // Dropzone.autoDiscover = false;
-    // var myDropzone;
+    Dropzone.autoDiscover = false;
+    var myDropzone;
     $(document).ready(function() {
-
-        var id = {{ $quoteProduct->id }};
+        var ids = @json($productIds);
         $('#qoutation-table').DataTable({
             processing: true,
             serverSide: true,
@@ -246,13 +263,25 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
                         'content')
                 },
-                url: "{{ route('get-general-liabilities-quotation-table') }}",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    id: id
-                }
+                url: "{{ route('get-quote-list-table') }}",
+                data: function(d) {
+                    d._token = "{{ csrf_token() }}";
+                    d.ids = ids;
+                    d.product = $('#tableProductDropdown').val();
+                    d.status = $('#tableStatusDropdown').val();
+
+                },
+                method: 'POST'
             },
             columns: [{
+                    data: 'quote_no',
+                    name: 'quote_no'
+                },
+                {
+                    data: 'product',
+                    name: 'product'
+                },
+                {
                     data: 'market_name',
                     name: 'market_name'
                 },
@@ -261,16 +290,12 @@
                     name: 'full_payment'
                 },
                 {
-                    data: 'down_payment',
-                    name: 'down_payment'
+                    data: 'new_quotation_status',
+                    name: 'new_quotation_status'
                 },
                 {
-                    data: 'monthly_payment',
-                    name: 'monthly_payment'
-                },
-                {
-                    data: 'broker_fee',
-                    name: 'broker_fee'
+                    data: 'formatted_created_At',
+                    name: 'formatted_created_At'
                 },
                 {
                     data: 'action',
@@ -280,9 +305,16 @@
             ]
         });
 
+        $('#tableProductDropdown, #tableStatusDropdown').on('change', function() {
+            $('#qoutation-table').DataTable()
+                .ajax
+                .reload();
+        });
 
-        $('#addQuoteModalGeneral_Liability').on('hidden.bs.modal', function() {
+
+        $('#addQuoteModal').on('hidden.bs.modal', function() {
             $('#quotationForm select').val('');
+            $('#productDropdown').attr('disabled', false);
             $('#quotationForm input[type="text"], #quotationForm textarea')
                 .val('');
 

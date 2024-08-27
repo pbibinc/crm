@@ -114,7 +114,7 @@
         var cancelPolicyDropzone;
         $(document).ready(function() {
 
-            function assignForRewrite(id, userProfileId) {
+            function assignForRewrite(id, userProfileId, cancellationId) {
                 $.ajax({
                     url: "{{ route('assign-for-rewrite-policy.store') }}",
                     type: "POST",
@@ -123,7 +123,8 @@
                     },
                     data: {
                         id: id,
-                        userProfileId: userProfileId
+                        userProfileId: userProfileId,
+                        cancellationId: cancellationId
                     },
                     success: function(response) {
                         if (response.status == 'success') {
@@ -156,6 +157,7 @@
             $(document).on('click', '.forRewriteButton', function() {
                 var id = $(this).attr('id');
                 var userProfileId = $('#userProfileId').val();
+                var cancellationId = $(this).attr('data-cancel-id');
                 if (userProfileId == '') {
                     Swal.fire(
                         'Error!',
@@ -172,7 +174,8 @@
                         },
                         data: {
                             id: id,
-                            userProfileId: userProfileId
+                            userProfileId: userProfileId,
+                            cancellationId: cancellationId
                         },
                         success: function(response) {
                             console.log(response);
@@ -186,7 +189,7 @@
                                 confirmButtonText: 'Yes, assign it!'
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    assignForRewrite(id, userProfileId);
+                                    assignForRewrite(id, userProfileId, cancellationId);
                                 }
                             })
                         },

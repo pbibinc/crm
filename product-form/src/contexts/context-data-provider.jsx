@@ -26,6 +26,10 @@ export const ContextData = createContext();
 
 const ContextDataProvider = ({ children }) => {
     const { lead, loading } = LeadDetails();
+    const { zipcodes } = LeadZipcode();
+    const { cities } = LeadCity();
+    const { zipCity } = LeadZipCodeCities();
+    const { classCodeArray } = ClassCodeData();
     // const [additionalData, setAdditionalData] = useState(null);
 
     // useEffect(() => {
@@ -100,7 +104,9 @@ const ContextDataProvider = ({ children }) => {
     //     }
     // }, [lead, loading]); // Depend on `lead` and `loading`
     return (
-        <ContextData.Provider value={{ lead, loading }}>
+        <ContextData.Provider
+            value={{ lead, loading, zipcodes, cities, zipCity, classCodeArray }}
+        >
             {children}
         </ContextData.Provider>
     );

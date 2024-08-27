@@ -11,8 +11,10 @@ use App\Models\QuoationMarket;
 use App\Models\QuotationProduct;
 use App\Models\QuoteLead;
 use App\Models\RecreationalFacilities;
+use App\Models\SelectedQuote;
 use App\Models\Templates;
 use App\Models\UnitedState;
+use App\Models\UserProfile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -80,8 +82,12 @@ class AppointedController extends Controller
         $quationMarket = new QuoationMarket();
         $templates = Templates::all();
         $markets = QuoationMarket::all()->sortBy('name');
-         $carriers = Insurer::all()->sortBy('name');
-        return view('leads.appointed_leads.apptaker-leads-view.index', compact('leads', 'localTime', 'usAddress', 'products', 'sortedClassCodeLeads', 'classCodeLeads', 'recreationalFacilities', 'states', 'quationMarket', 'carriers', 'markets', 'templates'));
+        $carriers = Insurer::all()->sortBy('name');
+        $userProfile = new UserProfile();
+        $complianceOfficer = $userProfile->complianceOfficer();
+        $productIds = $leads->getQuotationProducts()->pluck('id')->toArray();
+        $selectedQuotes = SelectedQuote::whereIn('quotation_product_id', $productIds)->get() ?? [];
+        return view('leads.appointed_leads.apptaker-leads-view.index', compact('leads', 'localTime', 'usAddress', 'products', 'sortedClassCodeLeads', 'classCodeLeads', 'recreationalFacilities', 'states', 'quationMarket', 'carriers', 'markets', 'templates', 'complianceOfficer', 'selectedQuotes'));
     }
 
 }
