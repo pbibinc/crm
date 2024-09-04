@@ -36,8 +36,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="" class="dropzone mt-4 border-dashed" id="invoiceDropzone"
-                    enctype="multipart/form-data">
+                <form method="POST" class="dropzone mt-4 border-dashed" id="invoiceDropzone"
+                    enctype="multipart/form-data" action="{{ route('upload-invoice') }}">
+                    @csrf
+                    <input type="hidden" value="" id="hidden_id">
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}" />
                 </form>
                 <input type="hidden" id="mediaIds" value="">
             </div>
@@ -101,20 +104,67 @@
                     data: 'action',
                     name: 'action'
                 }
+            ],
+            order: [
+                [5, 'desc'] // This means the 6th column (charged_date) is sorted in ascending order
             ]
         });
-
         myDropzone = new Dropzone("#invoiceDropzone", {
-            url: "#",
-            autoProcessQueue: false, // Prevent automatic upload
             clickable: true, // Allow opening file dialog on click
-            maxFiles: 10, //
             init: function() {
+                this.on("sending", function(file, xhr, formData) {
+                    // Get the value from the hidden input
+                    var hiddenId = $('#hidden_id').val();
+                    // Append it to the FormData object
+                    formData.append("hidden_id", hiddenId);
+                });
+                this.on("removedfile", function(file, formData) {
+                    var id = file.id;
+                    var url = "{{ route('delete-invoice') }}"
+                    // Get the value from the hidden input
+                    var hiddenId = $('#hidden_id').val();
+                    Swal.fire({
+                        title: 'Confirm File Removal',
+                        text: 'Are you sure you want to remove this file?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, remove it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: url, // Replace with your delete file route
+                                method: "POST",
+                                data: {
+                                    id: id,
+                                    hiddenId: hiddenId,
+                                    _token: "{{ csrf_token() }}"
+                                },
+                                dataType: "json",
+                                success: function(response) {
+                                    $('#accountingTable').DataTable()
+                                        .ajax.reload();
+                                    console.log(response);
+                                },
+                                error: function(xhr, textStatus,
+                                    errorThrown) {
+                                    console.error(textStatus);
+                                }
+                            });
+                        } else {
+                            Swal.fire(
+                                'Cancelled',
+                                'Your file is safe :)',
+                                'error'
+                            )
+                        }
+                    })
+                });
                 this.on("addedfile", function(file) {
                     file.previewElement.addEventListener("click", function() {
                         var url = "{{ env('APP_FORM_LINK') }}";
                         var fileUrl = url + file.url;
-
                         Swal.fire({
                             title: 'File Options',
                             text: 'Choose an action for the file',
@@ -138,6 +188,16 @@
 
                     });
                 });
+            },
+            addRemoveLinks: true,
+            timeout: 5000,
+            success: function(file, response) {
+                console.log(response);
+                $('#accountingTable').DataTable()
+                    .ajax.reload();
+            },
+            error: function(file, response) {
+                return false;
             }
         });
 
@@ -177,7 +237,9 @@
                     _token: "{{ csrf_token() }}"
                 },
                 success: function(data) {
+                    console.log(data);
                     addExistingFiles(data.media);
+                    $('#hidden_id').val(id);
                     $('#fileViewingModal').modal('show');
                 }
             });
