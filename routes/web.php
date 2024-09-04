@@ -67,6 +67,7 @@ use App\Http\Controllers\NonCallBackDispositionController;
 use App\Http\Controllers\NotesController;
 use App\Http\Controllers\PaymentChargedController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PaymentInformationArchivedController;
 use App\Http\Controllers\PoliciesController;
 use App\Http\Controllers\PolicyForRenewalController;
 use App\Http\Controllers\PricingBreakdownController;
@@ -146,9 +147,11 @@ Route::middleware(['auth'])->group(function (){
         Route::get('/get-payment-information', [PaymentController::class, 'getPaymentInformation'])->name('get-payment-information');
         Route::post('/declined-payment', [PaymentController::class, 'declinedPayment'])->name('declined-payment');
         Route::post('/resend-payment-information', [PaymentController::class, 'resendPaymentInformation'])->name('resend-payment-information');
+        Route::delete('/delete-payment-information/{id}', [PaymentController::class, 'delete'])->name('delete-payment-information');
 
         //route for payment charged
         Route::post('/store-payment-charged', [PaymentChargedController::class, 'store'])->name('payment-charged.store');
+        Route::delete('/delete-payment-charged/{id}', [PaymentChargedController::class, 'delete'])->name('payment-charged.delete');
         Route::get('/payment-for-charged', [PaymentChargedController::class, 'index'])->name('payment-for-charged');
         Route::get('/payment-list', [PaymentChargedController::class, 'paymentList'])->name('payment-list');
         Route::post('/get-invoice-media', [PaymentChargedController::class, 'getInvoiceMedia'])->name('get-invoice-media');
@@ -157,6 +160,10 @@ Route::middleware(['auth'])->group(function (){
         Route::post('/upload-invoice', [PaymentChargedController::class, 'uploadFile'])->name('upload-invoice');
         Route::post('/delete-invoice', [PaymentChargedController::class, 'deleteInvoice'])->name('delete-invoice');
         Route::get('/export-payment-list', [PaymentChargedController::class, 'exportPaymentList'])->name('export-payment-list');
+
+        Route::resource('/payment-archive', PaymentInformationArchivedController::class);
+        Route::post('/payment-archive/get-payment-information', [PaymentInformationArchivedController::class, 'getPaymentArchivedList'])->name('payment-archive.get-payment-information');
+        Route::post('/payment-archive/restore', [PaymentInformationArchivedController::class, 'restore'])->name('payment-archive.restore');
     });
 
     //general information route module

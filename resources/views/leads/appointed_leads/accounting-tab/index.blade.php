@@ -1,7 +1,9 @@
 <div class="row mb-2">
     <div class="d-flex justify-content-between align-items-center">
-        <div class="card">
-
+        <div>
+            <a href="{{ route('payment-archive.show', $generalInformation->lead->id) }}"
+                style="font-size:15px; color: #0f9cf3; font-weight:500 margin-top:20px;"><i
+                    class="mdi mdi-archive-arrow-down"></i> Payment Archive</a>
         </div>
         <div>
             <button class="btn btn-success btn-sm" id="accountingMakeAPayment" data-product=''>MAKE A
@@ -443,6 +445,40 @@
                     $('#makePaymentModal').modal('show');
                 }
             })
+        });
+
+        $(document).on('click', '.deletePaymentInformation', function() {
+            var id = $(this).attr('id');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to delete this payment information?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('delete-payment-information', ':id') }}"
+                            .replace(
+                                ':id', id),
+                        method: "DELETE",
+                        data: {
+                            id: id,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            $('#accountingTable').DataTable().ajax.reload();
+                            Swal.fire(
+                                'Deleted!',
+                                'Your file has been deleted.',
+                                'success'
+                            )
+                        }
+                    });
+                }
+            });
         });
 
     });

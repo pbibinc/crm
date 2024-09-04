@@ -198,7 +198,25 @@ class PaymentController extends Controller
 
     public function resendPaymentInformation(Request $request)
     {
+    }
 
+    public function delete($id)
+    {
+        try{
+            DB::beginTransaction();
+            $paymentInformation = PaymentInformation::find($id);
+            $paymentCharged = $paymentInformation->PaymentCharged;
+            if($paymentCharged){
+                $paymentCharged->delete();
+            }
+            $paymentInformation->delete();
+            DB::commit();
+            return response()->json(['success' => 'Payment Information has been deleted.'], 200);
+        }catch(\Exception $e){
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function getPaymentInformation(Request $request)

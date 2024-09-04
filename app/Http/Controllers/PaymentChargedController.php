@@ -133,6 +133,20 @@ class PaymentChargedController extends Controller
         }
     }
 
+    public function delete($id)
+    {
+        try{
+            DB::beginTransaction();
+
+            $paymentCharged = PaymentCharged::find($id);
+
+            $paymentCharged->delete();
+            DB::commit();
+        }catch(\Exception $e){
+            return response()->json(['error' => $e], 500);
+        }
+    }
+
     public function paymentList(Request $request)
     {
         if($request->ajax())
@@ -140,11 +154,6 @@ class PaymentChargedController extends Controller
             $id = $request->id;
             $paymentInformation = new PaymentInformation();
             $paymentInformationData = $paymentInformation->getPaymentInformationByLeadId($id);
-            //dd($paymentInformationData);
-            // dd($paymentInformationData);
-            // $paymentInformationData = $paymentInformation->get();
-            // $paymentCharged = new PaymentCharged();
-            // $paymentChargedData = $paymentCharged->getPaymentCharged($id);
             return DataTables::of($paymentInformationData)
             ->addIndexColumn()
             ->addColumn('payment_type', function($paymentInformationData){
