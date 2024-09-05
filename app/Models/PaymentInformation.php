@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PaymentInformation extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'payment_information_table';
 
@@ -73,5 +74,48 @@ class PaymentInformation extends Model
 
         return $data ? $data : [];
         // $quoteInformation = $this-
+    }
+    public function getTrashedPaymentInformationByLeadId($id)
+    {
+        $quoteInformationData = [];
+
+        // Fetch all trashed payment information
+        $trashedPayments = $this->onlyTrashed()->get();
+
+        foreach ($trashedPayments as $data) {
+            $selectedQuote = SelectedQuote::find($data->selected_quote_id);
+
+            // Continue to next iteration if selected quote is not found
+            if (!$selectedQuote) {
+                continue;
+            }
+
+            $quotationProduct = QuotationProduct::find($selectedQuote->quotation_product_id);
+
+            // Continue to next iteration if quotation product is not found
+            if (!$quotationProduct || !$quotationProduct->QuoteInformation || !$quotationProduct->QuoteInformation->QuoteLead) {
+                continue;
+            }
+
+            $lead = $quotationProduct->QuoteInformation->QuoteLead->leads;
+
+            // Continue to next iteration if lead is not found
+            if (!$lead) {
+                continue;
+            }
+
+            $quoteInformationData[] = [
+                'lead_id' => $lead->id,
+                'data' => $data,
+                'status' => $data->status
+            ];
+        }
+
+        // Filter the results based on the provided lead ID
+        $data = array_filter($quoteInformationData, function ($item) use ($id) {
+            return $item['lead_id'] == $id;
+        });
+
+        return $data; // No need for additional ternary check
     }
 }

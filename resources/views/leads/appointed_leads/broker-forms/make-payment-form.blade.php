@@ -294,7 +294,9 @@
                                 }).then(function() {
                                     $('#makePaymentModal').modal(
                                         'hide');
-                                    location.reload();
+                                    $('#accountingTable').DataTable()
+                                        .ajax.reload();
+                                    // location.reload();
                                 });
                             },
                             error: function(jqXHR, xhr, status, error) {
