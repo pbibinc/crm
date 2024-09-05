@@ -475,6 +475,7 @@ Route::middleware(['auth'])->group(function (){
             Route::post('/new-policy-list', [PoliciesController::class, 'newPolicyList'])->withoutMiddleware(['auth:sanctum'])->name('new-policy-list');
             Route::post('/change-policy-status/{id}', [PoliciesController::class, 'changeStatus'])->name('change-policy-status');
             Route::post('/client-policy-list', [PoliciesController::class, 'getClienPolicyList'])->name('client-policy-list');
+            Route::post('/client-active-policy-list', [PoliciesController::class, 'getClientActivePolicyList'])->name('client-active-policy-list');
             Route::post('/get-policy-information', [PoliciesController::class, 'getPolicyInformation'])->name('get-policy-information');
             Route::post('/update-file-policy', [PoliciesController::class, 'updatePolicyFile'])->name('update-file-policy');
             Route::post('/change-policy-status', [PoliciesController::class, 'changePolicyStatus'])->name('change-status-for-policy');
