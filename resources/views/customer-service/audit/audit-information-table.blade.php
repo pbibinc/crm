@@ -1,10 +1,10 @@
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+{{-- <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
     <h4 style="font-size: 18px;"></h4>
     <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#auditInformationModal"
         style="font-size: 14px; padding: 8px 20px;">
         Add Audit Information
     </button>
-</div>
+</div> --}}
 
 <table id="auditInformationTable" class="table table-bordered dt-responsive nowrap auditInformationTable"
     style="border-collapse: collapse; border-spacing: 0; width: 100%; font-size: 13px;">
