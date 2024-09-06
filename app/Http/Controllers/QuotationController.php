@@ -146,6 +146,7 @@ class QuotationController extends Controller
         $carriers = Insurer::all()->sortBy('name');
         $templates = Templates::all();
         $leadId = $leads->id;
+
         return view('leads.appointed_leads.broker-lead-profile-view.index', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'products', 'complianceOfficer', 'markets', 'carriers','leadId',  'templates', 'product', 'productId'));
     }
 

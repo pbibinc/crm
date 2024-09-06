@@ -241,7 +241,6 @@
                             style="border-collapse: collapse; width: 100%; font-size: 12px;">
                             <thead style="background-color: #f0f0f0; font-size: 12px;">
                                 <tr>
-
                                     <th style="padding: 5px;">Policy Number</th>
                                     <th style="padding: 5px;">Product</th>
                                     <th style="padding: 5px;">Market</th>

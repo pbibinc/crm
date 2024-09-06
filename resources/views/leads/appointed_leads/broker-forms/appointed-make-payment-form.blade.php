@@ -9,6 +9,20 @@
             <div class="modal-body">
                 <form action="" id="makePaymentForm">
                     @csrf
+                    <div class="row mb-3" id="selectedQuoteDiv">
+                        <div class="col-6">
+                            <label for="selectedQuote">Select Quote</label>
+                            <select name="selectedQuoteDropdown" id="selectedQuoteDropdown" class="form-control">
+                                <option value="">Select Quote</option>
+                                @if (!empty($selectedQuotes))
+                                    @foreach ($selectedQuotes ? $selectedQuotes : [] as $quote)
+                                        <option value="{{ $quote->id }}">{{ $quote->quote_no }}
+                                            {{ $quote->QuotationMarket->name }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+                    </div>
                     <div class="row mb-3">
                         <div class="col-6">
                             <label for="paymentTypeLabel">Payment Type</label>

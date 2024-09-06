@@ -16,6 +16,12 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#incompleteBinding" role="tab">
+                                        <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
+                                        <span class="d-none d-sm-block">Incomplete Binding</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" data-bs-toggle="tab" href="#binding" role="tab">
                                         <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
                                         <span class="d-none d-sm-block">Binding</span>
@@ -25,12 +31,6 @@
                                     <a class="nav-link" data-bs-toggle="tab" href="#bound" role="tab">
                                         <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
                                         <span class="d-none d-sm-block">Bound</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#incompleteBinding" role="tab">
-                                        <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
-                                        <span class="d-none d-sm-block">Incomplete Binding</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
