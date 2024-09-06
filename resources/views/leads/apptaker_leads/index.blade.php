@@ -329,7 +329,7 @@
                                     <label class="form-label">Disposition</label>
                                     <select name="timezone" id="dispositionDropDown" class="form-control">
                                         <option value="">Select Disposition</option>
-                                        <option value="">ALL</option>
+
                                         @foreach ($dispositions as $disposition)
                                             <option value="{{ $disposition->id }}">{{ $disposition->name }}</option>
                                         @endforeach
