@@ -564,34 +564,33 @@
                 var dispositionId = $('#dispositionDropDown').val();
                 var url = "{{ env('APP_FORM_URL') }}";
                 var leadId = $('#leadId').val();
-                console.log(leadId);
-                // if (leadId == 1) {
-                //     window.open(`${url}appoinnted-lead-questionare`,
-                //         "s_blank",
-                //         "width=1000,height=849");
-                //     $('#transactionLogModal').modal('hide');
-                // } else {
-                //     $.ajax({
-                //         url: "{{ route('assign-remark-leads') }}",
-                //         headers: {
-                //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                //         },
-                //         dataType: 'json',
-                //         method: 'POST',
-                //         data: {
-                //             remarks: remarks,
-                //             dispositionId: dispositionId,
-                //             leadId: leadsId
-                //         },
-                //         success: function(response) {
-                //             $('#transactionLogModal').modal('hide');
-                //             location.reload();
-                //         },
-                //         error: function(xhr, status, error) {
-                //             alert(xhr.responseText);
-                //         }
-                //     });
-                // }
+                if (leadId == 1) {
+                    window.open(`${url}appoinnted-lead-questionare`,
+                        "s_blank",
+                        "width=1000,height=849");
+                    $('#transactionLogModal').modal('hide');
+                } else {
+                    $.ajax({
+                        url: "{{ route('assign-remark-leads') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        dataType: 'json',
+                        method: 'POST',
+                        data: {
+                            remarks: remarks,
+                            dispositionId: dispositionId,
+                            leadId: leadsId
+                        },
+                        success: function(response) {
+                            $('#transactionLogModal').modal('hide');
+                            location.reload();
+                        },
+                        error: function(xhr, status, error) {
+                            alert(xhr.responseText);
+                        }
+                    });
+                }
             });
         </script>
     @endsection
