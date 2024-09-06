@@ -23,15 +23,15 @@ class GeneralInformationDataController extends BaseController
 {
     public function getGeneralInformationData(Request $request)
     {
-    try{
+     try{
         $token = $request->input('token');
         if(Cache::has($token)){
             return response()->json([
                 'message' => 'Duplicate submission, please try again'
             ],422);
         }
-        $token = Str::random(10);
-        Cache::put($token, true, 10);
+         $token = Str::random(10);
+         Cache::put($token, true, 10);
             DB::beginTransaction();
             $data = $request->all();
             Cache::put('general_information_data', $data);
@@ -86,9 +86,11 @@ class GeneralInformationDataController extends BaseController
 
             DB::commit();
             Cache::forget($token);
-        }catch(\Exception $e){
+            return response()->json(['message' => 'General Information Data saved successfully'], 200);
+        }
+        catch(\Exception $e){
             DB::rollback();
-            Log::info("Error for General Information", [$e->getMessage()]);
+            Log::error("Error for General Information".$e->getMessage());
             return response()->json(['message' => $e->getMessage()], 500);
         }
 
@@ -189,7 +191,6 @@ class GeneralInformationDataController extends BaseController
         DB::commit();
        }catch(\Exception $e){
         DB::rollback();
-        return response()->json(['message' => $e->getMessage()], 500);
         Log::info("Error for General Information", [$e]);
         return response()->json(['message' => 'Data updated successfully'], 200);
        }
@@ -203,5 +204,6 @@ class GeneralInformationDataController extends BaseController
         return $this->sendResponse($generalInformation,'General Information Data retrieved successfully.');
     }
 }
+
 
 ?>
