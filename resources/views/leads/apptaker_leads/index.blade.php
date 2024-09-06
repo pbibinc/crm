@@ -109,7 +109,6 @@
                                                 <label class="form-label">Time Zone</label>
                                                 <select name="timezone" id="timezoneDropdown" class="form-control select2">
                                                     <option value="">Select a timezone</option>
-                                                    <option value="">ALL</option>
                                                     @foreach ($timezones as $timezone => $identifier)
                                                         <option value="{{ $timezone }}">{{ $timezone }}</option>
                                                     @endforeach
