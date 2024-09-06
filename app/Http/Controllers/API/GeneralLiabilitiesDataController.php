@@ -132,14 +132,14 @@ class GeneralLiabilitiesDataController extends BaseController
             }
 
 
-         //saving of have loss general liabilities table
-         if($data['isHaveLossesChecked'] !== false){
-            $generalLiabilitiesHaveLoss = new GeneralLiabilitiesHaveLoss();
-            $generalLiabilitiesHaveLoss->general_liabilities_id = $generalLiabilitiId;
-            $generalLiabilitiesHaveLoss->date_of_claim = Carbon::parse($data['dateOfClaim'])->toDateString();
-            $generalLiabilitiesHaveLoss->loss_amount = $data['haveLossAmount'];
-            $generalLiabilitiesHaveLoss->save();
-          }
+             //saving of have loss general liabilities table
+             if($data['isHaveLossesChecked'] !== false){
+                $generalLiabilitiesHaveLoss = new GeneralLiabilitiesHaveLoss();
+                $generalLiabilitiesHaveLoss->general_liabilities_id = $generalLiabilitiId;
+                $generalLiabilitiesHaveLoss->date_of_claim = Carbon::parse($data['dateOfClaim'])->toDateString();
+                $generalLiabilitiesHaveLoss->loss_amount = $data['haveLossAmount'];
+                $generalLiabilitiesHaveLoss->save();
+             }
 
 
 
@@ -178,14 +178,13 @@ class GeneralLiabilitiesDataController extends BaseController
                      $multipleState->save();
                     }
              }
-             DB::commit();
-             Cache::forget($token);
+            DB::commit();
+            Cache::forget($token);
+            return response()->json(['message' => 'General Liability Data saved successfully'], 200);
         }catch(\Exception $e){
             Log::error('Error saving general liabilities data: '.$e->getMessage());
-            // Log::error($mergedClassCodeQuestionareData);
-            return response()->json(['error' => 'Failed to save data.'], 500);
+            return response()->json(['error' => 'Failed to save data.' $e->getMessage()], 500);
         }
-
     }
 
     public function updateGeneralLiabilities(Request $request, $id)
