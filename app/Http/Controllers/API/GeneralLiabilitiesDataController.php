@@ -183,7 +183,7 @@ class GeneralLiabilitiesDataController extends BaseController
             return response()->json(['message' => 'General Liability Data saved successfully'], 200);
         }catch(\Exception $e){
             Log::error('Error saving general liabilities data: '.$e->getMessage());
-            return response()->json(['error' => 'Failed to save data.' $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
