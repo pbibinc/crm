@@ -515,8 +515,6 @@
         }
     });
 
-
-
     //checkbox for recommended
     $('#reccomended').change(function() {
         if ($(this).is(':checked')) {
@@ -594,7 +592,6 @@
     })
 
     function addExistingQuotationFiles(files) {
-
         files.forEach(file => {
             var mockFile = {
                 id: file.id,

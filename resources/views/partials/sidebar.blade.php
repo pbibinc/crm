@@ -87,6 +87,23 @@
                     </li>
                     <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="ri-spy-line"></i>
+                            <span>LEADS FUNNEL</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            @can('viewImport', App\Models\Lead::find(1))
+                                <li><a href="{{ route('leads') }}">Import Leads</a></li>
+                            @endcan
+                            <li><a href="{{ route('leads-dnc-view') }}">DNC Number</a></li>
+                            @can('viewLeadsFunnel', App\Models\Lead::find(1))
+                                <li><a href="{{ route('assign') }}">Assign Leads</a></li>
+                            @endcan
+                            <li><a href="{{ route('website.index') }}">Website List</a></li>
+                            {{-- <li><a href="pages-directory.html">Leads Profile</a></li> --}}
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
                             <i class="ri-brush-2-line"></i>
                             <span>Marketing</span>
                         </a>
@@ -192,26 +209,9 @@
                         <li><a href="{{ route('assign-agent-to-broker.index') }}">Assigning Agent</a></li>
                     </ul>
                 </li>
-                @can('view', App\Models\Lead::find(1))
+                {{-- @can('view', App\Models\Lead::find(1))
                     <li class="menu-title">Leads</li>
-                    <li>
-                        <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="ri-spy-line"></i>
-                            <span>LEADS FUNNEL</span>
-                        </a>
-                        <ul class="sub-menu" aria-expanded="false">
-                            @can('viewImport', App\Models\Lead::find(1))
-                                <li><a href="{{ route('leads') }}">Import Leads</a></li>
-                            @endcan
-                            <li><a href="{{ route('leads-dnc-view') }}">DNC Number</a></li>
-                            @can('viewLeadsFunnel', App\Models\Lead::find(1))
-                                <li><a href="{{ route('assign') }}">Assign Leads</a></li>
-                            @endcan
-                            <li><a href="{{ route('website.index') }}">Website List</a></li>
-                            {{-- <li><a href="pages-directory.html">Leads Profile</a></li> --}}
-                        </ul>
-                    </li>
-                @endcan
+                @endcan --}}
 
                 @can('viewAnyCustomerService', App\Models\Lead::find(1))
                     <li class="menu-title">Customer Service</li>

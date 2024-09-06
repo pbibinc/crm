@@ -292,11 +292,14 @@
                             <div class="card"
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                                 <div class="card-body">
-                                    @include('leads.appointed_leads.accounting-tab.index', [
-                                        'complianceOfficer' => $complianceOfficer,
-                                        'generalInformation' => $leads->generalInformation,
-                                        'selectedQuotes' => $selectedQuotes,
-                                    ])
+                                    @include(
+                                        'leads.appointed_leads.accounting-tab.appointed-accounting-tab',
+                                        [
+                                            'complianceOfficer' => $complianceOfficer,
+                                            'generalInformation' => $leads->generalInformation,
+                                            'selectedQuotes' => $selectedQuotes,
+                                        ]
+                                    )
                                 </div>
                             </div>
                         </div>

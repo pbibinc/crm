@@ -42,6 +42,67 @@
             <div class="row">
                 <div class="col-sm-3">
                     <div class="card"
+                        style="background-color: white; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 8px;">
+                        <div class="card-body" style="text-align: center;">
+                            <h6 style="margin-bottom: 10px;">Change Status:</h6>
+                            <div class="form-group" style="margin-bottom: 10px;">
+                                <select class="form-control select2-search-disable" id="statusSelect"
+                                    style="border: 1px solid #ccc; border-radius: 4px; padding: 6px;">
+                                    @if ($product->status == 3 || $product->status == 4 || $product->status == 5)
+                                        <option value="3" @if ($product->status == 3) selected @endif>
+                                            Pending
+                                        </option>
+                                        <option value="4" @if ($product->status == 4) selected @endif>
+                                            Follow
+                                            Up</option>
+                                        <option value="5" @if ($product->status == 5) selected @endif>
+                                            Declined</option>
+                                    @endif
+                                    @if ($product->status == 11)
+                                        <option value="11" @if ($product->status == 11) selected @endif>
+                                            Bound</option>
+                                    @endif
+                                    @if ($product->status == 9)
+                                        <option value="9" @if ($product->status == 9) selected @endif>
+                                            Make A Payment</option>
+                                    @endif
+                                    @if ($product->status == 10 || $product->status == 6)
+                                        <option value="6" @if ($product->status == 6) selected @endif>
+                                            Request To Bind</option>
+                                        <option value="10" @if ($product->status == 10) selected @endif>
+                                            Payment Approved</option>
+                                    @endif
+                                    @if ($product->status == 13)
+                                        <option value="13" @if ($product->status == 13) selected @endif>
+                                            Payment Declined</option>
+                                    @endif
+                                    @if ($product->status == 14)
+                                        <option value="14" @if ($product->status == 14) selected @endif>
+                                            Binding Declined</option>
+                                        <option value="15" @if ($product->status == 15) selected @endif>
+                                            Resend RTB</option>
+                                    @endif
+                                    @if ($product->status == 15)
+                                        <option value="15" @if ($product->status == 15) selected @endif>
+                                            Resend RTB</option>
+                                    @endif
+                                    @if ($product->status == 22)
+                                        <option value="22" @if ($product->status == 22) selected @endif>
+                                            Pending</option>
+                                    @endif
+                                    @if ($product->status == 12)
+                                        <option value="22" @if ($product->status == 12) selected @endif>
+                                            Binding</option>
+                                    @endif
+                                </select>
+                            </div>
+                            @if ($product->status == 14 || $product->status == 10 || $product->status == 6 || $product->status == 15)
+                                <button type="button" class="btn btn-success waves-effect waves-light"
+                                    style="padding: 6px 12px; font-size: 14px;" id="saveStatusButton">Submit</button>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="card"
                         style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                         <div class="card-body">
                             <div class="row mb-2">

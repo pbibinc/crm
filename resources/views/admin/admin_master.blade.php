@@ -10,7 +10,7 @@
     </style>
 
     {{-- preloader --}}
-    @include('layouts.preloader')
+    {{-- @include('layouts.preloader') --}}
 
     {{-- header css --}}
 

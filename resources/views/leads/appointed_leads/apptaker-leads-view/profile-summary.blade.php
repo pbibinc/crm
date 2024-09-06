@@ -241,7 +241,6 @@
                             style="border-collapse: collapse; width: 100%; font-size: 12px;">
                             <thead style="background-color: #f0f0f0; font-size: 12px;">
                                 <tr>
-                                    <th style="padding: 5px;">Effective Date</th>
                                     <th style="padding: 5px;">Policy Number</th>
                                     <th style="padding: 5px;">Product</th>
                                     <th style="padding: 5px;">Market</th>
@@ -274,7 +273,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
                         'content')
                 },
-                url: "{{ route('client-policy-list') }}",
+                url: "{{ route('client-active-policy-list') }}",
                 method: "POST",
                 data: {
                     _token: "{{ csrf_token() }}",
@@ -282,10 +281,6 @@
                 }
             },
             columns: [{
-                    data: 'effectiveDate',
-                    name: 'effectiveDate'
-                },
-                {
                     data: 'policy_number',
                     name: 'policy_number'
                 },

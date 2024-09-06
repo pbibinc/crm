@@ -5,10 +5,10 @@
                 style="font-size:15px; color: #0f9cf3; font-weight:500 margin-top:20px;"><i
                     class="mdi mdi-archive-arrow-down"></i> Payment Archive</a>
         </div>
-        <div>
+        {{-- <div>
             <button class="btn btn-success btn-sm" id="accountingMakeAPayment" data-product=''>MAKE A
                 PAYMENT</button>
-        </div>
+        </div> --}}
     </div>
 </div>
 <div class="row">
@@ -50,9 +50,7 @@
     </div>
 </div>
 
-@include(
-    'leads.appointed_leads.broker-forms.make-payment-form',
-    compact('complianceOfficer', 'selectedQuotes'))
+@include('leads.appointed_leads.broker-forms.make-payment-form', compact('complianceOfficer'))
 
 <script>
     Dropzone.autoDiscover = false;
