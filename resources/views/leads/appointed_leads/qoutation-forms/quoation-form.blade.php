@@ -5,19 +5,43 @@
     }
 </style>
 
+@php
+    $productIds = [];
+    foreach ($products as $product) {
+        $productIds[] = $product->id;
+    }
 
+@endphp
 <div class="row mb-2">
     <div class="col-6 title-card">
         <h4 class="card-title mb-0" style="color: #ffffff">Quoations</h4>
     </div>
     <div class="d-flex justify-content-between">
-        <div>
-
+        <div class="card"
+            style="background-color: white; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); border-radius: 8px; overflow: hidden; padding: 10px;">
+            <div class="row">
+                <div class="col-12">
+                    <label for="product" class="form-label">Product</label>
+                    <select name="product" id="tableProductDropdown" class="form-select form-select-sm">
+                        <option value="">Select Product</option>
+                        @foreach ($productsDropdown as $product)
+                            <option value="{{ $product }}">{{ $product }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                {{-- <div class="col-6">
+                    <label for="Status" class="form-label">Filter By Status</label>
+                    <select name="status" id="tableStatusDropdown" class="form-select form-select-sm">
+                        <option value="New Quote">New Quote</option>
+                        <option value="Old Quote">Old Quote</option>
+                    </select>
+                </div> --}}
+            </div>
         </div>
         <div>
 
-            <a href="#" class="btn btn-success createRecord" data-bs-toggle="modal" data-bs-target="#addQuoteModal"
-                id="create_record">
+            <a href="#" class="btn btn-success createRecord" data-bs-toggle="modal"
+                data-bs-target="#addQuoteModal" id="create_record">
 
                 ADD QUOTE
             </a>
@@ -33,11 +57,12 @@
         style="border-collapse: collapse; border-spacing: 0; width: 100%;">
         <thead>
             <tr>
+                <th>Quote No/Policy No</th>
+                <th>Product</th>
                 <th>Market</th>
                 <th>Full Payment</th>
-                <th>Down Payment</th>
-                <th>Monthly Payment</th>
                 <th>Broker Fee</th>
+                <th>Created At</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -342,6 +367,12 @@
         });
 
         var id = {{ $quoteProduct->id }};
+        var ids = @json($productIds);
+        $('#tableProductDropdown').val('{{ $quoteProduct->product }}').change();
+
+        $('#tableProductDropdown').on('change', function() {
+            $('#qoutation-table').DataTable().ajax.reload();
+        });
         $('#qoutation-table').DataTable({
             processing: true,
             serverSide: true,
@@ -350,13 +381,26 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
                         'content')
                 },
-                url: "{{ route('get-general-liabilities-quotation-table') }}",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    id: id
-                }
+                // url: "{{ route('get-general-liabilities-quotation-table') }}",
+                url: "{{ route('get-quote-list-table') }}",
+                data: function(d) {
+                    d._token = "{{ csrf_token() }}";
+                    d.ids = ids;
+                    d.product = $('#tableProductDropdown').val();
+                    // d.status = $('#tableStatusDropdown').val();
+
+                },
+                method: 'POST'
             },
             columns: [{
+                    data: 'quote_no',
+                    name: 'quote_no'
+                },
+                {
+                    data: 'product',
+                    name: 'product'
+                },
+                {
                     data: 'market_name',
                     name: 'market_name'
                 },
@@ -365,24 +409,21 @@
                     name: 'full_payment'
                 },
                 {
-                    data: 'down_payment',
-                    name: 'down_payment'
-                },
-                {
-                    data: 'monthly_payment',
-                    name: 'monthly_payment'
-                },
-                {
                     data: 'broker_fee',
                     name: 'broker_fee'
                 },
                 {
-                    data: 'action',
-                    name: 'action',
+                    data: 'formatted_created_At',
+                    name: 'formatted_created_At'
+                },
+                {
+                    data: 'qouterActionButton',
+                    name: 'qouterActionButton',
                     orderable: false
                 }
             ]
         });
+
 
         //checkbox for recommended
         $('#reccomended').change(function() {
@@ -394,7 +435,7 @@
         });
 
         //deletion of quote
-        $(document).on('click', '.deleteButton', function(e) {
+        $(document).on('click', '.deleteQuoteButton', function(e) {
             e.preventDefault();
             var id = $(this).attr('id');
             Swal.fire({
@@ -441,6 +482,83 @@
             });
         });
 
+
+        //view quote button
+        $(document).on('click', '.viewQuoteButton', function(e) {
+            e.preventDefault();
+            var id = $(this).attr('id');
+            // product = $(this).attr('data-product');
+            console.log(id);
+            $('#action').val('edit');
+            $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
+            $.ajax({
+                url: "{{ route('edit-quotation-comparison') }}",
+                method: "POST",
+                data: {
+                    id: id,
+                    _token: "{{ csrf_token() }}"
+                },
+                dataType: "json",
+                success: function(response) {
+                    console.log(response.data.quotation_product.product);
+                    var url = `{{ asset('${response.media.filepath}') }}`;
+                    var filename = response.data.basename;
+                    s
+                    //pricing breakdown inputs
+                    $('#premium').val(response.pricingBreakdown.premium).attr('disabled',
+                        true);
+                    $('#endorsements').val(response.pricingBreakdown
+                        .endorsements).attr('disabled', true);
+                    $('#policyFee').val(response.pricingBreakdown
+                        .policy_fee).attr('disabled', true);
+                    $('#inspectionFee').val(response.pricingBreakdown
+                        .inspection_fee).attr('disabled', true);
+                    $('#stampingFee').val(response.pricingBreakdown
+                        .stamping_fee).attr('disabled', true);
+                    $('#surplusLinesTax').val(response.pricingBreakdown
+                        .surplus_lines_tax).attr('disabled', true);
+                    $('#placementFee').val(response.pricingBreakdown
+                        .placement_fee).attr('disabled', true);
+                    $('#miscellaneousFee').val(response.pricingBreakdown
+                        .miscellaneous_fee).attr('disabled', true);
+
+                    //quote comparison inputs
+                    $('#marketDropdown').val(String(response.data
+                        .quotation_market_id)).attr('disabled', true);
+                    $('#productDropdown').val(response.data.quotation_product.product);
+                    $('#productDropdown').attr('disabled', true);
+                    $('#fullPayment').val(response.data.full_payment).attr('disabled',
+                        true);
+                    $('#downPayment').val(response.data.down_payment).attr('disabled',
+                        true);
+                    $('#monthlyPayment').val(response.data
+                        .monthly_payment).attr('disabled', true);
+                    $('#numberOfPayment').val(response.data
+                        .number_of_payments).attr('disabled', true);
+                    $('#brokerFee').val(response.data.broker_fee).attr('disabled', true);
+                    $('#product_hidden_id').val(response.data.id).attr('disabled', true);
+                    $('#productId').val(response.data
+                        .quotation_product_id);
+                    $('#quoteNo').val(response.data.quote_no).attr('disabled', true);
+                    $('#currentMarketId').val(response.data
+                        .quotation_market_id).attr('disabled', true);
+                    $('#effectiveDate').val(response.data.effective_date).attr('disabled',
+                        true);
+                    $('#medias').hide();
+                    $('#mediaLabelId').hide();
+                    $('#action_button').val('Update');
+                    $('#action_button').hide();
+                    if (response.data.recommended == 1) {
+                        $('#reccomended').prop('checked', true);
+                        $('#recommended_hidden').val(1);
+                    } else {
+                        $('#reccomended').prop('checked', false);
+                        $('#recommended_hidden').val(0);
+                    }
+                    $(`#addQuoteModal`).modal('show');
+                }
+            });
+        });
 
 
         $(document).on('click', `#create_record`, function(e) {
@@ -522,7 +640,7 @@
 
 
         //edit button functionalities
-        $(document).on('click', '.editButton', function(e) {
+        $(document).on('click', '.editQuoteButton', function(e) {
             e.preventDefault();
             var id = $(this).attr('id');
             $('#action').val('edit');
@@ -546,7 +664,8 @@
                     $('#policyFee').val(response.pricingBreakdown.policy_fee);
                     $('#inspectionFee').val(response.pricingBreakdown.inspection_fee);
                     $('#stampingFee').val(response.pricingBreakdown.stamping_fee);
-                    $('#suplusLinesTax').val(response.pricingBreakdown.surplus_lines_tax);
+                    $('#surplusLinesTax').val(response.pricingBreakdown
+                        .surplus_lines_tax)
                     $('#placementFee').val(response.pricingBreakdown.placement_fee);
                     $('#miscellaneousFee').val(response.pricingBreakdown.miscellaneous_fee);
 
@@ -578,6 +697,7 @@
             });
 
         });
+
 
         //submition of form
         $('#quotationForm').on('submit', function(event) {
@@ -726,6 +846,50 @@
                 }
             });
         });
+
+        $('#addQuoteModal').on('hidden.bs.modal', function() {
+            console.log('modal closed');
+
+            // Reset the form fields
+            $('#quotationForm')[0].reset();
+
+            // Clear any input masks or custom fields (if applicable)
+            $('.input-mask').val('').trigger(
+                'input'); // Assuming you have input masks that need to be reset
+
+            // Reset dropdowns to default values (if needed)
+            $('#marketDropdown').val('');
+            $('#productDropdown').val('');
+
+            // Re-enable all fields that were disabled during 'view' mode
+            $('#quotationForm').find('input, select, textarea').removeAttr('disabled');
+
+            // Show file input fields if they were hidden
+            $('#medias').show();
+            $('#mediaLabelId').show();
+
+            // Remove attached files from file input
+            $('#medias').val('');
+
+            // Reset any custom flags or states
+            $('#recommended_hidden').val('0');
+            $('#renewalQuote').val('false');
+
+            // Reset checkboxes
+            $('#reccomended').prop('checked', false);
+
+            // Reset other hidden fields
+            $('#product_hidden_id').val('');
+            $('#currentMarketId').val('');
+
+            //reset action
+            $('#action').val('add');
+
+            // Reset the action button text and visibility
+            $('#action_button').val('Add');
+            $('#action_button').show();
+        });
+
     });
 
 

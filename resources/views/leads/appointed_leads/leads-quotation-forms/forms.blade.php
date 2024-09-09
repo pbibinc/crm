@@ -160,7 +160,6 @@
                 },
                 dataType: "json",
                 success: function(response) {
-                    console.log(response.data.quotation_product.product);
                     var url = `{{ asset('${response.media.filepath}') }}`;
                     var filename = response.data.basename;
 
@@ -623,6 +622,49 @@
                 }
             });
 
+        });
+
+        $('#addQuoteModal').on('hidden.bs.modal', function() {
+            console.log('modal closed');
+
+            // Reset the form fields
+            $('#quotationForm')[0].reset();
+
+            // Clear any input masks or custom fields (if applicable)
+            $('.input-mask').val('').trigger(
+                'input'); // Assuming you have input masks that need to be reset
+
+            // Reset dropdowns to default values (if needed)
+            $('#marketDropdown').val('');
+            $('#productDropdown').val('');
+
+            // Re-enable all fields that were disabled during 'view' mode
+            $('#quotationForm').find('input, select, textarea').removeAttr('disabled');
+
+            // Show file input fields if they were hidden
+            $('#medias').show();
+            $('#mediaLabelId').show();
+
+            // Remove attached files from file input
+            $('#medias').val('');
+
+            // Reset any custom flags or states
+            $('#recommended_hidden').val('0');
+            $('#renewalQuote').val('false');
+
+            // Reset checkboxes
+            $('#reccomended').prop('checked', false);
+
+            // Reset other hidden fields
+            $('#product_hidden_id').val('');
+            $('#currentMarketId').val('');
+
+            //reset action
+            $('#action').val('add');
+
+            // Reset the action button text and visibility
+            $('#action_button').val('Add');
+            $('#action_button').show();
         });
 
     });

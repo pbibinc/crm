@@ -826,7 +826,11 @@ const GeneralLiabilitiesForm = () => {
             setAmount(storedData.amount || "");
             setHaveLossAmount(storedData.haveLossAmount || "");
 
-            setUserProfileId(lead?.data?.userProfileId);
+            setUserProfileId(
+                lead?.data?.userProfileId
+                    ? lead?.data?.userProfileId
+                    : storedData.userProfileId
+            );
 
             setConcreteFoundationWork(
                 storedData.concrete_foundation_work || false
@@ -851,7 +855,7 @@ const GeneralLiabilitiesForm = () => {
             setIsDataReady(true);
         }
     }, [generalLiabilitiesData]);
-    console.log(userProfileId);
+
     // if (!isDataReady) {
     //     return <div>Loading...</div>;
     // }

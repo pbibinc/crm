@@ -6,86 +6,88 @@
                 <div>
                     @include('leads.appointed_leads.quotation-lead-view.header-profile-section', [
                         'leads' => $lead,
-                        'product' => $product,
+                        'product' => $quotationProduct,
                         'localTime' => $localTime,
                     ])
                 </div>
             </div>
             <div class="row">
-                <div class="col-4">
+                <div class="col-sm-3">
                     <div class="card"
                         style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                         <div class="card-body">
-                            <div class="row mb-3">
-                                <h5>Contact Information</h5>
-                            </div>
                             <div class="row mb-2">
+                                <h6 style="font-size: 14px;">Contact Information</h6>
+                            </div>
+                            <div class="row mb-1">
                                 <div class="col-6">
-                                    <strong>Email Address:</strong>
+                                    <strong style="font-size: 12px;">Email Address:</strong>
                                     <br>
-                                    <strong>{{ $generalInformation->email_address }}</strong>
+                                    <strong style="font-size: 12px;">{{ $generalInformation->email_address }}</strong>
                                 </div>
                                 <div class="col-6">
-                                    <strong>Tel Num:</strong>
+                                    <strong style="font-size: 12px;">Tel Num:</strong>
                                     <br>
-                                    <strong> {{ $lead->tel_num }}</strong>
+                                    <strong style="font-size: 12px;"> {{ $lead->tel_num }}</strong>
                                 </div>
                             </div>
-                            <div class="row">
-                                <strong>Alt Num:</strong>
+                            <div class="row mb-1">
+                                <strong style="font-size: 12px;">Alt Num:</strong>
                                 <br>
-                                <strong>{{ $generalInformation->alt_num ? $generalInformation->alt_num : $lead->tel_num }}</strong>
+                                <strong
+                                    style="font-size: 12px;">{{ $generalInformation->alt_num ? $generalInformation->alt_num : $lead->tel_num }}</strong>
                             </div>
-
                             <div class="row">
-                                <hr>
+                                <hr style="margin: 5px 0;">
                             </div>
-                            <div class="row mb-3">
-                                <h5>Location Details</h5>
+                            <div class="row mb-1">
+                                <h6 style="font-size: 14px;">Location Details</h6>
                             </div>
                             <div class="row mb-2">
                                 <div class="col-6">
-                                    <strong>Location:</strong>
+                                    <strong style="font-size: 12px;">Location:</strong>
                                     <br>
-                                    <strong>{{ $usAddress->city . ', ' . $usAddress->state }}</strong>
+                                    <strong
+                                        style="font-size: 12px;">{{ $usAddress->city . ', ' . $usAddress->state }}</strong>
                                 </div>
 
                                 <div class="col-6">
-                                    <strong>Local Time:</strong>
+                                    <strong style="font-size: 12px;">Local Time:</strong>
                                     <br>
-                                    <strong>{{ $localTime->format('M-d-Y g:iA') }}</strong>
+                                    <strong style="font-size: 12px;">{{ $localTime->format('M-d-Y g:iA') }}</strong>
                                 </div>
                             </div>
                             <div class="row mb-1">
                                 <div class="col-6">
-                                    <strong>Address:</strong>
+                                    <strong style="font-size: 12px;">Address:</strong>
                                     <br>
-                                    <strong>{{ $generalInformation->address }}</strong>
+                                    <strong style="font-size: 12px;">{{ $generalInformation->address }}</strong>
                                 </div>
                             </div>
                             <div class="row">
-                                <hr>
-                            </div>
-                            <div class="row mb-3">
-                                <h5>Company Information</h5>
+                                <hr style="margin: 5px 0;">
                             </div>
                             <div class="row mb-2">
+                                <h6 style="font-size: 14px;">Company Information</h6>
+                            </div>
+                            <div class="row mb-1">
                                 <div class="col-6">
-                                    <strong>Full Time Employee:</strong>
+                                    <strong style="font-size: 12px;">Full Time Employee:</strong>
                                     <br>
-                                    <strong>{{ $generalInformation->full_time_employee }}</strong>
+                                    <strong style="font-size: 12px;">{{ $generalInformation->full_time_employee }}</strong>
                                 </div>
                                 <div class="col-6">
-                                    <strong>Part Time Employee:</strong>
+                                    <strong style="font-size: 12px;">Part Time Employee:</strong>
                                     <br>
-                                    <strong>{{ $generalInformation->part_time_employee }}</strong>
+                                    <strong style="font-size: 12px;">{{ $generalInformation->part_time_employee }}</strong>
                                 </div>
                             </div>
-                            <div class="row mb-2">
+                            <div class="row mb-1">
                                 <div class="col-6">
-                                    <strong>Owners Payroll:</strong>
+                                    <strong style="font-size: 12px;">Owners Payroll:</strong>
                                     <br>
-                                    <strong>${{ number_format($generalInformation->owners_payroll, 2, '.', ',') }}</strong>
+                                    <strong
+                                        style="font-size: 12px;">${{ number_format($generalInformation->owners_payroll, 2, '.', ',') }}</strong>
                                 </div>
                                 <div class="col-6">
                                     <strong>Employee Payroll:</strong>
@@ -93,17 +95,18 @@
                                     <strong>${{ number_format($generalInformation->employee_payroll, 2, '.', ',') }}</strong>
                                 </div>
                             </div>
-                            <div class="row mb-2">
+                            <div class="row mb-1">
                                 <div class="col-6">
-                                    <strong>Gross Receipt:</strong>
+                                    <strong style="font-size: 12px;">Gross Receipt:</strong>
                                     <br>
-                                    <strong>${{ number_format($generalInformation->gross_receipt, 2, '.', ',') }}</strong>
+                                    <strong
+                                        style="font-size: 12px;">${{ number_format($generalInformation->gross_receipt, 2, '.', ',') }}</strong>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-8">
+                <div class="col-sm-9">
                     <div class="tab-content text-muted">
                         <div class="tab-pane fade show active" id="summary" role="tabpanel">
                             @include('leads.appointed_leads.apptaker-leads-view.profile-summary', [
@@ -221,10 +224,25 @@
                             <div class="card"
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                                 <div class="card-body">
-                                    @include('leads.appointed_leads.qoutation-forms/forms', [
-                                        'product' => $product,
+                                    @include('leads.appointed_leads.qoutation-forms.quoation-form', [
+                                        // 'product' => $product,
+                                        // 'generalInformation' => $generalInformation,
+                                        // 'quationMarket' => $quationMarket,
                                         'generalInformation' => $generalInformation,
-                                        'quationMarket' => $quationMarket,
+                                        'quationMarket' => $quationMarket->getMarketByProduct(
+                                            $quotationProduct->product),
+                                        'quoteProduct' => $quotationProduct,
+                                        'formId' => 'form_' . $quotationProduct->id,
+                                        'products' => $products,
+                                        'productsDropdown' => [
+                                            'Workers Compensation',
+                                            'General Liability',
+                                            'Commercial Auto',
+                                            'Excess Liability',
+                                            'Tools Equipment',
+                                            'Builders Risk',
+                                            'Business Owners',
+                                        ],
                                     ])
                                 </div>
                             </div>
@@ -234,7 +252,7 @@
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                                 <div class="card-body">
                                     @include('email.index', [
-                                        'productId' => $product->id,
+                                        'productId' => $quotationProduct->id,
                                         'templates' => $templates,
                                     ])
                                 </div>
