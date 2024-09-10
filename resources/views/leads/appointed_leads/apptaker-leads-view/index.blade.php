@@ -298,6 +298,7 @@
                                             'complianceOfficer' => $complianceOfficer,
                                             'generalInformation' => $leads->generalInformation,
                                             'selectedQuotes' => $selectedQuotes,
+                                            'policyDetailId' => null,
                                         ]
                                     )
                                 </div>
@@ -342,56 +343,13 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
         </div>
         @include('customer-service.audit.audit-information-modal')
     </div>
-
-
-
-    <!-- Chat Box -->
-    {{-- <div class="chat-box" id="chatBox">
-        <div class="chat-header">
-            <h5>Notes</h5>
-        </div>
-        <div class="chat-body" id="chatBody">
-            <!-- Notes will be displayed here -->
-            <div class="media media-chat media-chat-reverse">
-                <img class="avatar" src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="...">
-                <div class="media-body">
-                    <p>Hi</p>
-                    <p>How are you ...???</p>
-                    <p>What are you doing tomorrow?<br> Can we come up a bar?</p>
-                    <p class="meta"><time datetime="2018">23:58</time></p>
-                </div>
-            </div>
-        </div>
-        <div class="chat-footer p-3">
-            <div class="mb-2">
-                <input type="text" class="form-control form-control-sm" id="noteTitle" placeholder="Title" required>
-                <div class="invalid-feedback" id="noteTitleError"></div>
-            </div>
-            <div class="mb-2">
-                <label for="userToNotifyDropdown" class="form-label">User To Notify</label>
-                <select class="form-select form-select-sm" name="userToNotifyDropdown[]" id="userToNotifyDropdown"
-                    multiple="multiple" required>
-                    <!-- Options will be loaded here -->
-                </select>
-                <div class="invalid-feedback" id="userToNotifyDropdownError"></div>
-            </div>
-            <div class="mb-2">
-                <textarea required class="form-control form-control-sm" rows="2" placeholder="Type a note..."
-                    id="noteDescription"></textarea>
-                <div class="invalid-feedback" id="noteDescriptionError"></div>
-            </div>
-            <button type="button" class="btn btn-outline-primary btn-sm waves-effect waves-light" id="logNote">
-                <i class="ri-send-plane-fill"></i> Log Note
-            </button>
-        </div>
-    </div> --}}
-
     <script>
         $(document).ready(function() {
             $('#fab').on('click', function() {

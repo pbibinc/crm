@@ -246,7 +246,7 @@
 
         $('#makePaymentForm').on('submit', function(e) {
             e.preventDefault();
-            console.log('submitting');
+
             var button = $('#savePaymentInformation');
             var status = $('#statusInput').val();
             var productId = $('#quotationProductId').val();

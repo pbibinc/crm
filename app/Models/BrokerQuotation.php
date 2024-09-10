@@ -68,7 +68,7 @@ class BrokerQuotation extends Model
     {
 
         $agentIds = BrokerHandle::where('broker_userprofile_id', $userProfileId)->pluck('agent_userprofile_id');
-        $agentIds = $agentIds->concat([1]);
+        $agentIds = $agentIds;
         $quotationProductsQuery = BrokerQuotation::whereIn('user_profile_id', $agentIds)
         ->whereHas('quotationProduct', function ($query) use ($status) {
             if (is_array($status)) {

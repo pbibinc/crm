@@ -19,7 +19,8 @@ class AssignAgentToBrokerController extends Controller
     public function index()
     {
         //
-        $userProfiles = UserProfile::whereNot('is_compliance_officer', 1)->orderBy('firstname')->get();
+        // $userProfiles = UserProfile::whereNot('is_compliance_officer', 1)->orderBy('firstname')->get();
+        $userProfiles = UserProfile::orderBy('firstname')->get();
         return view('leads.assign-agent-to-broker.index', compact('userProfiles'));
     }
 

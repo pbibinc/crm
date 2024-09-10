@@ -61,9 +61,9 @@ class QuotationController extends Controller
 
     public function leadProfileView($productId)
     {
-        $product = QuotationProduct::find($productId);
-        $products = QuotationProduct::where('quote_information_id', $product->quote_information_id)->get();
-        $lead = Lead::find($product->QuoteInformation->QuoteLead->leads->id);
+        $quotationProduct = QuotationProduct::find($productId);
+        $products = QuotationProduct::where('quote_information_id', $quotationProduct->quote_information_id)->get();
+        $lead = Lead::find($quotationProduct->QuoteInformation->QuoteLead->leads->id);
         $generalInformation = GeneralInformation::find($lead->generalInformation->id);
         $timezones = [
             'Eastern' => ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV'],
@@ -100,7 +100,7 @@ class QuotationController extends Controller
         $carriers = Insurer::all()->sortBy('name');
         $markets = QuoationMarket::all()->sortBy('name');
         $templates = Templates::all();
-        return view('leads.appointed_leads.quotation-lead-view.leads-profile', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'products', 'carriers', 'markets', 'templates'));
+        return view('leads.appointed_leads.quotation-lead-view.leads-profile', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'quotationProduct', 'products', 'carriers', 'markets', 'templates'));
     }
 
     public function brokerProfileView($leadId, $generalInformationId, $productId)
@@ -146,8 +146,9 @@ class QuotationController extends Controller
         $carriers = Insurer::all()->sortBy('name');
         $templates = Templates::all();
         $leadId = $leads->id;
-
-        return view('leads.appointed_leads.broker-lead-profile-view.index', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'products', 'complianceOfficer', 'markets', 'carriers','leadId',  'templates', 'product', 'productId'));
+        $productIds = $leads->getQuotationProducts()->pluck('id')->toArray();
+        $selectedQuotes = SelectedQuote::whereIn('quotation_product_id', $productIds)->get() ?? [];
+        return view('leads.appointed_leads.broker-lead-profile-view.index', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'products', 'complianceOfficer', 'markets', 'carriers','leadId',  'templates', 'product', 'productId', 'productIds', 'selectedQuotes'));
     }
 
     public function saveQuotationProduct(Request $request)
@@ -826,10 +827,25 @@ class QuotationController extends Controller
          ->addColumn('broker_action', function($quoteComparison){
             $product = QuotationProduct::find($quoteComparison->quotation_product_id);
             $uploadFileButton = '<button class="btn btn-outline-primary btn-sm uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i></button>';
-            $editButton = '<button class="edit btn btn-outline-info btn-sm editButton'.$product->product.'" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i></button>';
+            // $editButton = '<button class="edit btn btn-outline-info btn-sm editButton'.$product->product.'" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i></button>';
             $selectQuoteButton = '<button class="btn btn-outline-success btn-sm selectQuoteButton" id="' . $quoteComparison->id . '"><i class="ri-checkbox-circle-fill"></i></button>';
+            $editButton = '<button class="btn btn-info btn-sm waves-effect waves-light editQuoteButton" data-product="' . str_replace(' ', '_', $product->product) . '" id="' . $quoteComparison->id . '" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-pencil-line"></i></button>';
+            $viewButton = '<button type="button" class="btn btn-outline-primary btn-sm waves-effect waves-light viewQuoteButton" id="'.$quoteComparison->id.'" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-eye-line"></i></button>';
+            $dropdown = '<div class="btn-group">
+            <button type="button" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #6c757d; color: white; border: none; padding: 5px; font-size: 16px; line-height: 1; border-radius: 50%; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center;">
+                <i class="ri-more-line"></i>
+            </button>
+            <ul class="dropdown-menu">
+                <li><button class="dropdown-item uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i>Upload</button></li>
+                 <li><button class="dropdown-item setNewQuotation" id="' . $quoteComparison->id . '"><i class="mdi mdi-account-reactivate"></i>Set as New</button></li>
+                 <li><button class="dropdown-item oldRenewQuotation" id="' . $quoteComparison->id . '"><i class="mdi mdi-file-sync-outline"></i>Set Old Quote</button></li>
+                <li><button class="dropdown-item selectQuoteButton" id="' . $quoteComparison->id . '"><i class="ri-checkbox-circle-fill"></i>Select Quote</button></li>
+                <li><button class="dropdown-item deleteButton" id="' . $quoteComparison->id . '"><i class="ri-delete-bin-line"></i>Delete</button></li>
+            </ul>
+         </div>';
 
-            return $editButton . ' ' . $uploadFileButton . ' ' . $selectQuoteButton;
+
+            return  $editButton . ' ' . $dropdown;
          })
          ->addColumn('rewrite-action-dropdown', function($quoteComparison){
             $dropdown = '<div class="btn-group">
@@ -865,7 +881,7 @@ class QuotationController extends Controller
 
     public function getQuoteListTable(Request $request)
     {
-        // $quoteComparisson = QuoteComparison::whereIn('quotation_product_id', $request->input('ids'))->orderBy('created_at', 'desc')->get();
+        // $quoteComparisson = QuoteComparison::whereIn('quotation_product_id', $request->input('ids'))->orderBy('created_at', 'desc')->get()
 
         $query = QuoteComparison::whereIn('quotation_product_id', $request->input('ids'))->orderBy('created_at', 'desc');
 
@@ -873,6 +889,7 @@ class QuotationController extends Controller
             $productId = QuotationProduct::where('product', $request->input('product'))->pluck('id');
             $query->whereIn('quotation_product_id', $productId);
         }
+
 
         if($request->has('status') && !empty($request->input('status'))){
             if($request->input('status') == 'Old Quote'){
@@ -883,6 +900,7 @@ class QuotationController extends Controller
         }
 
         $quoteComparisson = $query->get();
+
         // $quoteComparisson = $query->orderBy('created_at', 'desc')->get();
         return DataTables::of($quoteComparisson)
         ->addIndexColumn()
@@ -973,7 +991,30 @@ class QuotationController extends Controller
 
            return $viewButton . ' ' .$editButton  . ' ' . $dropdown;
         })
-        ->rawColumns(['market_name', 'action', 'rewrite-action-dropdown'])
+        ->addColumn('qouterActionButton', function($quoteComparison){
+            $product = QuotationProduct::find($quoteComparison->quotation_product_id);
+            $editButton = '<button class="btn btn-info btn-sm waves-effect waves-light editQuoteButton" data-product="' . str_replace(' ', '_', $product->product) . '" id="' . $quoteComparison->id . '" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-pencil-line"></i></button>';
+            $dropdown = '<div class="btn-group">
+            <button type="button" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #6c757d; color: white; border: none; padding: 5px; font-size: 16px; line-height: 1; border-radius: 50%; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center;">
+                <i class="ri-more-line"></i>
+            </button>
+            <ul class="dropdown-menu">
+                <li><button class="dropdown-item uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i>Upload</button></li>
+                 <li><button class="dropdown-item setNewQuotation" id="' . $quoteComparison->id . '"><i class="mdi mdi-account-reactivate"></i>Set as New</button></li>
+                 <li><button class="dropdown-item oldRenewQuotation" id="' . $quoteComparison->id . '"><i class="mdi mdi-file-sync-outline"></i>Set Old Quote</button></li>
+
+                <li><button class="dropdown-item deleteQuoteButton" id="' . $quoteComparison->id . '"><i class="ri-delete-bin-line"></i>Delete</button></li>
+            </ul>
+         </div>';
+            $uploadButton = '<button class="btn btn-sm btn-outline-primary uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i></button>';
+
+            $viewButton = '<button type="button" class="btn btn-outline-primary btn-sm waves-effect waves-light viewQuoteButton" id="'.$quoteComparison->id.'" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-eye-line"></i></button>';
+
+            $deleteButton = '<button class="btn btn-sm btn-outline-danger deleteButton" id="' . $quoteComparison->id . '"><i class="ri-delete-bin-line"></i></button>';
+
+            return $viewButton . ' ' .$editButton  . ' ' . $dropdown;
+         })
+        ->rawColumns(['market_name', 'action', 'rewrite-action-dropdown', 'qouterActionButton'])
         ->make(true);
     }
 

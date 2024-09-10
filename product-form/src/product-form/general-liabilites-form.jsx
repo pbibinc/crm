@@ -829,7 +829,11 @@ const GeneralLiabilitiesForm = () => {
             setUserProfileId(
                 lead?.data?.userProfileId
                     ? lead?.data?.userProfileId
+<<<<<<< HEAD
                     : getLeadStoredData?.data?.userProfileId
+=======
+                    : storedData.userProfileId
+>>>>>>> 060b5d934fc5353e82e6e666e3db3c903a772620
             );
 
             setConcreteFoundationWork(
@@ -855,7 +859,7 @@ const GeneralLiabilitiesForm = () => {
             setIsDataReady(true);
         }
     }, [generalLiabilitiesData]);
-    console.log(userProfileId);
+
     // if (!isDataReady) {
     //     return <div>Loading...</div>;
     // }

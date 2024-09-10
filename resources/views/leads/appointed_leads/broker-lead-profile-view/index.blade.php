@@ -324,105 +324,17 @@
                         <div class="tab-pane fade show" id="quotation" role="tabpanel">
                             <div class="card">
                                 <div class="card-body">
-                                    <div class="quotation-form" id="generalLiabilitiesQuoationForm" role="tabpanel">
-                                        @if ($product->product == 'General Liability')
-                                            @include(
-                                                'leads.appointed_leads.broker-quotation-forms.quoation-form',
-                                                [
-                                                    'generalInformation' => $generalInformation,
-                                                    'quationMarket' => $quationMarket,
-                                                    'quoteProduct' => $leads->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
-                                                        'General Liability',
-                                                        $leads->quoteLead->QuoteInformation->id),
-                                                    'complianceOfficer' => $complianceOfficer,
-                                                ]
-                                            )
-                                        @endif
-                                    </div>
-                                    <div class="quotation-form" id="workersCompensationForm" role="tabpanel">
-                                        @if ($product->product == 'Workers Compensation')
-                                            @include(
-                                                'leads.appointed_leads.broker-quotation-forms.quoation-form',
-                                                [
-                                                    'generalInformation' => $generalInformation,
-                                                    'quationMarket' => $quationMarket,
-                                                    'quoteProduct' => $leads->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
-                                                        'Workers Compensation',
-                                                        $leads->quoteLead->QuoteInformation->id),
-                                                ]
-                                            )
-                                        @endif
-                                    </div>
-                                    <div class="quotation-form" id="commercialAutoForm" role="tabpanel">
-                                        @if ($product->product == 'Commercial Auto')
-                                            @include(
-                                                'leads.appointed_leads.broker-quotation-forms.quoation-form',
-                                                [
-                                                    'generalInformation' => $generalInformation,
-                                                    'quationMarket' => $quationMarket,
-                                                    'quoteProduct' => $leads->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
-                                                        'Commercial Auto',
-                                                        $leads->quoteLead->QuoteInformation->id),
-                                                ]
-                                            )
-                                        @endif
-                                    </div>
-                                    <div class="quotation-form" id="excessLiabilityForm" role="tabpanel">
-                                        @if ($product->product == 'Excess Liability')
-                                            @include(
-                                                'leads.appointed_leads.broker-quotation-forms.quoation-form',
-                                                [
-                                                    'generalInformation' => $generalInformation,
-                                                    'quationMarket' => $quationMarket,
-                                                    'quoteProduct' => $leads->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
-                                                        'Excess Liability',
-                                                        $leads->quoteLead->QuoteInformation->id),
-                                                ]
-                                            )
-                                        @endif
-                                    </div>
-                                    <div class="quotation-form" id="toolsEquipmentForm" role="tabpanel">
-                                        @if ($product->product == 'Tools Equipment')
-                                            @include(
-                                                'leads.appointed_leads.broker-quotation-forms.quoation-form',
-                                                [
-                                                    'generalInformation' => $generalInformation,
-                                                    'quationMarket' => $quationMarket,
-                                                    'quoteProduct' => $leads->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
-                                                        'Tools Equipment',
-                                                        $leads->quoteLead->QuoteInformation->id),
-                                                ]
-                                            )
-                                        @endif
-                                    </div>
-                                    <div class="quotation-form" id="buildersRiskForm" role="tabpanel">
-                                        @if ($product->product == 'Builders Risk')
-                                            @include(
-                                                'leads.appointed_leads.broker-quotation-forms.quoation-form',
-                                                [
-                                                    'generalInformation' => $generalInformation,
-                                                    'quationMarket' => $quationMarket,
-                                                    'quoteProduct' => $leads->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
-                                                        'Builders Risk',
-                                                        $leads->quoteLead->QuoteInformation->id),
-                                                ]
-                                            )
-                                        @endif
-                                    </div>
-                                    <div class="quotation-form" id="businessOwnersPolicyForm" role="tabpanel">
-                                        @if ($product->product == 'Business Owners')
-                                            @include(
-                                                'leads.appointed_leads.broker-quotation-forms.quoation-form',
-                                                [
-                                                    'generalInformation' => $generalInformation,
-                                                    'quationMarket' => $quationMarket,
-                                                    'quoteProduct' => $leads->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
-                                                        'Business Owners',
-                                                        $leads->quoteLead->QuoteInformation->id),
-                                                ]
-                                            )
-                                        @endif
-                                    </div>
+                                    @include(
+                                        'leads.appointed_leads.broker-quotation-forms.quoation-form',
+                                        [
+                                            'generalInformation' => $generalInformation,
+                                            'quationMarket' => $quationMarket,
+                                            'quoteProduct' => $leads->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+                                                $product->product,
+                                                $leads->quoteLead->QuoteInformation->id),
+                                            'complianceOfficer' => $complianceOfficer,
+                                        ]
+                                    )
                                 </div>
                             </div>
                         </div>
@@ -431,9 +343,15 @@
                             <div class="card"
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                                 <div class="card-body">
-                                    @include('leads.appointed_leads.accounting-tab.index', [
-                                        'generalInformation' => $leads->generalInformation,
-                                    ])
+                                    @include(
+                                        'leads.appointed_leads.accounting-tab.appointed-accounting-tab',
+                                        [
+                                            'generalInformation' => $leads->generalInformation,
+                                            'selectedQuotes' => $selectedQuotes,
+                                            'complianceOfficer' => $complianceOfficer,
+                                            'policyDetailId' => null,
+                                        ]
+                                    )
                                 </div>
                             </div>
                         </div>
@@ -495,6 +413,7 @@
             </div>
         </div>
     </div>
+    {{-- @include('leads.appointed_leads.broker-forms.make-payment-form', compact('complianceOfficer')) --}}
     <script>
         $(document).ready(function() {
 
