@@ -66,7 +66,16 @@
                 <button class="btn btn-primary editSelectedQuote" id="editSelectedQuote">
                     EDIT QUOTE
                 </button>
-                @if (($paymentInformation && $paymentInformation->status == 'Pending') || $paymentInformation->status == 'declined')
+                {{-- @if (($paymentInformation && $paymentInformation->status == 'Pending') || $paymentInformation->status == 'declined')
+                    <button class="btn btn-primary editMakePayment" id="makePaymentButton">
+                        EDIT MAKE PAYMENT
+                    </button>
+                @else
+                    <button class="btn btn-success makePaymentButton" id="makePaymentButton">
+                        MAKE PAYMENT
+                    </button>
+                @endif --}}
+                @if ($paymentInformation && ($paymentInformation->status == 'Pending' || $paymentInformation->status == 'declined'))
                     <button class="btn btn-primary editMakePayment" id="makePaymentButton">
                         EDIT MAKE PAYMENT
                     </button>

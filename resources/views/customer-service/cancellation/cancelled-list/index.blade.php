@@ -156,8 +156,10 @@
             //for rewrite button
             $(document).on('click', '.forRewriteButton', function() {
                 var id = $(this).attr('id');
+
                 var userProfileId = $('#userProfileId').val();
                 var cancellationId = $(this).attr('data-cancel-id');
+
                 if (userProfileId == '') {
                     Swal.fire(
                         'Error!',

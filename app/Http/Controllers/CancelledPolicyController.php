@@ -165,7 +165,7 @@ class CancelledPolicyController extends Controller
             ->addColumn('action', function($data){
                 $leadId = $data->QuotationProduct->QuoteInformation->QuoteLead->leads->id;
                 $viewButton = '<a href="/appointed-list/'.$leadId.'" data-toggle="tooltip" data-id="'.$data->id.'" data-original-title="View" class="view btn btn-primary btn-sm viewCancellation"><i class="ri-eye-line"></i></a>';
-                $forRewriteButton = '<button type="button" class="btn btn-success btn-sm waves-effect waves-light forRewriteButton" id="'.$data->id.'"><i class="mdi mdi-account-arrow-left-outline"></i></button>';
+                $forRewriteButton = '<button type="button" class="btn btn-success btn-sm waves-effect waves-light forRewriteButton" id="'.$data->id.'" data-cancel-id="'.$data->id.'"><i class="mdi mdi-account-arrow-left-outline"></i></button>';
                 $previewButton = '<button type="button" class="btn btn-info btn-sm waves-effect waves-light previewButton" id="'.$data->id.'"><i class="mdi mdi-book-information-variant"></i></button>';
                 $setButton = '<button type="button" class="btn btn-warning btn-sm waves-effect waves-light firstTouchButtonSetCall" id="'.$data->id.'"><i class="mdi mdi-clock-start"></i></button>';
                 return $viewButton . ' ' . $previewButton . ' ' . $forRewriteButton . ' ' . $setButton;
@@ -201,6 +201,7 @@ class CancelledPolicyController extends Controller
         })
         ->addColumn('action', function($data){
             $leadId = $data->PolicyDetail->QuotationProduct->QuoteInformation->QuoteLead->leads->id;
+
             $viewButton = '<a href="/appointed-list/'.$leadId.'" data-toggle="tooltip" data-id="'.$data->policy_details_id.'" data-original-title="View" class="view btn btn-primary btn-sm viewCancellation"><i class="ri-eye-line"></i></a>';
             $forRewriteButton = '<button type="button" class="btn btn-success btn-sm waves-effect waves-light forRewriteButton" data-cancel-id="'.$data->id.'" id="'.$data->policy_details_id.'"><i class="mdi mdi-account-arrow-left-outline"></i></button>';
 
@@ -240,7 +241,7 @@ class CancelledPolicyController extends Controller
         ->addColumn('action', function($data){
             $leadId = $data->PolicyDetail->QuotationProduct->QuoteInformation->QuoteLead->leads->id;
             $viewButton = '<a href="/appointed-list/'.$leadId.'" data-toggle="tooltip" data-id="'.$data->policy_details_id.'" data-original-title="View" class="view btn btn-primary btn-sm viewCancellation"><i class="ri-eye-line"></i></a>';
-            $forRewriteButton = '<button type="button" class="btn btn-success btn-sm waves-effect waves-light forRewriteButton" id="'.$data->policy_details_id.'"><i class="mdi mdi-account-arrow-left-outline"></i></button>';
+            $forRewriteButton = '<button type="button" class="btn btn-success btn-sm waves-effect waves-light forRewriteButton" id="'.$data->policy_details_id.'" data-cancel-id="'.$data->id.'><i class="mdi mdi-account-arrow-left-outline"></i></button>';
             $previewButton = '<button type="button" class="btn btn-info btn-sm waves-effect waves-light previewButton" id="'.$data->policy_details_id.'"><i class="mdi mdi-book-information-variant"></i></button>';
             $setButton = '<button type="button" class="btn btn-warning btn-sm waves-effect waves-light thirdTouchButtonSetCall" id="'.$data->policy_details_id.'"><i class="mdi mdi-clock-start"></i></button>';
             $removeForRecallButton = '<button type="button" class="btn btn-danger btn-sm waves-effect waves-light removeForRecallButton" id="'.$data->id.'"><i class="mdi mdi-clock-start"></i></button>';
@@ -277,7 +278,7 @@ class CancelledPolicyController extends Controller
         ->addColumn('action', function($data){
             $leadId = $data->PolicyDetail->QuotationProduct->QuoteInformation->QuoteLead->leads->id;
             $viewButton = '<a href="/appointed-list/'.$leadId.'" data-toggle="tooltip" data-id="'.$data->policy_details_id.'" data-original-title="View" class="view btn btn-primary btn-sm viewCancellation"><i class="ri-eye-line"></i></a>';
-            $forRewriteButton = '<button type="button" class="btn btn-success btn-sm waves-effect waves-light forRewriteButton" id="'.$data->policy_details_id.'"><i class="mdi mdi-account-arrow-left-outline"></i></button>';
+            $forRewriteButton = '<button type="button" class="btn btn-success btn-sm waves-effect waves-light forRewriteButton" id="'.$data->policy_details_id.'" data-cancel-id="'.$data->id.'><i class="mdi mdi-account-arrow-left-outline"></i></button>';
             $previewButton = '<button type="button" class="btn btn-info btn-sm waves-effect waves-light previewButton" id="'.$data->policy_details_id.'"><i class="mdi mdi-book-information-variant"></i></button>';
             $setButton = '<button type="button" class="btn btn-warning btn-sm waves-effect waves-light touchedButtonSetCall" id="'.$data->policy_details_id.'"><i class="mdi mdi-clock-start"></i></button>';
             $removeForRecallButton = '<button type="button" class="btn btn-danger btn-sm waves-effect waves-light removeForRecallButton" id="'.$data->id.'"><i class="mdi mdi-clock-start"></i></button>';

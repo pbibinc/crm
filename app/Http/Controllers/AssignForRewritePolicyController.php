@@ -45,6 +45,7 @@ class AssignForRewritePolicyController extends Controller
         try{
             DB::beginTransaction();
             $data = $request->all();
+            dd($data);
             $userProfile = UserProfile::find($data['userProfileId']);
 
             $policyIds = is_array($data['id']) ? $data['id'] : explode(',', $data['id']);

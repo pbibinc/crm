@@ -1,7 +1,7 @@
 @include('partials.main')
 
 <head>
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         body {
             transform: scale(0.9) !;
@@ -10,7 +10,7 @@
     </style>
 
     {{-- preloader --}}
-    {{-- @include('layouts.preloader') --}}
+    @include('layouts.preloader')
 
     {{-- header css --}}
 
@@ -200,7 +200,13 @@
 <script src="{{ asset('backend/assets/js/pages/form-mask.init.js') }}"></script>
 
 
-<script></script>
+<script>
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+</script>
 
 </body>
 
