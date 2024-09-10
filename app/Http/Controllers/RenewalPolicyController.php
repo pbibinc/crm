@@ -30,6 +30,7 @@ class RenewalPolicyController extends Controller
         $userProfile = new UserProfile();
         $userProfiles = UserProfile::orderBy('firstname')->get();
         $complianceOfficer = $userProfile->complianceOfficer();
+
         return view('customer-service.renewal.renewal-policy.index', compact('userProfiles', 'complianceOfficer'));
     }
 
@@ -219,7 +220,9 @@ class RenewalPolicyController extends Controller
         $generalLiabilities = $generalInformation->generalLiabilities;
         $markets = QuoationMarket::all()->sortBy('name');
         $carriers = Insurer::all()->sortBy('name');
-        return view('leads.appointed_leads.renewal-quoted-policy-view.index', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer', 'markets', 'carriers', 'policyDetail', 'products'));
+        $productIds = $lead->getQuotationProducts()->pluck('id')->toArray();
+        $selectedQuotes = SelectedQuote::whereIn('quotation_product_id', $productIds)->get() ?? [];
+        return view('leads.appointed_leads.renewal-quoted-policy-view.index', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer', 'markets', 'carriers', 'policyDetail', 'products', 'productIds', 'selectedQuotes'));
     }
 
     public function renewalMakePaymentList(Request $request)
@@ -274,7 +277,9 @@ class RenewalPolicyController extends Controller
                 $productId = $policiesData->quotation_product_id;
                 $product = QuotationProduct::find($productId);
                 $selectedQuote = SelectedQuote::find($product->selected_quote_id);
+
                 $paymentStatus = PaymentInformation::where('selected_quote_id', $selectedQuote->id)->first();
+                $paymentStatusData = $paymentStatus ? $paymentStatus->status : 'N/A';
                 $statusLabel = '';
                 $class = '';
                 Switch ($paymentStatus->status){

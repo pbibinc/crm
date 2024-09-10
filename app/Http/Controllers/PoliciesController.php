@@ -264,6 +264,7 @@ class PoliciesController extends Controller
                     case 'For Rewrite Quotation':
                     case 'pending':
                     case 'Subject For Rewrite':
+                    case 'Process Quoted Renewal':
                         $class = 'bg-warning';
                         break;
 
@@ -403,6 +404,7 @@ class PoliciesController extends Controller
                 case 'For Rewrite Quotation':
                 case 'pending':
                 case 'Subject For Rewrite':
+                case 'Process Quoted Renewal':
                     $class = 'bg-warning';
                     break;
 

@@ -1,7 +1,3 @@
-@php
-    $policyDetailsId = $policyDetailId ? $policyDetailId : 0;
-@endphp
-
 <div class="row mb-2">
     <div class="d-flex justify-content-between align-items-center">
         <div>
@@ -55,8 +51,8 @@
 </div>
 
 @include(
-    'leads.appointed_leads.broker-forms.appointed-make-payment-form',
-    compact('complianceOfficer', 'selectedQuotes', 'policyDetailsId'))
+    'leads.appointed_leads.broker-forms.broker-make-payment-form',
+    compact('complianceOfficer', 'selectedQuotes'))
 
 <script>
     Dropzone.autoDiscover = false;
@@ -323,7 +319,7 @@
                     $('#totalPremium').attr('disabled', false);
                     $('#brokerFeeAmount').attr('disabled',
                         false);
-                    $('#makePaymentModal').modal('show');
+                    $('#makePaymentBrokerModal').modal('show');
                 }
             });
 
@@ -471,7 +467,7 @@
                         'Request A Payment');
                     $('#savePaymentInformation').val(
                         'Request A Payment');
-                    $('#makePaymentModal').modal('show');
+                    $('#makePaymentBrokerModal').modal('show');
                 }
             })
         });
@@ -617,7 +613,7 @@
                         'Update Payment Information');
                     $('#savePaymentInformation').val(
                         'Update Payment Information');
-                    $('#makePaymentModal').modal('show');
+                    $('#makePaymentBrokerModal').modal('show');
                 }
             })
         });

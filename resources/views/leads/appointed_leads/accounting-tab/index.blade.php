@@ -50,7 +50,7 @@
     </div>
 </div>
 
-@include('leads.appointed_leads.broker-forms.make-payment-form', compact('complianceOfficer'))
+{{-- @include('leads.appointed_leads.broker-forms.make-payment-form', compact('complianceOfficer')) --}}
 
 <script>
     Dropzone.autoDiscover = false;

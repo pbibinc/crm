@@ -146,8 +146,9 @@ class QuotationController extends Controller
         $carriers = Insurer::all()->sortBy('name');
         $templates = Templates::all();
         $leadId = $leads->id;
-
-        return view('leads.appointed_leads.broker-lead-profile-view.index', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'products', 'complianceOfficer', 'markets', 'carriers','leadId',  'templates', 'product', 'productId'));
+        $productIds = $leads->getQuotationProducts()->pluck('id')->toArray();
+        $selectedQuotes = SelectedQuote::whereIn('quotation_product_id', $productIds)->get() ?? [];
+        return view('leads.appointed_leads.broker-lead-profile-view.index', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'products', 'complianceOfficer', 'markets', 'carriers','leadId',  'templates', 'product', 'productId', 'productIds', 'selectedQuotes'));
     }
 
     public function saveQuotationProduct(Request $request)
@@ -826,10 +827,25 @@ class QuotationController extends Controller
          ->addColumn('broker_action', function($quoteComparison){
             $product = QuotationProduct::find($quoteComparison->quotation_product_id);
             $uploadFileButton = '<button class="btn btn-outline-primary btn-sm uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i></button>';
-            $editButton = '<button class="edit btn btn-outline-info btn-sm editButton'.$product->product.'" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i></button>';
+            // $editButton = '<button class="edit btn btn-outline-info btn-sm editButton'.$product->product.'" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i></button>';
             $selectQuoteButton = '<button class="btn btn-outline-success btn-sm selectQuoteButton" id="' . $quoteComparison->id . '"><i class="ri-checkbox-circle-fill"></i></button>';
+            $editButton = '<button class="btn btn-info btn-sm waves-effect waves-light editQuoteButton" data-product="' . str_replace(' ', '_', $product->product) . '" id="' . $quoteComparison->id . '" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-pencil-line"></i></button>';
+            $viewButton = '<button type="button" class="btn btn-outline-primary btn-sm waves-effect waves-light viewQuoteButton" id="'.$quoteComparison->id.'" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-eye-line"></i></button>';
+            $dropdown = '<div class="btn-group">
+            <button type="button" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #6c757d; color: white; border: none; padding: 5px; font-size: 16px; line-height: 1; border-radius: 50%; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center;">
+                <i class="ri-more-line"></i>
+            </button>
+            <ul class="dropdown-menu">
+                <li><button class="dropdown-item uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i>Upload</button></li>
+                 <li><button class="dropdown-item setNewQuotation" id="' . $quoteComparison->id . '"><i class="mdi mdi-account-reactivate"></i>Set as New</button></li>
+                 <li><button class="dropdown-item oldRenewQuotation" id="' . $quoteComparison->id . '"><i class="mdi mdi-file-sync-outline"></i>Set Old Quote</button></li>
+                <li><button class="dropdown-item selectQuoteButton" id="' . $quoteComparison->id . '"><i class="ri-checkbox-circle-fill"></i>Select Quote</button></li>
+                <li><button class="dropdown-item deleteButton" id="' . $quoteComparison->id . '"><i class="ri-delete-bin-line"></i>Delete</button></li>
+            </ul>
+         </div>';
 
-            return $editButton . ' ' . $uploadFileButton . ' ' . $selectQuoteButton;
+
+            return  $editButton . ' ' . $dropdown;
          })
          ->addColumn('rewrite-action-dropdown', function($quoteComparison){
             $dropdown = '<div class="btn-group">

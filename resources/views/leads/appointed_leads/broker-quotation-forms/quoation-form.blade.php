@@ -62,15 +62,15 @@
                 <button class="btn btn-primary editSelectedQuote" id="editSelectedQuote">
                     EDIT QUOTE
                 </button>
-                @if ($paymentInformation)
-                    <button class="btn btn-primary editMakePayment" id="makePaymentButton">
+                {{-- @if ($paymentInformation)
+                    <button class="btn btn-primary editQuotationtMakePayment" id="makePaymentButton">
                         EDIT MAKE PAYMENT
                     </button>
                 @else
-                    <button class="btn btn-success makePaymentButton" id="makePaymentButton">
+                    <button class="btn btn-success makeQuotationPaymentButton" id="makePaymentButton">
                         MAKE PAYMENT
                     </button>
-                @endif
+                @endif --}}
 
                 {{-- @if ($paymentInformation->status == 'declined')
                     <button class="btn btn-success resendMakePayement" id="makePaymentButton">
@@ -110,201 +110,13 @@
     </div>
 </div>
 
-<div class="modal fade " id="addQuoteModal" tabindex="-1" aria-labelledby="addQuoteModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addQuoteModalLabel"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="quotationForm" enctype="multipart/form-data">
-                    @csrf
-                    <div class="row mb-2">
-                        <div class="col-6">
-                            <div class="row">
-                                <div class="col-6">
-                                    <label for="quoteNo" class="form-label">Policy No/Quote No:</label>
-                                </div>
-                                <div class="col-6">
-                                    <h6 id="quoteNo"></h6>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="row">
-                                <div class="col-6">
-                                    <label for="effectiveDate">Effective Date:</label>
-                                </div>
-                                <div class="col-6">
-                                    <h6 id="effectiveDate"></h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="row mb-2">
-
-                        <div class="col-6">
-                            <div class="row">
-                                <div class="col-6">
-                                    <label for="premium">Total Premium:</label>
-                                </div>
-                                <div class="col-6">
-                                    <h6 id="premium"></h6>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-6">
-                            <div class="row">
-                                <div class="col-6">
-                                    <label for="endorsements">Endorsments:</label>
-                                </div>
-                                <div class="col-6">
-                                    <h6 id="endorsements"></h6>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="row">
-                                <div class="col-6">
-                                    <label for="policyFee">Policy Fee:</label>
-                                </div>
-                                <div class="col-6">
-                                    <h6 id="policyFee"></h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-6">
-                            <div class="row">
-                                <div class="col-6">
-                                    <label for="inspectionFee">Inspection Fee:</label>
-                                </div>
-                                <div class="col-6">
-                                    <h6 id="inspectionFee"></h6>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="row">
-                                <div class="col-6">
-                                    <label for="stampingFee">Stamping Fee:</label>
-                                </div>
-                                <div class="col-6">
-                                    <h6 id="stampingFee"></h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-6">
-                            <div class="row">
-                                <div class="col-6">
-                                    <label for="suplusLinesTax">Surplus Lines Tax:</label>
-                                </div>
-                                <div class="col-6">
-                                    <h6 id="suplusLinesTax"></h6>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="row">
-                                <div class="col-6">
-                                    <label for="placementFee">Placement Fee:</label>
-                                </div>
-                                <div class="col-6">
-                                    <h6 id="placementFee"></h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-6">
-                            <div class="row">
-                                <div class="col-6">
-                                    <label for="miscellaneousFee">Miscellaneous Fee:</label>
-                                </div>
-                                <div class="col-6">
-                                    <h6 id="miscellaneousFee"></h6>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="row">
-                                <div class="col-6">
-                                    <label for="fullPayment">Full Payment:</label>
-                                </div>
-                                <div class="col-6">
-                                    <h6 id="fullPayment" name="fullPayment"></h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-6">
-                            <div class="row">
-                                <div class="col-6">
-                                    <label for="downPayment">Down Payment:</label>
-                                </div>
-                                <div class="col-6">
-                                    <h6 id="downPayment" name="downPayment"></h6>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="row">
-                                <div class="col-6">
-                                    <label for="monthlyPayment">Monthly Payment:</label>
-                                </div>
-                                <div class="col-6">
-                                    <h6 id="monthlyPayment" name="monthlyPayment"></h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-6">
-                            <label for="brokerFee">Broker Fee</label>
-                            <input type="text" class="form-control input-mask text-left calculateInput"
-                                id="brokerFee" name="brokerFee"
-                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
-                                inputmode="decimal" style="text-align: right;" required autocomplete="off">
-                        </div>
-
-                    </div>
-                    {{-- <div class="my-dropzone mt-4 border-dashed">
-                        <div class="dz-message" data-dz-message><span>Drop files here or click to upload.</span></div>
-                    </div> --}}
-
-                    <input type="hidden" name="product_hidden_id" id="product_hidden_id" />
-                    <input type="hidden" id="hiddenFullpayment" name="hiddenFullpayment">
-                    <input type="hidden" id="hiddenDownpayment" name="hiddenDownpayment">
-                    <input type="hidden" id="sender" name="sender" value="broker">
-                    <input type="hidden" name="currentMarketId" id="currentMarketId">
-
-            </div>
-            <div class="modal-footer">
-                <div>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <input type="submit" name="action_button" id="action_button" value="Add"
-                        class="btn btn-primary">
-                </div>
-            </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 @include(
     'leads.appointed_leads.broker-quotation-forms.selected-quote-edit-form',
     compact('selectedQuoteId'))
-@include('leads.appointed_leads.broker-forms.make-payment-form', compact('complianceOfficer'))
 
+{{-- @include('leads.appointed_leads') --}}
 <script>
     Dropzone.autoDiscover = false;
     var myDropzoneBroker;
@@ -634,7 +446,7 @@
     });
 
     //edit button functionalities
-    $(document).on('click', '.editButton', function(e) {
+    $(document).on('click', '.editQuoteButton', function(e) {
         e.preventDefault();
         var id = $(this).attr('id');
         $('#action').val('edit');
@@ -662,20 +474,31 @@
                 $('#placementFee').text(response.pricingBreakdown.placement_fee);
                 $('#miscellaneousFee').text(response.pricingBreakdown
                     .miscellaneous_fee);
+                $('#numberOfPayment').text(response.data.number_of_payments);
 
                 $('#market').text(response.market.name);
-                $('#addQuoteModalLabel').text(response.market.name);
-                $('#effectiveDate').text(response.data.effective_date);
+                $('#addQuoteModalLabel').text(
+                    response.market.name);
+                $('#effectiveDate').text(response.data
+                    .effective_date);
                 $('#fullPayment').text(response.data.full_payment);
-                $('#hiddenFullpayment').val(response.data.full_payment);
-                $('#downPayment').text(response.data.down_payment);
-                $('#hiddenDownpayment').val(response.data.down_payment);
-                $('#monthlyPayment').text(response.data.monthly_payment);
+                $(
+                    '#hiddenFullpayment').val(response.data.full_payment);
+                $('#downPayment')
+                    .text(response.data.down_payment);
+                $('#hiddenDownpayment').val(response.data
+                    .down_payment);
+                $('#monthlyPayment').text(response.data
+                    .monthly_payment);
                 $('#brokerFee').val(response.data.broker_fee);
-                $('#product_hidden_id').val(response.data.id);
-                $('#productId').text(response.data.quotation_product_id);
-                $('#quoteNo').text(response.data.quote_no);
-                $('#currentMarketId').val(response.data.quotation_market_id);
+                $(
+                    '#product_hidden_id').val(response.data.id);
+                $('#productId').text(
+                    response.data.quotation_product_id);
+                $('#quoteNo').text(response.data
+                    .quote_no);
+                $('#currentMarketId').val(response.data
+                    .quotation_market_id);
                 $('#medias').hide();
                 $('#mediaLabelId').hide();
                 $('#action_button').val('Update');
@@ -691,52 +514,52 @@
     });
 
     //submition of form
-    $('#quotationForm').on('submit', function(event) {
-        event.preventDefault();
-        $.ajax({
-            url: "{{ route('update-quotation-comparison') }}",
-            method: "POST",
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                    'content')
-            },
-            processData: false, // Prevent jQuery from processing the data
-            contentType: false,
-            data: new FormData(this),
-            dataType: "json",
-            success: function(response) {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'success',
-                    title: 'Quotation Comparison has been saved',
-                    showConfirmButton: false,
-                    timer: 1500
-                }).then(() => {
-                    $('#addQuoteModal').modal('hide');
-                    $('#BrokerQuotationTable').DataTable().ajax.reload();
-                });
-            },
-            error: function(data) {
-                var errors = data.responseJSON.errors;
-                console.log(data);
-                if (data.status == 422) {
-                    Swal.fire({
-                        title: 'Error',
-                        text: data.responseJSON.error,
-                        icon: 'error'
-                    });
-                    $('#marketDropdown').addClass('input-error');
-                }
-                if (errors) {
-                    $.each(errors, function(key, value) {
-                        $('#' + key).addClass('input-error');
-                        $('#' + key + '_error').html(value);
-                    });
-                }
-            }
-        });
+    // $('#quotationForm').on('submit', function(event) {
+    //     event.preventDefault();
+    //     $.ajax({
+    //         url: "{{ route('update-quotation-comparison') }}",
+    //         method: "POST",
+    //         headers: {
+    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+    //                 'content')
+    //         },
+    //         processData: false, // Prevent jQuery from processing the data
+    //         contentType: false,
+    //         data: new FormData(this),
+    //         dataType: "json",
+    //         success: function(response) {
+    //             Swal.fire({
+    //                 position: 'center',
+    //                 icon: 'success',
+    //                 title: 'Quotation Comparison has been saved',
+    //                 showConfirmButton: false,
+    //                 timer: 1500
+    //             }).then(() => {
+    //                 $('#addQuoteModal').modal('hide');
+    //                 $('#BrokerQuotationTable').DataTable().ajax.reload();
+    //             });
+    //         },
+    //         error: function(data) {
+    //             var errors = data.responseJSON.errors;
+    //             console.log(data);
+    //             if (data.status == 422) {
+    //                 Swal.fire({
+    //                     title: 'Error',
+    //                     text: data.responseJSON.error,
+    //                     icon: 'error'
+    //                 });
+    //                 $('#marketDropdown').addClass('input-error');
+    //             }
+    //             if (errors) {
+    //                 $.each(errors, function(key, value) {
+    //                     $('#' + key).addClass('input-error');
+    //                     $('#' + key + '_error').html(value);
+    //                 });
+    //             }
+    //         }
+    //     });
 
-    });
+    // });
 
     //function for parsing
     function parseCurrency(num) {
@@ -784,8 +607,7 @@
     });
 
     //broker side make payment button
-    $(document).on('click', '.makePaymentButton', function() {
-
+    $(document).on('click', '.makeQuotationPaymentButton', function() {
         var id = "{{ $selectedQuoteId }}";
         $.ajax({
             url: "{{ route('edit-selected-quote') }}",
@@ -796,7 +618,7 @@
             },
             dataType: "json",
             success: function(response) {
-                console.log(response);
+
                 $('#paymentType').val('Direct New').trigger('change');
                 $('#quoteNumber').val(response.data.quote_no);
                 $('#market').val(response.market.name);
@@ -817,7 +639,7 @@
         });
     });
 
-    $(document).on('click', '.editMakePayment', function() {
+    $(document).on('click', '.editQuotationtMakePayment', function() {
         $.ajax({
             url: "{{ route('get-payment-information') }}",
             method: "GET",
@@ -974,6 +796,7 @@
             }
         });
     });
+
 
     // $(document).on('click', '.resendMakePayement')
 </script>

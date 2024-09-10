@@ -66,7 +66,7 @@
                 <button class="btn btn-primary editSelectedQuote" id="editSelectedQuote">
                     EDIT QUOTE
                 </button>
-                @if ($paymentInformation && $paymentInformation->status == 'Pending')
+                @if (($paymentInformation && $paymentInformation->status == 'Pending') || $paymentInformation->status == 'declined')
                     <button class="btn btn-primary editMakePayment" id="makePaymentButton">
                         EDIT MAKE PAYMENT
                     </button>
@@ -837,6 +837,7 @@
             },
             dataType: "json",
             success: function(response) {
+                console.log(response);
                 var paymentMethod = response.paymentInformation.payment_method;
                 $('#paymentType').val(response.paymentInformation.payment_type);
                 $('#insuranceCompliance').val(response.paymentInformation.compliance_by);
@@ -869,6 +870,7 @@
                 $('#leadsId').val(response.lead.id);
                 $('#quoteComparisonId').val(response.quoteComparison.id);
                 $('#paymentInformationId').val(response.paymentInformation.id);
+                $('#policyDetailId').val({{ $policyDetail->id }});
                 $('#selectedQuoteId').val({{ $selectedQuoteId }});
                 $('#makePaymentModal').modal('show');
             }

@@ -165,7 +165,7 @@
                     <input type="hidden" name="statusInput" id="statusInput">
                     <input type="hidden" name="quotationProductId" id="quotationProductId">
                     <input type="hidden" name="selectedQuoteId" id="selectedQuoteId">
-                    <input type="hidden" name="policyDetailId" id="policyDetailId">
+                    <input type="hidden" name="policyDetailId" id="policyDetailId" value={{ $policyDetailsId }}>
                     <input type="hidden" name="paymentInformationAction" id="paymentInformationAction">
             </div>
             <div class="modal-footer">
@@ -298,7 +298,7 @@
                                         'hide');
                                     $('#accountingTable').DataTable()
                                         .ajax.reload();
-                                    // location.reload();
+
                                 });
                             },
                             error: function(jqXHR, xhr, status, error) {

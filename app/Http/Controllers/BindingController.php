@@ -332,6 +332,8 @@ class BindingController extends Controller
             $policyDetails->carrier = $data['carriersInput'];
             $policyDetails->market = $data['glMarketInput'];
             $policyDetails->payment_mode = $data['glPaymentTermInput'];
+            $policyDetails->effective_date = $data['effectiveDate'];
+            $policyDetails->expiration_date = $data['expirationDate'];
             $policyDetails->save();
 
              //general liabilities policy details saving

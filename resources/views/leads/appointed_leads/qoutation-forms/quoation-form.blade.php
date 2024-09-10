@@ -488,7 +488,6 @@
             e.preventDefault();
             var id = $(this).attr('id');
             // product = $(this).attr('data-product');
-            console.log(id);
             $('#action').val('edit');
             $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
             $.ajax({
@@ -500,10 +499,9 @@
                 },
                 dataType: "json",
                 success: function(response) {
-                    console.log(response.data.quotation_product.product);
                     var url = `{{ asset('${response.media.filepath}') }}`;
                     var filename = response.data.basename;
-                    s
+
                     //pricing breakdown inputs
                     $('#premium').val(response.pricingBreakdown.premium).attr('disabled',
                         true);
