@@ -4,9 +4,6 @@
         <thead class="" style="background-color: #f0f0f0;">
             <th>Company Name</th>
             <th>Product</th>
-            <th>Quoted By</th>
-            <th>Appointed By</th>
-            <th>Compliance Officer</th>
             <th>Call Back</th>
             <th>Action</th>
         </thead>
@@ -34,18 +31,6 @@
                     name: 'product'
                 },
                 {
-                    data: 'quotedBy',
-                    name: 'quotedBy'
-                },
-                {
-                    data: 'appointedBy',
-                    name: 'appointedBy'
-                },
-                {
-                    data: 'complianceOfficer',
-                    name: 'complianceOfficer'
-                },
-                {
                     data: 'callBack',
                     name: 'callBack'
                 },
@@ -55,7 +40,7 @@
                 }
             ],
             order: [
-                [5, 'asc']
+                [2, 'asc']
             ]
         });
     });
