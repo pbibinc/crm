@@ -209,18 +209,6 @@ class BrokerAssistantController extends Controller
             $companyLink = '<a href="" class="makePaymentLink" id="'.$data->id.'">'.$companyName.'</a>';
             return $companyName;
         })
-        ->addColumn('quotedBy', function($data){
-            $quoter = UserProfile::find($data->user_profile_id);
-            return $quoter ? $quoter->fullAmericanName() : 'UNKNOWN';
-        })
-        ->addColumn('appointedBy', function($data){
-            $appointedBy = UserProfile::find($data->QuoteInformation->user_profile_id);
-            return $appointedBy ? $appointedBy->fullAmericanName() : 'UNKNOWN';
-        })
-        ->addColumn('complianceOfficer', function($data){
-            $complianceOfficerName = UserProfile::find(2)->fullAmericanName();
-            return $complianceOfficerName ? $complianceOfficerName : 'UNKNOWN';
-        })
         ->addColumn('status', function($data){
             $statusLabel = '';
             $class = '';
