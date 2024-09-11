@@ -41,6 +41,7 @@
 
             <div class="row">
                 <div class="col-sm-3">
+
                     <div class="card"
                         style="background-color: white; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 8px;">
                         <div class="card-body" style="text-align: center;">
@@ -96,12 +97,34 @@
                                     @endif
                                 </select>
                             </div>
-                            @if ($product->status == 14 || $product->status == 10 || $product->status == 6 || $product->status == 15)
+                            @if (
+                                $product->status == 14 ||
+                                    $product->status == 10 ||
+                                    $product->status == 6 ||
+                                    $product->status == 15 ||
+                                    $product->status == 3 ||
+                                    $product->status == 4 ||
+                                    $product->status == 5)
                                 <button type="button" class="btn btn-success waves-effect waves-light"
                                     style="padding: 6px 12px; font-size: 14px;" id="saveStatusButton">Submit</button>
                             @endif
                         </div>
                     </div>
+                    @if ($product->status == 4)
+                        <div class="card"
+                            style="background-color: white; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 8px;">
+                            <div class="card-body" style="text-align: center;">
+                                <h6 style="margin-bottom: 10px;">Callback Date:</h6>
+                                <div class="form-group" style="margin-bottom: 10px;">
+                                    <input type="datetime-local" class="form-control mb-2" id="callBackDateTime">
+                                    <input type="hidden" name="" id="callBackId">
+                                    <button class="btn btn-success waves-effect waves-light"
+                                        id="saveCallbackDate">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     <div class="card"
                         style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                         <div class="card-body">
@@ -199,6 +222,8 @@
                             </div>
                         </div>
                     </div>
+
+
                 </div>
                 <div class="col-sm-9">
 
@@ -515,6 +540,7 @@
 
             $('#saveStatusButton').on('click', function() {
                 var status = $('#statusSelect').val();
+
                 if (status == 6) {
                     $('#requestToBindModal').modal('show');
                 } else if (status == 15) {
@@ -648,7 +674,7 @@
                             icon: 'success'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                location.reload();
+                                // location.reload();
                             }
                         });
                     },
