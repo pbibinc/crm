@@ -1,12 +1,10 @@
 <div class="row">
-    <table id="complied" class="table table-bordered dt-responsive nowrap complied"
+    <table id="recentBoundProduct" class="table table-bordered dt-responsive nowrap recentBoundProduct"
         style="border-collapse: collapse; border-spacing: 0; width: 100%;">
         <thead class="" style="background-color: #f0f0f0;">
             <th>Company Name</th>
             <th>Product</th>
-            <th>Quoted By</th>
-            <th>Appointed By</th>
-            <th>Broker</th>
+            <th>Bound Date</th>
             <th>Action</th>
         </thead>
         <tbody>
@@ -16,15 +14,13 @@
 </div>
 <script>
     $(document).ready(function() {
-        $('.complied').DataTable({
+        $('.recentBoundProduct').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('get-broker-complied-product') }}",
+                url: "{{ route('get-recent-bound-product') }}",
                 type: "POST",
-                data: {
-                    _token: "{{ csrf_token() }}"
-                }
+
             },
             columns: [{
                     data: 'companyName',
@@ -35,27 +31,17 @@
                     name: 'product'
                 },
                 {
-                    data: 'quotedBy',
-                    name: 'quotedBy'
-                },
-                {
-                    data: 'appointedBy',
-                    name: 'appointedBy'
-                },
-                {
-                    data: 'complianceOfficer',
-                    name: 'complianceOfficer'
+                    data: 'boundDate',
+                    name: 'boundDate'
                 },
                 {
                     data: 'action',
                     name: 'action'
                 }
             ],
+            order: [
+                [2, 'asc']
+            ]
         });
-
-        // $(document).on('click', '.viewButton', function() {
-        //     var id = $(this).attr('id');
-        //     console.log(id);
-        // });
     });
 </script>

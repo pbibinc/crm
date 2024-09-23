@@ -39,9 +39,9 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-bs-toggle="tab" href="#handledProduct" role="tab">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#recentBoundProduct" role="tab">
                                         <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
-                                        <span class="d-none d-sm-block">Handled Product</span>
+                                        <span class="d-none d-sm-block">Recent Bound Product</span>
                                     </a>
                                 </li>
                             </ul>
@@ -62,6 +62,9 @@
                                 </div>
                                 <div class="tab-pane" id="requestToBind" role="tabpanel">
                                     @include('leads.broker_leads.request-to-bind-product-view')
+                                </div>
+                                <div class="tab-pane" id="recentBoundProduct" role="tabpanel">
+                                    @include('leads.broker_leads.recent-bound-list')
                                 </div>
                             </div>
                         </div>

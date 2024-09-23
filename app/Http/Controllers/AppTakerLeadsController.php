@@ -48,6 +48,7 @@ class AppTakerLeadsController extends Controller
         $dispositions = Disposition::orderBy('name', 'asc')->get();
         $recreationalFacilities = RecreationalFacilities::all();
         $dataCount = Lead::getLeadsAppointed($user->id);
+        $userProfiles = UserProfile::get()->sortBy('first_name');
         if($request->ajax()){
             $query = Lead::select('id', 'company_name', 'tel_num', 'class_code', 'state_abbr')
             ->where('status', 2)
@@ -62,7 +63,7 @@ class AppTakerLeadsController extends Controller
             ->rawColumns(['company_name_action'])
             ->make(true);
         }
-        return view('leads.apptaker_leads.index', compact('timezones', 'sites', 'states', 'sortedClassCodeLeads', 'classCodeLeads', 'dispositions', 'recreationalFacilities', 'dataCount'));
+        return view('leads.apptaker_leads.index', compact('timezones', 'sites', 'states', 'sortedClassCodeLeads', 'classCodeLeads', 'dispositions', 'recreationalFacilities', 'dataCount', 'userProfiles'));
     }
     public function multiStateWork(Request $request)
     {

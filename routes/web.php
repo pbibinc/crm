@@ -60,6 +60,7 @@ use App\Http\Controllers\ForRewriteMakePaymentController;
 use App\Http\Controllers\ForRewriteQuotationController;
 use App\Http\Controllers\InsurerController;
 use App\Http\Controllers\IntentController;
+use App\Http\Controllers\LeadTaskSchedulerController;
 use App\Http\Controllers\MarketingTemplateController;
 use App\Http\Controllers\MarketListController;
 use App\Http\Controllers\MessageController;
@@ -379,6 +380,7 @@ Route::middleware(['auth'])->group(function (){
             Route::post('/get-make-payment-list', [BrokerAssistantController::class, 'makePaymentList'])->name('get-make-payment-list');
             Route::post('/get-request-to-bind', [BrokerAssistantController::class, 'getRequestToBind'])->name('get-broker-request-to-bind');
             Route::post('/get-for-follow-up-product', [BrokerAssistantController::class, 'getForFollowUpProduct'])->name('get-for-follow-up-product');
+            Route::post('/get-recent-bound-product', [BrokerAssistantController::class, 'getRecentBoundProduct'])->name('get-recent-bound-product');
         });
 
         Route::prefix('broker')->group(function(){
@@ -584,6 +586,13 @@ Route::middleware(['auth'])->group(function (){
          Route::post('/dnc/update', [LeadController::class, 'updateDnc'])->name('update-dnc');
          Route::post('/dnc/delete', [LeadController::class, 'deleteDnc'])->name('delete-dnc');
         });
+
+        //route for lead task scheduler
+        Route::prefix('scheduler')->group(function(){
+            route::resource('/task-scheduler', LeadTaskSchedulerController::class);
+            Route::post('/get-task-scheduler', [LeadTaskSchedulerController::class, 'getTaskScheduler'])->name('get-task-scheduler');
+        });
+
 
         Route::prefix('non-callback')->group(function(){
             Route::get('/', [NonCallBackDispositionController::class, 'index'])->name('non-callback-disposition');

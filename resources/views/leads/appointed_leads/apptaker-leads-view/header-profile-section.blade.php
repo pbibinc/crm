@@ -1,12 +1,14 @@
 <div class="card"
     style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
     <div class="card-body">
+
         <div class="d-flex justify-content-between align-items-center mb-2">
             <div style="font-size: 14px;">
                 <h5 style="margin-bottom: 5px;">
-                    {{ $leads->GeneralInformation->firstname . ' ' . $leads->GeneralInformation->lastname }}</h5>
+                    {{ $leads->company_name }}
+                </h5>
+                <div>{{ $leads->GeneralInformation->firstname . ' ' . $leads->GeneralInformation->lastname }}</div>
                 <div>{{ $leads->GeneralInformation->job_position }}</div>
-                <div>{{ $leads->company_name }}</div>
                 <div>{{ $leads->GeneralInformation->email_address }}</div>
                 <div><b>{{ $leads->tel_num }}</b></div>
             </div>
@@ -26,13 +28,13 @@
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#summary" role="tab"
                     style="padding: 5px 10px; font-size: 14px;">
-                    Summary
+                    Overview
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#product" role="tab"
                     style="padding: 5px 10px; font-size: 14px;">
-                    Product
+                    Client Info
                 </a>
             </li>
             <li class="nav-item">
@@ -121,7 +123,5 @@
             window.open(`${url}add-product-form`, "s_blank",
                 "width=1000,height=849");
         });
-
-
     });
 </script>

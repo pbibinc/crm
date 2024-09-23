@@ -24,9 +24,9 @@
                             </select>
                         </div>
                         <div class="col-6" id="insuranceComplianceByDiv">
-                            <label for="insuranceCompliance">Insurance Compliance By:</label>
+                            <label for="insuranceCompliance">Broker:</label>
                             <select name="insuranceCompliance" id="insuranceCompliance" class="form-control">
-                                <option value="">Select Compliance Officer</option>
+                                <option value="">Select Broker</option>
                                 @foreach ($complianceOfficer as $officer)
                                     <option value="{{ $officer->fullName() }}">{{ $officer->fullName() }}</option>
                                 @endforeach

@@ -44,15 +44,13 @@
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#summary" role="tab"
                     style="padding: 5px 10px; font-size: 14px;">
-                    Summary
+                    Overview
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#product" role="tab"
                     style="padding: 5px 10px; font-size: 14px;">
-
-                    {{ $product->product }}
-
+                    Client's Information
                 </a>
             </li>
             <li class="nav-item">
@@ -68,24 +66,22 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#messages" role="tab" style="padding: 5px 10px;">
-                    <h6><i class="ri-file-edit-line"></i></h6>
+                <a class="nav-link" data-bs-toggle="tab" href="#messages" role="tab"
+                    style="padding: 5px 10px; font-size: 14px;">
+                    Notes
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#accounting" role="tab" style="padding: 5px 10px;">
-                    <h6><i class="ri-hand-coin-line"></i></h6>
+                <a class="nav-link" data-bs-toggle="tab" href="#accounting" role="tab"
+                    style="padding: 5px 10px; font-size: 14px;">
+                    Finance
                 </a>
             </li>
+
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#financingAgreement" role="tab"
-                    style="padding: 5px 10px;">
-                    <h6><i class="ri-file-shield-2-line"></i></h6>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#bindingDocs" role="tab" style="padding: 5px 10px;">
-                    <h6>binding docs</h6>
+                <a class="nav-link" data-bs-toggle="tab" href="#bindingDocs" role="tab"
+                    style="padding: 5px 10px; font-size: 14px;">
+                    binding docs
                 </a>
             </li>
             <li class="nav-item">

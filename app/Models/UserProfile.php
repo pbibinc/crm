@@ -168,5 +168,14 @@ class UserProfile extends Model
         return $this->hasMany(AuditInformation::class, 'processed_by');
     }
 
+    public function assignedToTasks()
+    {
+        return $this->hasMany(LeadTaskScheduler::class, 'assigned_to');
+    }
+
+    public function assignedByTasks()
+    {
+        return $this->hasMany(LeadTaskScheduler::class, 'assigned_by');
+    }
 
 }

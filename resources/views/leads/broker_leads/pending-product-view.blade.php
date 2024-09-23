@@ -46,7 +46,7 @@
             var id = $(this).attr('id');
             Swal.fire({
                 title: 'Are you sure?',
-                text: "Sending this to a compliance officer?",
+                text: "Sending this to Broker?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Amp\Http\Client\Request;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
@@ -81,4 +82,32 @@ class BrokerQuotation extends Model
         $quotationProducts = $quotationProductsQuery->get()->pluck('quotationProduct')->unique('id')->flatten();
         return $quotationProducts->isEmpty() ? [] : $quotationProducts;
     }
+
+    public function recentBoundInformation($userProfileId)
+    {
+        // Retrieve the agent user profile IDs associated with the broker
+        $agentIds = BrokerHandle::where('broker_userprofile_id', $userProfileId)->pluck('agent_userprofile_id');
+        $status = [11, 8]; // Define the status for the boundInformation
+        // Prepare the query to retrieve the quotation products with filtering
+        $quotationProductsQuery = BrokerQuotation::whereIn('user_profile_id', $agentIds)
+            ->whereHas('quotationProduct', function ($query) use ($status) {
+                if (is_array($status)) {
+                    $query->whereIn('status', $status);
+                } else {
+                    $query->where('status', $status);
+                }
+            })
+            ->with(['quotationProduct.boundInformation' => function ($query) {
+                $query->where('bound_date', '>=', now()->subDays(30)); // Filter the boundInformation by date
+            }]);
+
+        // Execute the query and get the results
+        $quotationProducts = $quotationProductsQuery->get()->pluck('quotationProduct')->unique('id')->flatten();
+
+        return $quotationProducts->isEmpty() ? [] : $quotationProducts;
+    }
+
+
+
+
 }

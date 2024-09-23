@@ -365,23 +365,39 @@
                         </div>
 
                         <div class="tab-pane fade show" id="accounting" role="tabpanel">
-                            <div class="card"
-                                style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
-                                <div class="card-body">
-                                    @include(
-                                        'leads.appointed_leads.accounting-tab.appointed-accounting-tab',
-                                        [
-                                            'generalInformation' => $leads->generalInformation,
-                                            'selectedQuotes' => $selectedQuotes,
-                                            'complianceOfficer' => $complianceOfficer,
-                                            'policyDetailId' => null,
-                                        ]
-                                    )
+
+                            <div class="row mb-2">
+                                <div class="card"
+                                    style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
+                                    <div class="card-body">
+                                        @include(
+                                            'leads.appointed_leads.accounting-tab.appointed-accounting-tab',
+                                            [
+                                                'generalInformation' => $leads->generalInformation,
+                                                'selectedQuotes' => $selectedQuotes,
+                                                'complianceOfficer' => $complianceOfficer,
+                                                'policyDetailId' => null,
+                                            ]
+                                        )
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="card"
+                                    style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
+                                    <div class="card-body">
+                                        @include(
+                                            'customer-service.financing.finance-agreement.financing-table',
+                                            [
+                                                'leadId' => $leads->id,
+                                            ]
+                                        )
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="tab-pane fade show" id="financingAgreement" role="tabpanel">
+                        {{-- <div class="tab-pane fade show" id="financingAgreement" role="tabpanel">
                             <div class="card"
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                                 <div class="card-body">
@@ -393,7 +409,7 @@
                                     )
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <div class="tab-pane fade show" id="bindingDocs" role="tabpanel">
                             <div class="card"

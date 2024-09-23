@@ -14,39 +14,37 @@
 @endphp
 <div class="row mb-2">
     <div class="col-6 title-card">
-        <h4 class="card-title mb-0" style="color: #ffffff">Quoations</h4>
+        <h4 class="card-title mb-0" style="color: #ffffff">Request Quoation For {{ $quoteProduct->product }} </h4>
     </div>
     <div class="d-flex justify-content-between">
-        <div class="card"
-            style="background-color: white; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); border-radius: 8px; overflow: hidden; padding: 10px;">
-            <div class="row">
-                <div class="col-12">
-                    <label for="product" class="form-label">Product</label>
-                    <select name="product" id="tableProductDropdown" class="form-select form-select-sm">
-                        <option value="">Select Product</option>
-                        @foreach ($productsDropdown as $product)
-                            <option value="{{ $product }}">{{ $product }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                {{-- <div class="col-6">
+
+        <div class="row">
+            <div class="col-12">
+                <label for="product" class="form-label">Product</label>
+                <select name="product" id="tableProductDropdown" class="form-select form-select-sm">
+                    <option value="">Select Product</option>
+                    @foreach ($productsDropdown as $product)
+                        <option value="{{ $product }}">{{ $product }}</option>
+                    @endforeach
+                </select>
+            </div>
+            {{-- <div class="col-6">
                     <label for="Status" class="form-label">Filter By Status</label>
                     <select name="status" id="tableStatusDropdown" class="form-select form-select-sm">
                         <option value="New Quote">New Quote</option>
                         <option value="Old Quote">Old Quote</option>
                     </select>
                 </div> --}}
-            </div>
+
         </div>
         <div>
 
             <a href="#" class="btn btn-success createRecord" data-bs-toggle="modal"
                 data-bs-target="#addQuoteModal" id="create_record">
-
                 ADD QUOTE
             </a>
             @if ($quoteProduct->status == 2)
-                <button href="#" class="btn btn-primary" id="sendQuoteButton">SEND QUOTE</button>
+                <button href="#" class="btn btn-primary" id="sendQuoteButton">REQUEST FOR APPROVAL</button>
             @endif
         </div>
     </div>
@@ -634,8 +632,6 @@
         $(document).on('click', '.createRecord', function(e) {
             console.log('Clicked on:', $(this).attr('id'));
         })
-
-
 
         //edit button functionalities
         $(document).on('click', '.editQuoteButton', function(e) {

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ClassCodeLead;
 use App\Models\Insurer;
 use App\Models\Lead;
+use App\Models\PolicyDetail;
 use App\Models\QuoationMarket;
 use App\Models\QuotationProduct;
 use App\Models\QuoteLead;
@@ -47,6 +48,9 @@ class AppointedController extends Controller
     public function leadsProfileView(Request $request,$leadsId)
     {
         $leads = Lead::find($leadsId);
+        $policyDetail = new PolicyDetail();
+        $activePolicies = $policyDetail->getActivePolicyDetailByLeadId($leads->id);
+
         $usAddress = UnitedState::getUsAddress($leads->GeneralInformation->zipcode);
         $classCodeLeads = ClassCodeLead::all();
         $sortedClassCodeLeads = ClassCodeLead::sortByName($classCodeLeads);
@@ -87,7 +91,9 @@ class AppointedController extends Controller
         $complianceOfficer = $userProfile->complianceOfficer();
         $productIds = $leads->getQuotationProducts()->pluck('id')->toArray();
         $selectedQuotes = SelectedQuote::whereIn('quotation_product_id', $productIds)->get() ?? [];
-        return view('leads.appointed_leads.apptaker-leads-view.index', compact('leads', 'localTime', 'usAddress', 'products', 'sortedClassCodeLeads', 'classCodeLeads', 'recreationalFacilities', 'states', 'quationMarket', 'carriers', 'markets', 'templates', 'complianceOfficer', 'selectedQuotes'));
+        $userProfiles = UserProfile::get()->sortBy('first_name');
+
+        return view('leads.appointed_leads.apptaker-leads-view.index', compact('leads', 'localTime', 'usAddress', 'products', 'sortedClassCodeLeads', 'classCodeLeads', 'recreationalFacilities', 'states', 'quationMarket', 'carriers', 'markets', 'templates', 'complianceOfficer', 'selectedQuotes', 'activePolicies', 'userProfiles'));
     }
 
 }

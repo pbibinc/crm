@@ -286,7 +286,7 @@ class PoliciesController extends Controller
                 $effectiveDate = $data->effective_date;
 
                 $class = now()->isAfter($expirationDate) || $data->status == 'Dead Policy'  ? 'bg-danger' : 'bg-success';
-                return"$effectiveDate - $expirationDate";
+                return $expirationDate;
             })
             ->addColumn('action', function($data){
                 if($data->status == 'Intent' || $data->status == 'Notice of Cancellation'){

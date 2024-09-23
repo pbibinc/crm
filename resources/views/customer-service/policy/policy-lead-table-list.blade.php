@@ -1,21 +1,16 @@
-<div class="card">
-    <div class="card-body">
-        <table id="policyList" class="table table-bordered dt-responsive nowrap policyList"
-            style="border-collapse: collapse; width: 100%;">
-            <thead style="background-color: #f0f0f0;">
-                <th>Effective Date</th>
-                <th>Policy Number</th>
-                <th>Product</th>
-                <th>Market</th>
-                {{-- <th>Insurer</th>
-        <th>Total Cost</th> --}}
-                <th>Status</th>
-                <th></th>
-            </thead>
-        </table>
-    </div>
+<table id="policyListTable" class="table table-bordered dt-responsive nowrap"
+    style="border-collapse: collapse; width: 100%;">
+    <thead style="background-color: #f0f0f0;">
+        <tr>
+            <th>Expiration Date</th>
+            <th>Policy Number</th>
+            <th>Product</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+</table>
 
-</div>
 
 
 {{-- modal for upload viewing and deletion of file --}}
@@ -56,7 +51,7 @@
     var policyDropzone;
     $(document).ready(function() {
         var id = {{ $leadId }};
-        $('.policyList').DataTable({
+        $('#policyListTable').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
@@ -83,10 +78,10 @@
                     data: 'product',
                     name: 'product'
                 },
-                {
-                    data: 'market',
-                    name: 'market'
-                },
+                // {
+                //     data: 'market',
+                //     name: 'market'
+                // },
                 // {
                 //     data: 'total_cost',
                 //     name: 'total_cost'
