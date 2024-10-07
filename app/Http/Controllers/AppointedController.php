@@ -45,55 +45,73 @@ class AppointedController extends Controller
         return view('leads.appointed_leads.appointed.index');
     }
 
-    public function leadsProfileView(Request $request,$leadsId)
+    public function leadsProfileView(Request $request, $leadsId)
     {
-        $leads = Lead::find($leadsId);
-        $policyDetail = new PolicyDetail();
-        $activePolicies = $policyDetail->getActivePolicyDetailByLeadId($leads->id);
+        try {
+            $leads = Lead::find($leadsId);
+            $policyDetail = new PolicyDetail();
+            $activePolicies = $policyDetail->getActivePolicyDetailByLeadId($leads->id);
 
-        $usAddress = UnitedState::getUsAddress($leads->GeneralInformation->zipcode);
-        $classCodeLeads = ClassCodeLead::all();
-        $sortedClassCodeLeads = ClassCodeLead::sortByName($classCodeLeads);
-        $recreationalFacilities = RecreationalFacilities::all();
-        $states = ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV',
-        'AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI', 'AZ', 'CO', 'ID', 'MT', 'NV', 'NM', 'UT', 'WY',
-        'CA', 'OR', 'WA', 'AK', 'HI'
-        ];
-        $timezones = [
-            'Eastern' => ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV'],
-            'Central' => ['AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI'],
-            'Mountain' => ['AZ', 'CO', 'ID', 'MT', 'NV', 'NM', 'UT', 'WY'],
-            'Pacific' => ['CA', 'OR', 'WA'],
-            'Alaska' => ['AK'],
-            'Hawaii-Aleutian' => ['HI']
-        ];
-        $timezoneStrings = [
-            'Eastern' => 'America/New_York',
-            'Central' => 'America/Chicago',
-            'Mountain' => 'America/Denver',
-            'Pacific' => 'America/Los_Angeles',
-            'Alaska' => 'America/Anchorage',
-            'Hawaii-Aleutian' => 'Pacific/Honolulu'
-        ];
-        $timezoneForState = null;
-        foreach($timezones as $timezone => $states){
-            if(in_array($leads->state_abbr, $states)){
-                $timezoneForState =  $timezoneStrings[$timezone];
+            $usAddress = UnitedState::getUsAddress($leads->GeneralInformation->zipcode);
+            $classCodeLeads = ClassCodeLead::all();
+            $sortedClassCodeLeads = ClassCodeLead::sortByName($classCodeLeads);
+            $recreationalFacilities = RecreationalFacilities::all();
+
+            $states = [
+                'CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV',
+                'AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI', 'AZ', 'CO', 'ID', 'MT', 'NV', 'NM', 'UT', 'WY',
+                'CA', 'OR', 'WA', 'AK', 'HI'
+            ];
+
+            $timezones = [
+                'Eastern' => ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV'],
+                'Central' => ['AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI'],
+                'Mountain' => ['AZ', 'CO', 'ID', 'MT', 'NV', 'NM', 'UT', 'WY'],
+                'Pacific' => ['CA', 'OR', 'WA'],
+                'Alaska' => ['AK'],
+                'Hawaii-Aleutian' => ['HI']
+            ];
+
+            $timezoneStrings = [
+                'Eastern' => 'America/New_York',
+                'Central' => 'America/Chicago',
+                'Mountain' => 'America/Denver',
+                'Pacific' => 'America/Los_Angeles',
+                'Alaska' => 'America/Anchorage',
+                'Hawaii-Aleutian' => 'Pacific/Honolulu'
+            ];
+
+            $timezoneForState = null;
+            foreach ($timezones as $timezone => $statesArray) {
+                if (in_array($leads->state_abbr, $statesArray)) {
+                    $timezoneForState =  $timezoneStrings[$timezone];
+                }
             }
-        }
-        $localTime = Carbon::now($timezoneForState);
-        $products = QuotationProduct::getQuotedProductByQuotedInformationId($leads->quoteLead->QuoteInformation->id);
-        $quationMarket = new QuoationMarket();
-        $templates = Templates::all();
-        $markets = QuoationMarket::all()->sortBy('name');
-        $carriers = Insurer::all()->sortBy('name');
-        $userProfile = new UserProfile();
-        $complianceOfficer = $userProfile->complianceOfficer();
-        $productIds = $leads->getQuotationProducts()->pluck('id')->toArray();
-        $selectedQuotes = SelectedQuote::whereIn('quotation_product_id', $productIds)->get() ?? [];
-        $userProfiles = UserProfile::get()->sortBy('first_name');
 
-        return view('leads.appointed_leads.apptaker-leads-view.index', compact('leads', 'localTime', 'usAddress', 'products', 'sortedClassCodeLeads', 'classCodeLeads', 'recreationalFacilities', 'states', 'quationMarket', 'carriers', 'markets', 'templates', 'complianceOfficer', 'selectedQuotes', 'activePolicies', 'userProfiles'));
+            $localTime = Carbon::now($timezoneForState);
+            $products = QuotationProduct::getQuotedProductByQuotedInformationId($leads->quoteLead->QuoteInformation->id);
+            $quationMarket = new QuoationMarket();
+            $templates = Templates::all();
+            $markets = QuoationMarket::all()->sortBy('name');
+            $carriers = Insurer::all()->sortBy('name');
+            $userProfile = new UserProfile();
+            $complianceOfficer = $userProfile->complianceOfficer();
+            $productIds = $leads->getQuotationProducts()->pluck('id')->toArray();
+            $selectedQuotes = SelectedQuote::whereIn('quotation_product_id', $productIds)->get() ?? [];
+            $userProfiles = UserProfile::get()->sortBy('first_name');
+
+            return view('leads.appointed_leads.apptaker-leads-view.index', compact('leads', 'localTime', 'usAddress', 'products', 'sortedClassCodeLeads', 'classCodeLeads', 'recreationalFacilities', 'states', 'quationMarket', 'carriers', 'markets', 'templates', 'complianceOfficer', 'selectedQuotes', 'activePolicies', 'userProfiles'));
+        } catch (\Exception $e) {
+            Log::error('Error in leadsProfileView method', [
+                'message' => $e->getMessage(),
+                'lead_id' => $leadsId,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'request_data' => $request->all(),
+            ]);
+
+            return redirect()->back()->with('error', 'Something went wrong while processing the leads profile.');
+        }
     }
 
 }
