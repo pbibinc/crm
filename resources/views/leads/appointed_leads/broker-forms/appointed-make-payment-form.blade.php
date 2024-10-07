@@ -179,6 +179,29 @@
 </div>
 <script>
     $(document).ready(function() {
+        var paymentType = "{{ $paymentType ?? '' }}";
+        if (paymentType) {
+            $('#paymentType').val(paymentType); // Set the value
+            $('#paymentType').trigger('change'); // Trigger the change event manually
+
+            // Show or hide fields based on the prefilled paymentType
+            if (paymentType == 'Monthly Payment' || paymentType == 'Audit') {
+                $('#totaltPremiumDiv').attr('hidden', true);
+                $('#brokerFeeDiv').attr('hidden', true);
+                $('#paymentTermDiv').attr('hidden', true);
+                $('#effectiveDateDiv').attr('hidden', true);
+                $('#insuranceComplianceByDiv').attr('hidden', true);
+                $('#insuranceCompliance').attr('required', false);
+                $('#paymentTerm').attr('required', false);
+                $('#makePaymentEffectiveDate').attr('required', false);
+            } else {
+                $('#totaltPremiumDiv').attr('hidden', false);
+                $('#brokerFeeDiv').attr('hidden', false);
+                $('#paymentTermDiv').attr('hidden', false);
+                $('#effectiveDateDiv').attr('hidden', false);
+                $('#insuranceComplianceByDiv').attr('hidden', false);
+            }
+        }
         $('#paymentType').on('change', function() {
             var paymentType = $(this).val();
 
@@ -223,7 +246,8 @@
                     $('#market').val(response.market.name);
                     $('#quoteNumber').val(response.data.quote_no);
                     $('#quoteComparisonId').val(response.data.id);
-
+                    $('#totalPremium').val(response.data.full_payment);
+                    $('#brokerFeeAmount').val(response.data.broker_fee);
                     $('#paymentTerm').val('PIF');
                 },
                 error: function(jqXHR, xhr, status, error) {

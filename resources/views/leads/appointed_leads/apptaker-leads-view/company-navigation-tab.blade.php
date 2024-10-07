@@ -15,7 +15,7 @@
          <li class="nav-item">
              <a class="nav-link" data-bs-toggle="tab" href="#quotation" role="tab"
                  style="padding: 5px 10px; font-size: 14px;">
-                 <b>Quote</b>
+                 <b>Quoted Products</b>
              </a>
          </li>
          <li class="nav-item">
@@ -24,17 +24,16 @@
              </a>
          </li>
          <li class="nav-item">
-             <a class="nav-link" data-bs-toggle="tab" href="#activityLog" role="tab"
-                 style="padding: 5px 10px; font-size: 14px;">
-                 <b>Activity Log</b>
-             </a>
-         </li>
-         <li class="nav-item">
-             <a class="nav-link" data-bs-toggle="tab" href="#financing" role="tab" style="padding: 5px 10px;">
-                 <b>Financing</b>
+             <a class="nav-link" data-bs-toggle="tab" href="#emails" role="tab" style="padding: 5px 10px;">
+                 <b>Send Emails</b>
              </a>
          </li>
 
+         <li class="nav-item">
+             <a class="nav-link" data-bs-toggle="tab" href="#financing" role="tab" style="padding: 5px 10px;">
+                 <b>Payments</b>
+             </a>
+         </li>
          <li class="nav-item">
              <a class="nav-link" data-bs-toggle="tab" href="#audit" role="tab"
                  style="padding: 5px 10px; font-size: 14px;">
@@ -42,13 +41,14 @@
              </a>
          </li>
          <li class="nav-item">
-             <a class="nav-link" data-bs-toggle="tab" href="#emails" role="tab" style="padding: 5px 10px;">
-                 <b>Emails</b>
+             <a class="nav-link" data-bs-toggle="tab" href="#policyList" role="tab" style="padding: 5px 10px;">
+                 <b>Policy List</b>
              </a>
          </li>
          <li class="nav-item">
-             <a class="nav-link" data-bs-toggle="tab" href="#policyList" role="tab" style="padding: 5px 10px;">
-                 <b>Policy List</b>
+             <a class="nav-link" data-bs-toggle="tab" href="#activityLog" role="tab"
+                 style="padding: 5px 10px; font-size: 14px;">
+                 <b>Activity Logs</b>
              </a>
          </li>
      </ul>

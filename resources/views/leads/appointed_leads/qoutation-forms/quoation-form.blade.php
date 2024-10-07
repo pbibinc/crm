@@ -371,6 +371,7 @@
         $('#tableProductDropdown').on('change', function() {
             $('#qoutation-table').DataTable().ajax.reload();
         });
+
         $('#qoutation-table').DataTable({
             processing: true,
             serverSide: true,

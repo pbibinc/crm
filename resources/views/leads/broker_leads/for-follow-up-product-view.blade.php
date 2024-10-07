@@ -6,6 +6,7 @@
             <th>Product</th>
             <th>Call Back</th>
             <th>Action</th>
+            {{-- <th>Action</th> --}}
         </thead>
         <tbody>
 
@@ -20,7 +21,9 @@
             ajax: {
                 url: "{{ route('get-for-follow-up-product') }}",
                 type: "POST",
-
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                }
             },
             columns: [{
                     data: 'companyName',

@@ -63,8 +63,11 @@ class QuotationController extends Controller
     {
         $quotationProduct = QuotationProduct::find($productId);
         $products = QuotationProduct::where('quote_information_id', $quotationProduct->quote_information_id)->get();
-        $lead = Lead::find($quotationProduct->QuoteInformation->QuoteLead->leads->id);
-        $generalInformation = GeneralInformation::find($lead->generalInformation->id);
+        $leads = Lead::find($quotationProduct->QuoteInformation->QuoteLead->leads->id);
+        $generalInformation = GeneralInformation::find($leads->generalInformation->id);
+        $policyDetail = new PolicyDetail();
+        $activePolicies = $policyDetail->getActivePolicyDetailByLeadId($leads->id);
+        $userProfiles = UserProfile::get()->sortBy('first_name');
         $timezones = [
             'Eastern' => ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV'],
             'Central' => ['AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI'],
@@ -85,13 +88,13 @@ class QuotationController extends Controller
         // $quationMarket = QuoationMarket::all()->sortBy('name');
         $quationMarket = new QuoationMarket();
         // dd($quationMarket->generalLiabilityMarket);
-        if(!$lead || !$generalInformation){
+        if(!$leads || !$generalInformation){
             return redirect()->route('leads.appointed-leads')->withErrors('No DATA found');
             // dd($lead, $generalInformation );
         }
         $usAddress = UnitedState::getUsAddress($generalInformation->zipcode);
         foreach($timezones as $timezone => $states){
-            if(in_array($lead->state_abbr, $states)){
+            if(in_array($leads->state_abbr, $states)){
                 $timezoneForState =  $timezoneStrings[$timezone];
             }
         }
@@ -100,7 +103,11 @@ class QuotationController extends Controller
         $carriers = Insurer::all()->sortBy('name');
         $markets = QuoationMarket::all()->sortBy('name');
         $templates = Templates::all();
-        return view('leads.appointed_leads.quotation-lead-view.leads-profile', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'quotationProduct', 'products', 'carriers', 'markets', 'templates'));
+        $productIds = $leads->getQuotationProducts()->pluck('id')->toArray();
+        $selectedQuotes = SelectedQuote::whereIn('quotation_product_id', $productIds)->get() ?? [];
+        $userProfile = new UserProfile();
+        $complianceOfficer = $userProfile->complianceOfficer();
+        return view('leads.appointed_leads.quotation-lead-view.leads-profile', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'quotationProduct', 'products', 'carriers', 'markets', 'templates', 'activePolicies', 'userProfiles', 'selectedQuotes', 'complianceOfficer'));
     }
 
     public function brokerProfileView($leadId, $generalInformationId, $productId)
@@ -108,9 +115,12 @@ class QuotationController extends Controller
         $leads = Lead::find($leadId);
         $generalInformation = GeneralInformation::find($generalInformationId);
         $product = QuotationProduct::find($productId);
-
+        $quoteProduct = $product;
         $products = QuotationProduct::where('quote_information_id', $product->quote_information_id)->get();
+
         $userProfile = new UserProfile();
+        $policyDetail = new PolicyDetail();
+        $activePolicies = $policyDetail->getActivePolicyDetailByLeadId($leads->id);
         $complianceOfficer = $userProfile->complianceOfficer();
         $timezones = [
             'Eastern' => ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV'],
@@ -140,6 +150,7 @@ class QuotationController extends Controller
                 $timezoneForState =  $timezoneStrings[$timezone];
             }
         }
+
         $localTime = Carbon::now($timezoneForState);
         $generalLiabilities = $generalInformation->generalLiabilities;
         $markets = QuoationMarket::all()->sortBy('name');
@@ -148,7 +159,64 @@ class QuotationController extends Controller
         $leadId = $leads->id;
         $productIds = $leads->getQuotationProducts()->pluck('id')->toArray();
         $selectedQuotes = SelectedQuote::whereIn('quotation_product_id', $productIds)->get() ?? [];
-        return view('leads.appointed_leads.broker-lead-profile-view.index', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'products', 'complianceOfficer', 'markets', 'carriers','leadId',  'templates', 'product', 'productId', 'productIds', 'selectedQuotes'));
+
+        $userProfiles = UserProfile::get()->sortBy('first_name');
+        return view('leads.appointed_leads.broker-lead-profile-view.index', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'products', 'complianceOfficer', 'markets', 'carriers','leadId',  'templates', 'product', 'productId', 'productIds', 'selectedQuotes', 'activePolicies', 'userProfiles', 'quoteProduct'));
+    }
+
+    public function brokerProfileViewProduct($productId)
+    {
+
+        $product = QuotationProduct::find($productId);
+        $leads = $product->QuoteInformation->QuoteLead->leads;
+        $generalInformation = $leads->GeneralInformation;
+        $quoteProduct = $product;
+        $products = QuotationProduct::where('quote_information_id', $product->quote_information_id)->get();
+
+        $userProfile = new UserProfile();
+        $policyDetail = new PolicyDetail();
+        $activePolicies = $policyDetail->getActivePolicyDetailByLeadId($leads->id);
+        $complianceOfficer = $userProfile->complianceOfficer();
+        $timezones = [
+            'Eastern' => ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV'],
+            'Central' => ['AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI'],
+            'Mountain' => ['AZ', 'CO', 'ID', 'MT', 'NV', 'NM', 'UT', 'WY'],
+            'Pacific' => ['CA', 'OR', 'WA'],
+            'Alaska' => ['AK'],
+            'Hawaii-Aleutian' => ['HI']
+        ];
+        $timezoneStrings = [
+            'Eastern' => 'America/New_York',
+            'Central' => 'America/Chicago',
+            'Mountain' => 'America/Denver',
+            'Pacific' => 'America/Los_Angeles',
+            'Alaska' => 'America/Anchorage',
+            'Hawaii-Aleutian' => 'Pacific/Honolulu'
+        ];
+        $timezoneForState = null;
+        $quationMarket = QuoationMarket::all();
+        if(!$leads || !$generalInformation){
+            return redirect()->route('leads.appointed-leads')->withErrors('No DATA found');
+            // dd($lead, $generalInformation );
+        }
+        $usAddress = UnitedState::getUsAddress($generalInformation->zipcode);
+        foreach($timezones as $timezone => $states){
+            if(in_array($leads->state_abbr, $states)){
+                $timezoneForState =  $timezoneStrings[$timezone];
+            }
+        }
+
+        $localTime = Carbon::now($timezoneForState);
+        $generalLiabilities = $generalInformation->generalLiabilities;
+        $markets = QuoationMarket::all()->sortBy('name');
+        $carriers = Insurer::all()->sortBy('name');
+        $templates = Templates::all();
+        $leadId = $leads->id;
+        $productIds = $leads->getQuotationProducts()->pluck('id')->toArray();
+        $selectedQuotes = SelectedQuote::whereIn('quotation_product_id', $productIds)->get() ?? [];
+
+        $userProfiles = UserProfile::get()->sortBy('first_name');
+        return view('leads.appointed_leads.broker-lead-profile-view.index', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'products', 'complianceOfficer', 'markets', 'carriers','leadId',  'templates', 'product', 'productId', 'productIds', 'selectedQuotes', 'activePolicies', 'userProfiles', 'quoteProduct'));
     }
 
     public function saveQuotationProduct(Request $request)
@@ -475,7 +543,7 @@ class QuotationController extends Controller
                    $brokerQuotation->save();
 
                    $quotationProduct = QuotationProduct::find($productId);
-                   $quotationProduct->status = 21;
+                   $quotationProduct->status = 22;
                    $quotationProduct->save();
                 }
                 DB::commit();
@@ -668,8 +736,10 @@ class QuotationController extends Controller
                 $policyDetails->status = $request->input('policyStatus');
                 $policyDetails->save();
             }
+            $data = $qoutationProduct ? $qoutationProduct->load('brokerQuotation') : $policyDetails;
+
             DB::commit();
-            return response()->json(['success' => 'Status changed successfully']);
+            return response()->json(['success' => 'Status changed successfully', 'data' => $data]);
         }catch(\Exception $e){
             return response()->json(['error' => $e->getMessage()]);
         }
@@ -680,6 +750,7 @@ class QuotationController extends Controller
     {
         if($request->ajax())
         {
+            dd($request->all());
             $id = $request->input('id');
             $callbackDate = $request->input('callbackDateTime');
             $quotationProduct = QuotationProduct::find($id);
@@ -826,6 +897,8 @@ class QuotationController extends Controller
          })
          ->addColumn('broker_action', function($quoteComparison){
             $product = QuotationProduct::find($quoteComparison->quotation_product_id);
+            $viewButton = '<button type="button" class="btn btn-outline-primary btn-sm waves-effect waves-light viewQuoteButton" id="'.$quoteComparison->id.'" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-eye-line"></i></button>';
+
             $uploadFileButton = '<button class="btn btn-outline-primary btn-sm uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i></button>';
             // $editButton = '<button class="edit btn btn-outline-info btn-sm editButton'.$product->product.'" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i></button>';
             $selectQuoteButton = '<button class="btn btn-outline-success btn-sm selectQuoteButton" id="' . $quoteComparison->id . '"><i class="ri-checkbox-circle-fill"></i></button>';
@@ -845,7 +918,7 @@ class QuotationController extends Controller
          </div>';
 
 
-            return  $editButton . ' ' . $dropdown;
+            return $viewButton . ' ' . $editButton . ' ' . $dropdown;
          })
          ->addColumn('rewrite-action-dropdown', function($quoteComparison){
             $dropdown = '<div class="btn-group">

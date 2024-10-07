@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\QuotationProduct;
 use App\Models\QuotationProductCallback;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -41,11 +42,17 @@ class QuotationProductCallbackController extends Controller
         try{
             DB::beginTransaction();
 
-            $callBack = new QuotationProductCallback();
-            $callBack->quotation_product_id = $request->id;
-            $callBack->date_time = $request->callbackDateTime;
-            $callBack->remarks = $request->remarks;
-            $callBack->save();
+            // $callBack = new QuotationProductCallback();
+            // $callBack->quotation_product_id = $request->id;
+            // $callBack->date_time = $request->callbackDateTime;
+            // $callBack->remarks = $request->remarks;
+            // $callBack->save();
+
+
+            $quotationProduct = QuotationProduct::find($request->id);
+            $quotationProduct->callback_date = $request->callbackDateTime;
+            $quotationProduct->save();
+
             DB::commit();
             return response()->json(['success' => 'Callback successfully added'], 200);
         }catch(\Exception $e){
@@ -77,7 +84,8 @@ class QuotationProductCallbackController extends Controller
     public function edit($id)
     {
         //
-        $quotationCallback = QuotationProductCallback::where('quotation_product_id', $id)->first();
+        // $quotationCallback = QuotationProductCallback::where('quotation_product_id', $id)->first();
+        $quotationCallback = QuotationProduct::find($id);
         return response()->json(['quotationCallback' => $quotationCallback]);
     }
 
@@ -92,11 +100,17 @@ class QuotationProductCallbackController extends Controller
     {
         try{
             DB::beginTransaction();
-            $callBack = QuotationProductCallback::find($id);
-            $callBack->quotation_product_id = $request->id;
-            $callBack->date_time = $request->callbackDateTime;
-            $callBack->remarks = $request->remarks;
-            $callBack->save();
+            // $callBack = QuotationProductCallback::find($id);
+            // $callBack->quotation_product_id = $request->id;
+            // $callBack->date_time = $request->callbackDateTime;
+            // $callBack->remarks = $request->remarks;
+            // $callBack->save();
+
+
+            $quotationProduct = QuotationProduct::find($request->id);
+            $quotationProduct->callback_date = $request->callbackDateTime;
+            $quotationProduct->save();
+
             DB::commit();
             return response()->json(['success' => 'Callback successfully added'], 200);
         }catch(\Exception $e){

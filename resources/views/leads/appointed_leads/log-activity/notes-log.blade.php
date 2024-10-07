@@ -130,7 +130,7 @@
     <div class="ps-container mb-2" id="chat-content">
         @foreach ($generalInformation->lead->notes as $note)
             <div
-                class="media {{ $userProfileId == $note->userProfile->id ? 'media-chat-reverse' : 'media-chat' }} {{ $note->status != 'regular' ? 'media-chat-warning' : '' }}"">
+                class="media {{ $userProfileId == $note->userProfile->id ? 'media-chat-reverse' : 'media-chat' }} {{ $note->status != 'regular' ? 'media-chat-warning' : '' }}">
                 @if ($userProfileId != $note->userProfile->id)
                     <div class="avatar">
                         <img src="{{ asset($note->userProfile->media->filepath) }}" alt="User Avatar"

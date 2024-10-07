@@ -18,9 +18,9 @@
             <button class="btn btn-success btn-sm createRecord" id="create_record_" data-product=''
                 data-bs-target="#addQuoteModal_{{ $formId }}">ADD QUOTE</button>
 
-            @if ($quoteProduct->status == 2)
+            {{-- @if ($quoteProduct->status == 2)
                 <button class="btn btn-primary btn-sm" id="sendQuoteButton">SEND QUOTE</button>
-            @endif
+            @endif --}}
         </div>
         <div class="row">
             <div class="col-6">
@@ -258,7 +258,7 @@
                     </div>
                     <input type="hidden" name="action" id="action" value="add">
                     <input type="hidden" name="product_hidden_id" id="product_hidden_id" />
-                    <input type="hidden" name="productId" id="productId" value="{{ $quoteProduct->id }}">
+                    <input type="hidden" name="productId" id="productId">
                     <input type="hidden" name="recommended" id="recommended_hidden" value="0" />
                     <input type="hidden" name="currentMarketId" id="currentMarketId">
                     <input type="hidden" name="sender" id="sender" value="marketSpecialist">
@@ -358,41 +358,41 @@
         var product = @json($productForm);
 
         //send quote button functionalities
-        $('#sendQuoteButton').on('click', function() {
-            var id = {{ $quoteProduct->id }};
-            Swal.fire({
-                title: 'Are you sure?',
-                text: 'You are about to send this quote to the client',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, send it!',
-                cancelButtonText: 'No, keep it'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: "{{ route('send-quotation-product') }}",
-                        method: "POST",
-                        data: {
-                            id: id,
-                            _token: "{{ csrf_token() }}"
-                        },
-                        dataType: "json",
-                        success: function(response) {
-                            Swal.fire({
-                                position: 'center',
-                                icon: 'success',
-                                title: 'Quotation Comparison has been sent',
-                                showConfirmButton: false,
-                                timer: 1500
-                            }).then(() => {
-                                console.log('test this code');
-                                location.reload();
-                            });
-                        }
-                    });
-                }
-            });
-        });
+        // $('#sendQuoteButton').on('click', function() {
+
+        //     Swal.fire({
+        //         title: 'Are you sure?',
+        //         text: 'You are about to send this quote to the client',
+        //         icon: 'warning',
+        //         showCancelButton: true,
+        //         confirmButtonText: 'Yes, send it!',
+        //         cancelButtonText: 'No, keep it'
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             $.ajax({
+        //                 url: "{{ route('send-quotation-product') }}",
+        //                 method: "POST",
+        //                 data: {
+        //                     id: id,
+        //                     _token: "{{ csrf_token() }}"
+        //                 },
+        //                 dataType: "json",
+        //                 success: function(response) {
+        //                     Swal.fire({
+        //                         position: 'center',
+        //                         icon: 'success',
+        //                         title: 'Quotation Comparison has been sent',
+        //                         showConfirmButton: false,
+        //                         timer: 1500
+        //                     }).then(() => {
+        //                         console.log('test this code');
+        //                         location.reload();
+        //                     });
+        //                 }
+        //             });
+        //         }
+        //     });
+        // });
 
         function calculateFullPayment(product) {
             let premium = parseCurrency($(`#premium${product}`).val()) || 0;

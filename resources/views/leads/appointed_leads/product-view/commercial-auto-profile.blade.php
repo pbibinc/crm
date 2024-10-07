@@ -265,97 +265,102 @@
 </div>
 <hr>
 
-<div class="row">
-    <div class="title-card">
-        <i class="ri-car-washing-line title-icon"></i>
-        <span>Commercial Auto Supplemental Questionare</span>
-    </div>
-    <div class="data-section">
-        <div class="inline-data">
-            <div class="col-6">
-                <span class="data-label">Vehicle Maintance Program in Operation:</span>
-                <span
-                    class="data-value">{{ $generalInformation->commercialAuto->commercialAutoSupplemental->vehicle_maintenance_program == 1 ? 'Yes' : 'No' }}</span>
-            </div>
-            <div class="col-6">
-                <span class="data-label">Vehicle Customized, altered or have special equipment:</span>
-                <span
-                    class="data-value">{{ $generalInformation->commercialAuto->commercialAutoSupplemental->is_vehicle_customized ? 'Yes' : 'No' }}</span>
-            </div>
-        </div>
-        <div class="inline-data">
-            @if (
-                $generalInformation->commercialAuto->commercialAutoSupplemental->vehicle_maintenance_program ||
-                    $generalInformation->commercialAuto->commercialAutoSupplemental->is_vehicle_customized)
-
-                @if ($generalInformation->commercialAuto->commercialAutoSupplemental->vehicle_maintenance_program)
-                    <div class="col-6">
-                        <span class="data-label">Description:</span>
-                        <span class="data-value">
-                            {{ $generalInformation->commercialAuto->commercialAutoSupplemental->vehicle_maintenace_description }}</span>
-                    </div>
-                @endif
-                @if ($generalInformation->commercialAuto->commercialAutoSupplemental->is_vehicle_customized)
-                    <div class="col-6">
-                        <span class="data-label">Description:</span>
-                        <span
-                            class="data-value">{{ $generalInformation->commercialAuto->commercialAutoSupplemental->vehicle_customized_description }}</span>
-                    </div>
-                @endif
-            @endif
-        </div>
-        <div class="inline-data">
-            <div class="col-6">
-                <span class="data-label">Vehicles owned by the prospect:</span>
-                <span
-                    class="data-value">{{ $generalInformation->commercialAuto->commercialAutoSupplemental->is_vehicle_owned_by_prospect ? 'Yes' : 'No' }}</span>
-            </div>
-            <div class="col-6">
-                <span class="data-label">Policy coverage been declined, canceled or non renewed 3 years prior:</span>
-                <span
-                    class="data-value">{{ $generalInformation->commercialAuto->commercialAutoSupplemental->declined_canceled_nonrenew_policy ? 'Yes' : 'No' }}</span>
-            </div>
-        </div>
-        <div class="inline-data">
-            <div class="col-6">
-                <span class="data-label">Prospect had losses in the past 4 years:</span>
-                <span
-                    class="data-value">{{ $generalInformation->commercialAuto->commercialAutoSupplemental->prospect_loss ? 'Yes' : 'No' }}</span>
-            </div>
-            <div class="col-6">
-                <span class="data-label">Owned vehicles used for towing special equipment:</span>
-                <span
-                    class="data-value">{{ $generalInformation->commercialAuto->commercialAutoSupplemental->vehicle_use_for_towing ? 'Yes' : 'No' }}</span>
-            </div>
-        </div>
-    </div>
-
-
-</div>
-<hr>
-
-<div class="row">
-    <div class="col-md-12">
+@if ($generalInformation->commercialAuto->commercialAutoSupplemental)
+    <div class="row">
         <div class="title-card">
-            <i class="ri-calendar-event-line title-icon"></i>
-            <span>Previous Commercial Auto</span>
+            <i class="ri-car-washing-line title-icon"></i>
+            <span>Commercial Auto Supplemental Questionare</span>
         </div>
         <div class="data-section">
             <div class="inline-data">
                 <div class="col-6">
-                    <span class="data-label">Expiration of Commercial Auto:</span>
-                    <span class="data-value">
-                        {{ $generalInformation->lead->commercialAutoExpirationProduct->expiration_date }}</span>
+                    <span class="data-label">Vehicle Maintance Program in Operation:</span>
+                    <span
+                        class="data-value">{{ $generalInformation->commercialAuto->commercialAutoSupplemental->vehicle_maintenance_program == 1 ? 'Yes' : 'No' }}</span>
                 </div>
                 <div class="col-6">
-                    <span class="data-label">Prior Carrier:</span>
+                    <span class="data-label">Vehicle Customized, altered or have special equipment:</span>
                     <span
-                        class="data-value">{{ $generalInformation->lead->commercialAutoExpirationProduct->prior_carrier }}</span>
+                        class="data-value">{{ $generalInformation->commercialAuto->commercialAutoSupplemental->is_vehicle_customized ? 'Yes' : 'No' }}</span>
+                </div>
+            </div>
+            <div class="inline-data">
+                @if (
+                    $generalInformation->commercialAuto->commercialAutoSupplemental->vehicle_maintenance_program ||
+                        $generalInformation->commercialAuto->commercialAutoSupplemental->is_vehicle_customized)
+
+                    @if ($generalInformation->commercialAuto->commercialAutoSupplemental->vehicle_maintenance_program)
+                        <div class="col-6">
+                            <span class="data-label">Description:</span>
+                            <span class="data-value">
+                                {{ $generalInformation->commercialAuto->commercialAutoSupplemental->vehicle_maintenace_description }}</span>
+                        </div>
+                    @endif
+                    @if ($generalInformation->commercialAuto->commercialAutoSupplemental->is_vehicle_customized)
+                        <div class="col-6">
+                            <span class="data-label">Description:</span>
+                            <span
+                                class="data-value">{{ $generalInformation->commercialAuto->commercialAutoSupplemental->vehicle_customized_description }}</span>
+                        </div>
+                    @endif
+                @endif
+            </div>
+            <div class="inline-data">
+                <div class="col-6">
+                    <span class="data-label">Vehicles owned by the prospect:</span>
+                    <span
+                        class="data-value">{{ $generalInformation->commercialAuto->commercialAutoSupplemental->is_vehicle_owned_by_prospect ? 'Yes' : 'No' }}</span>
+                </div>
+                <div class="col-6">
+                    <span class="data-label">Policy coverage been declined, canceled or non renewed 3 years
+                        prior:</span>
+                    <span
+                        class="data-value">{{ $generalInformation->commercialAuto->commercialAutoSupplemental->declined_canceled_nonrenew_policy ? 'Yes' : 'No' }}</span>
+                </div>
+            </div>
+            <div class="inline-data">
+                <div class="col-6">
+                    <span class="data-label">Prospect had losses in the past 4 years:</span>
+                    <span
+                        class="data-value">{{ $generalInformation->commercialAuto->commercialAutoSupplemental->prospect_loss ? 'Yes' : 'No' }}</span>
+                </div>
+                <div class="col-6">
+                    <span class="data-label">Owned vehicles used for towing special equipment:</span>
+                    <span
+                        class="data-value">{{ $generalInformation->commercialAuto->commercialAutoSupplemental->vehicle_use_for_towing ? 'Yes' : 'No' }}</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <hr>
+@endif
+
+@if ($generalInformation->lead->commercialAutoExpirationProduct)
+    <div class="row">
+        <div class="col-md-12">
+            <div class="title-card">
+                <i class="ri-calendar-event-line title-icon"></i>
+                <span>Previous Commercial Auto</span>
+            </div>
+            <div class="data-section">
+                <div class="inline-data">
+                    <div class="col-6">
+                        <span class="data-label">Expiration of Commercial Auto:</span>
+                        <span class="data-value">
+                            {{ $generalInformation->lead->commercialAutoExpirationProduct->expiration_date }}</span>
+                    </div>
+                    <div class="col-6">
+                        <span class="data-label">Prior Carrier:</span>
+                        <span
+                            class="data-value">{{ $generalInformation->lead->commercialAutoExpirationProduct->prior_carrier }}</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+@endif
+
 
 
 <script>

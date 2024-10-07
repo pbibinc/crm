@@ -15,6 +15,7 @@
         ];
         return $colors[$index % count($colors)]; // Cycle through colors
     }
+
 @endphp
 
 <style>

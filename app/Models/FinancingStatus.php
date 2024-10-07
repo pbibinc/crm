@@ -33,4 +33,10 @@ class FinancingStatus extends Model
         return $data->isEmpty() ? [] : $data;
     }
 
+    public function incompletePfa()
+    {
+        $data = self::where('status', 'Incomplete PFA')->with('QuotationProduct')->get();
+        return $data->isEmpty() ? [] : $data;
+    }
+
 }

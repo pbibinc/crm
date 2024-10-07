@@ -37,7 +37,7 @@ class AppTakerLeadsController extends Controller
             'Pacific' => ['CA', 'OR', 'WA'],
             'Alaska' => ['AK'],
             'Hawaii-Aleutian' => ['HI']
-    ];
+        ];
         $sites = Site::all();
         $states = ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV',
             'AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI', 'AZ', 'CO', 'ID', 'MT', 'NV', 'NM', 'UT', 'WY',
@@ -94,6 +94,8 @@ class AppTakerLeadsController extends Controller
 
         return response()->json(['cities' => $cities, 'zipcode' => $zipcode]);
     }
+
+
     public function productForms(Request $request){
         return view('leads.apptaker_leads.questionare-new-tab');
     }

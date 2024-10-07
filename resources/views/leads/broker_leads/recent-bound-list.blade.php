@@ -5,7 +5,6 @@
             <th>Company Name</th>
             <th>Product</th>
             <th>Bound Date</th>
-            <th>Action</th>
         </thead>
         <tbody>
 
@@ -20,6 +19,9 @@
             ajax: {
                 url: "{{ route('get-recent-bound-product') }}",
                 type: "POST",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                }
 
             },
             columns: [{
@@ -34,10 +36,7 @@
                     data: 'boundDate',
                     name: 'boundDate'
                 },
-                {
-                    data: 'action',
-                    name: 'action'
-                }
+
             ],
             order: [
                 [2, 'asc']

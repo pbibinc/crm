@@ -19,7 +19,7 @@
                         <h3 class="card-title mb-4"
                             style="display: flex; align-items: center; background-color: #2c3e50; color: #ecf0f1; padding: 10px 20px; border-radius: 5px;">
                             <i class="ri-file-list-3-line" style="font-size: 26px; margin-right: 15px;"></i>
-                            <span style="font-weight: 600; letter-spacing: 1px;">LIST OF APPOINTED LEADS</span>
+                            <span style="font-weight: 600; letter-spacing: 1px;">Assign Request For Quote</span>
                         </h3>
                         <div>
                             <button type="button" id="assignAppointedLead"
@@ -91,8 +91,8 @@
                                 <div class="card-body">
                                     <div class="d-flex">
                                         <div class="flex-grow-1">
-                                            <p class="text-truncate font-size-14 mb-2">Appointed Leads</p>
-                                            <h4 class="mb-2">{{ $appointedLeadCount }}</h4>
+                                            <p class="text-truncate font-size-14 mb-2">Request For Quote Products</p>
+                                            <h4 class="mb-2">{{ $requestForQuoteProduct }}</h4>
                                         </div>
                                         <div class="avatar-sm">
                                             <span class="avatar-title bg-light text-primary rounded-3">

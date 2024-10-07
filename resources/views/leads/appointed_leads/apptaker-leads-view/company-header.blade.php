@@ -3,7 +3,7 @@
      <div class="card-body d-flex align-items-center justify-content-between p-3">
          <!-- Left side: Avatar and Company Info -->
          <div class="d-flex align-items-center">
-             <img src="https://via.placeholder.com/40" alt="Avatar" class="rounded-circle me-3">
+             {{-- <img src="https://via.placeholder.com/40" alt="Avatar" class="rounded-circle me-3"> --}}
              <!-- Avatar -->
              <div>
                  <h6 class="mb-0 mt-4 fw-bold">{{ $leads->company_name }}.</h6>

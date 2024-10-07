@@ -1,99 +1,102 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Models\PricingBreakdown;
+use Faker\Provider\ar_EG\Payment;
+use App\Models\FinancingAgreement;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HrController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\SICController;
+use App\Models\CancellationEndorsement;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Models\CancelledPolicyForRecall;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\API\LeadDetailController;
-use App\Http\Controllers\AppointedController;
+use App\Http\Controllers\BoundController;
+use App\Http\Controllers\EmailController;
+use App\Http\Controllers\NotesController;
+use App\Http\Controllers\IntentController;
+use App\Http\Controllers\QuotedController;
+use App\Http\Controllers\UploadController;
+use App\Http\Controllers\BindingController;
+use App\Http\Controllers\InsurerController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RenewalController;
+use App\Http\Controllers\WebsiteController;
 use App\Http\Controllers\BirthdayController;
+use App\Http\Controllers\CallBackController;
+use App\Http\Controllers\PoliciesController;
 use App\Http\Controllers\PositionController;
+use App\Http\Controllers\AppointedController;
 use App\Http\Controllers\Demo\DemoController;
+use App\Http\Controllers\FinancingController;
 use App\Http\Controllers\HelloSignController;
+use App\Http\Controllers\QuotationController;
+use App\Http\Controllers\AssignLeadController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ClasscodesController;
-use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\DispositionController;
-use App\Http\Controllers\UserProfileController;
-use App\Http\Controllers\GeneralInformationController;
-use App\Http\Controllers\AssignLeadController;
-use App\Http\Controllers\AppTakerLeadsController;
-use App\Http\Controllers\AssignAgentToBrokerController;
-use App\Http\Controllers\AssignAppointedLeadController;
-use App\Http\Controllers\AssignForRewritePolicyController;
-use App\Http\Controllers\AssignQuotedRenewalPolicyController;
-use App\Http\Controllers\AuditInformationController;
-use App\Http\Controllers\AuditRequiredFileController;
-use App\Http\Controllers\BindingController;
-use App\Http\Controllers\BindingDocsController;
-use App\Http\Controllers\BoundController;
-use App\Http\Controllers\BrokerAssistantController;
-use App\Http\Controllers\BrokerHandleController;
-use App\Http\Controllers\BuildersRiskPolicyDetailsController;
-use App\Http\Controllers\BussinessOwnersPolicyDetailsController;
-use App\Http\Controllers\CallBackController;
-use App\Http\Controllers\CancellationController;
-use App\Http\Controllers\CancellationEndorsementController;
-use App\Http\Controllers\CancellationReportController;
-use App\Http\Controllers\CancelledPolicyController;
-use App\Http\Controllers\CancelledPolicyForRecall as ControllersCancelledPolicyForRecall;
-use App\Http\Controllers\CancelledPolicyForRecallController;
-use App\Http\Controllers\CommercialAutoPolicyController;
-use App\Http\Controllers\DepartmentListController;
-use App\Http\Controllers\DashboardControllerNew;
-use App\Http\Controllers\TecnickcomPdfController;
-use App\Http\Controllers\CompanyHandbookController;
 use App\Http\Controllers\ComplianceController;
-use App\Http\Controllers\EmailController;
-use App\Http\Controllers\EmbeddedSignatureController;
-use App\Http\Controllers\ExcessLiabilityInsurancePolicyController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\MarketListController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\BindingDocsController;
+use App\Http\Controllers\DispositionController;
+use App\Http\Controllers\ScrubbedDncController;
+use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\BrokerHandleController;
+use App\Http\Controllers\CancellationController;
+use App\Http\Controllers\DashboardControllerNew;
+use App\Http\Controllers\RenewalQuoteController;
+use App\Http\Controllers\AppTakerLeadsController;
+use App\Http\Controllers\RenewalPolicyController;
+use App\Http\Controllers\RewritePolicyController;
+use App\Http\Controllers\SelectedQuoteController;
+use App\Http\Controllers\TecnickcomPdfController;
+use App\Http\Controllers\API\LeadDetailController;
+use App\Http\Controllers\AppointedProductListController;
+use App\Http\Controllers\DepartmentListController;
+use App\Http\Controllers\PaymentChargedController;
+use App\Http\Controllers\RewriteBindingController;
+use App\Http\Controllers\BrokerAssistantController;
+use App\Http\Controllers\CancelledPolicyController;
+use App\Http\Controllers\CompanyHandbookController;
+use App\Http\Controllers\AuditInformationController;
 use App\Http\Controllers\FinanceAgreementPolicyList;
 use App\Http\Controllers\FinancingCompanyController;
-use App\Http\Controllers\FinancingController;
-use App\Http\Controllers\ForRewriteMakePaymentController;
-use App\Http\Controllers\ForRewriteQuotationController;
-use App\Http\Controllers\InsurerController;
-use App\Http\Controllers\IntentController;
-use App\Http\Controllers\LeadTaskSchedulerController;
-use App\Http\Controllers\MarketingTemplateController;
-use App\Http\Controllers\MarketListController;
-use App\Http\Controllers\MessageController;
-use App\Http\Controllers\NonCallBackDispositionController;
-use App\Http\Controllers\NotesController;
-use App\Http\Controllers\PaymentChargedController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\PaymentInformationArchivedController;
-use App\Http\Controllers\PoliciesController;
 use App\Http\Controllers\PolicyForRenewalController;
 use App\Http\Controllers\PricingBreakdownController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\QuotationController;
-use App\Http\Controllers\QuotationProductCallbackController;
-use App\Http\Controllers\QuotedController;
-use App\Http\Controllers\RenewalController;
-use App\Http\Controllers\RenewalPolicyController;
-use App\Http\Controllers\RenewalQuoteController;
-use App\Http\Controllers\RequestForCancellationController;
-use App\Http\Controllers\RewriteBindingController;
-use App\Http\Controllers\RewritePolicyController;
-use App\Http\Controllers\ScrubbedDncController;
-use App\Http\Controllers\SelectedQuoteController;
-use App\Http\Controllers\ToolsEquipmentPolicyController;
-use App\Http\Controllers\UploadController;
-use App\Http\Controllers\WebsiteController;
+use App\Http\Controllers\AuditRequiredFileController;
+use App\Http\Controllers\BrokerForFollowUpController;
+use App\Http\Controllers\EmbeddedSignatureController;
+use App\Http\Controllers\LeadTaskSchedulerController;
+use App\Http\Controllers\MarketingTemplateController;
 use App\Http\Controllers\WorkersCompPolicyController;
-use App\Models\CancellationEndorsement;
-use App\Models\CancelledPolicyForRecall;
-use App\Models\FinancingAgreement;
-use App\Models\PricingBreakdown;
-use Faker\Provider\ar_EG\Payment;
-use Illuminate\Support\Facades\App;
+use App\Http\Controllers\CancellationReportController;
+use App\Http\Controllers\GeneralInformationController;
+use App\Http\Controllers\AssignAgentToBrokerController;
+use App\Http\Controllers\AssignAppointedLeadController;
+use App\Http\Controllers\ForRewriteQuotationController;
+use App\Http\Controllers\CommercialAutoPolicyController;
+use App\Http\Controllers\ToolsEquipmentPolicyController;
+use App\Http\Controllers\ForRewriteMakePaymentController;
+use App\Http\Controllers\AssignForRewritePolicyController;
+use App\Http\Controllers\NonCallBackDispositionController;
+use App\Http\Controllers\RequestForCancellationController;
+use App\Http\Controllers\CancellationEndorsementController;
+use App\Http\Controllers\CancelledPolicyForRecallController;
+use App\Http\Controllers\QuotationProductCallbackController;
+use App\Http\Controllers\AssignQuotedRenewalPolicyController;
+use App\Http\Controllers\BuildersRiskPolicyDetailsController;
+use App\Http\Controllers\PaymentInformationArchivedController;
+use App\Http\Controllers\BussinessOwnersPolicyDetailsController;
+use App\Http\Controllers\ExcessLiabilityInsurancePolicyController;
+use App\Http\Controllers\CancelledPolicyForRecall as ControllersCancelledPolicyForRecall;
+use App\Http\Controllers\GeneralNotificationController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -201,6 +204,11 @@ Route::middleware(['auth'])->group(function (){
       Route::post('leads/{leads}/restore', [LeadController::class, 'restore'])->name('leads.restore');
       Route::post('leads/add/dnc', [LeadController::class, 'addDnc'])->name('leads.add.dnc');
 
+
+      Route::prefix('leads')->group(function(){
+        Route::resource('/appointed-product-list', AppointedProductListController::class);
+      });
+
       //route for website creation and function
       Route::resource('website', WebsiteController::class);
 
@@ -303,6 +311,7 @@ Route::middleware(['auth'])->group(function (){
          Route::get('/assign-appointed-lead', [AssignAppointedLeadController::class, 'index'])->name('assign-appointed-lead');
          Route::post('/assign-appointed-lead/assign-lead', [AssignAppointedLeadController::class, 'assignAppointedLead'])->name('assign-leads-market-specialist');
          Route::get('/assign-appointed-lead/get-data-table', [AssignAppointedLeadController::class, 'getDataTable'])->name('get-data-table');
+         Route::post('/request-to-quoute', [AssignAppointedLeadController::class, 'requestToQuote'])->name('request-to-quote');
          Route::post('/assign-remark-leads', [AppTakerLeadsController::class, 'storeLeadRemarksDisposition'])->name('assign-remark-leads');
          Route::post('/update-remark-leads', [AppTakerLeadsController::class, 'updateLeadRemarksDisposition'])->name('update-remark-leads');
         });
@@ -338,6 +347,7 @@ Route::middleware(['auth'])->group(function (){
          Route::get('/get-pending-product', [QuotationController::class, 'getPendingProduct'])->name('get-pending-product');
          Route::post('/quoted-product-profile', [QuotationController::class, 'quotedProductProfile'])->name('quoted-product-profile');
          Route::get('/broker-profile-view/{leadId}/{generalInformationId}/{productId}', [QuotationController::class, 'brokerProfileView'])->name('broker-profile-view');
+         Route::get('/broker-profile-view/{productId}', [QuotationController::class, 'brokerProfileViewProduct'])->name('broker-profile-view-product');
          Route::get('/get-assign-qouted-lead', [QuotationController::class, 'getAssignQoutedLead'])->name('get-assign-qouted-lead');
          Route::post('/void-qouted-lead', [QuotationController::class, 'voidQoutedLead'])->name('void-qouted-lead');
          Route::post('/redeploy-qouted-lead', [QuotationController::class, 'redeployQoutedLead'])->name('redeploy-qouted-lead');
@@ -372,7 +382,12 @@ Route::middleware(['auth'])->group(function (){
             Route::post('/getBindingProduct', [QuotedController::class, 'getBindingProduct'])->name('get-quoted-binding-product');
         });
 
+        Route::prefix('notification')->group(function(){
+            Route::resource('/general-notification', GeneralNotificationController::class);
+        });
+
         Route::prefix('broker-assistant')->group(function(){
+            //
             Route::resource('/broker-assistant', BrokerAssistantController::class);
             Route::post('/get-pending-product', [BrokerAssistantController::class, 'getPendingProduct'])->name('get-broker-pending-product');
             Route::post('/get-compliance-product', [BrokerAssistantController::class, 'getComplianceProduct'])->name('get-broker-compliance-product');
@@ -381,6 +396,13 @@ Route::middleware(['auth'])->group(function (){
             Route::post('/get-request-to-bind', [BrokerAssistantController::class, 'getRequestToBind'])->name('get-broker-request-to-bind');
             Route::post('/get-for-follow-up-product', [BrokerAssistantController::class, 'getForFollowUpProduct'])->name('get-for-follow-up-product');
             Route::post('/get-recent-bound-product', [BrokerAssistantController::class, 'getRecentBoundProduct'])->name('get-recent-bound-product');
+
+
+            //Leads For Follow Up Broker Assistant
+            Route::resource('/leads-for-follow-up', BrokerForFollowUpController::class);
+            Route::post('/get-warm-product', [BrokerForFollowUpController::class, 'getWarmProduct'])->name('get-warm-product');
+            Route::post('/get-old-product', [BrokerForFollowUpController::class, 'getOldProduct'])->name('get-old-product');
+
         });
 
         Route::prefix('broker')->group(function(){
@@ -502,6 +524,7 @@ Route::middleware(['auth'])->group(function (){
                 Route::post('/financing-aggreement/creation-of-pfa', [FinancingController::class, 'pfaCreation'])->name('financing-aggreement.creation-of-pfa');
                 Route::post('/financing-aggrement/new-financing-agreement', [FinancingController::class, 'newFinancingAgreement'])->name('financing-aggrement.new-financing-agreement');
                 Route::post('/get-customers-financing-agreement', [FinancingController::class, 'getCustomersPfa'])->name('get-customers-financing-agreement');
+                Route::post('/get-incomplete-pfa', [FinancingController::class, 'incompletePfa'])->name('get-incomplete-pfa');
             });
 
             //route for renewal

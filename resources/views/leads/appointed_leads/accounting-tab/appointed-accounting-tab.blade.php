@@ -1,5 +1,6 @@
 @php
     $policyDetailsId = $policyDetailId ? $policyDetailId : 0;
+
 @endphp
 
 <div class="row mb-2">
@@ -58,7 +59,7 @@
 
 @include(
     'leads.appointed_leads.broker-forms.appointed-make-payment-form',
-    compact('complianceOfficer', 'selectedQuotes', 'policyDetailsId'))
+    compact('complianceOfficer', 'selectedQuotes', 'policyDetailsId', 'paymentType'))
 
 <script>
     Dropzone.autoDiscover = false;

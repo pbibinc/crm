@@ -136,6 +136,8 @@
                                 @can('viewApptakerLeadList', App\Models\Lead::find(1))
                                     <li><a href="{{ route('apptaker-leads') }}">Lead List</a></li>
                                 @endcan
+                                <li><a href="{{ route('appointed-product-list.index') }}">Appointed Product List</a></li>
+
                                 @can('viewApptakerLeadListAppointed', App\Models\Lead::find(1))
                                     <li><a href="{{ route('appointed-list') }}">Appointed List</a></li>
                                 @endcan
@@ -154,7 +156,7 @@
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
                                 @can('viewForQouteLeads', App\Models\Lead::find(1))
-                                    <li><a href="{{ route('appointed-leads') }}">For Quote Leads</a></li>
+                                    <li><a href="{{ route('appointed-leads') }}">Request For Quote</a></li>
                                 @endcan
                                 @can('viewAssignApppointedLeads', App\Models\Lead::find(1))
                                     <li><a href="{{ route('assign-appointed-lead') }}">Assign Appointed Leads</a></li>
@@ -175,7 +177,8 @@
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
                                 @can('viewBrokerAssistantLeadList', App\Models\Lead::find(1))
-                                    <li><a href="{{ route('broker-assistant.index') }}">Product List</a></li>
+                                    <li><a href="{{ route('broker-assistant.index') }}">Quoted Products</a></li>
+                                    <li><a href="{{ route('leads-for-follow-up.index') }}">For Follow Up</a></li>
                                 @endcan
                                 {{-- <li><a href="{{route('get-confirmed-product')}}">Confirmed Product</a></li> --}}
                             </ul>

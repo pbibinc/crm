@@ -19,9 +19,30 @@
         /* or background-color: #ffcccc; for a red background */
     }
 </style>
-
 <div class="row mb-2">
     <div class="col-6 title-card">
+        <h4 class="card-title mb-0" style="color: #ffffff">Request Quote Approval For {{ $quoteProduct->product }} </h4>
+    </div>
+    <div class="d-flex justify-content-between">
+        <div class="row">
+            <div class="col-12">
+                <label for="product" class="form-label">Product</label>
+                <select name="product" id="tableProductDropdown" class="form-select form-select-sm">
+                    <option value="">Select Product</option>
+                    @foreach ($productsDropdown as $product)
+                        <option value="{{ $product }}">{{ $product }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <div>
+            {{-- <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addQuoteModal"
+                id="create_record">
+                ADD QUOTE
+            </a> --}}
+        </div>
+    </div>
+    {{-- <div class="col-6 title-card">
         <h4 class="card-title mb-0" style="color: #ffffff">Quoations</h4>
     </div>
     <div class="d-flex justify-content-between">
@@ -30,7 +51,7 @@
         <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addQuoteModal" id="create_record">
             ADD QUOTE
         </a>
-    </div>
+    </div> --}}
 </div>
 
 <div class="row mb-3">
@@ -110,7 +131,176 @@
     </div>
 </div>
 
+<div class="modal fade " id="addQuoteModal" tabindex="-1" aria-labelledby="addQuoteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addQuoteModalLabel">Add Quotation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="quotationForm" enctype="multipart/form-data">
+                    @csrf
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label for="marketDropdown">Market</label>
+                            <select name="marketDropdown" id="marketDropdown" class="form-select">
+                                <option value="">Select Market</option>
+                                @foreach ($quationMarket as $market)
+                                    <option value={{ $market->id }}>{{ $market->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label for="quoteNo" class="form-label">Policy No/Quote No:</label>
+                            <input type="text" class="form-control" id="quoteNo" name="quoteNo" required
+                                autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label for="premium">Premium</label>
+                            <input type="text" class="form-control calculateInput input-mask text-left"
+                                id="premium" name="premium"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" required autocomplete="off">
+                        </div>
+                        <div class="col-6">
+                            <label for="endorsements">Endorsements</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="endorsements" name="endorsements"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label for="policyFee">Policy Fee</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="policyFee" name="policyFee"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" autocomplete="off">
+                        </div>
+                        <div class="col-6">
+                            <label for="inspectionFee">Inspection Fee</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="inspectionFee" name="inspectionFee"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label for="stampingFee">Stamping Fee</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="stampingFee" name="stampingFee"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" autocomplete="off">
+                        </div>
+                        <div class="col-6">
+                            <label for="surplusLinesTax">Surplus lines Tax</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="surplusLinesTax" name="surplusLinesTax"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label for="placementFee">Placement Fee</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="placementFee" name="placementFee"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" required autocomplete="off">
+                        </div>
+                        <div class="col-6">
+                            <label for="brokerFee">Broker Fee</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="brokerFee" name="brokerFee"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" required autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label for="miscellaneousFee">Miscellaneous Fee</label>
+                            <input type="text" class="form-control input-mask text-left calculateInput"
+                                id="miscellaneousFee" name="miscellaneousFee"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" required autocomplete="off">
+                        </div>
+                    </div>
 
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label for="fullPayment" class="form-label">Full Payment</label>
+                            <input type="text" class="form-control input-mask text-left"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" id="fullPayment" name="fullPayment"
+                                required readonly>
+                        </div>
+                        <div class="col-6">
+                            <label for="downPayment" class="form-label">Down Payment</label>
+                            <input type="text" class="form-control input-mask text-left" id="downPayment"
+                                name="downPayment"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" required autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label for="monthlyPayment" class="form-label">Monthly Payment</label>
+                            <input type="text" class="form-control input-mask text-left" id="monthlyPayment"
+                                name="monthlyPayment"
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                inputmode="decimal" style="text-align: right;" required autocomplete="off">
+                        </div>
+                        <div class="col-6">
+                            <label for="numberOfPayment" class="form-label">Number of Paymment</label>
+                            <input type="number" class="form-control" id="numberOfPayment" name="numberOfPayment">
+                        </div>
+
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            <label for="effectiveDate">Effective Date</label>
+                            <input type="date" class="form-control" id="effectiveDate" name="effectiveDate"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div>
+                            <label for="medias" id="mediaLabelId">Attached File</label>
+                            <input type="file" class="form-control" name="photos[]" id="medias" multiple />
+                        </div>
+                    </div>
+                    <input type="hidden" name="action" id="action" value="add">
+                    <input type="hidden" name="product_hidden_id" id="product_hidden_id" />
+                    <input type="hidden" name="productId" id="productId" value="{{ $quoteProduct->id }}">
+                    <input type="hidden" name="recommended" id="recommended_hidden" value="0" />
+                    <input type="hidden" name="currentMarketId" id="currentMarketId">
+                    <input type="hidden" name="sender" id="sender" value="marketSpecialist">
+                    <input type="hidden" name="renewalQuote" id="renewalQuote" value="false">
+
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <div class="form-check form-switch mb-3">
+                    <input type="checkbox" class="form-check-input" id="reccomended" checked="">
+                    <label class="form-check-label" for="reccomended">Reccomend this Quote</label>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <input type="submit" name="action_button" id="action_button" value="Add"
+                        class="btn btn-primary">
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 @include(
     'leads.appointed_leads.broker-quotation-forms.selected-quote-edit-form',
@@ -327,6 +517,12 @@
         }
     });
 
+    $('#tableProductDropdown').val('{{ $quoteProduct->product }}').change();
+
+    $('#tableProductDropdown').on('change', function() {
+        $('#qoutation-table').DataTable().ajax.reload();
+    });
+
     //checkbox for recommended
     $('#reccomended').change(function() {
         if ($(this).is(':checked')) {
@@ -446,6 +642,73 @@
     });
 
     //edit button functionalities
+    // $(document).on('click', '.editQuoteButton', function(e) {
+    //     e.preventDefault();
+    //     var id = $(this).attr('id');
+    //     $('#action').val('edit');
+    //     $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
+    //     $.ajax({
+    //         url: "{{ route('edit-quotation-comparison') }}",
+    //         method: "POST",
+    //         data: {
+    //             id: id,
+    //             _token: "{{ csrf_token() }}"
+    //         },
+    //         dataType: "json",
+    //         success: function(response) {
+    //             // console.log(response.data.id)
+    //             var url = `{{ asset('${response.media.filepath}') }}`;
+    //             var filename = response.data.basename;
+
+    //             //pricing breakdown inputs
+    //             $('#premium').text(response.pricingBreakdown.premium);
+    //             $('#endorsements').text(response.pricingBreakdown.endorsements);
+    //             $('#policyFee').text(response.pricingBreakdown.policy_fee);
+    //             $('#inspectionFee').text(response.pricingBreakdown.inspection_fee);
+    //             $('#stampingFee').text(response.pricingBreakdown.stamping_fee);
+    //             $('#suplusLinesTax').text(response.pricingBreakdown.surplus_lines_tax);
+    //             $('#placementFee').text(response.pricingBreakdown.placement_fee);
+    //             $('#miscellaneousFee').text(response.pricingBreakdown
+    //                 .miscellaneous_fee);
+    //             $('#numberOfPayment').text(response.data.number_of_payments);
+
+    //             $('#market').text(response.market.name);
+    //             $('#addQuoteModalLabel').text(
+    //                 response.market.name);
+    //             $('#effectiveDate').text(response.data
+    //                 .effective_date);
+    //             $('#fullPayment').text(response.data.full_payment);
+    //             $(
+    //                 '#hiddenFullpayment').val(response.data.full_payment);
+    //             $('#downPayment')
+    //                 .text(response.data.down_payment);
+    //             $('#hiddenDownpayment').val(response.data
+    //                 .down_payment);
+    //             $('#monthlyPayment').text(response.data
+    //                 .monthly_payment);
+    //             $('#brokerFee').val(response.data.broker_fee);
+    //             $(
+    //                 '#product_hidden_id').val(response.data.id);
+    //             $('#productId').text(
+    //                 response.data.quotation_product_id);
+    //             $('#quoteNo').text(response.data
+    //                 .quote_no);
+    //             $('#currentMarketId').val(response.data
+    //                 .quotation_market_id);
+    //             $('#medias').hide();
+    //             $('#mediaLabelId').hide();
+    //             $('#action_button').val('Update');
+    //             if (response.data.recommended == 1) {
+    //                 $('#reccomended').prop('checked', true);
+    //             } else {
+    //                 $('#reccomended').prop('checked', false);
+    //             }
+    //             $('#addQuoteModal').modal('show');
+    //         }
+    //     });
+
+    // });
+
     $(document).on('click', '.editQuoteButton', function(e) {
         e.preventDefault();
         var id = $(this).attr('id');
@@ -465,47 +728,38 @@
                 var filename = response.data.basename;
 
                 //pricing breakdown inputs
-                $('#premium').text(response.pricingBreakdown.premium);
-                $('#endorsements').text(response.pricingBreakdown.endorsements);
-                $('#policyFee').text(response.pricingBreakdown.policy_fee);
-                $('#inspectionFee').text(response.pricingBreakdown.inspection_fee);
-                $('#stampingFee').text(response.pricingBreakdown.stamping_fee);
-                $('#suplusLinesTax').text(response.pricingBreakdown.surplus_lines_tax);
-                $('#placementFee').text(response.pricingBreakdown.placement_fee);
-                $('#miscellaneousFee').text(response.pricingBreakdown
-                    .miscellaneous_fee);
-                $('#numberOfPayment').text(response.data.number_of_payments);
+                $('#premium').val(response.pricingBreakdown.premium);
+                $('#endorsements').val(response.pricingBreakdown.endorsements);
+                $('#policyFee').val(response.pricingBreakdown.policy_fee);
+                $('#inspectionFee').val(response.pricingBreakdown.inspection_fee);
+                $('#stampingFee').val(response.pricingBreakdown.stamping_fee);
+                $('#surplusLinesTax').val(response.pricingBreakdown
+                    .surplus_lines_tax)
+                $('#placementFee').val(response.pricingBreakdown.placement_fee);
+                $('#miscellaneousFee').val(response.pricingBreakdown.miscellaneous_fee);
 
-                $('#market').text(response.market.name);
-                $('#addQuoteModalLabel').text(
-                    response.market.name);
-                $('#effectiveDate').text(response.data
-                    .effective_date);
-                $('#fullPayment').text(response.data.full_payment);
-                $(
-                    '#hiddenFullpayment').val(response.data.full_payment);
-                $('#downPayment')
-                    .text(response.data.down_payment);
-                $('#hiddenDownpayment').val(response.data
-                    .down_payment);
-                $('#monthlyPayment').text(response.data
-                    .monthly_payment);
+                //quote comparison inputs
+                $('#marketDropdown').val(String(response.data.quotation_market_id));
+                $('#fullPayment').val(response.data.full_payment);
+                $('#downPayment').val(response.data.down_payment);
+                $('#monthlyPayment').val(response.data.monthly_payment);
+                $('#numberOfPayment').val(response.data.number_of_payments);
                 $('#brokerFee').val(response.data.broker_fee);
-                $(
-                    '#product_hidden_id').val(response.data.id);
-                $('#productId').text(
-                    response.data.quotation_product_id);
-                $('#quoteNo').text(response.data
-                    .quote_no);
-                $('#currentMarketId').val(response.data
-                    .quotation_market_id);
+                $('#product_hidden_id').val(response.data.id);
+                $('#productId').val(response.data.quotation_product_id);
+                $('#quoteNo').val(response.data.quote_no);
+                $('#currentMarketId').val(response.data.quotation_market_id);
+                $('#effectiveDate').val(response.data.effective_date);
+
                 $('#medias').hide();
                 $('#mediaLabelId').hide();
                 $('#action_button').val('Update');
                 if (response.data.recommended == 1) {
                     $('#reccomended').prop('checked', true);
+                    $('#recommended_hidden').val(1);
                 } else {
                     $('#reccomended').prop('checked', false);
+                    $('#recommended_hidden').val(0);
                 }
                 $('#addQuoteModal').modal('show');
             }
@@ -513,58 +767,82 @@
 
     });
 
-    //submition of form
-    // $('#quotationForm').on('submit', function(event) {
-    //     event.preventDefault();
-    //     $.ajax({
-    //         url: "{{ route('update-quotation-comparison') }}",
-    //         method: "POST",
-    //         headers: {
-    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-    //                 'content')
-    //         },
-    //         processData: false, // Prevent jQuery from processing the data
-    //         contentType: false,
-    //         data: new FormData(this),
-    //         dataType: "json",
-    //         success: function(response) {
-    //             Swal.fire({
-    //                 position: 'center',
-    //                 icon: 'success',
-    //                 title: 'Quotation Comparison has been saved',
-    //                 showConfirmButton: false,
-    //                 timer: 1500
-    //             }).then(() => {
-    //                 $('#addQuoteModal').modal('hide');
-    //                 $('#BrokerQuotationTable').DataTable().ajax.reload();
-    //             });
-    //         },
-    //         error: function(data) {
-    //             var errors = data.responseJSON.errors;
-    //             console.log(data);
-    //             if (data.status == 422) {
-    //                 Swal.fire({
-    //                     title: 'Error',
-    //                     text: data.responseJSON.error,
-    //                     icon: 'error'
-    //                 });
-    //                 $('#marketDropdown').addClass('input-error');
-    //             }
-    //             if (errors) {
-    //                 $.each(errors, function(key, value) {
-    //                     $('#' + key).addClass('input-error');
-    //                     $('#' + key + '_error').html(value);
-    //                 });
-    //             }
-    //         }
-    //     });
+    //view quote button
+    $(document).on('click', '.viewQuoteButton', function(e) {
+        e.preventDefault();
+        var id = $(this).attr('id');
+        // product = $(this).attr('data-product');
+        $('#action').val('edit');
+        $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
+        $.ajax({
+            url: "{{ route('edit-quotation-comparison') }}",
+            method: "POST",
+            data: {
+                id: id,
+                _token: "{{ csrf_token() }}"
+            },
+            dataType: "json",
+            success: function(response) {
+                var url = `{{ asset('${response.media.filepath}') }}`;
+                var filename = response.data.basename;
 
-    // });
+                //pricing breakdown inputs
+                $('#premium').val(response.pricingBreakdown.premium).attr('disabled',
+                    true);
+                $('#endorsements').val(response.pricingBreakdown
+                    .endorsements).attr('disabled', true);
+                $('#policyFee').val(response.pricingBreakdown
+                    .policy_fee).attr('disabled', true);
+                $('#inspectionFee').val(response.pricingBreakdown
+                    .inspection_fee).attr('disabled', true);
+                $('#stampingFee').val(response.pricingBreakdown
+                    .stamping_fee).attr('disabled', true);
+                $('#surplusLinesTax').val(response.pricingBreakdown
+                    .surplus_lines_tax).attr('disabled', true);
+                $('#placementFee').val(response.pricingBreakdown
+                    .placement_fee).attr('disabled', true);
+                $('#miscellaneousFee').val(response.pricingBreakdown
+                    .miscellaneous_fee).attr('disabled', true);
 
-    //function for parsing
-    function parseCurrency(num) {
-        return parseFloat(num.replace(/[^0-9-.]/g, ''));
-    }
+                //quote comparison inputs
+                $('#marketDropdown').val(String(response.data
+                    .quotation_market_id)).attr('disabled', true);
+                $('#productDropdown').val(response.data.quotation_product.product);
+                $('#productDropdown').attr('disabled', true);
+                $('#fullPayment').val(response.data.full_payment).attr('disabled',
+                    true);
+                $('#downPayment').val(response.data.down_payment).attr('disabled',
+                    true);
+                $('#monthlyPayment').val(response.data
+                    .monthly_payment).attr('disabled', true);
+                $('#numberOfPayment').val(response.data
+                    .number_of_payments).attr('disabled', true);
+                $('#brokerFee').val(response.data.broker_fee).attr('disabled', true);
+                $('#product_hidden_id').val(response.data.id).attr('disabled', true);
+                $('#productId').val(response.data
+                    .quotation_product_id);
+                $('#quoteNo').val(response.data.quote_no).attr('disabled', true);
+                $('#currentMarketId').val(response.data
+                    .quotation_market_id).attr('disabled', true);
+                $('#effectiveDate').val(response.data.effective_date).attr('disabled',
+                    true);
+                $('#medias').hide();
+                $('#mediaLabelId').hide();
+                $('#action_button').val('Update');
+                $('#action_button').hide();
+                if (response.data.recommended == 1) {
+                    $('#reccomended').prop('checked', true);
+                    $('#recommended_hidden').val(1);
+                } else {
+                    $('#reccomended').prop('checked', false);
+                    $('#recommended_hidden').val(0);
+                }
+                $(`#addQuoteModal`).modal('show');
+            }
+        });
+    });
+
+
 
     $('#brokerFee').on('focus', function() {
         let currentBrokerFee = parseCurrency($(this).val()) || 0;
@@ -733,7 +1011,7 @@
                 $('#makePaymentModal').modal('show');
             }
         })
-    })
+    });
 
     $(document).on('click', '.editSelectedQuote', function(e) {
         e.preventDefault();
@@ -797,6 +1075,159 @@
         });
     });
 
+    //function for parsing
+    function parseCurrency(num) {
+        if (num === undefined || num === null || num.trim() === "") {
+            return 0;
+        }
+        return parseFloat(num.replace(/[^0-9-.]/g, ''));
+    }
+
+    //calculate total premium
+    function calculateFullPayment() {
+        let premium = parseCurrency($('#premium').val()) || 0;
+        let endorsements = parseCurrency($('#endorsements').val()) || 0;
+        let policyFee = parseCurrency($('#policyFee').val()) || 0;
+        let inspectionFee = parseCurrency($('#inspectionFee').val()) || 0;
+        let stampingFee = parseCurrency($('#stampingFee').val()) || 0;
+        let suplusLinesTax = parseCurrency($('#suplusLinesTax').val()) || 0;
+        let placementFee = parseCurrency($('#placementFee').val()) || 0;
+        let brokerFee = parseCurrency($('#brokerFee').val()) || 0;
+        let miscellaneousFee = parseCurrency($('#miscellaneousFee').val()) || 0;
+
+        let fullPayment = premium + endorsements + policyFee + inspectionFee + stampingFee + suplusLinesTax +
+            placementFee + brokerFee + miscellaneousFee;
+        $('#fullPayment').val('$ ' + fullPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
+    }
+
+
+    $('.calculateInput').on('input', function() {
+        calculateFullPayment();
+    });
+
+
+    //submition of form
+    $('#quotationForm').on('submit', function(event) {
+        event.preventDefault();
+        var formData = new FormData(this);
+
+        var action_url = '';
+        $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
+        let fullPayment = parseFloat($('#fullPayment').val()) || 0;
+        let downPayment = parseFloat($('#downPayment').val()) || 0;
+
+        if ($('#action').val() == 'add') {
+            action_url = "{{ route('save-quotation-comparison') }}";
+        }
+
+        if ($('#action').val() == 'edit') {
+            action_url = "{{ route('update-quotation-comparison') }}";
+        }
+        if (fullPayment < downPayment) {
+            $('#fullPayment').addClass('input-error');
+            $('#downPayment').addClass('input-error');
+        } else {
+            $.ajax({
+                url: action_url,
+                method: "POST",
+                processData: false, // Prevent jQuery from processing the data
+                contentType: false,
+                data: formData,
+                dataType: "json",
+                success: function(response) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Quotation Comparison has been saved',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        $('#addQuoteModal').modal('hide');
+                        $('#qoutation-table').DataTable().ajax.reload();
+                        $('.modal-backdrop').remove();
+                        $('#quotationForm select').val('');
+                        $('#quotationForm input[type="text"], #quotationForm textarea')
+                            .val('');
+                        $('#quotationForm input[type="file"]').val('');
+                        $('#quotationForm .input-mask').trigger('input');
+                    });
+                },
+                error: function(data) {
+                    var errors = data.responseJSON.errors;
+                    console.log(data);
+                    if (data.status == 422) {
+                        Swal.fire({
+                            title: 'Error',
+                            text: data.responseJSON.error,
+                            icon: 'error'
+                        });
+                        $('#marketDropdown').addClass('input-error');
+                    }
+                    if (errors) {
+                        $.each(errors, function(key, value) {
+                            $('#' + key).addClass('input-error');
+                            $('#' + key + '_error').html(value);
+                        });
+                    }
+                }
+            });
+        }
+    });
+
 
     // $(document).on('click', '.resendMakePayement')
+
+
+    //submition of form
+    // $('#quotationForm').on('submit', function(event) {
+    //     event.preventDefault();
+    //     $.ajax({
+    //         url: "{{ route('update-quotation-comparison') }}",
+    //         method: "POST",
+    //         headers: {
+    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+    //                 'content')
+    //         },
+    //         processData: false, // Prevent jQuery from processing the data
+    //         contentType: false,
+    //         data: new FormData(this),
+    //         dataType: "json",
+    //         success: function(response) {
+    //             Swal.fire({
+    //                 position: 'center',
+    //                 icon: 'success',
+    //                 title: 'Quotation Comparison has been saved',
+    //                 showConfirmButton: false,
+    //                 timer: 1500
+    //             }).then(() => {
+    //                 $('#addQuoteModal').modal('hide');
+    //                 $('#BrokerQuotationTable').DataTable().ajax.reload();
+    //             });
+    //         },
+    //         error: function(data) {
+    //             var errors = data.responseJSON.errors;
+    //             console.log(data);
+    //             if (data.status == 422) {
+    //                 Swal.fire({
+    //                     title: 'Error',
+    //                     text: data.responseJSON.error,
+    //                     icon: 'error'
+    //                 });
+    //                 $('#marketDropdown').addClass('input-error');
+    //             }
+    //             if (errors) {
+    //                 $.each(errors, function(key, value) {
+    //                     $('#' + key).addClass('input-error');
+    //                     $('#' + key + '_error').html(value);
+    //                 });
+    //             }
+    //         }
+    //     });
+
+    // });
+
+    //function for parsing
+    // function parseCurrency(num) {
+    //     return parseFloat(num.replace(/[^0-9-.]/g, ''));
+    // }
 </script>

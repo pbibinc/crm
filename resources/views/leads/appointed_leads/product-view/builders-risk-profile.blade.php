@@ -264,28 +264,32 @@
 @endif
 <hr>
 
-<div class="row">
-    <div class="col-md-12">
-        <div class="title-card">
-            <i class="ri-calendar-event-line title-icon"></i>
-            <span>Previous Builders Risk Policy</span>
-        </div>
-        <div class="data-section">
-            <div class="inline-data">
-                <div class="col-6">
-                    <span class="data-label">Expiration of Builders Risk:</span>
-                    <span class="data-value">
-                        {{ \Carbon\Carbon::parse($generalInformation->lead->buildersRiskExpirationProduct->expiration_date)->format('M-j-Y') }}</span>
-                </div>
-                <div class="col-6">
-                    <span class="data-label">Prior Carrier:</span>
-                    <span
-                        class="data-value">{{ $generalInformation->lead->buildersRiskExpirationProduct->prior_carrier }}</span>
+
+@if ($generalInformation->lead->buildersRiskExpirationProduct)
+    <div class="row">
+        <div class="col-md-12">
+            <div class="title-card">
+                <i class="ri-calendar-event-line title-icon"></i>
+                <span>Previous Builders Risk Policy</span>
+            </div>
+            <div class="data-section">
+                <div class="inline-data">
+                    <div class="col-6">
+                        <span class="data-label">Expiration of Builders Risk:</span>
+                        <span class="data-value">
+                            {{ \Carbon\Carbon::parse($generalInformation->lead->buildersRiskExpirationProduct->expiration_date)->format('M-j-Y') }}</span>
+                    </div>
+                    <div class="col-6">
+                        <span class="data-label">Prior Carrier:</span>
+                        <span
+                            class="data-value">{{ $generalInformation->lead->buildersRiskExpirationProduct->prior_carrier }}</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+@endif
+
 <script>
     $(document).ready(function() {
         $('.editBuildersRisk').on('click', function(e) {

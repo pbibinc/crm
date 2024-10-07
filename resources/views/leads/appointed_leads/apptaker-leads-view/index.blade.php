@@ -21,6 +21,7 @@
                     </div>
                     @include('leads.appointed_leads.apptaker-leads-view.company-navigation-tab')
                     <div class="tab-content text-muted mt-3">
+
                         {{-- overview tab --}}
                         <div class="tab-pane fade show active" id="overview" role="tabpanel">
                             @include('leads.appointed_leads.apptaker-leads-view.profile-summary', [
@@ -53,6 +54,7 @@
                                     </ul>
                                 </div>
                             </div>
+
                             <div class="card shadow-lg mb-5 bg-white rounded">
                                 <div class="card-body">
 
@@ -175,6 +177,7 @@
                                             'generalInformation' => $leads->generalInformation,
                                             'selectedQuotes' => $selectedQuotes,
                                             'policyDetailId' => null,
+                                            'paymentType' => ' ',
                                         ]
                                     )
                                 </div>
