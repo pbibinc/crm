@@ -281,7 +281,4 @@ class PolicyDetail extends Model
         });
     }
 
-
-
-
 }

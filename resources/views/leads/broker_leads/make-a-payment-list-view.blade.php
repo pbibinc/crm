@@ -4,8 +4,6 @@
         <thead class="" style="background-color: #f0f0f0;">
             <th>Company Name</th>
             <th>Product</th>
-            <th>Quoted By</th>
-            <th>Appointed By</th>
             <th>Status</th>
             <th>Action</th>
         </thead>
@@ -26,6 +24,9 @@
                 type: "POST",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    "_token": "{{ csrf_token() }}",
                 }
             },
             columns: [{
@@ -37,14 +38,6 @@
                     name: 'product'
                 },
                 {
-                    data: 'quotedBy',
-                    name: 'quotedBy'
-                },
-                {
-                    data: 'appointedBy',
-                    name: 'appointedBy'
-                },
-                {
                     data: 'status',
                     name: 'status'
                 },
@@ -54,7 +47,7 @@
                 }
             ],
             order: [
-                [4, 'asc']
+                [2, 'asc']
             ],
         });
 

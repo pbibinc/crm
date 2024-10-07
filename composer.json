@@ -28,7 +28,7 @@
         "phpoffice/phpspreadsheet": "^1.18",
         "protonemedia/laravel-splade": "^1.4",
         "psr/simple-cache": "2.0",
-        "pusher/pusher-php-server": "^7.2",
+        "pusher/pusher-php-server": "~7.0",
         "ratchet/pawl": "^0.4.1",
         "select2/select2": "^4.0",
         "spatie/laravel-webhook-client": "^3.2",

@@ -14,11 +14,16 @@ class BoundInformation extends Model
 
     public $timestamps = false;
     protected $fillable = [
-        'quotation_product_id',
+        'quoatation_product_id',
         'user_profile_id',
         'bound_date',
         'status',
     ];
+
+    public function QuotationProduct()
+    {
+        return $this->belongsTo(QuotationProduct::class, 'quoatation_product_id');
+    }
 
     public function getTotalSales()
     {

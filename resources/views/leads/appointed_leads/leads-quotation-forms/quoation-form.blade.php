@@ -11,31 +11,60 @@
         $productIds[] = $product->id;
     }
 @endphp
-<div class="row mb-2">
-    <div class="d-flex justify-content-between align-items-center">
-        <div class="card"
-            style="background-color: white; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); border-radius: 8px; overflow: hidden; padding: 10px;">
-            <div class="row">
-                <div class="col-6">
-                    <label for="product" class="form-label">Product</label>
-                    <select name="product" id="tableProductDropdown" class="form-select form-select-sm">
-                        <option value="">Select Product</option>
-                        @foreach ($productsDropdown as $product)
-                            <option value="{{ $product }}">{{ $product }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-6">
-                    <label for="Status" class="form-label">Filter By Status</label>
-                    <select name="status" id="tableStatusDropdown" class="form-select form-select-sm">
-                        <option value="New Quote">New Quote</option>
-                        <option value="Old Quote">Old Quote</option>
-                    </select>
-                </div>
-            </div>
-        </div>
 
-        <div class="ms-3">
+<div class="card shadow-lg p-3 mb-5 bg-white rounded">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <div class="">
+            <button class="btn btn-success btn-sm createRecord" id="create_record_" data-product=''
+                data-bs-target="#addQuoteModal_{{ $formId }}">ADD QUOTE</button>
+
+            {{-- @if ($quoteProduct->status == 2)
+                <button class="btn btn-primary btn-sm" id="sendQuoteButton">SEND QUOTE</button>
+            @endif --}}
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <label for="product" class="form-label">Product</label>
+                <select name="product" id="tableProductDropdown" class="form-select form-select-sm">
+                    <option value="">Select Product</option>
+                    @foreach ($productsDropdown as $product)
+                        <option value="{{ $product }}">{{ $product }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-6">
+                <label for="Status" class="form-label">Filter By Status</label>
+                <select name="status" id="tableStatusDropdown" class="form-select form-select-sm">
+                    <option value="New Quote">New Quote</option>
+                    <option value="Old Quote">Old Quote</option>
+                </select>
+            </div>
+
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <table id="qoutation-table" class="table table-bordered dt-responsive nowrap no-vertical-border"
+                style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Quote No/Policy No</th>
+                        <th>Product</th>
+                        <th>Market</th>
+                        <th>Full Payment</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{{-- <div class="row mb-2">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="">
             <button class="btn btn-success btn-sm createRecord" id="create_record_" data-product=''
                 data-bs-target="#addQuoteModal_{{ $formId }}">ADD QUOTE</button>
 
@@ -43,26 +72,29 @@
                 <button class="btn btn-primary btn-sm" id="sendQuoteButton">SEND QUOTE</button>
             @endif
         </div>
-    </div>
-</div>
+        <div class="row">
+            <div class="col-6">
+                <label for="product" class="form-label">Product</label>
+                <select name="product" id="tableProductDropdown" class="form-select form-select-sm">
+                    <option value="">Select Product</option>
+                    @foreach ($productsDropdown as $product)
+                        <option value="{{ $product }}">{{ $product }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-6">
+                <label for="Status" class="form-label">Filter By Status</label>
+                <select name="status" id="tableStatusDropdown" class="form-select form-select-sm">
+                    <option value="New Quote">New Quote</option>
+                    <option value="Old Quote">Old Quote</option>
+                </select>
+            </div>
 
-<div class="row">
-    <table id="qoutation-table" class="table table-bordered dt-responsive nowrap"
-        style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-        <thead>
-            <tr>
-                <th>Quote No/Policy No</th>
-                <th>Product</th>
-                <th>Market</th>
-                <th>Full Payment</th>
-                <th>Status</th>
-                <th>Created At</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-</div>
+        </div>
+    </div>
+</div> --}}
+
+
 
 <div class="modal fade " id="addQuoteModal" tabindex="-1" aria-labelledby="addQuoteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -226,7 +258,7 @@
                     </div>
                     <input type="hidden" name="action" id="action" value="add">
                     <input type="hidden" name="product_hidden_id" id="product_hidden_id" />
-                    <input type="hidden" name="productId" id="productId" value="{{ $quoteProduct->id }}">
+                    <input type="hidden" name="productId" id="productId">
                     <input type="hidden" name="recommended" id="recommended_hidden" value="0" />
                     <input type="hidden" name="currentMarketId" id="currentMarketId">
                     <input type="hidden" name="sender" id="sender" value="marketSpecialist">
@@ -326,41 +358,41 @@
         var product = @json($productForm);
 
         //send quote button functionalities
-        $('#sendQuoteButton').on('click', function() {
-            var id = {{ $quoteProduct->id }};
-            Swal.fire({
-                title: 'Are you sure?',
-                text: 'You are about to send this quote to the client',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, send it!',
-                cancelButtonText: 'No, keep it'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: "{{ route('send-quotation-product') }}",
-                        method: "POST",
-                        data: {
-                            id: id,
-                            _token: "{{ csrf_token() }}"
-                        },
-                        dataType: "json",
-                        success: function(response) {
-                            Swal.fire({
-                                position: 'center',
-                                icon: 'success',
-                                title: 'Quotation Comparison has been sent',
-                                showConfirmButton: false,
-                                timer: 1500
-                            }).then(() => {
-                                console.log('test this code');
-                                location.reload();
-                            });
-                        }
-                    });
-                }
-            });
-        });
+        // $('#sendQuoteButton').on('click', function() {
+
+        //     Swal.fire({
+        //         title: 'Are you sure?',
+        //         text: 'You are about to send this quote to the client',
+        //         icon: 'warning',
+        //         showCancelButton: true,
+        //         confirmButtonText: 'Yes, send it!',
+        //         cancelButtonText: 'No, keep it'
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             $.ajax({
+        //                 url: "{{ route('send-quotation-product') }}",
+        //                 method: "POST",
+        //                 data: {
+        //                     id: id,
+        //                     _token: "{{ csrf_token() }}"
+        //                 },
+        //                 dataType: "json",
+        //                 success: function(response) {
+        //                     Swal.fire({
+        //                         position: 'center',
+        //                         icon: 'success',
+        //                         title: 'Quotation Comparison has been sent',
+        //                         showConfirmButton: false,
+        //                         timer: 1500
+        //                     }).then(() => {
+        //                         console.log('test this code');
+        //                         location.reload();
+        //                     });
+        //                 }
+        //             });
+        //         }
+        //     });
+        // });
 
         function calculateFullPayment(product) {
             let premium = parseCurrency($(`#premium${product}`).val()) || 0;

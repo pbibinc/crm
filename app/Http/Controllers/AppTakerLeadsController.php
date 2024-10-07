@@ -37,7 +37,7 @@ class AppTakerLeadsController extends Controller
             'Pacific' => ['CA', 'OR', 'WA'],
             'Alaska' => ['AK'],
             'Hawaii-Aleutian' => ['HI']
-    ];
+        ];
         $sites = Site::all();
         $states = ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV',
             'AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI', 'AZ', 'CO', 'ID', 'MT', 'NV', 'NM', 'UT', 'WY',
@@ -48,6 +48,7 @@ class AppTakerLeadsController extends Controller
         $dispositions = Disposition::orderBy('name', 'asc')->get();
         $recreationalFacilities = RecreationalFacilities::all();
         $dataCount = Lead::getLeadsAppointed($user->id);
+        $userProfiles = UserProfile::get()->sortBy('first_name');
         if($request->ajax()){
             $query = Lead::select('id', 'company_name', 'tel_num', 'class_code', 'state_abbr')
             ->where('status', 2)
@@ -62,7 +63,7 @@ class AppTakerLeadsController extends Controller
             ->rawColumns(['company_name_action'])
             ->make(true);
         }
-        return view('leads.apptaker_leads.index', compact('timezones', 'sites', 'states', 'sortedClassCodeLeads', 'classCodeLeads', 'dispositions', 'recreationalFacilities', 'dataCount'));
+        return view('leads.apptaker_leads.index', compact('timezones', 'sites', 'states', 'sortedClassCodeLeads', 'classCodeLeads', 'dispositions', 'recreationalFacilities', 'dataCount', 'userProfiles'));
     }
     public function multiStateWork(Request $request)
     {
@@ -93,6 +94,8 @@ class AppTakerLeadsController extends Controller
 
         return response()->json(['cities' => $cities, 'zipcode' => $zipcode]);
     }
+
+
     public function productForms(Request $request){
         return view('leads.apptaker_leads.questionare-new-tab');
     }

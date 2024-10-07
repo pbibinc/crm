@@ -9,6 +9,7 @@
             <th>Type</th>
             <th>Total Cost</th>
             <th>Effective Date</th>
+            <th>Action</th>
         </thead>
         <tbody>
         </tbody>
@@ -53,6 +54,10 @@
                 {
                     data: 'effective_date',
                     name: 'effective_date'
+                },
+                {
+                    data: 'action',
+                    name: 'action'
                 }
             ],
             language: {

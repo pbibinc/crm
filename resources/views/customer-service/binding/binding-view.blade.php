@@ -8,6 +8,7 @@
             <th>Requested By</th>
             <th>Total Cost</th>
             <th>Effective Date</th>
+            <th>Action</th>
             {{-- <th>Sent Out Date</th>
                         <th></th> --}}
         </thead>
@@ -19,7 +20,6 @@
 <script>
     $(document).ready(function() {
         var token = '{{ csrf_token() }}';
-
         $('.bindingProductTable').DataTable({
             processing: true,
             serverSide: true,
@@ -50,6 +50,12 @@
                 {
                     data: 'effective_date',
                     name: 'effective_date'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
                 }
             ],
             createdRow: function(row, data, dataIndex) {

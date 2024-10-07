@@ -1,6 +1,6 @@
 <div class="row">
-    <table id="financingTable" class="table table-bordered dt-responsive nowrap financingTable"
-        style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+    <table id="financingTable" class="table table-bordered table-sm dt-responsive nowrap financingTable"
+        style="font-size: 13px; width: 100%;">
         <thead style="background-color: #f0f0f0;">
             <th>Policy Number</th>
             <th>Company Name</th>

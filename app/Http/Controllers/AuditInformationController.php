@@ -209,10 +209,20 @@ class AuditInformationController extends Controller
                 return $userProfile ? $userProfile->fullAmericanName() : '';
             })
             ->addColumn('action', function($data){
-                $editButton = '<button class="btn btn-primary btn-sm editAuditInformation" id="'.$data->id.'"><i class="ri-pencil-line"></i></button>';
+                $dropdown = '
+                <div class="dropdown" style="display: inline-block;">
+                    <button class="btn btn-sm dropdown-toggle" type="button" id="actionMenu' . $data->id . '" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #6c757d; color: white; border: none; padding: 5px; font-size: 16px; line-height: 1; border-radius: 50%; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center;">
+                        &#x2022;&#x2022;&#x2022;
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="actionMenu' . $data->id . '" style="min-width: 100px;">
+                        <li><a class="dropdown-item uploadAuditInformationFile text-success" href="#" id="' . $data->id . '"><i class="ri-upload-2-line"></i> Upload Required File</a></li>
+                        <li><a class="dropdown-item deleteAuditInformation text-warning" href="#" id="' . $data->id . '"><i class="ri-delete-bin-line"></i> Delete</a></li>
+                    </ul>
+                </div>';
+                $editButton = '<button class="btn btn-info btn-sm editAuditInformation" id="'.$data->id.'" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-pencil-line"></i></button>';
                 $uoloadFileButton = '<button class="btn btn-info btn-sm uploadAuditInformationFile" id="'.$data->id.'"><i class="ri-upload-2-line"></i></button>';
-                $deleteButton = '<button class="btn btn-danger btn-sm deleteAuditInformation" id="'.$data->id.'"><i class="ri-delete-bin-line"></i></button>';
-                return $editButton . ' '. $uoloadFileButton . ' ' . $deleteButton;
+                // $deleteButton = '<button class="btn btn-danger btn-sm deleteAuditInformation" id="'.$data->id.'"><i class="ri-delete-bin-line"></i></button>';
+                return $editButton . ' ' . $dropdown;
             })
             ->rawColumns(['audit_letter_file', 'action'])
             ->make(true);

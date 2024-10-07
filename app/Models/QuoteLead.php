@@ -57,4 +57,28 @@ class QuoteLead extends Model
 
     }
 
+    public static function requestForQuoteAppointedProductByLeads($leads)
+    {
+        $quoteProducts = [];
+        foreach($leads as $lead)
+        {
+            $query = self::where('leads_id', $lead->id)->first();
+            if($query){
+                $products = $query->QuoteInformation->QuotationProduct()->where('user_profile_id', null)->where('status', 29)->get();
+                foreach($products as $product)
+                {
+                    $quoteProducts[] = [
+                        'company' => $product->QuoteInformation->QuoteLead->leads->company_name,
+                        'product' => $product,
+                        'sent_out_date' => $product->sent_out_date,
+                        'status' => $product->status,
+                        'telemarketer' => UserProfile::where('id', $product->QuoteInformation->telemarket_id)->first()->fullAmericanName(),
+                    ];
+                }
+            }
+        }
+        return $quoteProducts;
+
+    }
+
 }

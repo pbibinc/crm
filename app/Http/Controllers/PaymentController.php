@@ -104,6 +104,7 @@ class PaymentController extends Controller
                 'chargedAmount' => 'required',
                 'note' => 'required',
             ]);
+
             if($request->paymentInformationId){
                 $paymentInformation = PaymentInformation::find($request->paymentInformationId);
                 if($request->paymentInformationAction == 'Request A Payment'){
@@ -112,7 +113,8 @@ class PaymentController extends Controller
                 $selectedQuote = $paymentInformation->SelectedQuote;
                 $selectedQuote->quote_no = $request->quoteNumber;
                 $selectedQuote->save();
-            }else if($request->paymentType == 'Audit' || $request->paymentType == 'Monthly Payment'){
+            }
+            if($request->paymentType == 'Audit' || $request->paymentType == 'Monthly Payment'){
                 $paymentInformation = new PaymentInformation();
                 $paymentInformation->payment_term = 'PIF';
                 $paymentInformation->compliance_by = 'N/A';
@@ -122,6 +124,7 @@ class PaymentController extends Controller
                 $selectedPricingBreakdown = $selectedQuote->SelectedPricingBreakDown;
                 $paymentInformation->payment_term = $request->paymentTerm;
                 //Updating quotation product status
+
                 $paymentProduct = $selectedQuote->QuotationProduct;
                 $paymentProduct->status = 9;
                 $paymentProduct->save();

@@ -1,24 +1,27 @@
 @php
     $policyDetailsId = $policyDetailId ? $policyDetailId : 0;
+
 @endphp
 
 <div class="row mb-2">
     <div class="d-flex justify-content-between align-items-center">
         <div>
-            <a href="{{ route('payment-archive.show', $generalInformation->lead->id) }}"
-                style="font-size:15px; color: #0f9cf3; font-weight:500 margin-top:20px;"><i
-                    class="mdi mdi-archive-arrow-down"></i> Payment Archive</a>
+            <a href="{{ route('payment-archive.show', $generalInformation->lead->id) }}" class="text-primary"
+                style="font-size: 13px; font-weight: 500;">
+                <i class="mdi mdi-archive-arrow-down"></i> Payment Archive
+            </a>
         </div>
         <div>
-            <button class="btn btn-success btn-sm" id="accountingMakeAPayment" data-product=''>MAKE A
+            <button class="btn btn-success btn-sm py-1 px-2" id="accountingMakeAPayment" data-product=''>MAKE A
                 PAYMENT</button>
         </div>
     </div>
 </div>
-<div class="row">
-    <table id="accountingTable" class="table table-bordered dt-responsive nowrap"
-        style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-        <thead>
+
+<div class="row mb-2">
+    <table id="accountingTable" class="table table-bordered table-sm dt-responsive nowrap  nowrap"
+        style="font-size: 13px; width: 100%;">
+        <thead style="background-color: #f0f0f0;">
             <tr>
                 <th>Type</th>
                 <th>Product</th>
@@ -30,7 +33,7 @@
                 <th>Action</th>
             </tr>
         </thead>
-        <tbody></tbody>
+        <!-- Add tbody here if you have data -->
     </table>
 </div>
 
@@ -56,7 +59,7 @@
 
 @include(
     'leads.appointed_leads.broker-forms.appointed-make-payment-form',
-    compact('complianceOfficer', 'selectedQuotes', 'policyDetailsId'))
+    compact('complianceOfficer', 'selectedQuotes', 'policyDetailsId', 'paymentType'))
 
 <script>
     Dropzone.autoDiscover = false;

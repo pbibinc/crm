@@ -40,28 +40,30 @@
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#summary" role="tab"
                     style="padding: 5px 10px; font-size: 14px;">
-                    Summary
+                    Overview
                 </a>
             </li>
 
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#product" role="tab"
                     style="padding: 5px 10px; font-size: 14px;">
-                    {{ $product->product }}
+                    Client Info
                 </a>
             </li>
+
+
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#quotation" role="tab"
+                    style="padding: 5px 10px; font-size: 14px;">
+                    Quote Products
+                </a>
+            </li>
+
 
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#activityLog" role="tab"
                     style="padding: 5px 10px; font-size: 14px;">
                     History Log
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#quotation" role="tab"
-                    style="padding: 5px 10px; font-size: 14px;">
-                    Quotation
                 </a>
             </li>
 

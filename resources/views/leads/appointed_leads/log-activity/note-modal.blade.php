@@ -78,8 +78,8 @@
                 <div>
                     <input type="hidden" name="departmentIds" id="departmentIds">
                     <input type="hidden" name="leadId" id="leadId">
-                    <button type="button" class="btn btn-outline-primary waves-effect waves-light" id="logNote"><i
-                            class="ri-send-plane-fill"></i>Log Note</button>
+                    <button type="button" class="btn btn-outline-primary waves-effect waves-light logNoteActivity"
+                        id="logNote"><i class="ri-send-plane-fill"></i>Log Note</button>
                 </div>
             </div>
         </div>
@@ -87,7 +87,8 @@
 </div>
 <script>
     $(document).ready(function() {
-        $('#logNote').on('click', function() {
+        $('#logNote').on('click', function(e) {
+            e.preventDefault();
             var noteTitle = $('#noteTitle').val();
             var noteDescription = $('#noteDescription').val();
             var userToNotify = $('#userToNotifyDropdown').val();
