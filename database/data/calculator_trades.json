@@ -1,0 +1,362 @@
+[
+    {
+        "id": "1",
+        "tradename": "General Engineering Contractor",
+        "gl_iso": "",
+        "description": "Any contractor whose principal contracting business is in connection with fixed works requiring specialized engineering knowledge and skill, including the following divisions or subjects: irrigation, drainage, water supply and power, flood control, inland waterways, harbors, docks and wharves, shipyards and ports, dams and hydroelectric projects, levees, river control and reclamation works, railroads, highways, streets and roads, airports and airways, tunnels, sewers and sewage disposal plants and systems, waste reduction plants, bridges, overpasses, underpasses and other similar works, pipelines and other systems for the transmission of petroleum and other liquid or gaseous substances, parks, playgrounds and other recreational works, refineries, chemical plants and similar industrial plants requiring specialized engineering knowledge and skill, power plants and other utility plants and installations, mines and metallurgical plants, land leveling and earthmoving projects, excavating, grading, trenching, and any paving, surfacing, cement and concrete works in connection with the aforementioned fixed works."
+    },
+    {
+        "id": "2",
+        "tradename": "General Contractor",
+        "gl_iso": "",
+        "description": "AKA; General Building Contractors, Prime Contractor, or GC||Perform remodeling, additions or ground up construction residential or commercial work.  The GC may self-perform or subcontract any combination of the trades.  Some state requires a minimum of 2 trades be performed by the GC, where some states do not have that requirement.  Many states require a specialty license to perform certain trades like electrical, plumbing HVAC, or fire suppression systems.  It a good idea to check the requirements of your licensing authority prior to beginning construction, as regulations varies by state."
+    },
+    {
+        "id": "3",
+        "tradename": "Insulation Contractor",
+        "gl_iso": "GL ISO 96408",
+        "description": "An insulation contractor, or Insulation Work or acoustical contractor install any insulating media and preformed architectural acoustical materials for the purpose of temperature and/or sound control. (WC Classes may include 5479)."
+    },
+    {
+        "id": "4",
+        "tradename": "Boiler Contractor",
+        "gl_iso": "GL ISO 91250",
+        "description": "Boiler, hot-water heating and steam fitting contractor installs, services and repairs power boiler installations, hot-water heating systems and steam fitting, including fire-tube and water-tube steel power boilers and hot-water heating low pressure boilers, steam fitting and piping, fittings, valves, gauges, pumps, radiators, convectors, fuel oil tanks, fuel oil lines, chimneys, flues, heat insulation and all other equipment, including solar heating equipment, associated with these systems. (WC Classes may include 3726)."
+    },
+    {
+        "id": "5",
+        "tradename": "Framing Contractor, or Rough Carpentry Contractor",
+        "gl_iso": "GL ISO 91551",
+        "description": "A communication and low voltage contractor installs, services, and maintains all types of communication and low voltage systems which are energy limited and do not exceed 91 volts. These systems include, but are not limited to telephone systems, sound systems, cable television systems, closed-circuit video systems, satellite dish antennas, instrumentation and temperature controls, and low voltage landscape lighting. Low voltage fire alarm systems are specifically not included in this section. (WC Classes may include 9516)."
+    },
+    {
+        "id": "6",
+        "tradename": "Concrete Contractor",
+        "gl_iso": "GL ISO 91560",
+        "description": "A concrete contractor forms, places falsework, shoring, pours, places, finishes and installs concrete, including foundation, pavement, flat and other concrete work. The concrete contractor may grade, excavate, and place steel reinforcing. (WC Classes may include 5213, 5221)."
+    },
+    {
+        "id": "7",
+        "tradename": "Driveway, Sidewalk, Flatwork",
+        "gl_iso": "GL ISO  9221",
+        "description": "Concrete flatwork, curbs, gutters, swales, mow strips, non-structural concrete work, asphalt paving, paver installation, parking lots, private roads & commercial or residential driveways or sidewalks, grading or excavation incidental to driveway and sidewalk, paving and repaving. (WC Classes may include 5221)."
+    },
+    {
+        "id": "8",
+        "tradename": "Drywall Contractor",
+        "gl_iso": "GL ISO 92338",
+        "description": "A drywall contractor lays out and installs gypsum wall board and gypsum wall board assemblies including nonstructural metal framing members and performs the taping and texturing operations including the application of compounds that adhere to wall board to produce a continuous smooth or textured surface. (WC Classes may include 5445)."
+    },
+    {
+        "id": "9",
+        "tradename": "Electrical Contractor",
+        "gl_iso": "GL ISO 92478",
+        "description": "An electrical contractor places, installs, erects, or connects any electrical wires, fixtures, appliances, apparatus, raceways, conduits, solar photovoltaic cells, or any part thereof, which generate, transmit, transform, or utilize electrical energy in any form or for any purpose. (WC Classes may include 5190)."
+    },
+    {
+        "id": "10",
+        "tradename": "Elevator Contractor",
+        "gl_iso": "GL ISO 92593",
+        "description": "An elevator contractor fabricates, erects, installs, and repairs elevators, escalators, including sheave beams, motors, sheaves, cable and wire rope, guides, cab, counterweights, doors (including sidewalk elevator doors), automatic and manual controls, signal systems, and all other devices and equipment associated with the safe and efficient installation and operation of electrical, hydraulic, and manually operated elevators (WC Classes may include 5160)."
+    },
+    {
+        "id": "11",
+        "tradename": "Grading Contractor",
+        "gl_iso": "GL ISO 95410",
+        "description": "Perform site preparation activities, such as grading, leveling, removal and decompaction of earth, of land excavating and grading, demolition of small structures in the site, land clearing, alteration of earth?s surface to control water drainage and soil erosion. (WC Classes may include 6217)."
+    },
+    {
+        "id": "12",
+        "tradename": "Fencing Contractor",
+        "gl_iso": "GL ISO 94276",
+        "description": "A fencing contractor constructs, erects, alters, or repairs all types of fences, gates, wooden or metal fence erection, mailbox, automated gate, flagpoles, incidental welding work if done at the job site, life safety or pool gates, may require special approval, excludes masonry walls. (WC Classes may include 6400)."
+    },
+    {
+        "id": "13",
+        "tradename": "Flooring and Floor Covering Contractors",
+        "gl_iso": "GL ISO 94569",
+        "description": "Floor Covering Installation, installation of carpeting, linoleum, laminate flooring, non-ceramic tile or any similar floor covering. The installation operation may involve removing the old floor covering, preparing the floor, measuring, cutting, and fitting the covering material to size then installing. Normally the baseboards are removed before and replaced after installation of the floor covering.  Does not include Wood Flooring Contractors (GL ISO  91341), and for Tile, Stone, Marble, Mosaic (GL ISO 99746). (WC Classes may include 5478)."
+    },
+    {
+        "id": "14",
+        "tradename": "Fire Protection Contractor",
+        "gl_iso": "GL ISO 94381",
+        "description": "A fire protection contractor lays out, Installation, Servicing or Repair all types of fire protection systems; including all the equipment associated with these systems, excluding electrical alarm systems, Automatic Sprinkler Installation. (WC Classes may include 5188)."
+    },
+    {
+        "id": "15",
+        "tradename": "Glazing Contractor",
+        "gl_iso": "GL ISO 13590",
+        "description": "A tradesman primarily engaged in sizing, cutting, and installing plates of glass or safety glazing materials in windows, doors or storefronts, mirrored glass, and glass substitute materials for glazing; executes the fabrication and glazing of frames, panels, sashes, and doors in residential and commercial buildings. (WC Classes may include 5462)."
+    },
+    {
+        "id": "16",
+        "tradename": "HVAC Contractor",
+        "gl_iso": "GL ISO 95647",
+        "description": "Installs, services and repairs heating, ventilation and air conditioning for residential and commercial buildings. (WC Class Code 5537)"
+    },
+    {
+        "id": "17",
+        "tradename": "Demolition Contractor",
+        "gl_iso": "GL ISO 99986",
+        "description": "Performs wrecking, demolition, moves the structure rises, lowers, cribs, underpins of residential, commercial, or industrial buildings. demolition contractor raises, lowers, cribs, underpins the structure. (WC 5057, 5022, 5403, 5213)."
+    },
+    {
+        "id": "18",
+        "tradename": "Asbestos Abatement Contractor",
+        "gl_iso": "GL ISO 95630",
+        "description": "Performs abatement, including containment, encapsulation, or removal, and disposal of asbestos containing construction materials, as defined in Section 6501.8 of the Labor Code, in and on buildings and structures. All work performed and all documentation prepared by an asbestos abatement contractor shall be done in accordance with regulations and requirements of the Division of Occupational Safety and Health (DOSH) of the Department of Industrial Relations. (WC Classes may include 5473)."
+    },
+    {
+        "id": "19",
+        "tradename": "Metal Erection - Decorative Artistic ",
+        "gl_iso": "GL ISO 97650",
+        "description": "assembles, casts, cuts, shapes, stamps, forges, welds, fabricates and installs, sheet, rolled and cast, brass, bronze, copper, cast iron, wrought iron, metal, stainless steel, steel, and/or any other metal for the architectural treatment and ornamental decoration of structures. This classification does not include the work of a sheet metal contractor. (WC Classes may include 5102)."
+    },
+    {
+        "id": "20",
+        "tradename": "Landscaping Contractor",
+        "gl_iso": "GL ISO 97047",
+        "description": "A landscape contractor, constructs, maintains, repairs, installs, or subcontracts the development of landscape systems and facilities for public and private gardens and other areas which are designed to aesthetically, architecturally, horticulturally, or functionally improve the grounds within or surrounding a structure or a tract or plot of land. In connection therewith, a landscape contractor prepares and grades plots and areas of land for the installation of any architectural, horticultural, and decorative treatment or arrangement. No tree removal (WC Classes may include 0042)."
+    },
+    {
+        "id": "21",
+        "tradename": "Locksmith",
+        "gl_iso": "GL ISO 14913",
+        "description": "evaluates, sets-up, installs, maintains and repairs all doors and door assemblies, gates, locks and locking devices, panic and fire rated exit devices, manual and automatic operated gate and door closures and releases, jail and prison locking devices and permanently installed or built-in safes and vaults. This classification includes but is not limited to master key systems, metal window guards, security doors, card activated and electronic access control systems for control equipment, motion and other types of detectors and computer systems for control and audit of control systems and other associated equipment. (WC Classes may include 8010)."
+    },
+    {
+        "id": "22",
+        "tradename": "Masonry Contractor",
+        "gl_iso": "GL ISO 97447",
+        "description": "Installs concrete units and baked clay products; concrete, glass, and clay block; natural and manufactured stone; terra cotta; and fire brick or other material for refractory work. This classification includes the fabrication and installation of masonry component units for structural load bearing and non-load bearing walls for structures and fences installed with or without mortar; ceramic veneer (not tile) and thin brick that resembles full brick for facing; paving; and clear waterproofing, cleaning, and caulking incidental to masonry construction. (WC Classes may include 5022)."
+    },
+    {
+        "id": "23",
+        "tradename": "Construction Zone Traffic Control Contractor",
+        "gl_iso": "GL ISO 99315",
+        "description": "A construction zone traffic control contractor prepares or removes lane closures, flagging, or traffic diversions, utilizing portable devices, such as cones, delineators, barricades, sign stands, flashing beacons, flashing arrow trailers, and changeable message signs, on roadways, including, but not limited to, public streets, highways, or any public conveyance. (WC Classes may include 5507)."
+    },
+    {
+        "id": "24",
+        "tradename": "Painting Contractor",
+        "gl_iso": "GL ISO 98305",
+        "description": "AKA; painting and decorating contractor prepares by scraping, sandblasting or other means and applies any of the following: paints, papers, textures, fabrics, pigments, oils, turpentines, driers, thinners, varnishes, shellacs, stains, fillers, waxes, adhesives, water and any other vehicles, mediums and materials which adhere by evaporation and may be mixed, used and applied to the surfaces of structures and the appurtenances thereto for purposes of decorating, protecting, fireproofing and waterproofing. (WC Classes; Painting Interior 5474 Painting exterior 91304)."
+    },
+    {
+        "id": "25",
+        "tradename": "Plastering Contractor",
+        "gl_iso": "GL ISO 98449",
+        "description": "Performs lathing and plastering contractor coats surfaces with a mixture of sand, gypsum plaster, quick-lime or hydrated lime and water, or sand and cement and water, or a combination of such other materials that create a permanent surface coating, including coatings for the purpose of soundproofing and fireproofing. These coatings are applied with a plasterer's trowel or sprayed over any surface which offers a mechanical means for the support of such coating and will adhere by suction. This contractor also installs lath (including metal studs) or any other material prepared or manufactured to provide a base or bond for such coating. (WC Classes may include 5480)."
+    },
+    {
+        "id": "26",
+        "tradename": "Plumbing Contractor",
+        "gl_iso": "GL ISO 91583",
+        "description": "A plumbing contractor provides a means for a supply of safe water, ample in volume and of suitable temperature for the purpose intended and the proper disposal of fluid waste from the premises in all structures and fixed works. This classification includes but is not limited to on-site waste disposal systems, Piping, storage tanks and venting for a safe and adequate supply of gases and liquids for any purpose, including vacuum, compressed air and gases for medical, dental, commercial and industrial uses, All gas appliances, flues and gas connections for all systems including suspended space heating units. This does not include forced warm air units, installation utility meter on property owners side meter, fixed works, water heaters, boilers, solar water heaters, solar equipment for this purpose, safety devices such as, but not limited to, gas earthquake valves, gas control valves, back flow preventers, water conditioning equipment and regulating valves. (WC Classes may include 5813)."
+    },
+    {
+        "id": "27",
+        "tradename": "Refrigeration Contractor",
+        "gl_iso": "GL ISO 98678",
+        "description": "AKA; Roofer, installs products and repairs surfaces that seal, waterproof and weatherproof structures. This work is performed to prevent water or its derivatives, compounds, or solids from penetrating such protection and gaining access to material or space beyond. In the course of this work, the contractor examines and/or prepares surfaces and uses the following material: asphalt, pitch, tar, felt, glass fabric, urethane foam, metal roofing systems, flax, shakes, shingles, roof tile, slate or any other roofing, waterproofing, weatherproofing or membrane material(s) or a combination thereof. (WC Classes may include 5551)."
+    },
+    {
+        "id": "28",
+        "tradename": "Sanitation System Contractor",
+        "gl_iso": "GL ISO 98806",
+        "description": "A sanitation system contractor, fabricates and installs cesspools, septic tanks, storm drains, and other sewage disposal and drain structures. This classification includes the laying of cast-iron, steel, concrete, vitreous and non-vitreous pipe, and any other hardware associated with these systems. (WC Classes may include 6229)."
+    },
+    {
+        "id": "29",
+        "tradename": "Sheet Metal Contractor",
+        "gl_iso": "GL ISO 98884",
+        "description": "A sheet metal contractor selects, cuts, shapes, fabricates, and installs sheet metal such as cornices, flashings, gutters, leaders, pans, kitchen equipment, duct work (including insulation, patented chimneys, metal flues, metal roofing systems and any other installations requiring sheet metal). (WC Classes may include 5534)."
+    },
+    {
+        "id": "30",
+        "tradename": "Sign Contractor",
+        "gl_iso": "GL ISO 98993",
+        "description": "A sign contractor fabricates, installs, and erects electrical signs, including the wiring of such electrical signs, and non-electrical signs, including but not limited to post or pole supported signs, signs attached to structures, painted wall signs, and modifications to existing signs. (WC Classes may include 9554)."
+    },
+    {
+        "id": "31",
+        "tradename": "Solar Contractor",
+        "gl_iso": "GL ISO 99080",
+        "description": "A solar contractor installs, modifies, maintains, and repairs thermal and photovoltaic solar energy systems. A licensee classified in this section shall not undertake or perform building or construction trades, crafts, or skills, except when required to install a thermal or photovoltaic solar energy system. (WC Classes may include 5537)."
+    },
+    {
+        "id": "32",
+        "tradename": "Manufactured Housing Contractor",
+        "gl_iso": "GL ISO 98502",
+        "description": "Manufactured housing contractor, provides the installation of the prefabricated building (excluding delivery and dropping), concrete slab, utility services mean the connection of gas, water, sewer, and electrical utilities to the home. (WC Classes may include 2799)."
+    },
+    {
+        "id": "33",
+        "tradename": "Reinforcing Steel Contractor",
+        "gl_iso": "GL ISO 91560",
+        "description": "A reinforcing steel contractor fabricates, places and ties steel mesh or steel reinforcing bars (rods), of any profile, perimeter, or cross-section, that are or may be used to reinforce concrete structures. (WC Classes may include 5213)."
+    },
+    {
+        "id": "34",
+        "tradename": "Structural Steel Contractor",
+        "gl_iso": "GL ISO 97655",
+        "description": "A structural steel contractor fabricates and erects structural steel shapes and plates, of any profile, perimeter, or cross-section, that are or may be used as structural members for buildings and structures, including the riveting, welding, rigging and metal roofing systems necessary to perform this work. (WC Classes may include 5057)."
+    },
+    {
+        "id": "35",
+        "tradename": "Swimming Pool Contractor",
+        "gl_iso": "GL ISO 99507",
+        "description": "A swimming pool contractor constructs swimming pools, spas or hot tubs, including installation of solar heating equipment using those trades or skills necessary for such construction. (WC Classes may include 5223)."
+    },
+    {
+        "id": "36",
+        "tradename": "Tile Contractor",
+        "gl_iso": "GL ISO 99746",
+        "description": "Installs, services and repairs ceramic tile, Stone, Marble, Mosaic, prepares surfaces as necessary and installs, ceramic, mosaic, quarry, paver, faience, glass mosaic and stone tiles; thin tile that resembles full brick, natural or simulated stone slabs for bathtubs, showers, and horizontal surfaces inside of buildings. (WC Classes may include 5348)."
+    },
+    {
+        "id": "37",
+        "tradename": "Water Conditioning Contractor",
+        "gl_iso": "GL ISO 99948",
+        "description": "A water conditioning contractor installs water conditioning equipment with the use of only such pipe and fittings as are necessary to connect the water conditioning equipment to the water supply system and to by-pass all those parts of the water supply system within the premises from which conditioned water. (WC Classes may include 5183)."
+    },
+    {
+        "id": "38",
+        "tradename": "Well Drilling Contractor",
+        "gl_iso": "GL ISO 92102",
+        "description": "AKA; Drilling Water installs and repairs water wells and pumps by boring, drilling, excavating, casing, cementing, and cleaning to provide a supply of uncontaminated water. (WC Classes may include 6204)."
+    },
+    {
+        "id": "39",
+        "tradename": "Welding Contractor",
+        "gl_iso": "GL ISO 99969",
+        "description": "AKA; Welding or Cutting causes metals to become permanently attached, joined, and fabricated by the use of gases and electrical energy, which creates temperatures of sufficient heat to perform this work. (WC Classes may include 3365)."
+    },
+    {
+        "id": "40",
+        "tradename": "Debris Removal ",
+        "gl_iso": "GL ISO 91629",
+        "description": "AKA; Debris Removal Construction Site, engaged in the removal of debris in connection with construction or erection projects performed by another contractor. (WC Classes may include 5610)."
+    },
+    {
+        "id": "41",
+        "tradename": "Doors and Window Contractor",
+        "gl_iso": "GL ISO 91746",
+        "description": "AKA; Door, Window, or Assembled Millwork--Installation?Metal the Installation, service and repair of doors, window, garage doors, assembled Millwork Installation (Metal) (WC Classes may include 5102)."
+    },
+    {
+        "id": "42",
+        "tradename": "Handyman Contractors",
+        "gl_iso": "GL ISO 95625",
+        "description": "Primarily works on minor carpentry, repairs to residential and commercial buildings. (WC Classes may include 5534)."
+    },
+    {
+        "id": "43",
+        "tradename": "Siding and Decking Contractors",
+        "gl_iso": "GL ISO 98967",
+        "description": "Installation, service and repair of Siding, decking, Soffit, eaves, fascia, decorative shutter work, gutter cleaning. Gutter cleaning, wood, aluminum, or vinyl siding. (WC Classes may include 5645)."
+    },
+    {
+        "id": "44",
+        "tradename": "Tree Trim and Removal",
+        "gl_iso": "GL ISO 99777",
+        "description": "Contractors performing tree pruning, dusting, spraying, repairing, trimming, removal, stump grinding fertilizers, pesticides, fungicides, and the care of damaged or diseased trees. Arborist is required. (WC Classes may include 0106)."
+    },
+    {
+        "id": "45",
+        "tradename": "Wood Flooring Contractors",
+        "gl_iso": "GL ISO 91341",
+        "description": "AKA; Carpentry Interior the installation of wood or imitation wood flooring including the placement or preparation of the subfloor, placement of vapor barrier and base trim. (WC Classes may include 5437)."
+    },
+    {
+        "id": "46",
+        "tradename": "Appliances and Accessories Commercial",
+        "gl_iso": "GL ISO 91150",
+        "description": "Includes the installation, servicing or repair of commercial appliance and accessories. Restroom accessories, restroom stalls, stoves, washers, dryers, central vacuum systems, mixers, etc. (WC Classes may include 9519)."
+    },
+    {
+        "id": "47",
+        "tradename": "Appliances and Accessories Residential",
+        "gl_iso": "GL ISO 91155",
+        "description": "Includes the installation, servicing or repair of residential household appliance and accessories. (WC Classes may include 9519)."
+    },
+    {
+        "id": "48",
+        "tradename": "Chimney Cleaning",
+        "gl_iso": "GL ISO 91481",
+        "description": "Chimney Cleaning, the removal of soot and debris, no repair to chimney and flues. (WC Classes may include 9014)."
+    },
+    {
+        "id": "49",
+        "tradename": "Pressure Washing",
+        "gl_iso": "GL ISO 91523",
+        "description": "AKA; Cleaning Building Exteriors, or Cleaning Outside Surfaces of Buildings & Other Exterior Surfaces, decks, driveways, awnings, gutters, entrance ways and sidewalks.  (WC Classes may include 5213)."
+    },
+    {
+        "id": "50",
+        "tradename": "Carpet Cleaning and Upholstery Cleaning",
+        "gl_iso": "GL ISO 91405",
+        "description": "Includes the cleaning of carpet, upholstery, furniture and rug or carpet dyeing, on the customers premises. (WC Classes may include 2585)."
+    },
+    {
+        "id": "51",
+        "tradename": "Interior Decorator",
+        "gl_iso": "GL ISO 96611",
+        "description": "AKA; Interior Designer, - Interior Decorators, provide interior design service that include the selection interior surfaces, installation of furniture, wall, floor, and ceiling finishes for commercial and residential buildings. (WC Classes may include 9521)."
+    },
+    {
+        "id": "52",
+        "tradename": "Janitorial Services",
+        "gl_iso": "GL ISO 96816",
+        "description": "Primarily engaged in cleaning and maintenance services, window cleaning, janitorial service, floor waxing, residential or commercial buildings. (WC Classes may include 0913)."
+    },
+    {
+        "id": "53",
+        "tradename": "Lawn Care Services",
+        "gl_iso": "GL ISO 97050",
+        "description": "AKA; Lawn Care Services, or lawn maintenance, or mow and blow service, work includes the maintenance of lawns, small plant trimmings, debris removal and use of use of round up spray acceptable, and other fertilizers. (WC Classes may include 9102)."
+    },
+    {
+        "id": "54",
+        "tradename": "Window Cleaning",
+        "gl_iso": "GL ISO 99975",
+        "description": "The cleaning of residential and commercial window, and the use of power washer in the process.  (WC Classes may include 9170)."
+    },
+    {
+        "id": "55",
+        "tradename": "Communication Equipment Installation",
+        "gl_iso": "GL ISO 91551",
+        "description": "Communication Equipment Installation, wiring, cables & circuits for telephone and communications equipment, low voltage, security alarm systems. (WC Classes may include 9516)."
+    },
+    {
+        "id": "56",
+        "tradename": "Decorative Metal",
+        "gl_iso": "GL ISO 97650",
+        "description": "AKA; Metal Erection--Decorative or Artistic is primarily engaged in manufacturing architectural, ornamental metal work, non-structural, such as, grilles, and fences and gates. Life safety metal work such as stairs and staircases, open steel flooring (grating), fire escapes, railings may be considered structural by insurance carriers. (WC Classes may include 5102)."
+    },
+    {
+        "id": "57",
+        "tradename": "Paperhanging or Paperhanger",
+        "gl_iso": "GL ISO 98344",
+        "description": "Including surface preparation, covering walls and ceilings with wallpaper, fabric, vinyl or other wall coverings in residential and commercial buildings. (WC Classes may include 5491)."
+    },
+    {
+        "id": "58",
+        "tradename": "Septic Tank Systems",
+        "gl_iso": "GL ISO 98806",
+        "description": "Installation, service, repair and cleaning, contractor responsible to verify utility?s location before digging. (WC Classes may include 6229)."
+    },
+    {
+        "id": "59",
+        "tradename": "Sewer Contractor",
+        "gl_iso": "GL ISO 98820",
+        "description": "AKA; Sewer Mains or Connections Construction is the construction, installation, connection, or repair of sewer mains.  contractor responsible to verify utility?s location before digging. (WC Classes may include 6306)."
+    },
+    {
+        "id": "60",
+        "tradename": "Water Mains",
+        "gl_iso": "GL ISO 99946",
+        "description": "AKA; Water Mains or Connections Construction, is the construction, installation, connection, or repair of water mains. contractor responsible to verify utility?s location before digging. (WC Classes may include 6319)."
+    }
+]

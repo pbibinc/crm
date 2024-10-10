@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(WebsiteOriginatedSeeder::class);
         // $this->call(InsurerSeeder::class);
         // $this->call(FinanceCompanySeeder::class);
-        $this->call(LeadUserProfileSeeder::class);
+        // $this->call(LeadUserProfileSeeder::class);
+        $this->call(CalculatorTradesSeeder::class);
     }
 }

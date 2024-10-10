@@ -31,4 +31,12 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'airslate' => [
+        'baseUrl' => env('AIRSLATE_API_BASE_URL'),
+        'mockStorageUrl' => env('AIRSLATE_API_BASE_URL_MOCK_STORAGE'),
+        'mockDocumentUrl' => env('AIRSLATE_API_BASE_URL_MOCK_DOCUMENT'),
+        'mockTemplateUrl' => env('AIRSLATE_API_BASE_URL_MOCK_TEMPLATES'),
+        'mockPdfToolsUrl' => env('AIRSLATE_API_BASE_URL_MOCK_PDFTOOLS'),
+    ],
+
 ];

@@ -1,97 +1,103 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Models\PricingBreakdown;
+use Faker\Provider\ar_EG\Payment;
+use App\Models\FinancingAgreement;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HrController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\SICController;
+use App\Models\CancellationEndorsement;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Models\CancelledPolicyForRecall;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\API\LeadDetailController;
-use App\Http\Controllers\AppointedController;
+use App\Http\Controllers\BoundController;
+use App\Http\Controllers\EmailController;
+use App\Http\Controllers\NotesController;
+use App\Http\Controllers\IntentController;
+use App\Http\Controllers\QuotedController;
+use App\Http\Controllers\UploadController;
+use App\Http\Controllers\BindingController;
+use App\Http\Controllers\InsurerController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RenewalController;
+use App\Http\Controllers\WebsiteController;
 use App\Http\Controllers\BirthdayController;
+use App\Http\Controllers\CallBackController;
+use App\Http\Controllers\PoliciesController;
 use App\Http\Controllers\PositionController;
+use App\Http\Controllers\AppointedController;
 use App\Http\Controllers\Demo\DemoController;
+use App\Http\Controllers\FinancingController;
 use App\Http\Controllers\HelloSignController;
+use App\Http\Controllers\QuotationController;
+use App\Http\Controllers\AssignLeadController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ClasscodesController;
-use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\DispositionController;
-use App\Http\Controllers\UserProfileController;
-use App\Http\Controllers\GeneralInformationController;
-use App\Http\Controllers\AssignLeadController;
-use App\Http\Controllers\AppTakerLeadsController;
-use App\Http\Controllers\AssignAgentToBrokerController;
-use App\Http\Controllers\AssignAppointedLeadController;
-use App\Http\Controllers\AssignForRewritePolicyController;
-use App\Http\Controllers\AssignQuotedRenewalPolicyController;
-use App\Http\Controllers\AuditInformationController;
-use App\Http\Controllers\AuditRequiredFileController;
-use App\Http\Controllers\BindingController;
-use App\Http\Controllers\BindingDocsController;
-use App\Http\Controllers\BoundController;
-use App\Http\Controllers\BrokerAssistantController;
-use App\Http\Controllers\BrokerHandleController;
-use App\Http\Controllers\BuildersRiskPolicyDetailsController;
-use App\Http\Controllers\BussinessOwnersPolicyDetailsController;
-use App\Http\Controllers\CallBackController;
-use App\Http\Controllers\CancellationController;
-use App\Http\Controllers\CancellationEndorsementController;
-use App\Http\Controllers\CancellationReportController;
-use App\Http\Controllers\CancelledPolicyController;
-use App\Http\Controllers\CancelledPolicyForRecall as ControllersCancelledPolicyForRecall;
-use App\Http\Controllers\CancelledPolicyForRecallController;
-use App\Http\Controllers\CommercialAutoPolicyController;
-use App\Http\Controllers\DepartmentListController;
-use App\Http\Controllers\DashboardControllerNew;
-use App\Http\Controllers\TecnickcomPdfController;
-use App\Http\Controllers\CompanyHandbookController;
 use App\Http\Controllers\ComplianceController;
-use App\Http\Controllers\EmailController;
-use App\Http\Controllers\EmbeddedSignatureController;
-use App\Http\Controllers\ExcessLiabilityInsurancePolicyController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\MarketListController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\AirSlatePDFController;
+use App\Http\Controllers\BindingDocsController;
+use App\Http\Controllers\DispositionController;
+use App\Http\Controllers\ScrubbedDncController;
+use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\BrokerHandleController;
+use App\Http\Controllers\CancellationController;
+use App\Http\Controllers\DashboardControllerNew;
+use App\Http\Controllers\RenewalQuoteController;
+use App\Http\Controllers\AppTakerLeadsController;
+use App\Http\Controllers\QuoteFormInfoController;
+use App\Http\Controllers\RenewalPolicyController;
+use App\Http\Controllers\RewritePolicyController;
+use App\Http\Controllers\SelectedQuoteController;
+use App\Http\Controllers\TecnickcomPdfController;
+use App\Http\Controllers\API\LeadDetailController;
+use App\Http\Controllers\DepartmentListController;
+use App\Http\Controllers\PaymentChargedController;
+use App\Http\Controllers\RewriteBindingController;
+use App\Http\Controllers\BrokerAssistantController;
+use App\Http\Controllers\CancelledPolicyController;
+use App\Http\Controllers\CompanyHandbookController;
+use App\Http\Controllers\AuditInformationController;
 use App\Http\Controllers\FinanceAgreementPolicyList;
 use App\Http\Controllers\FinancingCompanyController;
-use App\Http\Controllers\FinancingController;
-use App\Http\Controllers\ForRewriteMakePaymentController;
-use App\Http\Controllers\ForRewriteQuotationController;
-use App\Http\Controllers\InsurerController;
-use App\Http\Controllers\IntentController;
-use App\Http\Controllers\MarketingTemplateController;
-use App\Http\Controllers\MarketListController;
-use App\Http\Controllers\MessageController;
-use App\Http\Controllers\NonCallBackDispositionController;
-use App\Http\Controllers\NotesController;
-use App\Http\Controllers\PaymentChargedController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\PoliciesController;
 use App\Http\Controllers\PolicyForRenewalController;
 use App\Http\Controllers\PricingBreakdownController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\QuotationController;
-use App\Http\Controllers\QuotationProductCallbackController;
-use App\Http\Controllers\QuotedController;
-use App\Http\Controllers\RenewalController;
-use App\Http\Controllers\RenewalPolicyController;
-use App\Http\Controllers\RenewalQuoteController;
-use App\Http\Controllers\RequestForCancellationController;
-use App\Http\Controllers\RewriteBindingController;
-use App\Http\Controllers\RewritePolicyController;
-use App\Http\Controllers\ScrubbedDncController;
-use App\Http\Controllers\SelectedQuoteController;
-use App\Http\Controllers\ToolsEquipmentPolicyController;
-use App\Http\Controllers\UploadController;
-use App\Http\Controllers\WebsiteController;
+use App\Http\Controllers\AuditRequiredFileController;
+use App\Http\Controllers\EmbeddedSignatureController;
+use App\Http\Controllers\MarketingTemplateController;
 use App\Http\Controllers\WorkersCompPolicyController;
-use App\Models\CancellationEndorsement;
-use App\Models\CancelledPolicyForRecall;
-use App\Models\FinancingAgreement;
-use App\Models\PricingBreakdown;
-use Faker\Provider\ar_EG\Payment;
-use Illuminate\Support\Facades\App;
+use App\Http\Controllers\CancellationReportController;
+use App\Http\Controllers\GeneralInformationController;
+use App\Http\Controllers\PdfFillerUserFilesController;
+use App\Http\Controllers\AssignAgentToBrokerController;
+use App\Http\Controllers\AssignAppointedLeadController;
+use App\Http\Controllers\ForRewriteQuotationController;
+use App\Http\Controllers\InsuranceSurveyInfoController;
+use App\Http\Controllers\CommercialAutoPolicyController;
+use App\Http\Controllers\ToolsEquipmentPolicyController;
+use App\Http\Controllers\ForRewriteMakePaymentController;
+use App\Http\Controllers\AssignForRewritePolicyController;
+use App\Http\Controllers\NonCallBackDispositionController;
+use App\Http\Controllers\PdfFillerTemplateFilesController;
+use App\Http\Controllers\RequestForCancellationController;
+use App\Http\Controllers\CancellationEndorsementController;
+use App\Http\Controllers\CancelledPolicyForRecallController;
+use App\Http\Controllers\QuotationProductCallbackController;
+use App\Http\Controllers\AssignQuotedRenewalPolicyController;
+use App\Http\Controllers\BuildersRiskPolicyDetailsController;
+use App\Http\Controllers\BussinessOwnersPolicyDetailsController;
+use App\Http\Controllers\ExcessLiabilityInsurancePolicyController;
+use App\Http\Controllers\CancelledPolicyForRecall as ControllersCancelledPolicyForRecall;
+use App\Http\Controllers\ZeroBounceController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -136,6 +142,32 @@ Route::middleware(['auth'])->group(function (){
 
      //route for dashboard report
      Route::get('/dashboard-report', [DashboardControllerNew::class, 'dashBoardReport'])->name('dashboard-report');
+    });
+
+    // Tools
+    // PDF Tools (AirSlate)
+    Route::prefix('pdf-tools')->group(function () {
+        Route::get('/pdf-editor', [AirSlatePDFController::class, 'pdfEditorIndex'])->name('pdf-editor.index');
+        Route::get('/pdf-fetch-lists', [AirSlatePDFController::class, 'pdfEditorFetch'])->name('pdf-file.fetch');
+        Route::get('/pdf-download', [AirSlatePDFController::class, 'pdfEditorDownload'])->name('pdf-file.download');
+        Route::post('/pdf-store', [AirSlatePDFController::class, 'pdfEditorStore'])->name('pdf-file.store');
+        Route::delete('/pdf-delete', [AirSlatePDFController::class, 'pdfEditorDelete'])->name('pdf-file.delete');
+
+        Route::get('/ocr-pdf', [AirSlatePDFController::class, 'ocrPDFIndex'])->name('ocr-pdf.index');
+        Route::post('/ocr-pdf-store', [AirSlatePDFController::class, 'ocrPdfStore'])->name('ocr-pdf.store');
+
+        Route::post('/upload-document-to-template', [AirSlatePDFController::class, 'pdfUploadDocToTemplate'])->name('pdf-upload.doc-to-template');
+
+        Route::get('/pdf-workflow', [AirslatePDFController::class, 'pdfWorkflowIndex'])->name('pdf-workflow.index');
+    });
+
+    // Email Tools (ZeroBounce)
+    Route::prefix('email-tools')->group(function () {
+        Route::get('/zerobounce-credit-balance', [ZeroBounceController::class, 'countRemainingBalance'])->name('zerobounce-credit-balance');
+        Route::get('/email-validator', [ZeroBounceController::class, 'singleEmailValidatorIndex'])->name('single-email-validator.index');
+        Route::post('/email-validation-process', [ZeroBounceController::class, 'singleEmailValidatorCheck'])->name('single-email-validator.process');
+        Route::get('/batch-email-validator', [ZeroBounceController::class, 'batchEmailValidatorIndex'])->name('batch-email-validator.index');
+        Route::post('/batch-email-validation-process', [ZeroBounceController::class, 'batchEmailValidatorCheck'])->name('batch-email-validator.process');
     });
 
     //accounting module
@@ -511,8 +543,6 @@ Route::middleware(['auth'])->group(function (){
                 Route::post('/renewal/get-quoted-renewal', [RenewalQuoteController::class, 'getQuotedRenewal'])->name('renewal.get-quoted-renewal');
                 Route::post('/renewal-handled-policy', [RenewalQuoteController::class, 'renewalHandledPolicy'])->name('renewal-handled-policy');
                 Route::post('/renewal-quote/edit-renewal-quote', [RenewalQuoteController::class, 'editRenewalQuote'])->name('renewal-quote.edit-renewal-quote');
-
-
             });
 
             //route for audit
@@ -521,6 +551,15 @@ Route::middleware(['auth'])->group(function (){
                 Route::post('/get-audit-information-table', [AuditInformationController::class, 'getAuditInformationTable'])->name('get-audit-information-table');
                 Route::resource('/required-audit-file', AuditRequiredFileController::class);
             });
+
+            // Online Forms
+            // Quote Form
+            Route::post('/quote-form-list', [QuoteFormInfoController::class, 'quoteFormTable'])->name('quote-form-list');
+            Route::resource('quotation-form', QuoteFormInfoController::class);
+            // Insurance Needs Survey Form
+            Route::post('/insurance-needs-survey-form-list', [InsuranceSurveyInfoController::class, 'insuranceNeedsInfoTable'])->name('insurance-needs-survey-form-list');
+            Route::resource('insurance-needs-survey-form', InsuranceSurveyInfoController::class);
+            Route::get('/download-report/{id}', [InsuranceSurveyInfoController::class, 'downloadReport'])->name('insurance-needs-report');
 
         });
 

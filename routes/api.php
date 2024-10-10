@@ -13,12 +13,15 @@ use App\Http\Controllers\API\LeadDetailController;
 use App\Http\Controllers\API\RecreationalController;
 use App\Http\Controllers\API\StateAddressController;
 use App\Http\Controllers\API\GeneralLiabilitiesDataController;
+use App\Http\Controllers\API\PdfController;
 use App\Http\Controllers\API\PoliciesController as APIPoliciesController;
 use App\Http\Controllers\API\PoliciesDataController;
+use App\Http\Controllers\API\QuoteFormController;
 use App\Http\Controllers\API\ToolsEquipmentController;
 use App\Http\Controllers\API\WorkersCompDataController;
 use App\Http\Controllers\AppTakerLeadsController;
 use App\Http\Controllers\CallBackController;
+use App\Http\Controllers\InsuranceSurveyInfoController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\PoliciesController;
 use App\Http\Controllers\UserController;
@@ -124,3 +127,21 @@ Route::get('get-sample-data', [PoliciesDataController::class, 'getSampleData'])-
 Route::get('get-company', [CustomerServiceController::class, 'getCompany'])->withoutMiddleware(['auth:sanctum']);
 Route::get('get-user-list', [CustomerServiceController::class, 'getUserList'])->withoutMiddleware(['auth:sanctum']);
 Route::post('main-line-customer-service', [CustomerServiceController::class, 'mainLineCustomerService'])->withoutMiddleware(['auth:sanctum']);
+
+// Get a quote form API
+Route::post('store-quoteform-data', [QuoteFormController::class, 'storeData'])->withoutMiddleware(['auth:sanctum']);
+
+// Insurance needs survey form API
+Route::post('store-insurance-needs-survey-form-data', [InsuranceSurveyInfoController::class, 'store'])->withoutMiddleware(['auth:sanctum']);
+
+// Airslate Pdf API
+Route::post('pdf-connect-to-storage', [PdfController::class, 'connectToStorage'])->withoutMiddleware(['auth:sanctum']);
+Route::post('pdf-create-new-storage', [PdfController::class, 'createStorage'])->withoutMiddleware(['auth:sanctum']);
+Route::get('pdf-storage-list', [PdfController::class, 'getListOfStorages'])->withoutMiddleware(['auth:sanctum']);
+Route::get('pdf-get-storage-providers', [PdfController::class, 'listOfStorageProviders'])->withoutMiddleware(['auth:sanctum']);
+Route::get('pdf-get-document-lists', [PdfController::class, 'getDocumentLists'])->name('get-document-lists')->withoutMiddleware(['auth:sanctum']);
+Route::post('pdf-upload-document-to-storage', [PdfController::class, 'uploadDocumentToStorage'])->name('upload-pdf-document')->withoutMiddleware(['auth:sanctum']);
+Route::post('pdf-create-document-link', [PdfController::class, 'createDocumentLink'])->name('create-pdf-link')->withoutMiddleware(['auth:sanctum']);
+Route::post('pdf-webhook-callback-uri', [PdfController::class, 'handleWebhook'])->withoutMiddleware(['auth:sanctum']);
+Route::get('pdf-document-redirection-uri', [PdfController::class, 'handleRedirect'])->withoutMiddleware(['auth:sanctum']);
+Route::post('ocr-pdf', [PdfController::class, 'extractDataFromPdf'])->withoutMiddleware(['auth:sanctum']);

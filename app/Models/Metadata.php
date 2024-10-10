@@ -45,4 +45,15 @@ class Metadata extends Model
     {
         return $this->belongsToMany(AuditInformation::class, 'audit_required_file', 'media_id', 'audit_information_id');
     }
+
+    // PDF User Files
+    public function pdfUserFiles()
+    {
+        return $this->belongsToMany(Metadata::class, 'pdffiller_users_files_table', 'media_id', 'user_profile_id');
+    }
+
+    // PDF Template Files
+    public function pdfTemplateFiles() {
+        return $this->hasOne(Metadata::class, 'media_id');
+    }
 }

@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('send:email')->everyMinute();
+        $schedule->command('airslate:refresh-token')->everyTwoDays();
     }
     /**
      * Register the commands for the application.
