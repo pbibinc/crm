@@ -207,6 +207,7 @@
                     }
                 }
             });
+
             $('#callBackToday').DataTable({
                 processing: true,
                 serverSide: true,
@@ -323,6 +324,7 @@
                     };
                 });
             });
+
             $('#callbackDispoSubmitButton').on('click', function(e) {
                 e.preventDefault();
                 var callBackRemarks = $('#callBackRemarks').val();

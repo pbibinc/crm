@@ -23,14 +23,13 @@
                                 <option value="Direct Renewals">Direct Renewals</option>
                             </select>
                         </div>
-                        <div class="col-6">
-                            <label for="insuranceCompliance">Insurance Compliance By:</label>
+                        <div class="col-6" id="insuranceComplianceByDiv">
+                            <label for="insuranceCompliance">Broker:</label>
                             <select name="insuranceCompliance" id="insuranceCompliance" class="form-control">
-                                <option value="">Select Compliance Officer</option>
+                                <option value="">Select Broker</option>
                                 @foreach ($complianceOfficer as $officer)
                                     <option value="{{ $officer->fullName() }}">{{ $officer->fullName() }}</option>
                                 @endforeach
-
                             </select>
                         </div>
                     </div>
@@ -65,7 +64,7 @@
                             <input type="text" class="form-control" id="emailAddress" name="emailAddress" required>
                         </div>
                     </div>
-                    <div class="row mb-5">
+                    <div class="row mb-5" id="effectiveDateDiv">
                         <div class="col-6">
                             <label for="effectiveDate">Effective Date</label>
                             <input type="date" class="form-control" id="makePaymentEffectiveDate"
@@ -74,7 +73,7 @@
 
                     </div>
                     <div class="row mb-3">
-                        <div class="col-6">
+                        <div class="col-6" id="paymentTermDiv">
                             <label for="paymentTerm">Payment Term</label>
                             <select name="paymentTerm" id="paymentTerm" class="form-control">
                                 <option value="">Select Payment Method</option>
@@ -119,12 +118,12 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-6">
+                        <div class="col-6" id="totaltPremiumDiv">
                             <label for="totalPremium">Total Premium</label>
                             <input type="text" class="form-control" id="totalPremium" name="totalPremium"
                                 disabled>
                         </div>
-                        <div class="col-6">
+                        <div class="col-6" id="brokerFeeDiv">
                             <label for="brokerFeeAmount">Broker Fee</label>
                             <input type="text" class="form-control" id="brokerFeeAmount" name="brokerFeeAmount"
                                 disabled>
@@ -153,6 +152,7 @@
                     <input type="hidden" name="quotationProductId" id="quotationProductId">
                     <input type="hidden" name="selectedQuoteId" id="selectedQuoteId">
                     <input type="hidden" name="policyDetailId" id="policyDetailId">
+                    <input type="hidden" name="paymentInformationAction" id="paymentInformationAction">
             </div>
             <div class="modal-footer">
                 <input type="submit" name="savePaymentInformation" id="savePaymentInformation"
@@ -165,6 +165,63 @@
 </div>
 <script>
     $(document).ready(function() {
+        $('#paymentType').on('change', function() {
+            var paymentType = $(this).val();
+
+            // Use the correct variable `paymentType` inside the condition
+            if (paymentType == 'Monthly Payment' || paymentType == 'Audit') {
+                $('#totaltPremiumDiv').attr('hidden', true);
+                $('#brokerFeeDiv').attr('hidden', true);
+                $('#paymentTermDiv').attr('hidden', true);
+                $('#effectiveDateDiv').attr('hidden', true);
+                $('#insuranceComplianceByDiv').attr('hidden', true);
+                $('#insuranceCompliance').attr('required', false);
+                $('#paymentTerm').attr('required', false);
+                $('#makePaymentEffectiveDate').attr('required', false);
+                $('#totalPremium').val('required', false);
+                $('#brokerFeeAmount').val('required', false);
+                $('#insuranceCompliance').val('');
+                $('#paymentTerm').val('');
+            } else {
+                $('#totaltPremiumDiv').attr('hidden', false);
+                $('#brokerFeeDiv').attr('hidden', false);
+                $('#paymentTermDiv').attr('hidden', false);
+                $('#effectiveDateDiv').attr('hidden', false);
+                $('#insuranceComplianceByDiv').attr('hidden', false);
+            }
+        });
+
+        $('#selectedQuoteDropdown').on('change', function() {
+            var id = $(this).val();
+            $.ajax({
+                type: "GET",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "{{ route('selected-quote.edit', ':id') }}".replace(':id', id),
+                data: {
+                    id: id
+                },
+                success: function(response) {
+                    console.log(response);
+                    $('#quotationProductId').val(response.quotationProductId);
+                    $('#selectedQuoteId').val(response.data.id);
+                    $('#market').val(response.market.name);
+                    $('#quoteNumber').val(response.data.quote_no);
+                    $('#quoteComparisonId').val(response.data.id);
+
+                    $('#paymentTerm').val('PIF');
+                },
+                error: function(jqXHR, xhr, status, error) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Something Went Wrong',
+                        icon: 'error'
+                    });
+                }
+            });
+        });
+
         $('#cardType').on('change', function() {
             if ($(this).val() == 'Other') {
                 $('#otherCardLabel').attr('hidden', false);
@@ -189,6 +246,7 @@
 
         $('#makePaymentForm').on('submit', function(e) {
             e.preventDefault();
+
             var button = $('#savePaymentInformation');
             var status = $('#statusInput').val();
             var productId = $('#quotationProductId').val();
@@ -224,7 +282,9 @@
                                 }).then(function() {
                                     $('#makePaymentModal').modal(
                                         'hide');
-                                    location.reload();
+                                    $('#accountingTable').DataTable()
+                                        .ajax.reload();
+                                    // location.reload();
                                 });
                             },
                             error: function(jqXHR, xhr, status, error) {
@@ -260,6 +320,14 @@
 
             })
         });
+
+        $('#makePaymentModal').on('hide-bs-modal', function() {
+            $('#makePaymentForm').trigger('reset');
+        });
+
+        // $('#savePaymentInformation').on('click', function() {
+        //     console.log('clicked');
+        // });
 
     });
 </script>

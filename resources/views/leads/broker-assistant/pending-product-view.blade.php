@@ -4,9 +4,8 @@
         <thead class="" style="background-color: #f0f0f0;">
             <th>Company Name</th>
             <th>Product</th>
-            <th>Quoted By</th>
-            <th>Appointed By</th>
             <th>Broker</th>
+            <th>Status</th>
             <th></th>
         </thead>
         <tbody>
@@ -33,16 +32,12 @@
                     name: 'product'
                 },
                 {
-                    data: 'quotedBy',
-                    name: 'quotedBy'
-                },
-                {
-                    data: 'appointedBy',
-                    name: 'appointedBy'
-                },
-                {
                     data: 'broker',
                     name: 'broker'
+                },
+                {
+                    data: 'brokerStatus',
+                    name: 'brokerStatus'
                 },
                 {
                     data: 'action',
@@ -56,7 +51,7 @@
             var id = $(this).attr('id');
             Swal.fire({
                 title: 'Are you sure?',
-                text: "You want to change the status to 'Bound'?",
+                text: "Process This Quotation?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -115,52 +110,6 @@
                 }
             })
         });
-
-        $(document).on('click', '.processButton', function(e) {
-            var id = $(this).attr('id');
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You want to change the status to 'Bound'?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: "{{ route('change-quotation-status') }}",
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                                'content')
-                        },
-                        method: "POST",
-                        data: {
-                            id: id,
-                            status: 3,
-                        },
-                        success: function() {
-                            Swal.fire({
-                                title: 'Success',
-                                text: 'has been saved',
-                                icon: 'success'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    location.reload();
-                                }
-                            });
-                        },
-                        error: function() {
-                            Swal.fire({
-                                title: 'Error',
-                                text: 'Something went wrong',
-                                icon: 'error'
-                            });
-                        }
-                    })
-                }
-            });
-        })
 
     });
 </script>

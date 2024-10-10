@@ -32,7 +32,8 @@ class AssignAppointedLeadController extends Controller
         $lead = new Lead();
         $quoteLead = new QuoteLead();
         $appointedLeads = $lead->getAppointedLeads();
-        $appointedProducts =  $quoteLead->getAppointedProductByLeads($appointedLeads);
+        $requestForQuoteProduct = QuotationProduct::where('status', 29)->count( );
+        $appointedProducts =  $quoteLead->requestForQuoteAppointedProductByLeads($appointedLeads);
         $appointedLeadCount = $appointedLeads->count();
         $quotationProduct = new QuotationProduct();
         // $appointedProducts = $quotationProduct->appointedProduct();
@@ -87,8 +88,9 @@ class AssignAppointedLeadController extends Controller
         //            ->rawColumns(['products', 'checkbox'])
         //            ->make(true);
         // }
-        return view('leads.quotation_leads.assign-appointed-leads', compact('quoters', 'userProfiles', 'appointedLeadCount', 'qoutingCount', 'groupedProducts', 'appointedProducts'));
+        return view('leads.quotation_leads.assign-appointed-leads', compact('quoters', 'userProfiles', 'appointedLeadCount', 'qoutingCount', 'groupedProducts', 'appointedProducts', 'requestForQuoteProduct'));
     }
+
     public function assignAppointedLead(Request $request)
     {
         try{
@@ -204,6 +206,48 @@ class AssignAppointedLeadController extends Controller
             DB::rollBack();
             Log::info("Error for Redeploying", [$e->getMessage()]);
             return response()->json(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function requestToQuote(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $data = $request->all();
+            $products = $data['productId'];
+
+            if (is_array($products)) {
+                foreach ($products as $product) {
+                    $QuotationProduct = QuotationProduct::find($product);
+                    if ($QuotationProduct) {
+                        $QuotationProduct->status = 29;
+                        $QuotationProduct->save();
+                    } else {
+                        Log::info("QuotationProduct not found for product ID: " . $product);
+                        return response()->json(['error' => 'QuotationProduct not found for product ID: ' . $product], 404);
+                    }
+                }
+            } else {
+                $QuotationProduct = QuotationProduct::find($products);
+                if ($QuotationProduct) {
+                    $QuotationProduct->status = 29;
+                    $QuotationProduct->save();
+                } else {
+                    Log::info("QuotationProduct not found for product ID: " . $products);
+                    return response()->json(['error' => 'QuotationProduct not found for product ID: ' . $products], 404);
+                }
+            }
+
+            DB::commit();
+            return response()->json(['success' => 'Quote request processed successfully']);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::info("Error for Requesting to Quote", [$e->getMessage()]);
+            return response()->json([
+                'error' => 'An error occurred while requesting to quote.',
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 }

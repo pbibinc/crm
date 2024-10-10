@@ -32,7 +32,7 @@ class CancelledPolicyForRecall extends Model
 
     public function PolicyForRecallFirstTouched()
     {
-       $data = $this->where('number_of_touches', 1)->where('status', 'pending')->where('date_to_call', '>=', now());
+       $data = $this->where('number_of_touches', 1)->where('status', 'pending')->where('date_to_call', '<=', now());
        return $data ? $data->get() : null;
     }
 

@@ -109,7 +109,6 @@
                                                 <label class="form-label">Time Zone</label>
                                                 <select name="timezone" id="timezoneDropdown" class="form-control select2">
                                                     <option value="">Select a timezone</option>
-                                                    <option value="">ALL</option>
                                                     @foreach ($timezones as $timezone => $identifier)
                                                         <option value="{{ $timezone }}">{{ $timezone }}</option>
                                                     @endforeach
@@ -330,7 +329,7 @@
                                     <label class="form-label">Disposition</label>
                                     <select name="timezone" id="dispositionDropDown" class="form-control">
                                         <option value="">Select Disposition</option>
-                                        <option value="">ALL</option>
+
                                         @foreach ($dispositions as $disposition)
                                             <option value="{{ $disposition->id }}">{{ $disposition->name }}</option>
                                         @endforeach
@@ -517,6 +516,7 @@
                         success: function(response) {}
                     });
                 });
+
                 $('.callbackDispoSubmitButton').on('click', function(e) {
                     e.preventDefault();
                     var dateTime = $('#callBackDateTime').val();
@@ -548,6 +548,11 @@
                     });
                 });
 
+                $('#transactionLogModal').on('hidden.bs.modal', function() {
+                    $('#dispositionDropDown').val('');
+                    $('#remarksDescription').val('');
+                });
+
             });
 
 
@@ -556,29 +561,35 @@
                 e.preventDefault();
                 var remarks = $('#remarksDescription').val();
                 var dispositionId = $('#dispositionDropDown').val();
+                var url = "{{ env('APP_FORM_URL') }}";
                 var leadId = $('#leadId').val();
-                $.ajax({
-                    url: "{{ route('assign-remark-leads') }}",
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    dataType: 'json',
-                    method: 'POST',
-                    data: {
-                        remarks: remarks,
-                        dispositionId: dispositionId,
-                        leadId: leadsId
-                    },
-                    success: function(response) {
-                        $('#transactionLogModal').modal('hide');
-                        location.reload();
-                    },
-                    error: function(xhr, status, error) {
-                        alert(xhr.responseText);
-                    }
-                });
-
-
+                if (leadId == 1) {
+                    window.open(`${url}appoinnted-lead-questionare`,
+                        "s_blank",
+                        "width=1000,height=849");
+                    $('#transactionLogModal').modal('hide');
+                } else {
+                    $.ajax({
+                        url: "{{ route('assign-remark-leads') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        dataType: 'json',
+                        method: 'POST',
+                        data: {
+                            remarks: remarks,
+                            dispositionId: dispositionId,
+                            leadId: leadsId
+                        },
+                        success: function(response) {
+                            $('#transactionLogModal').modal('hide');
+                            location.reload();
+                        },
+                        error: function(xhr, status, error) {
+                            alert(xhr.responseText);
+                        }
+                    });
+                }
             });
         </script>
     @endsection

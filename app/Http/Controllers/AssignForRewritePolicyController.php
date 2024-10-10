@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\CancelledPolicyForRecall;
 use App\Models\PolicyDetail;
 use App\Models\UserProfile;
 use App\Policies\UserPolicy;
@@ -44,6 +45,7 @@ class AssignForRewritePolicyController extends Controller
         try{
             DB::beginTransaction();
             $data = $request->all();
+
             $userProfile = UserProfile::find($data['userProfileId']);
 
             $policyIds = is_array($data['id']) ? $data['id'] : explode(',', $data['id']);
@@ -53,6 +55,10 @@ class AssignForRewritePolicyController extends Controller
                 $policyDetail = PolicyDetail::find($policyId);
                 $policyDetail->status = 'For Rewrite';
                 $policyDetail->save();
+
+                $CancelledPolicyForRecall = CancelledPolicyForRecall::find($data['cancellationId']);
+                $CancelledPolicyForRecall->status = 'For Rewrite';
+                $CancelledPolicyForRecall->save();
             }
 
 

@@ -155,7 +155,8 @@ class RenewalQuoteController extends Controller
                 ->addColumn('policy_no', function($policiesData){
                     $policyNumber = $policiesData->policy_number;
                     $productId =  $policiesData->quotation_product_id;
-                    return '<a href="/customer-service/renewal/get-renewal-lead-view/'.$policiesData->id.'"  id="'.$policiesData->policy_details_id.'">'.$policyNumber.'</a>';
+                    $button = '<a href="/customer-service/renewal/get-renewal-lead-view/'.$policiesData->id.'"  id="'.$policiesData->policy_details_id.'">'.$policyNumber.'</a>';
+                    return $policyNumber;
                 })
                 ->addColumn('company_name', function($policiesData){
                     $lead = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;
@@ -168,7 +169,11 @@ class RenewalQuoteController extends Controller
                     $quote = SelectedQuote::find($policiesData->selected_quote_id)->first();
                     return $quote ? $quote->full_payment : 'N/A';
                 })
-                ->rawColumns(['company_name', 'policy_no'])
+                ->addColumn('action', function($policiesData){
+                    $viewButton = '<a href="/customer-service/renewal/get-renewal-lead-view/'.$policiesData->id.'" class="btn btn-sm btn-outline-primary"><i class="ri-eye-line"></i></a>';
+                    return $viewButton;
+                })
+                ->rawColumns(['company_name', 'policy_no', 'action'])
                 ->make(true);
                 return $dataTable;
             }

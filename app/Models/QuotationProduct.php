@@ -33,6 +33,11 @@ class QuotationProduct extends Model
     //     return $this->hasMany(SelectedQuote::class, 'quotation_product_id');
     // }
 
+    public function boundInformation()
+    {
+        return $this->hasOne(BoundInformation::class, 'quoatation_product_id');
+    }
+
     public function QuoteInformation()
     {
         return $this->belongsTo(QuoteInformation::class, 'quote_information_id');
@@ -232,5 +237,10 @@ class QuotationProduct extends Model
         $percentage = $totalProduct > 0 && $previousMonthTotalProduct > 0 ? (($totalProduct - $previousMonthTotalProduct) / $previousMonthTotalProduct) * 100 : 0;
         return number_format($percentage, 2);
     }
+
+    // public function getSelectedQuote()
+    // {
+    //     return $this->hasMany(SelectedQuote::class, 'quotation)
+    // }
 
 }

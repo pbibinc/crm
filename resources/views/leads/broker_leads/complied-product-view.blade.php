@@ -6,7 +6,7 @@
             <th>Product</th>
             <th>Quoted By</th>
             <th>Appointed By</th>
-            <th>Compliance Officer</th>
+            <th>Broker</th>
             <th>Action</th>
         </thead>
         <tbody>

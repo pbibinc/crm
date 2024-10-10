@@ -20,7 +20,9 @@
             ajax: {
                 url: "{{ route('get-broker-pending-product') }}",
                 type: "POST",
-
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
             },
             columns: [{
                     data: 'companyName',
@@ -46,7 +48,7 @@
             var id = $(this).attr('id');
             Swal.fire({
                 title: 'Are you sure?',
-                text: "Sending this to a compliance officer?",
+                text: "Sending this to Broker?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',

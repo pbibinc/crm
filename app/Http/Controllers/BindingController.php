@@ -45,16 +45,19 @@ class BindingController extends Controller
             return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('policy_number', function($data){
+                $lead = $data->QuoteInformation->QuoteLead->leads;
+                $profileViewRoute = route('appointed-list-profile-view', ['leadsId' => $lead->id]);
                 if($data->status == 17 || $data->status == 18 || $data->status == 24 || $data->status == 28)
                 {
                     $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
                     $selectedQuote = SelectedQuote::find($data->selected_quote_id);
-                    $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind">'.$selectedQuote->quote_no.'</a>';
+                    $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewBindingButton">'.$selectedQuote->quote_no.'</a>';
                 }else{
                     $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
-                    $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind">'.$selectedQuote->quote_no.'</a>';
+                    $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewBindingButton">'.$selectedQuote->quote_no.'</a>';
                 }
-                return $policy_number;
+                $viewButtonLink = '<a href="'.$profileViewRoute.'" id="'.$lead->id.'" >'.$selectedQuote->quote_no.'</a>';
+                return $viewButtonLink;
             })
             ->addColumn('company_name', function($data){
                 $company_name = $data->QuoteInformation->QuoteLead->leads->company_name;
@@ -108,7 +111,31 @@ class BindingController extends Controller
                 }
                 return '<span class="badge '.$class.'">'.$statusLabel.'</span>';
             })
-            ->rawColumns(['policy_number', 'bindingType'])
+            ->addColumn('action', function($data){
+                $lead = $data->QuoteInformation->QuoteLead->leads;
+                $profileViewRoute = route('appointed-list-profile-view', ['leadsId' => $lead->id]);
+                if ($data->status == 17 || $data->status == 18 || $data->status == 24 || $data->status == 28) {
+                    $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)
+                                                ->where('status', 'Renewal Request To Bind')
+                                                ->first();
+                    $selectedQuote = SelectedQuote::find($data->selected_quote_id);
+                    $policy_number = '<button id="'.$data->id.'" data-status="'.$data->status.'"
+                                         class="viewRequestToBind btn btn-outline-success btn-sm waves-effect waves-light">
+                                         <i class="ri-task-line"></i>
+                                      </button>';
+                } else {
+                    $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
+                    $policy_number = '<button id="'.$data->id.'" data-status="'.$data->status.'"
+                                         class="viewRequestToBind btn btn-outline-success btn-sm waves-effect waves-light">
+                                         <i class="ri-task-line"></i>
+                                      </button>';
+                }
+               $viewButton = '<a href="'.$profileViewRoute.'" class="viiew btn btn-outline-info btn-sm" id="'.$lead->id.'" name"view"><i class="ri-eye-line"></i></a>';
+               $viewNoteButton = '<button class="btn btn-outline-primary btn-sm waves-effect waves-light viewNotedButton" id="'.$lead->id.'"><i class="ri-message-2-line"></i></button>';
+                return $viewButton . ' ' . $viewNoteButton .' ' . $policy_number;
+
+            })
+            ->rawColumns(['policy_number', 'bindingType', 'action'])
             ->make(true);
         }
         return view('customer-service.binding.request-to-bind-view');
@@ -332,6 +359,8 @@ class BindingController extends Controller
             $policyDetails->carrier = $data['carriersInput'];
             $policyDetails->market = $data['glMarketInput'];
             $policyDetails->payment_mode = $data['glPaymentTermInput'];
+            $policyDetails->effective_date = $data['effectiveDate'];
+            $policyDetails->expiration_date = $data['expirationDate'];
             $policyDetails->save();
 
              //general liabilities policy details saving
@@ -372,6 +401,8 @@ class BindingController extends Controller
             return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('policy_number', function($data){
+                $lead = $data->QuoteInformation->QuoteLead->leads;
+                $profileViewRoute = route('appointed-list-profile-view', ['leadsId' => $lead->id]);
                 if($data->status == 19 || $data->status == 25){
                     $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
                     $selectedQuote = SelectedQuote::find($data->selected_quote_id);
@@ -380,7 +411,9 @@ class BindingController extends Controller
                     $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
                     $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewBindingButton" type="new">'.$selectedQuote->quote_no.'</a>';
                 }
-                return $policy_number;
+                // return $policy_number;
+                $viewButtonLink = '<a href="'.$profileViewRoute.'" id="'.$lead->id.'" >'.$selectedQuote->quote_no.'</a>';
+                return $viewButtonLink;
             })
             ->addColumn('company_name', function($data){
                 $company_name = $data->QuoteInformation->QuoteLead->leads->company_name;
@@ -426,7 +459,30 @@ class BindingController extends Controller
                 $quote_information = SelectedQuote::find($data->selected_quote_id);
                 return $quote_information->effective_date;
             })
-            ->rawColumns(['policy_number'])
+            ->addColumn('action', function($data){
+                $lead = $data->QuoteInformation->QuoteLead->leads;
+                $profileViewRoute = route('appointed-list-profile-view', ['leadsId' => $lead->id]);
+                if($data->status == 19 || $data->status == 25){
+                    $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
+                    $selectedQuote = SelectedQuote::find($data->selected_quote_id);
+                    // $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewBindingButton" type="renewal">'.$selectedQuote->quote_no.'</a>';
+                    $policy_number = '<button id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton"
+                    class="viewBindingButton btn btn-outline-success btn-sm waves-effect waves-light" type="renewal">
+                    <i class="ri-task-line"></i>
+                    </button>';
+                }else{
+                    $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
+                    // $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewBindingButton" type="new">'.$selectedQuote->quote_no.'</a>';
+                    $policy_number = '<button id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton"
+                    class="viewBindingButton btn btn-outline-success btn-sm waves-effect waves-light" type="new">
+                    <i class="ri-task-line"></i>
+                    </button>';
+                }
+               $viewButton = '<a href="'.$profileViewRoute.'" class="viiew btn btn-outline-info btn-sm" id="'.$lead->id.'" name"view"><i class="ri-eye-line"></i></a>';
+               $viewNoteButton = '<button class="btn btn-outline-primary btn-sm waves-effect waves-light viewNotedButton" id="'.$lead->id.'"><i class="ri-message-2-line"></i></button>';
+                return $viewButton . ' ' . $viewNoteButton .' ' . $policy_number;
+            })
+            ->rawColumns(['policy_number', 'action'])
             ->make(true);
 
         }catch(\Exception $e){

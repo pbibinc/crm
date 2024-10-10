@@ -61,10 +61,13 @@ class QuotationController extends Controller
 
     public function leadProfileView($productId)
     {
-        $product = QuotationProduct::find($productId);
-        $products = QuotationProduct::where('quote_information_id', $product->quote_information_id)->get();
-        $lead = Lead::find($product->QuoteInformation->QuoteLead->leads->id);
-        $generalInformation = GeneralInformation::find($lead->generalInformation->id);
+        $quotationProduct = QuotationProduct::find($productId);
+        $products = QuotationProduct::where('quote_information_id', $quotationProduct->quote_information_id)->get();
+        $leads = Lead::find($quotationProduct->QuoteInformation->QuoteLead->leads->id);
+        $generalInformation = GeneralInformation::find($leads->generalInformation->id);
+        $policyDetail = new PolicyDetail();
+        $activePolicies = $policyDetail->getActivePolicyDetailByLeadId($leads->id);
+        $userProfiles = UserProfile::get()->sortBy('first_name');
         $timezones = [
             'Eastern' => ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV'],
             'Central' => ['AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI'],
@@ -85,13 +88,13 @@ class QuotationController extends Controller
         // $quationMarket = QuoationMarket::all()->sortBy('name');
         $quationMarket = new QuoationMarket();
         // dd($quationMarket->generalLiabilityMarket);
-        if(!$lead || !$generalInformation){
+        if(!$leads || !$generalInformation){
             return redirect()->route('leads.appointed-leads')->withErrors('No DATA found');
             // dd($lead, $generalInformation );
         }
         $usAddress = UnitedState::getUsAddress($generalInformation->zipcode);
         foreach($timezones as $timezone => $states){
-            if(in_array($lead->state_abbr, $states)){
+            if(in_array($leads->state_abbr, $states)){
                 $timezoneForState =  $timezoneStrings[$timezone];
             }
         }
@@ -100,7 +103,11 @@ class QuotationController extends Controller
         $carriers = Insurer::all()->sortBy('name');
         $markets = QuoationMarket::all()->sortBy('name');
         $templates = Templates::all();
-        return view('leads.appointed_leads.quotation-lead-view.leads-profile', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'products', 'carriers', 'markets', 'templates'));
+        $productIds = $leads->getQuotationProducts()->pluck('id')->toArray();
+        $selectedQuotes = SelectedQuote::whereIn('quotation_product_id', $productIds)->get() ?? [];
+        $userProfile = new UserProfile();
+        $complianceOfficer = $userProfile->complianceOfficer();
+        return view('leads.appointed_leads.quotation-lead-view.leads-profile', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'quotationProduct', 'products', 'carriers', 'markets', 'templates', 'activePolicies', 'userProfiles', 'selectedQuotes', 'complianceOfficer'));
     }
 
     public function brokerProfileView($leadId, $generalInformationId, $productId)
@@ -108,9 +115,12 @@ class QuotationController extends Controller
         $leads = Lead::find($leadId);
         $generalInformation = GeneralInformation::find($generalInformationId);
         $product = QuotationProduct::find($productId);
-
+        $quoteProduct = $product;
         $products = QuotationProduct::where('quote_information_id', $product->quote_information_id)->get();
+
         $userProfile = new UserProfile();
+        $policyDetail = new PolicyDetail();
+        $activePolicies = $policyDetail->getActivePolicyDetailByLeadId($leads->id);
         $complianceOfficer = $userProfile->complianceOfficer();
         $timezones = [
             'Eastern' => ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV'],
@@ -140,13 +150,73 @@ class QuotationController extends Controller
                 $timezoneForState =  $timezoneStrings[$timezone];
             }
         }
+
         $localTime = Carbon::now($timezoneForState);
         $generalLiabilities = $generalInformation->generalLiabilities;
         $markets = QuoationMarket::all()->sortBy('name');
         $carriers = Insurer::all()->sortBy('name');
         $templates = Templates::all();
         $leadId = $leads->id;
-        return view('leads.appointed_leads.broker-lead-profile-view.index', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'products', 'complianceOfficer', 'markets', 'carriers','leadId',  'templates', 'product', 'productId'));
+        $productIds = $leads->getQuotationProducts()->pluck('id')->toArray();
+        $selectedQuotes = SelectedQuote::whereIn('quotation_product_id', $productIds)->get() ?? [];
+
+        $userProfiles = UserProfile::get()->sortBy('first_name');
+        return view('leads.appointed_leads.broker-lead-profile-view.index', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'products', 'complianceOfficer', 'markets', 'carriers','leadId',  'templates', 'product', 'productId', 'productIds', 'selectedQuotes', 'activePolicies', 'userProfiles', 'quoteProduct'));
+    }
+
+    public function brokerProfileViewProduct($productId)
+    {
+
+        $product = QuotationProduct::find($productId);
+        $leads = $product->QuoteInformation->QuoteLead->leads;
+        $generalInformation = $leads->GeneralInformation;
+        $quoteProduct = $product;
+        $products = QuotationProduct::where('quote_information_id', $product->quote_information_id)->get();
+
+        $userProfile = new UserProfile();
+        $policyDetail = new PolicyDetail();
+        $activePolicies = $policyDetail->getActivePolicyDetailByLeadId($leads->id);
+        $complianceOfficer = $userProfile->complianceOfficer();
+        $timezones = [
+            'Eastern' => ['CT', 'DE', 'FL', 'GA', 'IN', 'KY', 'ME', 'MD', 'MA', 'MI', 'NH', 'NJ', 'NY', 'NC', 'OH', 'PA', 'RI', 'SC', 'TN', 'VT', 'VA', 'WV'],
+            'Central' => ['AL', 'AR', 'IL', 'IA', 'KS', 'LA', 'MN', 'MS', 'MO', 'NE', 'ND', 'OK', 'SD', 'TX', 'WI'],
+            'Mountain' => ['AZ', 'CO', 'ID', 'MT', 'NV', 'NM', 'UT', 'WY'],
+            'Pacific' => ['CA', 'OR', 'WA'],
+            'Alaska' => ['AK'],
+            'Hawaii-Aleutian' => ['HI']
+        ];
+        $timezoneStrings = [
+            'Eastern' => 'America/New_York',
+            'Central' => 'America/Chicago',
+            'Mountain' => 'America/Denver',
+            'Pacific' => 'America/Los_Angeles',
+            'Alaska' => 'America/Anchorage',
+            'Hawaii-Aleutian' => 'Pacific/Honolulu'
+        ];
+        $timezoneForState = null;
+        $quationMarket = QuoationMarket::all();
+        if(!$leads || !$generalInformation){
+            return redirect()->route('leads.appointed-leads')->withErrors('No DATA found');
+            // dd($lead, $generalInformation );
+        }
+        $usAddress = UnitedState::getUsAddress($generalInformation->zipcode);
+        foreach($timezones as $timezone => $states){
+            if(in_array($leads->state_abbr, $states)){
+                $timezoneForState =  $timezoneStrings[$timezone];
+            }
+        }
+
+        $localTime = Carbon::now($timezoneForState);
+        $generalLiabilities = $generalInformation->generalLiabilities;
+        $markets = QuoationMarket::all()->sortBy('name');
+        $carriers = Insurer::all()->sortBy('name');
+        $templates = Templates::all();
+        $leadId = $leads->id;
+        $productIds = $leads->getQuotationProducts()->pluck('id')->toArray();
+        $selectedQuotes = SelectedQuote::whereIn('quotation_product_id', $productIds)->get() ?? [];
+
+        $userProfiles = UserProfile::get()->sortBy('first_name');
+        return view('leads.appointed_leads.broker-lead-profile-view.index', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'products', 'complianceOfficer', 'markets', 'carriers','leadId',  'templates', 'product', 'productId', 'productIds', 'selectedQuotes', 'activePolicies', 'userProfiles', 'quoteProduct'));
     }
 
     public function saveQuotationProduct(Request $request)
@@ -473,7 +543,7 @@ class QuotationController extends Controller
                    $brokerQuotation->save();
 
                    $quotationProduct = QuotationProduct::find($productId);
-                   $quotationProduct->status = 21;
+                   $quotationProduct->status = 22;
                    $quotationProduct->save();
                 }
                 DB::commit();
@@ -626,18 +696,19 @@ class QuotationController extends Controller
             {
                 $status = $request->input('status');
                 $id = $request->input('id');
+                $qoutationProduct = QuotationProduct::find($id);
                 if ($status == 19 || $status == 20 ) {
                     $qoutationProduct = QuotationProduct::find($id);
                 } elseif($status == 23 ){
-                    $policyDetail = PolicyDetail::find($id);
-                    if ($policyDetail) {
-                        $qoutationProduct = QuotationProduct::find($policyDetail->quotation_product_id);
-                    } else {
-                        return response()->json([
-                            'status' => 'error',
-                            'message' => 'PolicyDetail not found.',
-                        ], 404);
-                    }
+                    // $policyDetail = PolicyDetail::find($id);
+                    // if ($policyDetail) {
+                    //     $qoutationProduct = QuotationProduct::find($policyDetail->quotation_product_id);
+                    // } else {
+                    //     return response()->json([
+                    //         'status' => 'error',
+                    //         'message' => 'PolicyDetail not found.',
+                    //     ], 404);
+                    // }
                 }else {
                     $qoutationProduct = QuotationProduct::find($id);
                 }
@@ -665,8 +736,10 @@ class QuotationController extends Controller
                 $policyDetails->status = $request->input('policyStatus');
                 $policyDetails->save();
             }
+            $data = $qoutationProduct ? $qoutationProduct->load('brokerQuotation') : $policyDetails;
+
             DB::commit();
-            return response()->json(['success' => 'Status changed successfully']);
+            return response()->json(['success' => 'Status changed successfully', 'data' => $data]);
         }catch(\Exception $e){
             return response()->json(['error' => $e->getMessage()]);
         }
@@ -677,6 +750,7 @@ class QuotationController extends Controller
     {
         if($request->ajax())
         {
+            dd($request->all());
             $id = $request->input('id');
             $callbackDate = $request->input('callbackDateTime');
             $quotationProduct = QuotationProduct::find($id);
@@ -813,21 +887,38 @@ class QuotationController extends Controller
          })
          ->addColumn('action', function($quoteComparison){
             $product = QuotationProduct::find($quoteComparison->quotation_product_id);
-            $viewButton = '<button class="btn btn-sm btn-outline-info editButton" data-product="' . str_replace(' ', '_', $product->product) . '" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i></button>';
+            $editButton = '<button class="btn btn-sm btn-outline-info editButton'.str_replace(' ', '_', $product->product) .'" data-product="' . str_replace(' ', '_', $product->product) . '" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i></button>';
 
             $uploadButton = '<button class="btn btn-sm btn-outline-primary uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i></button>';
 
             $deleteButton = '<button class="btn btn-sm btn-outline-danger deleteButton" id="' . $quoteComparison->id . '"><i class="ri-delete-bin-line"></i></button>';
 
-            return $viewButton . ' ' . $uploadButton . ' ' . $deleteButton;
+            return $editButton . ' ' . $uploadButton . ' ' . $deleteButton;
          })
          ->addColumn('broker_action', function($quoteComparison){
             $product = QuotationProduct::find($quoteComparison->quotation_product_id);
-            $uploadFileButton = '<button class="btn btn-outline-primary btn-sm uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i></button>';
-            $editButton = '<button class="edit btn btn-outline-info btn-sm editButton'.$product->product.'" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i></button>';
-            $selectQuoteButton = '<button class="btn btn-outline-success btn-sm selectQuoteButton" id="' . $quoteComparison->id . '"><i class="ri-checkbox-circle-fill"></i></button>';
+            $viewButton = '<button type="button" class="btn btn-outline-primary btn-sm waves-effect waves-light viewQuoteButton" id="'.$quoteComparison->id.'" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-eye-line"></i></button>';
 
-            return $editButton . ' ' . $uploadFileButton . ' ' . $selectQuoteButton;
+            $uploadFileButton = '<button class="btn btn-outline-primary btn-sm uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i></button>';
+            // $editButton = '<button class="edit btn btn-outline-info btn-sm editButton'.$product->product.'" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i></button>';
+            $selectQuoteButton = '<button class="btn btn-outline-success btn-sm selectQuoteButton" id="' . $quoteComparison->id . '"><i class="ri-checkbox-circle-fill"></i></button>';
+            $editButton = '<button class="btn btn-info btn-sm waves-effect waves-light editQuoteButton" data-product="' . str_replace(' ', '_', $product->product) . '" id="' . $quoteComparison->id . '" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-pencil-line"></i></button>';
+            $viewButton = '<button type="button" class="btn btn-outline-primary btn-sm waves-effect waves-light viewQuoteButton" id="'.$quoteComparison->id.'" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-eye-line"></i></button>';
+            $dropdown = '<div class="btn-group">
+            <button type="button" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #6c757d; color: white; border: none; padding: 5px; font-size: 16px; line-height: 1; border-radius: 50%; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center;">
+                <i class="ri-more-line"></i>
+            </button>
+            <ul class="dropdown-menu">
+                <li><button class="dropdown-item uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i>Upload</button></li>
+                 <li><button class="dropdown-item setNewQuotation" id="' . $quoteComparison->id . '"><i class="mdi mdi-account-reactivate"></i>Set as New</button></li>
+                 <li><button class="dropdown-item oldRenewQuotation" id="' . $quoteComparison->id . '"><i class="mdi mdi-file-sync-outline"></i>Set Old Quote</button></li>
+                <li><button class="dropdown-item selectQuoteButton" id="' . $quoteComparison->id . '"><i class="ri-checkbox-circle-fill"></i>Select Quote</button></li>
+                <li><button class="dropdown-item deleteButton" id="' . $quoteComparison->id . '"><i class="ri-delete-bin-line"></i>Delete</button></li>
+            </ul>
+         </div>';
+
+
+            return $viewButton . ' ' . $editButton . ' ' . $dropdown;
          })
          ->addColumn('rewrite-action-dropdown', function($quoteComparison){
             $dropdown = '<div class="btn-group">
@@ -859,6 +950,145 @@ class QuotationController extends Controller
             $quotationProduct->save();
         }
         // $selectedQuotes = SelectedQuote::all();
+    }
+
+    public function getQuoteListTable(Request $request)
+    {
+        // $quoteComparisson = QuoteComparison::whereIn('quotation_product_id', $request->input('ids'))->orderBy('created_at', 'desc')->get()
+
+        $query = QuoteComparison::whereIn('quotation_product_id', $request->input('ids'))->orderBy('created_at', 'desc');
+
+        if ($request->has('product') && !empty($request->input('product'))) {
+            $productId = QuotationProduct::where('product', $request->input('product'))->pluck('id');
+            $query->whereIn('quotation_product_id', $productId);
+        }
+
+
+        if($request->has('status') && !empty($request->input('status'))){
+            if($request->input('status') == 'Old Quote'){
+                $query->whereDoesntHave('RenewalQuotation');
+            }else{
+                $query->whereHas('RenewalQuotation');
+            }
+        }
+
+        $quoteComparisson = $query->get();
+
+        // $quoteComparisson = $query->orderBy('created_at', 'desc')->get();
+        return DataTables::of($quoteComparisson)
+        ->addIndexColumn()
+        ->addColumn('status', function($quoteComparison){
+           return $quoteComparison->recommended;
+        })
+        ->addColumn('market_name', function($quoteComparison){
+            $market = QuoationMarket::find($quoteComparison->quotation_market_id);
+           if($quoteComparison->recommended == 1){
+               return '<i class="ri-star-fill"></i>' . ' ' . $market->name;
+           }else if($quoteComparison->recommended == 2 || $quoteComparison->recommended == 3){
+               return '<i class="a ri-vip-diamond-fill"></i>' . ' ' . $market->name;
+           }else{
+               return $market->name;
+           }
+        })
+        ->addColumn('renewal_status', function($quoteComparison){
+           $renewalQuotations = $quoteComparison->RenewalQuotation()->get();
+           $hasRenewalQuote = $renewalQuotations->filter(function($quotation) {
+               return $quotation->status !== 'Old Quote';
+           })->isNotEmpty();
+           return $hasRenewalQuote ? 'New Renewal Quote' : 'Old Quote';
+        })
+        ->addColumn('new_quotation_status', function($quoteComparison){
+           $renewalQuotations = $quoteComparison->RenewalQuotation()->get();
+           $hasRenewalQuote = $renewalQuotations->filter(function($quotation) {
+               return $quotation->status !== 'Old Quote';
+           })->isNotEmpty();
+           return $hasRenewalQuote ? 'New Quote' : 'Old Quote';
+        })
+        ->addColumn('product', function($quoteComparison){
+            $product = QuotationProduct::find($quoteComparison->quotation_product_id);
+            return $product->product;
+        })
+        ->addColumn('formatted_created_At', function($quoteComparison){
+            return $quoteComparison->created_at->format('M-d-Y');
+        })
+        ->addColumn('renewal_action_dropdown', function($quoteComparison){
+           $dropdown = '<div class="btn-group">
+           <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+               <i class="ri-more-line"></i>
+           </button>
+           <ul class="dropdown-menu">
+               <li><button class="dropdown-item editButton" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i>Edit</button></li>
+               <li><button class="dropdown-item uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i>Upload</button></li>
+               <li><button class="dropdown-item renewQuotation" id="' . $quoteComparison->id . '"><i class="mdi mdi-account-reactivate"></i>Send Renew</button></li>
+                <li><button class="dropdown-item oldRenewQuotation" id="' . $quoteComparison->id . '"><i class="mdi mdi-file-sync-outline"></i>Set Old Renew</button></li>
+               <li><button class="dropdown-item deleteButton" id="' . $quoteComparison->id . '"><i class="ri-delete-bin-line"></i>Delete</button></li>
+           </ul>
+        </div>';
+        return $dropdown;
+        })
+        ->addColumn('renewal-quoted_action', function($quoteComparison){
+           $dropdown = '<div class="btn-group">
+           <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+               <i class="ri-more-line"></i>
+           </button>
+           <ul class="dropdown-menu">
+               <li><button class="dropdown-item editButton" id="' . $quoteComparison->id . '"><i class="ri-edit-box-line"></i>Edit</button></li>
+               <li><button class="dropdown-item uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i>Upload</button></li>
+               <li><button class="dropdown-item renewQuotation" id="' . $quoteComparison->id . '"><i class="mdi mdi-account-reactivate"></i>Set As New</button></li>
+               <li><button class="dropdown-item selectQuoteButton" id="' . $quoteComparison->id . '"><i class="ri-checkbox-circle-fill"></i>Select Quote</button></li>
+               <li><button class="dropdown-item deleteButton" id="' . $quoteComparison->id . '"><i class="ri-delete-bin-line"></i>Delete</button></li>
+           </ul>
+        </div>';
+        return $dropdown;
+        })
+        ->addColumn('action', function($quoteComparison){
+           $product = QuotationProduct::find($quoteComparison->quotation_product_id);
+           $editButton = '<button class="btn btn-info btn-sm waves-effect waves-light editQuoteButton" data-product="' . str_replace(' ', '_', $product->product) . '" id="' . $quoteComparison->id . '" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-pencil-line"></i></button>';
+           $dropdown = '<div class="btn-group">
+           <button type="button" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #6c757d; color: white; border: none; padding: 5px; font-size: 16px; line-height: 1; border-radius: 50%; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center;">
+               <i class="ri-more-line"></i>
+           </button>
+           <ul class="dropdown-menu">
+               <li><button class="dropdown-item uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i>Upload</button></li>
+                <li><button class="dropdown-item setNewQuotation" id="' . $quoteComparison->id . '"><i class="mdi mdi-account-reactivate"></i>Set as New</button></li>
+                <li><button class="dropdown-item oldRenewQuotation" id="' . $quoteComparison->id . '"><i class="mdi mdi-file-sync-outline"></i>Set Old Quote</button></li>
+               <li><button class="dropdown-item selectQuoteButton" id="' . $quoteComparison->id . '"><i class="ri-checkbox-circle-fill"></i>Select Quote</button></li>
+               <li><button class="dropdown-item deleteButton" id="' . $quoteComparison->id . '"><i class="ri-delete-bin-line"></i>Delete</button></li>
+           </ul>
+        </div>';
+           $uploadButton = '<button class="btn btn-sm btn-outline-primary uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i></button>';
+
+           $viewButton = '<button type="button" class="btn btn-outline-primary btn-sm waves-effect waves-light viewQuoteButton" id="'.$quoteComparison->id.'" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-eye-line"></i></button>';
+
+           $deleteButton = '<button class="btn btn-sm btn-outline-danger deleteButton" id="' . $quoteComparison->id . '"><i class="ri-delete-bin-line"></i></button>';
+
+           return $viewButton . ' ' .$editButton  . ' ' . $dropdown;
+        })
+        ->addColumn('qouterActionButton', function($quoteComparison){
+            $product = QuotationProduct::find($quoteComparison->quotation_product_id);
+            $editButton = '<button class="btn btn-info btn-sm waves-effect waves-light editQuoteButton" data-product="' . str_replace(' ', '_', $product->product) . '" id="' . $quoteComparison->id . '" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-pencil-line"></i></button>';
+            $dropdown = '<div class="btn-group">
+            <button type="button" class="btn btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #6c757d; color: white; border: none; padding: 5px; font-size: 16px; line-height: 1; border-radius: 50%; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center;">
+                <i class="ri-more-line"></i>
+            </button>
+            <ul class="dropdown-menu">
+                <li><button class="dropdown-item uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i>Upload</button></li>
+                 <li><button class="dropdown-item setNewQuotation" id="' . $quoteComparison->id . '"><i class="mdi mdi-account-reactivate"></i>Set as New</button></li>
+                 <li><button class="dropdown-item oldRenewQuotation" id="' . $quoteComparison->id . '"><i class="mdi mdi-file-sync-outline"></i>Set Old Quote</button></li>
+
+                <li><button class="dropdown-item deleteQuoteButton" id="' . $quoteComparison->id . '"><i class="ri-delete-bin-line"></i>Delete</button></li>
+            </ul>
+         </div>';
+            $uploadButton = '<button class="btn btn-sm btn-outline-primary uploadFileButton" id="' . $quoteComparison->id . '"><i class="ri-upload-2-line"></i></button>';
+
+            $viewButton = '<button type="button" class="btn btn-outline-primary btn-sm waves-effect waves-light viewQuoteButton" id="'.$quoteComparison->id.'" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-eye-line"></i></button>';
+
+            $deleteButton = '<button class="btn btn-sm btn-outline-danger deleteButton" id="' . $quoteComparison->id . '"><i class="ri-delete-bin-line"></i></button>';
+
+            return $viewButton . ' ' .$editButton  . ' ' . $dropdown;
+         })
+        ->rawColumns(['market_name', 'action', 'rewrite-action-dropdown', 'qouterActionButton'])
+        ->make(true);
     }
 
 }

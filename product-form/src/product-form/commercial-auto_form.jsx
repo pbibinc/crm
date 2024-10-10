@@ -23,7 +23,7 @@ import { ContextData } from "../contexts/context-data-provider";
 import { useCommercialAuto } from "../contexts/commercial-auto-context";
 
 const CommercialAutoForm = () => {
-    const { commercialAutoData } = useCommercialAuto();
+    const { commercialAutoData } = useCommercialAuto() || {};
     const storeWorkersCompData = JSON.parse(
         sessionStorage.getItem("storeWorkersCompData")
     );
@@ -50,18 +50,15 @@ const CommercialAutoForm = () => {
             ? storeWorkersCompData?.feinValue
             : getCommercialAutoData()?.feinValue
     );
+
     const [ssn, setSsn] = useState(() =>
         storeWorkersCompData?.ssnValue
             ? storeWorkersCompData?.ssnValue
             : getCommercialAutoData()?.ssnValue
     );
 
-    const [isFeinDisabled, SetIsFeinDisabled] = useState(() =>
-        fein == 0 ? false : true
-    );
-    const [isSsnDisabled, SetIsSsnDisabled] = useState(() =>
-        ssn == 0 ? false : true
-    );
+    const [isFeinDisabled, SetIsFeinDisabled] = useState(true);
+    const [isSsnDisabled, SetIsSsnDisabled] = useState(true);
 
     //setting for dynamic vehicle information
     const [vehicleInformation, setVehicleInformation] = useState(() => {
@@ -333,6 +330,9 @@ const CommercialAutoForm = () => {
         loss_amount: lossAmount,
         userProfileId: storedLeads?.data?.userProfileId,
     };
+
+    console.log(commercialAutoFormData);
+
     useEffect(() => {
         const storedCommercialAutoData = {
             isUpdate: isUpdate,
@@ -362,6 +362,8 @@ const CommercialAutoForm = () => {
             isHaveLossChecked: isHaveLossChecked,
             haveLossDateOption: haveLossDateOption,
             userProfileId: storedLeads?.data?.userProfileId,
+            feinValue: fein,
+            ssnValue: ssn,
         };
 
         sessionStorage.setItem(
@@ -392,6 +394,8 @@ const CommercialAutoForm = () => {
         crossSell,
         haveLossDateOption,
         storedLeads?.data?.userProfileId,
+        ssn,
+        fein,
     ]);
 
     function submitCommercialAutoForm() {
@@ -440,8 +444,8 @@ const CommercialAutoForm = () => {
         if (data) {
             setIsEditing(data.isUpdate == true ? false : true);
             setIsUpdate(data.isUpdate || false);
-            setFein(data.feinValue || "");
-            setSsn(data.ssnValue || "");
+            setFein(data.feinValue);
+            setSsn(data.ssnValue);
             SetIsFeinDisabled(data.feinValue != 0);
             SetIsSsnDisabled(data.ssnValue != 0);
             setVehicleInformation(data.vehicleInformation || [{}]);
@@ -500,7 +504,8 @@ const CommercialAutoForm = () => {
                                     mask="99-9999999"
                                     className="form-control"
                                     onChange={(e) => setFein(e.target.value)}
-                                    disabled={isFeinDisabled}
+                                    disabled={!isEditing}
+                                    // disabled={isFeinDisabled}
                                 />
                             </>
                         }
@@ -516,7 +521,8 @@ const CommercialAutoForm = () => {
                                     value={ssn}
                                     className="form-control"
                                     onChange={(e) => setSsn(e.target.value)}
-                                    disabled={isSsnDisabled}
+                                    // disabled={isSsnDisabled}
+                                    disabled={!isEditing}
                                 />
                             </>
                         }

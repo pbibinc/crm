@@ -208,7 +208,7 @@ class FinancingController extends Controller
             })
             ->addColumn('company_name', function($data){
                 $leads = $data->QuotationProduct->QuoteInformation->QuoteLead->leads;
-                $company_name = '<a href="" id="'.$data->id.'" name="showPolicyForm" class="procesFinancingRequest">'. $leads->company_name.'</a>';
+                $company_name = '<a href="" id="'.$leads->id.'" name="showPolicyForm" class="viewButton">'. $leads->company_name.'</a>';
                 return $company_name;
             })
             ->addColumn('product', function($data){
@@ -223,7 +223,14 @@ class FinancingController extends Controller
                 $selectedQuote = SelectedQuote::find($data->selected_quote_id)->first();
                 return $selectedQuote->effective_date;
             })
-            ->rawColumns(['company_name'])
+            ->addColumn('action', function($data){
+                $leadId = $data->QuotationProduct->QuoteInformation->QuoteLead->leads->id;
+                $viewNoteButton = '<button class="btn btn-outline-primary btn-sm waves-effect waves-light viewNotedButton" id="'.$leadId.'"><i class="ri-message-2-line"></i></button>';
+                $viewButton = '<button class="edit btn btn-outline-info btn-sm " id="'.$leadId.'"><i class="ri-eye-line"></i></button>';
+                $processButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light procesFinancingRequest" id="'.$data->id.'" data-lead-id="'.$leadId.'"><i class=" ri-task-line"></i></button>';
+                return  $processButton . ' ' .$viewNoteButton;
+            })
+            ->rawColumns(['company_name', 'action'])
             ->make(true);
         }
     }
@@ -343,6 +350,46 @@ class FinancingController extends Controller
         }catch(\Exception $e){
             Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function incompletePfa(Request $request)
+    {
+        if($request->ajax())
+        {
+            $financingStaus = new FinancingStatus();
+            $data = $financingStaus->incompletePfa();
+            return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('policy_number', function($data){
+                $selectedQuote = SelectedQuote::find($data->selected_quote_id)->first();
+                return $selectedQuote->quote_no;
+            })
+            ->addColumn('company_name', function($data){
+                $leads = $data->QuotationProduct->QuoteInformation->QuoteLead->leads;
+                $company_name = '<a href="" id="'.$data->id.'" name="showPolicyForm" class="procesFinancingRequest">'. $leads->company_name.'</a>';
+                return $leads->company_name;
+            })
+            ->addColumn('product', function($data){
+                $product = $data->QuotationProduct->product;
+                return $product;
+            })
+            ->addColumn('full_payment', function($data){
+                $selectedQuote = SelectedQuote::find($data->selected_quote_id)->first();
+                return $selectedQuote->full_payment;
+            })
+            ->addColumn('effective_date', function($data){
+                $selectedQuote = SelectedQuote::find($data->selected_quote_id)->first();
+                return $selectedQuote->effective_date;
+            })
+            ->addColumn('action', function($data){
+                $leadId = $data->QuotationProduct->QuoteInformation->QuoteLead->leads->id;
+                $viewNoteButton = '<button class="btn btn-outline-primary btn-sm waves-effect waves-light viewNotedButton" id="'.$leadId.'"><i class="ri-message-2-line"></i></button>';
+                $viewButton = '<button class="edit btn btn-outline-info btn-sm viewButton" id="'.$leadId.'"><i class="ri-eye-line"></i></button>';
+                return $viewButton . ' ' . $viewNoteButton;
+            })
+            ->rawColumns(['company_name', 'action'])
+            ->make(true);
         }
     }
 }

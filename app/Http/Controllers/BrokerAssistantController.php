@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\BrokerQuotation;
-use App\Models\PaymentInformation;
-use App\Models\QuotationProduct;
-use App\Models\QuoteComparison;
-use App\Models\SelectedQuote;
+use Carbon\Carbon;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
+use App\Models\SelectedQuote;
+use App\Models\BrokerQuotation;
+use App\Models\QuoteComparison;
+use App\Models\BoundInformation;
+use App\Models\QuotationProduct;
+use App\Models\PaymentInformation;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -122,13 +124,13 @@ class BrokerAssistantController extends Controller
     {
         $quotationProduct = new BrokerQuotation();
         $userProfileId = Auth::user()->userProfile->id;
-        $data = $quotationProduct->getAssignQoutedLead($userProfileId, [22, 3]);
+        $data = $quotationProduct->getAssignQoutedLead($userProfileId, [22, 3, 21]);
         return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
-            $companyLink = '<a href="" class="complianceCompanyName" id="'.$data->id.'">'.$companyName.'</a>';
-            return $companyName;
+            $companyLink = '<a href="" class="viewButton" id="'.$data->id.'">'.$companyName.'</a>';
+            return $data->status == 3 ? $companyLink : $companyName;
         })
         ->addColumn('quotedBy', function($data){
             $quoter = UserProfile::find($data->user_profile_id);
@@ -146,8 +148,12 @@ class BrokerAssistantController extends Controller
                     $statusLabel = 'Pending';
                     $class = 'bg-warning';
                     break;
+                case 21:
+                    $statusLabel = 'Quoted Product';
+                    $class = 'bg-warning';
+                    break;
                 case 3:
-                    $statusLabel = 'Complied';
+                    $statusLabel = 'Approved';
                     $class = 'bg-success';
                     break;
                 default:
@@ -199,27 +205,17 @@ class BrokerAssistantController extends Controller
 
     public function getForFollowUpProduct(Request $request)
     {
+        $today = Carbon::now();
         $quotationProduct = new BrokerQuotation();
         $userProfileId = Auth::user()->userProfile->id;
-        $data = $quotationProduct->getAssignQoutedLead($userProfileId, 4);
+        $date30DaysAgo = $today->copy()->subDays(30);
+        $data = $quotationProduct->getAssigQuotedLeadByDate($userProfileId, 4, $date30DaysAgo->toDateString());
         return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
-            $companyLink = '<a href="" class="makePaymentLink" id="'.$data->id.'">'.$companyName.'</a>';
-            return $companyName;
-        })
-        ->addColumn('quotedBy', function($data){
-            $quoter = UserProfile::find($data->user_profile_id);
-            return $quoter ? $quoter->fullAmericanName() : 'UNKNOWN';
-        })
-        ->addColumn('appointedBy', function($data){
-            $appointedBy = UserProfile::find($data->QuoteInformation->user_profile_id);
-            return $appointedBy ? $appointedBy->fullAmericanName() : 'UNKNOWN';
-        })
-        ->addColumn('complianceOfficer', function($data){
-            $complianceOfficerName = UserProfile::find(2)->fullAmericanName();
-            return $complianceOfficerName ? $complianceOfficerName : 'UNKNOWN';
+            $companyLink = '<a href="" class="viewButton" id="'.$data->id.'">'.$companyName.'</a>';
+            return $companyLink;
         })
         ->addColumn('status', function($data){
             $statusLabel = '';
@@ -246,14 +242,16 @@ class BrokerAssistantController extends Controller
         })
         ->addColumn('callBack', function($data){
             $callBack = $data->QuotationProductCallback->date_time;
-            return $callBack ? $callBack : 'N/A';
+            return $callBack ? Carbon::parse($callBack)->format('M d, Y g:i A') : 'N/A';
         })
         ->addColumn('action', function($data){
+            $leadId = $data->QuoteInformation->QuoteLead->leads->id;
             $viewButton = '<button class="edit btn btn-outline-info btn-sm viewButton" id="'.$data->id.'"><i class="ri-eye-line"></i></button>';
+            $viewNoteButton = '<button class="btn btn-outline-primary btn-sm waves-effect waves-light viewNotedButton" id="'.$leadId.'"><i class="ri-message-2-line"></i></button>';
             $processButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light processButton" id="'.$data->id.'"><i class=" ri-task-line"></i></button>';
-            return $viewButton;
+            return $viewButton . ' ' . $viewNoteButton ;
         })
-        ->rawColumns(['action', 'status'])
+        ->rawColumns(['action', 'status', 'companyName'])
         ->make(true);
     }
 
@@ -262,13 +260,13 @@ class BrokerAssistantController extends Controller
         $quotationProduct = new BrokerQuotation();
         $userProfileId = Auth::user()->userProfile->id;
         $data = $quotationProduct->getAssignQoutedLead($userProfileId, [9, 10]);
-        // dd($data);
+
         return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
-            $companyLink = '<a href="" class="makePaymentLink" id="'.$data->id.'">'.$companyName.'</a>';
-            return $companyName;
+            $companyLink = '<a href="" class="viewButton" id="'.$data->id.'">'.$companyName.'</a>';
+            return $companyLink;
         })
         ->addColumn('quotedBy', function($data){
             $quoter = UserProfile::find($data->user_profile_id);
@@ -315,24 +313,26 @@ class BrokerAssistantController extends Controller
         })
         ->addColumn('action', function($data){
             $paymentInformation = PaymentInformation::where('selected_quote_id', $data->selected_quote_id)->latest()->first();
+            $leadId = $data->QuoteInformation->QuoteLead->leads->id;
             $paymentInformationId = $paymentInformation ? $paymentInformation->id : 0;
             $paymentInformationStatus = $paymentInformation ? $paymentInformation->status : 'Unknown';
             $viewButton = '<button class="edit btn btn-outline-info btn-sm viewButton" id="'.$data->id.'"><i class="ri-eye-line"></i></button>';
             $resendButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light resendButton" id="'.$paymentInformationId.'"><i class="  ri-repeat-2-line"></i></button>';
             $editButton = '<button class="btn btn-outline-primary btn-sm editButton" id="'.$paymentInformationId.'"><i class="ri-pencil-line"></i></button>';
             $processButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light processButton" id="'.$data->id.'"><i class=" ri-task-line"></i></button>';
+            $viewNoteButton = '<button class="btn btn-outline-primary btn-sm waves-effect waves-light viewNotedButton" id="'.$leadId.'"><i class="ri-message-2-line"></i></button>';
             if($paymentInformationStatus == 'pending'){
-                return $viewButton;
+                return $viewButton . ' ' . $viewNoteButton;
             }elseif($paymentInformationStatus == 'charged'){
-                return $viewButton . ' ' . $processButton;
+                return $viewButton . ' ' . $processButton . ' ' . $viewNoteButton;
             }elseif(($paymentInformationStatus == 'declined') || ($paymentInformationStatus == 'resend')){
 
-                return $viewButton. ' ' . $resendButton;
+                return $viewButton. ' ' . $resendButton . ' ' . $viewNoteButton;
             }else{
-                return $viewButton;
+                return $viewButton . ' ' . $viewNoteButton;
             }
         })
-        ->rawColumns(['action', 'status'])
+        ->rawColumns(['action', 'status', 'companyName'])
         ->make(true);
     }
 
@@ -345,8 +345,8 @@ class BrokerAssistantController extends Controller
         ->addIndexColumn()
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
-            $companyLink = '<a href="" class="makePaymentLink" id="'.$data->id.'">'.$companyName.'</a>';
-            return $companyName;
+            $companyLink = '<a href="" class="viewButton" id="'.$data->id.'">'.$companyName.'</a>';
+            return $companyLink;
         })
         ->addColumn('quotedBy', function($data){
             $quoter = UserProfile::find($data->user_profile_id);
@@ -418,7 +418,98 @@ class BrokerAssistantController extends Controller
                     break;
             }
         })
-        ->rawColumns(['action', 'status'])
+        ->rawColumns(['action', 'status', 'companyName'])
+        ->make(true);
+    }
+
+    public function getRecentBoundProduct(Request $request)
+    {
+        $quotationProduct = new BrokerQuotation();
+        $userProfileId = Auth::user()->userProfile->id;
+        $data = $quotationProduct->recentBoundInformation($userProfileId);
+
+        return DataTables::of($data)
+        ->addIndexColumn()
+        ->addColumn('companyName', function($data){
+            $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
+            $companyLink = '<a href="" class="viewButton" id="'.$data->id.'">'.$companyName.'</a>';
+            return $companyLink;
+        })
+        ->addColumn('quotedBy', function($data){
+            $quoter = UserProfile::find($data->user_profile_id);
+            return $quoter ? $quoter->fullAmericanName() : 'UNKNOWN';
+        })
+        ->addColumn('appointedBy', function($data){
+            $appointedBy = UserProfile::find($data->QuoteInformation->user_profile_id);
+            return $appointedBy ? $appointedBy->fullAmericanName() : 'UNKNOWN';
+        })
+        ->addColumn('complianceOfficer', function($data){
+            $complianceOfficerName = UserProfile::find(3)->fullAmericanName();
+            return $complianceOfficerName ? $complianceOfficerName : 'UNKNOWN';
+        })
+        ->addColumn('status', function($data){
+            $statusLabel = '';
+            $class = '';
+            Switch ($data->status) {
+                case 6:
+                    $statusLabel = 'Pending';
+                    $class = 'bg-warning';
+                    break;
+                case 11:
+                    $statusLabel = 'Bound';
+                    $class = 'bg-success';
+                    break;
+                case 12:
+                    $statusLabel = 'Binding';
+                    $class = 'bg-warning';
+                    break;
+                case 14:
+                    $statusLabel = 'Declined';
+                    $class = 'bg-danger';
+                    break;
+                case 15:
+                    $statusLabel = 'Resend';
+                    $class = 'bg-warning';
+                    break;
+                default:
+                    $class = 'bg-secondary';
+                    $statusLabel = $data->status;
+                    break;
+            }
+            return "<span class='badge {$class}'>{$statusLabel}</span>";
+        })
+        ->addColumn('boundDate', function($data){
+            $bound = BoundInformation::where('quoatation_product_id', $data->id)->first('bound_date');
+            return $bound ? $bound->bound_date : 'N/A';
+        })
+        ->addColumn('action', function($data){
+            $leadId = $data->QuoteInformation->QuoteLead->leads->id;
+            $viewButton = '<button class="btn btn-outline-info btn-sm viewButton" id="'.$data->id.'"><i class="ri-eye-line"></i></button>';
+            $processButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light processButton" id="'.$data->id.'"><i class=" ri-task-line"></i></button>';
+            $viewNotedButton = '<button class="btn btn-outline-primary btn-sm waves-effect waves-light viewNotedButton" id="'.$leadId.'"><i class="ri-message-2-line"></i></button>';
+            $resendBindButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light resendBindButton" id="'.$data->id.'"><i class="  ri-repeat-2-line"></i></button>';
+            Switch($data->status){
+                case 6:
+                    return $viewButton;
+                    break;
+                case 11:
+                    return $viewButton;
+                    break;
+                case 12:
+                    return $viewButton;
+                    break;
+                case 14:
+                    return $viewButton . ' ' . $viewNotedButton;
+                    break;
+                case 15:
+                    return $viewButton;
+                    break;
+                default:
+                    return $viewButton;
+                    break;
+            }
+        })
+        ->rawColumns(['action', 'status', 'companyName'])
         ->make(true);
     }
 }

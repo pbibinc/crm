@@ -18,7 +18,7 @@ import "../style/general-information.css";
 import { ContextData } from "../contexts/context-data-provider";
 import { useBusinessOwnersPolicy } from "../contexts/business-owners-policy-context";
 const BusinessOwnersPolicyForm = () => {
-    const { businessOwnersPolicyData } = useBusinessOwnersPolicy();
+    const { businessOwnersPolicyData } = useBusinessOwnersPolicy() || {};
     //setting for getting lead data from session stroage
     const storedLeads = JSON.parse(sessionStorage.getItem("lead"));
 

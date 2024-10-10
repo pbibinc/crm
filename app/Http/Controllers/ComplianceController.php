@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\BrokerQuotation;
-use App\Models\QuotationProduct;
+use Carbon\Carbon;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
+use App\Models\BrokerQuotation;
+use App\Models\QuotationProduct;
 use PhpParser\Node\Stmt\Switch_;
+use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
+
 class ComplianceController extends Controller
 {
     /**
@@ -92,13 +94,14 @@ class ComplianceController extends Controller
         $brokerQuotation = new BrokerQuotation();
         $userId = auth()->user()->id;
         $userProfileId = UserProfile::where('user_id' , $userId)->first()->id;
-        $data = $brokerQuotation->getAgentProductByBrokerUserprofileId($userProfileId, 22);
+        $data = $brokerQuotation->getAgentProductByBrokerUserprofileId($userProfileId, [22, 3]);
         // $data = QuotationProduct::where('status', 22)->orderBy('updated_at', 'desc')->get();
         return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
-            return $companyName;
+            $companyLink = '<a href="" class="viewButton" id="'.$data->id.'">'.$companyName.'</a>';
+            return $companyLink;
         })
         ->addColumn('quotedBy', function($data){
             $quoter = UserProfile::find($data->user_profile_id);
@@ -108,6 +111,25 @@ class ComplianceController extends Controller
             $appointedBy = UserProfile::find($data->QuoteInformation->user_profile_id);
             return $appointedBy ? $appointedBy->fullAmericanName() : 'UNKNOWN';
         })
+        ->addColumn('brokerStatus', function($data){
+            $statusLabel = '';
+            $class = '';
+            Switch ($data->status) {
+                case 22:
+                    $statusLabel = 'Pending';
+                    $class = 'bg-warning';
+                    break;
+                case 3:
+                    $statusLabel = 'Approved';
+                    $class = 'bg-success';
+                    break;
+                default:
+                    $statusLabel = 'Unknown';
+                    $class = 'bg-secondary';
+                    break;
+            }
+            return "<span class='badge {$class}'>{$statusLabel}</span>";
+        })
         ->addColumn('broker', function($data){
             $broker = BrokerQuotation::where(
                 'quote_product_id', $data->id
@@ -116,11 +138,17 @@ class ComplianceController extends Controller
             return $userProfile ? $userProfile : 'UNKNOWN';
         })
         ->addColumn('action', function($data){
+            $leadId = $data->QuoteInformation->QuoteLead->leads->id;
             $viewButton = '<button class="edit btn btn-outline-info btn-sm viewButton" id="'.$data->id.'"><i class="ri-eye-line"></i></button>';
-            $processButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light processButton" id="'.$data->id.'"><i class=" ri-task-line"></i></button>';
-            return $viewButton . ' ' . $processButton;
+            $processButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light processButton" id="'.$data->id.'" data-lead-id="'.$leadId.'"><i class=" ri-task-line"></i></button>';
+            $viewNotedButton = '<button class="btn btn-outline-primary btn-sm waves-effect waves-light viewNotedButton" id="'.$leadId.'"><i class="ri-message-2-line"></i></button>';
+            if($data->status == 3){
+                return $viewButton . ' ' . $viewNotedButton;
+            }else{
+                return $viewButton . ' ' . $processButton . ' ' . $viewNotedButton;
+            }
         })
-        ->rawColumns(['action'])
+        ->rawColumns(['action', 'brokerStatus', 'companyName'])
         ->make(true);
     }
 
@@ -129,13 +157,14 @@ class ComplianceController extends Controller
         $brokerQuotation = new BrokerQuotation();
         $userId = auth()->user()->id;
         $userProfileId = UserProfile::where('user_id' , $userId)->first()->id;
-        $data = $brokerQuotation->getAgentProductByBrokerUserprofileId($userProfileId, 3);
+        $data = $brokerQuotation->getAgentProductByBrokerUserprofileId($userProfileId, 4);
         // $data = QuotationProduct::where('status', 3)->orderBy('updated_at', 'desc')->get();
         return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
-            return $companyName;
+            $companyLink = '<a href="" class="viewButton" id="'.$data->id.'">'.$companyName.'</a>';
+            return $companyLink;
         })
         ->addColumn('quotedBy', function($data){
             $quoter = UserProfile::find($data->user_profile_id);
@@ -152,12 +181,18 @@ class ComplianceController extends Controller
             $userProfile = UserProfile::find($broker->user_profile_id)->fullAmericanName();
             return $userProfile ? $userProfile : 'UNKNOWN';
         })
-        ->addColumn('action', function($data){
-            $viewButton = '<button class="edit btn btn-outline-info btn-sm viewButton" id="'.$data->id.'"><i class="ri-eye-line"></i></button>';
-            $processButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light processButton" id="'.$data->id.'"><i class=" ri-task-line"></i></button>';
-            return $viewButton;
+        ->addColumn('callback', function($data){
+            $callBack = $data->QuotationProductCallback->date_time ?? null;
+            return $callBack ? Carbon::parse($callBack)->format('M d, Y g:i A') : 'N/A';
         })
-        ->rawColumns(['action'])
+        ->addColumn('action', function($data){
+            $leadId = $data->QuoteInformation->QuoteLead->leads->id;
+            $viewButton = '<button class="edit btn btn-outline-info btn-sm viewButton" id="'.$data->id.'"><i class="ri-eye-line"></i></button>';
+            $viewNotedButton = '<button class="btn btn-outline-primary btn-sm waves-effect waves-light viewNotedButton" id="'.$leadId.'"><i class="ri-message-2-line"></i></button>';
+            $processButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light processButton" id="'.$data->id.'"><i class=" ri-task-line"></i></button>';
+            return $viewButton . ' ' . $viewNotedButton;
+        })
+        ->rawColumns(['action', 'companyName'])
         ->make(true);
     }
 
@@ -172,7 +207,8 @@ class ComplianceController extends Controller
         ->addIndexColumn()
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
-            return $companyName;
+            $companyLink = '<a href="" class="viewButton" id="'.$data->id.'">'.$companyName.'</a>';
+            return $companyLink;
         })
         ->addColumn('quotedBy', function($data){
             $quoter = UserProfile::find($data->user_profile_id);
@@ -213,11 +249,13 @@ class ComplianceController extends Controller
             return "<span class='badge {$class}'>{$statusLabel}</span>";
         })
         ->addColumn('action', function($data){
+            $leadId = $data->QuoteInformation->QuoteLead->leads->id;
             $viewButton = '<button class="edit btn btn-outline-info btn-sm viewButton" id="'.$data->id.'"><i class="ri-eye-line"></i></button>';
+            $viewNotedButton = '<button class="btn btn-outline-primary btn-sm waves-effect waves-light viewNotedButton" id="'.$leadId.'"><i class="ri-message-2-line"></i></button>';
             $processButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light processButton" id="'.$data->id.'"><i class=" ri-task-line"></i></button>';
-            return $viewButton;
+            return $viewButton . ' ' . $viewNotedButton;
         })
-        ->rawColumns(['action', 'status'])
+        ->rawColumns(['action', 'status', 'companyName'])
         ->make(true);
     }
 
@@ -231,7 +269,8 @@ class ComplianceController extends Controller
         ->addIndexColumn()
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
-            return $companyName;
+            $companyLink = '<a href="" class="viewButton" id="'.$data->id.'">'.$companyName.'</a>';
+            return $companyLink;
         })
         ->addColumn('quotedBy', function($data){
             $quoter = UserProfile::find($data->user_profile_id);
@@ -280,11 +319,13 @@ class ComplianceController extends Controller
             return "<span class='badge {$class}'>{$statusLabel}</span>";
         })
         ->addColumn('action', function($data){
+            $leadId = $data->QuoteInformation->QuoteLead->leads->id;
             $viewButton = '<button class="edit btn btn-outline-info btn-sm viewButton" id="'.$data->id.'"><i class="ri-eye-line"></i></button>';
             $processButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light processButton" id="'.$data->id.'"><i class=" ri-task-line"></i></button>';
-            return $viewButton;
+            $viewNotedButton = '<button class="btn btn-outline-primary btn-sm waves-effect waves-light viewNotedButton" id="'.$leadId.'"><i class="ri-message-2-line"></i></button>';
+            return $viewButton . ' ' . $viewNotedButton;
         })
-        ->rawColumns(['action', 'status'])
+        ->rawColumns(['action', 'status', 'companyName'])
         ->make(true);
     }
 
@@ -298,7 +339,8 @@ class ComplianceController extends Controller
         ->addIndexColumn()
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
-            return $companyName;
+            $companyLink = '<a href="" class="viewButton" id="'.$data->id.'">'.$companyName.'</a>';
+            return $companyLink;
         })
         ->addColumn('quotedBy', function($data){
             $quoter = UserProfile::find($data->user_profile_id);
@@ -316,11 +358,13 @@ class ComplianceController extends Controller
             return $userProfile ? $userProfile : 'UNKNOWN';
         })
         ->addColumn('action', function($data){
+            $leadId = $data->QuoteInformation->QuoteLead->leads->id;
             $viewButton = '<button class="edit btn btn-outline-info btn-sm viewButton" id="'.$data->id.'"><i class="ri-eye-line"></i></button>';
             $processButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light processButton" id="'.$data->id.'"><i class=" ri-task-line"></i></button>';
-            return $viewButton;
+            $viewNotedButton = '<button class="btn btn-outline-primary btn-sm waves-effect waves-light viewNotedButton" id="'.$leadId.'"><i class="ri-message-2-line"></i></button>';
+            return $viewButton . ' ' . $viewNotedButton;
         })
-        ->rawColumns(['action', 'status'])
+        ->rawColumns(['action', 'status', 'companyName'])
         ->make(true);
     }
 }

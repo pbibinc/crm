@@ -140,8 +140,8 @@
             <div class="modal-body">
                 <div class="row mb-3">
                     <div>
-                        <textarea required="" class="form-control" rows="5" placeholder="Type a note..." id="noteDescription"
-                            required></textarea>
+                        <textarea required="" class="form-control" rows="5" placeholder="Type a note..."
+                            id="declinedNoteDescription" required></textarea>
                         <div class="invalid-feedback" id="noteDescriptionError"></div>
                     </div>
                     <input type="hidden" name="declinedLeadId" id="declinedLeadId">
@@ -153,8 +153,8 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-outline-primary waves-effect waves-light" id="logNote"><i
-                        class="ri-send-plane-fill"></i>Log Note</button>
+                <button type="button" class="btn btn-outline-primary waves-effect waves-light"
+                    id="declinedLogNote"><i class="ri-send-plane-fill"></i>Log Note</button>
             </div>
         </div>
     </div>
@@ -240,12 +240,12 @@
 
         });
 
-        $('#logNote').on('click', function(e) {
+        $('#declinedLogNote').on('click', function(e) {
             e.preventDefault();
             var noteTitle = $('#declinedHiddenTitle').val();
             var productId = $('#declinedHiddenProductId').val();
             var leadId = $('#declinedLeadId').val();
-            var noteDescription = $('#noteDescription').val();
+            var noteDescription = $('#declinedNoteDescription').val();
             var userToNotify = $('#userToNotify').val();
             var bindingProductStatus = $('#bindingProductStatus').val();
             var status = 14;
@@ -295,15 +295,16 @@
                                 text: 'has been saved',
                                 icon: 'success'
                             }).then((result) => {
-                                if (result.isConfirmed) {
-                                    $('.getConfimedProductTable')
-                                        .DataTable().ajax.reload();
-                                    $('.incompleteBindingTable')
-                                        .DataTable().ajax.reload();
-                                    $('#declinedBindingModal')
-                                        .modal(
-                                            'hide')
-                                }
+                                location.reload();
+                                // if (result.isConfirmed) {
+                                //     $('.getConfimedProductTable')
+                                //         .DataTable().ajax.reload();
+                                //     $('.incompleteBindingTable')
+                                //         .DataTable().ajax.reload();
+                                //     $('#declinedBindingModal')
+                                //         .modal(
+                                //             'hide')
+                                // }
                             });
                         },
                         error: function() {

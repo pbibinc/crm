@@ -8,7 +8,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form class="dropzone mt-4 border-dashed" id="dropzone" action="{{ url('/file-upload') }}"
+                <form class="dropzone mt-4 border-dashed" id="quotationDropzone" action="{{ url('/file-upload') }}"
                     method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="_token" value="{{ csrf_token() }}" />
@@ -20,96 +20,33 @@
     </div>
 </div>
 
-<ul class="nav nav-pills nav-justified" role="tablistProduct">
-    @foreach ($products as $key => $product)
-        <li class="nav-item waves-effect waves-light">
-            <a class="nav-link navProfile {{ $key === 0 ? 'active' : '' }}" data-bs-toggle="tab"
-                href="#{{ str_replace(' ', '', $product->product) }}Quote" role="tab"
-                id="{{ str_replace(' ', '', $product->product) }}Button" style="white-space: nowrap;">
-                {{ $product->product }}
-            </a>
-        </li>
-    @endforeach
-</ul>
-
-<div class="tab-content p-3 text-muted">
-    @foreach ($products as $key => $product)
-        <div class="tab-pane fade {{ $key === 0 ? 'show active' : '' }}"
-            id="{{ str_replace(' ', '', $product->product) }}Quote" role="tabpanel">
-            @if ($product->product == 'General Liability')
-                @include('leads.appointed_leads.leads-quotation-forms.quoation-form', [
-                    'generalInformation' => $generalInformation,
-                    'quationMarket' => $quationMarket->getMarketByProduct('General Liability'),
-                    'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
-                        'General Liability',
-                        $lead->quoteLead->QuoteInformation->id),
-                ])
-            @elseif ($product->product == 'Workers Compensation')
-                @include(
-                    'leads.appointed_leads.leads-quotation-forms.workers-compensation-quotation-form',
-                    [
-                        'generalInformation' => $generalInformation,
-                        'quationMarket' => $quationMarket->getMarketByProduct('Workers Compensation'),
-                        'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
-                            'Workers Compensation',
-                            $lead->quoteLead->QuoteInformation->id),
-                    ]
-                )
-            @elseif ($product->product == 'Commercial Auto')
-                @include('leads.appointed_leads.leads-quotation-forms.commercial-auto-quoation-form', [
-                    'generalInformation' => $generalInformation,
-                    'quationMarket' => $quationMarket->getMarketByProduct('Commercial Auto'),
-                    'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
-                        'Commercial Auto',
-                        $lead->quoteLead->QuoteInformation->id),
-                ])
-            @elseif ($product->product == 'Excess Liability')
-                @include('leads.appointed_leads.leads-quotation-forms.excess-liability-quoation-form', [
-                    'generalInformation' => $generalInformation,
-                    'quationMarket' => $quationMarket->getMarketByProduct('Excess Liability'),
-                    'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
-                        'Excess Liability',
-                        $lead->quoteLead->QuoteInformation->id),
-                ])
-            @elseif ($product->product == 'Tools Equipment')
-                @include('leads.appointed_leads.leads-quotation-forms.tools-equipment-quoation-form', [
-                    'generalInformation' => $generalInformation,
-                    'quationMarket' => $quationMarket->getMarketByProduct('Tools Equipment'),
-                    'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
-                        'Tools Equipment',
-                        $lead->quoteLead->QuoteInformation->id),
-                ])
-            @elseif ($product->product == 'Builders Risk')
-                @include('leads.appointed_leads.leads-quotation-forms.builders-risk-quoation-form', [
-                    'generalInformation' => $generalInformation,
-                    'quationMarket' => $quationMarket->getMarketByProduct('Builders Risk'),
-                    'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
-                        'Builders Risk',
-                        $lead->quoteLead->QuoteInformation->id),
-                ])
-            @elseif ($product->product == 'Business Owners')
-                @include('leads.appointed_leads.leads-quotation-forms.business-owners-quoation-form', [
-                    'generalInformation' => $generalInformation,
-                    'quationMarket' => $quationMarket->getMarketByProduct('Business Owners Policy'),
-                    'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
-                        'Business Owners',
-                        $lead->quoteLead->QuoteInformation->id),
-                ])
-            @endif
-        </div>
-    @endforeach
-
-
-
-</div>
+@include('leads.appointed_leads.leads-quotation-forms.quoation-form', [
+    'generalInformation' => $generalInformation,
+    'quationMarket' => $quationMarket->getMarketByProduct('General Liability'),
+    'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+        'General Liability',
+        $lead->quoteLead->QuoteInformation->id),
+    'products' => $lead->getQuotationProducts(),
+    'formId' => 'form_' . $product->id,
+    'productForm' => 'General_Liability',
+    'productsDropdown' => [
+        'Workers Compensation',
+        'General Liability',
+        'Commercial Auto',
+        'Excess Liability',
+        'Tools Equipment',
+        'Builders Risk',
+        'Business Owners',
+    ],
+])
 
 <script>
     Dropzone.autoDiscover = false;
-    var quotationDropzone
+    var quotationDropzone;
     $(document).ready(function() {
 
         var url = "{{ env('APP_FORM_URL') }}" + "/upload";
-        quotationDropzone = new Dropzone(".dropzone", {
+        quotationDropzone = new Dropzone("#quotationDropzone", {
             clickable: true,
             init: function() {
                 this.on("sending", function(file, xhr, formData) {
@@ -206,13 +143,13 @@
             }
         });
 
-        var product = '';
         //edit button functionalities
-        $(document).on('click', '.editButton', function(e) {
+        $(document).on('click', '.editQuoteButton', function(e) {
             e.preventDefault();
             var id = $(this).attr('id');
-            product = $(this).attr('data-product');
-            $('#action' + product).val('edit');
+            // product = $(this).attr('data-product');
+            console.log(id);
+            $('#action').val('edit');
             $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
             $.ajax({
                 url: "{{ route('edit-quotation-comparison') }}",
@@ -223,39 +160,45 @@
                 },
                 dataType: "json",
                 success: function(response) {
-                    console.log(response);
                     var url = `{{ asset('${response.media.filepath}') }}`;
                     var filename = response.data.basename;
 
                     //pricing breakdown inputs
-                    $('#premium' + product).val(response.pricingBreakdown.premium);
-                    $('#endorsements' + product).val(response.pricingBreakdown
+                    $('#premium').val(response.pricingBreakdown.premium);
+                    $('#endorsements').val(response.pricingBreakdown
                         .endorsements);
-                    $('#policyFee' + product).val(response.pricingBreakdown.policy_fee);
-                    $('#inspectionFee' + product).val(response.pricingBreakdown
+                    $('#policyFee').val(response.pricingBreakdown
+                        .policy_fee);
+                    $('#inspectionFee').val(response.pricingBreakdown
                         .inspection_fee);
-                    $('#stampingFee' + product).val(response.pricingBreakdown.stamping_fee);
-                    $('#surplusLinesTax' + product).val(response.pricingBreakdown
+                    $('#stampingFee').val(response.pricingBreakdown
+                        .stamping_fee);
+                    $('#surplusLinesTax').val(response.pricingBreakdown
                         .surplus_lines_tax);
-                    $('#placementFee' + product).val(response.pricingBreakdown
+                    $('#placementFee').val(response.pricingBreakdown
                         .placement_fee);
-                    $('#miscellaneousFee' + product).val(response.pricingBreakdown
+                    $('#miscellaneousFee').val(response.pricingBreakdown
                         .miscellaneous_fee);
 
                     //quote comparison inputs
-                    $('#marketDropdown' + product).val(String(response.data
+                    $('#marketDropdown').val(String(response.data
                         .quotation_market_id));
-                    $('#fullPayment' + product).val(response.data.full_payment);
-                    $('#downPayment' + product).val(response.data.down_payment);
-                    $('#monthlyPayment' + product).val(response.data.monthly_payment);
-                    $('#numberOfPayment' + product).val(response.data.number_of_payments);
-                    $('#brokerFee' + product).val(response.data.broker_fee);
-                    $('#product_hidden_id' + product).val(response.data.id);
-                    $('#productId' + product).val(response.data.quotation_product_id);
-                    $('#quoteNo' + product).val(response.data.quote_no);
-                    $('#currentMarketId' + product).val(response.data.quotation_market_id);
-                    $('#effectiveDate' + product).val(response.data.effective_date);
-
+                    $('#productDropdown').val(response.data.quotation_product.product);
+                    $('#productDropdown').attr('disabled', true);
+                    $('#fullPayment').val(response.data.full_payment);
+                    $('#downPayment').val(response.data.down_payment);
+                    $('#monthlyPayment').val(response.data
+                        .monthly_payment);
+                    $('#numberOfPayment').val(response.data
+                        .number_of_payments);
+                    $('#brokerFee').val(response.data.broker_fee);
+                    $('#product_hidden_id').val(response.data.id);
+                    $('#productId').val(response.data
+                        .quotation_product_id);
+                    $('#quoteNo').val(response.data.quote_no);
+                    $('#currentMarketId').val(response.data
+                        .quotation_market_id);
+                    $('#effectiveDate').val(response.data.effective_date);
                     $('#medias').hide();
                     $('#mediaLabelId').hide();
                     $('#action_button').val('Update');
@@ -266,11 +209,89 @@
                         $('#reccomended').prop('checked', false);
                         $('#recommended_hidden').val(0);
                     }
-                    $('#addQuoteModal' + product).modal('show');
+                    $(`#addQuoteModal`).modal('show');
                 }
             });
 
         });
+
+        //view quote button
+        $(document).on('click', '.viewQuoteButton', function(e) {
+            e.preventDefault();
+            var id = $(this).attr('id');
+            // product = $(this).attr('data-product');
+            console.log(id);
+            $('#action').val('edit');
+            $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
+            $.ajax({
+                url: "{{ route('edit-quotation-comparison') }}",
+                method: "POST",
+                data: {
+                    id: id,
+                    _token: "{{ csrf_token() }}"
+                },
+                dataType: "json",
+                success: function(response) {
+                    console.log(response.data.quotation_product.product);
+                    var url = `{{ asset('${response.media.filepath}') }}`;
+                    var filename = response.data.basename;
+
+                    //pricing breakdown inputs
+                    $('#premium').val(response.pricingBreakdown.premium).attr('disabled',
+                        true);
+                    $('#endorsements').val(response.pricingBreakdown
+                        .endorsements).attr('disabled', true);
+                    $('#policyFee').val(response.pricingBreakdown
+                        .policy_fee).attr('disabled', true);
+                    $('#inspectionFee').val(response.pricingBreakdown
+                        .inspection_fee).attr('disabled', true);
+                    $('#stampingFee').val(response.pricingBreakdown
+                        .stamping_fee).attr('disabled', true);
+                    $('#surplusLinesTax').val(response.pricingBreakdown
+                        .surplus_lines_tax).attr('disabled', true);
+                    $('#placementFee').val(response.pricingBreakdown
+                        .placement_fee).attr('disabled', true);
+                    $('#miscellaneousFee').val(response.pricingBreakdown
+                        .miscellaneous_fee).attr('disabled', true);
+
+                    //quote comparison inputs
+                    $('#marketDropdown').val(String(response.data
+                        .quotation_market_id)).attr('disabled', true);
+                    $('#productDropdown').val(response.data.quotation_product.product);
+                    $('#productDropdown').attr('disabled', true);
+                    $('#fullPayment').val(response.data.full_payment).attr('disabled',
+                        true);
+                    $('#downPayment').val(response.data.down_payment).attr('disabled',
+                        true);
+                    $('#monthlyPayment').val(response.data
+                        .monthly_payment).attr('disabled', true);
+                    $('#numberOfPayment').val(response.data
+                        .number_of_payments).attr('disabled', true);
+                    $('#brokerFee').val(response.data.broker_fee).attr('disabled', true);
+                    $('#product_hidden_id').val(response.data.id).attr('disabled', true);
+                    $('#productId').val(response.data
+                        .quotation_product_id);
+                    $('#quoteNo').val(response.data.quote_no).attr('disabled', true);
+                    $('#currentMarketId').val(response.data
+                        .quotation_market_id).attr('disabled', true);
+                    $('#effectiveDate').val(response.data.effective_date).attr('disabled',
+                        true);
+                    $('#medias').hide();
+                    $('#mediaLabelId').hide();
+                    $('#action_button').val('Update');
+                    $('#action_button').hide();
+                    if (response.data.recommended == 1) {
+                        $('#reccomended').prop('checked', true);
+                        $('#recommended_hidden').val(1);
+                    } else {
+                        $('#reccomended').prop('checked', false);
+                        $('#recommended_hidden').val(0);
+                    }
+                    $(`#addQuoteModal`).modal('show');
+                }
+            });
+        });
+
 
         //deletion of quote
         $(document).on('click', '.deleteButton', function(e) {
@@ -302,7 +323,9 @@
                                 icon: 'success'
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    location.reload();
+                                    $('#qoutation-table').DataTable()
+                                        .ajax
+                                        .reload();
                                 }
                             })
                         },
@@ -323,9 +346,9 @@
             e.preventDefault();
             product = $(this).attr('data-product');
             console.log(product);
-            $('#addQuoteModal' + product).modal('show');
+            $('#addQuoteModal').modal('show');
             // $('#action').val('add');
-            $(`#marketDropdown${product}, #fullPayment${product}, #downPayment${product}`).removeClass(
+            $(`#marketDropdown, #fullPayment, #downPayment`).removeClass(
                 'input-error');
             // $('#addQuoteModal').modal('show');
             $('#action_button').val('Add');
@@ -353,7 +376,7 @@
                     url: file.filepath
                 };
                 quotationDropzone.emit("addedfile", mockFile);
-                // myDropzone.emit("thumbnail", mockFile, file.filepath); // If you have thumbnails
+
                 quotationDropzone.emit("complete", mockFile);
             });
         };
@@ -391,93 +414,93 @@
         })
 
 
-
-
-        const products = ['Workers_Compensation', 'General_Liability', 'Commercial_Auto',
-            'Excess_Liability', 'Tools_Equipment', 'Builders_Risk', 'Business_Owners'
-        ]; // Add other products
-        products.forEach(handleFormSubmission);
-        products.forEach(handleRecommended);
-
+        $(`#create_record_`).on('click', function(e) {
+            e.preventDefault();
+            console.log('General_Liability');
+            $('#action').val('add');
+            $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
+            $(`#addQuoteModal`).modal('show');
+            $('#action_button').val('Add');
+            $('#medias').show();
+            $('#mediaLabelId').show();
+        });
 
 
         //checkbox for recommended
-        function handleRecommended(product) {
-            $(`#reccomended${product}`).change(function(e) {
-                if ($(this).is(':checked')) {
-                    $('#recommended_hidden' + product).val(1);
-                } else {
-                    $('#recommended_hidden' + product).val(0);
-                }
-            });
-        }
+        $(`#reccomended`).change(function(e) {
+            if ($(this).is(':checked')) {
+                $('#recommended_hidden').val(1);
+            } else {
+                $('#recommended_hidden').val(0);
+            }
+        });
 
-        //submition of form
-        function handleFormSubmission(product) {
-            $(`#quotationForm${product}`).on('submit', function(event) {
-                event.preventDefault();
-                console.log('submitting');
-                var formData = new FormData(this);
-                var action_url = '';
 
-                $(`#marketDropdown${product}, #fullPayment${product}, #downPayment${product}`)
-                    .removeClass('input-error');
-                let fullPayment = parseFloat($(`#fullPayment${product}`).val()) || 0;
-                let downPayment = parseFloat($(`#downPayment${product}`).val()) || 0;
+        $(`#quotationForm`).on('submit', function(event) {
+            event.preventDefault();
+            console.log('submitting');
+            var formData = new FormData(this);
+            var action_url = '';
 
-                if ($(`#action${product}`).val() == 'add') {
-                    action_url = "{{ route('save-quotation-comparison') }}";
-                } else if ($(`#action${product}`).val() == 'edit') {
-                    action_url = "{{ route('update-quotation-comparison') }}";
-                }
+            $(`#marketDropdown, #fullPayment, #downPayment`)
+                .removeClass('input-error');
+            let fullPayment = parseFloat($(`#fullPayment`).val()) || 0;
+            let downPayment = parseFloat($(`#downPayment`).val()) || 0;
 
-                console.log(action_url);
-                if (fullPayment < downPayment) {
-                    $(`#fullPayment${product}`).addClass('input-error');
-                    $(`#downPayment${product}`).addClass('input-error');
-                } else {
-                    $.ajax({
-                        url: action_url,
-                        method: "POST",
-                        processData: false, // Prevent jQuery from processing the data
-                        contentType: false,
-                        data: formData,
-                        dataType: "json",
-                        success: function(response) {
+            if ($(`#action`).val() == 'add') {
+                action_url = "{{ route('save-quotation-comparison') }}";
+            } else if ($(`#action`).val() == 'edit') {
+                action_url = "{{ route('update-quotation-comparison') }}";
+            }
+
+            console.log(action_url);
+            if (fullPayment < downPayment) {
+                $(`#fullPayment`).addClass('input-error');
+                $(`#downPayment`).addClass('input-error');
+            } else {
+                $.ajax({
+                    url: action_url,
+                    method: "POST",
+                    processData: false, // Prevent jQuery from processing the data
+                    contentType: false,
+                    data: formData,
+                    dataType: "json",
+                    success: function(response) {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Quotation Comparison has been saved',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            $(`#addQuoteModal`).modal('hide');
+                            // Optionally reload the data table or update the UI
+                            $('#qoutation-table').DataTable()
+                                .ajax
+                                .reload();
+                        });
+                    },
+                    error: function(data) {
+                        var errors = data.responseJSON.errors;
+                        console.log(data);
+                        if (data.status == 422) {
                             Swal.fire({
-                                position: 'center',
-                                icon: 'success',
-                                title: 'Quotation Comparison has been saved',
-                                showConfirmButton: false,
-                                timer: 1500
-                            }).then(() => {
-                                $(`#addQuoteModal${product}`).modal('hide');
-                                // Optionally reload the data table or update the UI
-                                location.reload();
+                                title: 'Error',
+                                text: data.responseJSON.message ||
+                                    'An error occurred',
+                                icon: 'error'
                             });
-                        },
-                        error: function(data) {
-                            var errors = data.responseJSON.errors;
-                            console.log(data);
-                            if (data.status == 422) {
-                                Swal.fire({
-                                    title: 'Error',
-                                    text: data.responseJSON.message ||
-                                        'An error occurred',
-                                    icon: 'error'
-                                });
-                            }
-                            if (errors) {
-                                $.each(errors, function(key, value) {
-                                    $(`#${key}${product}`).addClass('input-error');
-                                    $(`#${key}${product}_error`).html(value);
-                                });
-                            }
                         }
-                    });
-                }
-            });
-        }
+                        if (errors) {
+                            $.each(errors, function(key, value) {
+                                $(`#${key}`).addClass('input-error');
+                                $(`#${key}_error`).html(value);
+                            });
+                        }
+                    }
+                });
+            }
+        });
 
         //function for parsing
         function parseCurrency(num) {
@@ -487,27 +510,161 @@
             return parseFloat(num.replace(/[^0-9-.]/g, ''));
         }
 
-        //calculate total premium
-        function calculateFullPayment() {
-            let premium = parseCurrency($(`#premium${product}`).val()) || 0;
-            let endorsements = parseCurrency($(`#endorsements${product}`).val()) || 0;
-            let policyFee = parseCurrency($(`#policyFee${product}`).val()) || 0;
-            let inspectionFee = parseCurrency($(`#inspectionFee${product}`).val()) || 0;
-            let stampingFee = parseCurrency($(`#stampingFee${product}`).val()) || 0;
-            let suplusLinesTax = parseCurrency($(`#suplusLinesTax${product}`).val()) || 0;
-            let placementFee = parseCurrency($(`#placementFee${product}`).val()) || 0;
-            let brokerFee = parseCurrency($(`#brokerFee${product}`).val()) || 0;
-            let miscellaneousFee = parseCurrency($(`#miscellaneousFee${product}`).val()) || 0;
+        $('.calculateInput').on('input', function() {
+            calculateFullPayment(product);
+        });
+
+        function calculateFullPayment(product) {
+            let premium = parseCurrency($(`#premium`).val()) || 0;
+            let endorsements = parseCurrency($(`#endorsements`).val()) || 0;
+            let policyFee = parseCurrency($(`#policyFee`).val()) || 0;
+            let inspectionFee = parseCurrency($(`#inspectionFee`).val()) || 0;
+            let stampingFee = parseCurrency($(`#stampingFee`).val()) || 0;
+            let suplusLinesTax = parseCurrency($(`#suplusLinesTax`).val()) || 0;
+            let placementFee = parseCurrency($(`#placementFee`).val()) || 0;
+            let brokerFee = parseCurrency($(`#brokerFee`).val()) || 0;
+            let miscellaneousFee = parseCurrency($(`#miscellaneousFee`).val()) || 0;
 
             let fullPayment = premium + endorsements + policyFee + inspectionFee + stampingFee +
                 suplusLinesTax +
                 placementFee + brokerFee + miscellaneousFee;
-            $(`#fullPayment${product}`).val('$ ' + fullPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g,
-                '$&,'));
+
+            $(`#fullPayment`).val('$ ' + fullPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
         }
 
-        $('.calculateInput').on('input', function() {
-            calculateFullPayment();
+        $(document).on('click', '.setNewQuotation', function(e) {
+            var id = $(this).attr('id');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You want to set this quote as new one?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, renew it!',
+                cancelButtonText: 'No, keep it'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('renewal-quote.store') }}",
+                        method: "POST",
+                        data: {
+                            id: id,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: 'Quotation Comparison has been renewed',
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                $('#qoutation-table').DataTable()
+                                    .ajax
+                                    .reload();
+                            });
+                        },
+                        error: function(data) {
+                            Swal.fire({
+                                title: 'Error',
+                                text: data.responseJSON.error,
+                                icon: 'error'
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        $(document).on('click', '.oldRenewQuotation', function(e) {
+            e.preventDefault();
+            var id = $(this).attr('id');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Making this quote as old one!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes!',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('renewal-quote.edit-renewal-quote') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                'content')
+                        },
+                        method: "POST",
+                        data: {
+                            id: id
+                        },
+                        success: function() {
+                            Swal.fire({
+                                title: 'Success',
+                                text: 'Quote has been made as old one',
+                                icon: 'success'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    $('#qoutation-table').DataTable()
+                                        .ajax
+                                        .reload();
+                                }
+                            })
+                        },
+                        error: function() {
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Something went wrong',
+                                icon: 'error'
+                            });
+                        }
+                    })
+                }
+            });
+
+        });
+
+        $('#addQuoteModal').on('hidden.bs.modal', function() {
+            console.log('modal closed');
+
+            // Reset the form fields
+            $('#quotationForm')[0].reset();
+
+            // Clear any input masks or custom fields (if applicable)
+            $('.input-mask').val('').trigger(
+                'input'); // Assuming you have input masks that need to be reset
+
+            // Reset dropdowns to default values (if needed)
+            $('#marketDropdown').val('');
+            $('#productDropdown').val('');
+
+            // Re-enable all fields that were disabled during 'view' mode
+            $('#quotationForm').find('input, select, textarea').removeAttr('disabled');
+
+            // Show file input fields if they were hidden
+            $('#medias').show();
+            $('#mediaLabelId').show();
+
+            // Remove attached files from file input
+            $('#medias').val('');
+
+            // Reset any custom flags or states
+            $('#recommended_hidden').val('0');
+            $('#renewalQuote').val('false');
+
+            // Reset checkboxes
+            $('#reccomended').prop('checked', false);
+
+            // Reset other hidden fields
+            $('#product_hidden_id').val('');
+            $('#currentMarketId').val('');
+
+            //reset action
+            $('#action').val('add');
+
+            // Reset the action button text and visibility
+            $('#action_button').val('Add');
+            $('#action_button').show();
         });
 
     });

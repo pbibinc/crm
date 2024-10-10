@@ -46,6 +46,7 @@ use App\Http\Controllers\MarketListController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\AirSlatePDFController;
 use App\Http\Controllers\BindingDocsController;
+use App\Http\Controllers\BindingDocsController;
 use App\Http\Controllers\DispositionController;
 use App\Http\Controllers\ScrubbedDncController;
 use App\Http\Controllers\UserProfileController;
@@ -58,8 +59,14 @@ use App\Http\Controllers\QuoteFormInfoController;
 use App\Http\Controllers\RenewalPolicyController;
 use App\Http\Controllers\RewritePolicyController;
 use App\Http\Controllers\SelectedQuoteController;
+use App\Http\Controllers\RenewalQuoteController;
+use App\Http\Controllers\AppTakerLeadsController;
+use App\Http\Controllers\RenewalPolicyController;
+use App\Http\Controllers\RewritePolicyController;
+use App\Http\Controllers\SelectedQuoteController;
 use App\Http\Controllers\TecnickcomPdfController;
 use App\Http\Controllers\API\LeadDetailController;
+use App\Http\Controllers\AppointedProductListController;
 use App\Http\Controllers\DepartmentListController;
 use App\Http\Controllers\PaymentChargedController;
 use App\Http\Controllers\RewriteBindingController;
@@ -72,32 +79,32 @@ use App\Http\Controllers\FinancingCompanyController;
 use App\Http\Controllers\PolicyForRenewalController;
 use App\Http\Controllers\PricingBreakdownController;
 use App\Http\Controllers\AuditRequiredFileController;
+use App\Http\Controllers\BrokerForFollowUpController;
 use App\Http\Controllers\EmbeddedSignatureController;
+use App\Http\Controllers\LeadTaskSchedulerController;
 use App\Http\Controllers\MarketingTemplateController;
 use App\Http\Controllers\WorkersCompPolicyController;
 use App\Http\Controllers\CancellationReportController;
 use App\Http\Controllers\GeneralInformationController;
-use App\Http\Controllers\PdfFillerUserFilesController;
 use App\Http\Controllers\AssignAgentToBrokerController;
 use App\Http\Controllers\AssignAppointedLeadController;
 use App\Http\Controllers\ForRewriteQuotationController;
-use App\Http\Controllers\InsuranceSurveyInfoController;
 use App\Http\Controllers\CommercialAutoPolicyController;
 use App\Http\Controllers\ToolsEquipmentPolicyController;
 use App\Http\Controllers\ForRewriteMakePaymentController;
 use App\Http\Controllers\AssignForRewritePolicyController;
 use App\Http\Controllers\NonCallBackDispositionController;
-use App\Http\Controllers\PdfFillerTemplateFilesController;
 use App\Http\Controllers\RequestForCancellationController;
 use App\Http\Controllers\CancellationEndorsementController;
 use App\Http\Controllers\CancelledPolicyForRecallController;
 use App\Http\Controllers\QuotationProductCallbackController;
 use App\Http\Controllers\AssignQuotedRenewalPolicyController;
 use App\Http\Controllers\BuildersRiskPolicyDetailsController;
+use App\Http\Controllers\PaymentInformationArchivedController;
 use App\Http\Controllers\BussinessOwnersPolicyDetailsController;
 use App\Http\Controllers\ExcessLiabilityInsurancePolicyController;
 use App\Http\Controllers\CancelledPolicyForRecall as ControllersCancelledPolicyForRecall;
-use App\Http\Controllers\ZeroBounceController;
+use App\Http\Controllers\GeneralNotificationController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -178,9 +185,11 @@ Route::middleware(['auth'])->group(function (){
         Route::get('/get-payment-information', [PaymentController::class, 'getPaymentInformation'])->name('get-payment-information');
         Route::post('/declined-payment', [PaymentController::class, 'declinedPayment'])->name('declined-payment');
         Route::post('/resend-payment-information', [PaymentController::class, 'resendPaymentInformation'])->name('resend-payment-information');
+        Route::delete('/delete-payment-information/{id}', [PaymentController::class, 'delete'])->name('delete-payment-information');
 
         //route for payment charged
         Route::post('/store-payment-charged', [PaymentChargedController::class, 'store'])->name('payment-charged.store');
+        Route::delete('/delete-payment-charged/{id}', [PaymentChargedController::class, 'delete'])->name('payment-charged.delete');
         Route::get('/payment-for-charged', [PaymentChargedController::class, 'index'])->name('payment-for-charged');
         Route::get('/payment-list', [PaymentChargedController::class, 'paymentList'])->name('payment-list');
         Route::post('/get-invoice-media', [PaymentChargedController::class, 'getInvoiceMedia'])->name('get-invoice-media');
@@ -189,6 +198,10 @@ Route::middleware(['auth'])->group(function (){
         Route::post('/upload-invoice', [PaymentChargedController::class, 'uploadFile'])->name('upload-invoice');
         Route::post('/delete-invoice', [PaymentChargedController::class, 'deleteInvoice'])->name('delete-invoice');
         Route::get('/export-payment-list', [PaymentChargedController::class, 'exportPaymentList'])->name('export-payment-list');
+
+        Route::resource('/payment-archive', PaymentInformationArchivedController::class);
+        Route::post('/payment-archive/get-payment-information', [PaymentInformationArchivedController::class, 'getPaymentArchivedList'])->name('payment-archive.get-payment-information');
+        Route::post('/payment-archive/restore', [PaymentInformationArchivedController::class, 'restore'])->name('payment-archive.restore');
     });
 
     //general information route module
@@ -224,6 +237,11 @@ Route::middleware(['auth'])->group(function (){
       Route::get('leads/archive', [LeadController::class, 'archive'])->name('leads.archive');
       Route::post('leads/{leads}/restore', [LeadController::class, 'restore'])->name('leads.restore');
       Route::post('leads/add/dnc', [LeadController::class, 'addDnc'])->name('leads.add.dnc');
+
+
+      Route::prefix('leads')->group(function(){
+        Route::resource('/appointed-product-list', AppointedProductListController::class);
+      });
 
       //route for website creation and function
       Route::resource('website', WebsiteController::class);
@@ -303,7 +321,7 @@ Route::middleware(['auth'])->group(function (){
 
 
         //route for assigning leads
-        Route::get('/', [AssignLeadController::class, 'index'])->name('assign');
+        Route::get('/leads-assigning', [AssignLeadController::class, 'index'])->name('assign');
         Route::get('/getDataTableLeads', [AssignLeadController::class, 'getDataTableLeads'])->name('getDataTableLeads');
         Route::post('/assign-leads', [AssignLeadController::class, 'assign'])->name('assign-leads');
         Route::post('/assign-random-leads', [AssignLeadController::class, 'assignRandomLeads'])->name('assign-random-leads');
@@ -327,6 +345,7 @@ Route::middleware(['auth'])->group(function (){
          Route::get('/assign-appointed-lead', [AssignAppointedLeadController::class, 'index'])->name('assign-appointed-lead');
          Route::post('/assign-appointed-lead/assign-lead', [AssignAppointedLeadController::class, 'assignAppointedLead'])->name('assign-leads-market-specialist');
          Route::get('/assign-appointed-lead/get-data-table', [AssignAppointedLeadController::class, 'getDataTable'])->name('get-data-table');
+         Route::post('/request-to-quoute', [AssignAppointedLeadController::class, 'requestToQuote'])->name('request-to-quote');
          Route::post('/assign-remark-leads', [AppTakerLeadsController::class, 'storeLeadRemarksDisposition'])->name('assign-remark-leads');
          Route::post('/update-remark-leads', [AppTakerLeadsController::class, 'updateLeadRemarksDisposition'])->name('update-remark-leads');
         });
@@ -345,6 +364,7 @@ Route::middleware(['auth'])->group(function (){
          Route::get('/lead-profile-view/{productId}', [QuotationController::class, 'leadProfileView'])->name('lead-profile-view');
 
          Route::get('/sync-selected-quote_id', [QuotationController::class, 'syncSelectedQuoteId'])->name('sync-selected-quote_id');
+         Route::post('/get-quote-list-table', [QuotationController::class, 'getQuoteListTable'])->name('get-quote-list-table');
 
          Route::post('/save-quotation-product', [QuotationController::class, 'saveQuotationProduct'])->name('save-quotation-product');
          Route::get('/get-comparison-data', [QuotationController::class, 'getComparisonData'])->name('get-comparison-data');
@@ -361,6 +381,7 @@ Route::middleware(['auth'])->group(function (){
          Route::get('/get-pending-product', [QuotationController::class, 'getPendingProduct'])->name('get-pending-product');
          Route::post('/quoted-product-profile', [QuotationController::class, 'quotedProductProfile'])->name('quoted-product-profile');
          Route::get('/broker-profile-view/{leadId}/{generalInformationId}/{productId}', [QuotationController::class, 'brokerProfileView'])->name('broker-profile-view');
+         Route::get('/broker-profile-view/{productId}', [QuotationController::class, 'brokerProfileViewProduct'])->name('broker-profile-view-product');
          Route::get('/get-assign-qouted-lead', [QuotationController::class, 'getAssignQoutedLead'])->name('get-assign-qouted-lead');
          Route::post('/void-qouted-lead', [QuotationController::class, 'voidQoutedLead'])->name('void-qouted-lead');
          Route::post('/redeploy-qouted-lead', [QuotationController::class, 'redeployQoutedLead'])->name('redeploy-qouted-lead');
@@ -395,7 +416,12 @@ Route::middleware(['auth'])->group(function (){
             Route::post('/getBindingProduct', [QuotedController::class, 'getBindingProduct'])->name('get-quoted-binding-product');
         });
 
+        Route::prefix('notification')->group(function(){
+            Route::resource('/general-notification', GeneralNotificationController::class);
+        });
+
         Route::prefix('broker-assistant')->group(function(){
+            //
             Route::resource('/broker-assistant', BrokerAssistantController::class);
             Route::post('/get-pending-product', [BrokerAssistantController::class, 'getPendingProduct'])->name('get-broker-pending-product');
             Route::post('/get-compliance-product', [BrokerAssistantController::class, 'getComplianceProduct'])->name('get-broker-compliance-product');
@@ -403,6 +429,14 @@ Route::middleware(['auth'])->group(function (){
             Route::post('/get-make-payment-list', [BrokerAssistantController::class, 'makePaymentList'])->name('get-make-payment-list');
             Route::post('/get-request-to-bind', [BrokerAssistantController::class, 'getRequestToBind'])->name('get-broker-request-to-bind');
             Route::post('/get-for-follow-up-product', [BrokerAssistantController::class, 'getForFollowUpProduct'])->name('get-for-follow-up-product');
+            Route::post('/get-recent-bound-product', [BrokerAssistantController::class, 'getRecentBoundProduct'])->name('get-recent-bound-product');
+
+
+            //Leads For Follow Up Broker Assistant
+            Route::resource('/leads-for-follow-up', BrokerForFollowUpController::class);
+            Route::post('/get-warm-product', [BrokerForFollowUpController::class, 'getWarmProduct'])->name('get-warm-product');
+            Route::post('/get-old-product', [BrokerForFollowUpController::class, 'getOldProduct'])->name('get-old-product');
+
         });
 
         Route::prefix('broker')->group(function(){
@@ -499,6 +533,7 @@ Route::middleware(['auth'])->group(function (){
             Route::post('/new-policy-list', [PoliciesController::class, 'newPolicyList'])->withoutMiddleware(['auth:sanctum'])->name('new-policy-list');
             Route::post('/change-policy-status/{id}', [PoliciesController::class, 'changeStatus'])->name('change-policy-status');
             Route::post('/client-policy-list', [PoliciesController::class, 'getClienPolicyList'])->name('client-policy-list');
+            Route::post('/client-active-policy-list', [PoliciesController::class, 'getClientActivePolicyList'])->name('client-active-policy-list');
             Route::post('/get-policy-information', [PoliciesController::class, 'getPolicyInformation'])->name('get-policy-information');
             Route::post('/update-file-policy', [PoliciesController::class, 'updatePolicyFile'])->name('update-file-policy');
             Route::post('/change-policy-status', [PoliciesController::class, 'changePolicyStatus'])->name('change-status-for-policy');
@@ -523,6 +558,7 @@ Route::middleware(['auth'])->group(function (){
                 Route::post('/financing-aggreement/creation-of-pfa', [FinancingController::class, 'pfaCreation'])->name('financing-aggreement.creation-of-pfa');
                 Route::post('/financing-aggrement/new-financing-agreement', [FinancingController::class, 'newFinancingAgreement'])->name('financing-aggrement.new-financing-agreement');
                 Route::post('/get-customers-financing-agreement', [FinancingController::class, 'getCustomersPfa'])->name('get-customers-financing-agreement');
+                Route::post('/get-incomplete-pfa', [FinancingController::class, 'incompletePfa'])->name('get-incomplete-pfa');
             });
 
             //route for renewal
@@ -614,6 +650,13 @@ Route::middleware(['auth'])->group(function (){
          Route::post('/dnc/update', [LeadController::class, 'updateDnc'])->name('update-dnc');
          Route::post('/dnc/delete', [LeadController::class, 'deleteDnc'])->name('delete-dnc');
         });
+
+        //route for lead task scheduler
+        Route::prefix('scheduler')->group(function(){
+            route::resource('/task-scheduler', LeadTaskSchedulerController::class);
+            Route::post('/get-task-scheduler', [LeadTaskSchedulerController::class, 'getTaskScheduler'])->name('get-task-scheduler');
+        });
+
 
         Route::prefix('non-callback')->group(function(){
             Route::get('/', [NonCallBackDispositionController::class, 'index'])->name('non-callback-disposition');

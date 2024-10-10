@@ -25,7 +25,8 @@ import { useWorkersCompensation } from "../contexts/workers-compensation-context
 // import { Audio, ThreeDots } from "react-loader-spinner";
 
 const WorkersCompensationForm = () => {
-    const { workersCompensationData } = useWorkersCompensation();
+    const { workersCompensationData } = useWorkersCompensation() || {};
+
     const { lead } = useContext(ContextData);
     const getWorkersCompensationData = () => {
         let storedData =
@@ -41,16 +42,19 @@ const WorkersCompensationForm = () => {
     const generalInfomrationInstance = JSON.parse(
         sessionStorage.getItem("generalInformationStoredData")
     );
+
     const [totalEmployee, setTotalEmployee] = useState(() =>
         getWorkersCompensationData()?.totalEmployee
             ? getWorkersCompensationData()?.totalEmployee
             : 0
     );
+
     const [employeeDescription, setEmployeeDescription] = useState(() =>
         getWorkersCompensationData()?.employeeDescription
             ? getWorkersCompensationData()?.employeeDescription
             : [""]
     );
+
     const [employeeNumber, setEmployeeNumber] = useState(() =>
         getWorkersCompensationData()?.employeeNumber
             ? getWorkersCompensationData()?.employeeNumber
@@ -76,11 +80,10 @@ const WorkersCompensationForm = () => {
     );
     const [ishaveLossChecked, setIsHaveLossChecked] = useState(false);
     const [haveLossDateOption, setHaveLossDateOption] = useState(1);
-    const [payrollDropdownValue, setPayrollDropdownValue] = useState(() =>
-        getWorkersCompensationData()?.isOwnerPayrollIncluded
-            ? getWorkersCompensationData()?.isOwnerPayrollIncluded
-            : 1
+    const [payrollDropdownValue, setPayrollDropdownValue] = useState(
+        getWorkersCompensationData()?.isOwnerPayrollIncluded || 1
     );
+
     const [specificDescriptionOfEmployee, setSpecificDescriptionOfEmployee] =
         useState("");
     const [feinValue, setFeinValue] = useState(
@@ -96,9 +99,11 @@ const WorkersCompensationForm = () => {
             ? new Date(expiration)
             : new Date();
     });
+
     const [priorCarrier, setPriorCarrier] = useState(
         () => getWorkersCompensationData()?.priorCarrier || ""
     );
+
     const [workersCompensationAmount, setWorkersCompensationAmount] = useState(
         () => getWorkersCompensationData()?.workersCompensationAmount || ""
     );
@@ -153,7 +158,10 @@ const WorkersCompensationForm = () => {
             workersCompensationAmount: workersCompensationAmount,
             employeeNumber: employeeNumber,
             employeeDescription: employeeDescription,
-            isOwnerPayrollIncluded: payrollDropdownValue,
+            isOwnerPayrollIncluded: {
+                value: 1,
+                label: "Included",
+            },
             policyLimit: {
                 value: policyLimit?.value,
                 label: policyLimit?.label,
@@ -228,9 +236,6 @@ const WorkersCompensationForm = () => {
         retrieveWorkersCompData();
     }, []);
 
-    {
-        /* Code for Settting up the Emmployeee number and Employee Dynamic from */
-    }
     //script for computing the value of total employee
     useEffect(() => {
         const storedGeneralInformationInstance = JSON.parse(
@@ -258,12 +263,14 @@ const WorkersCompensationForm = () => {
     const addNewEmployeeDescription = () => {
         setEmployeeNumber([...employeeNumber, 0]);
     };
+
     //script for removing form for employee description
     const removeEmployeeDescription = (index) => {
         const updatedEmployeeNumber = [...employeeNumber];
         updatedEmployeeNumber.splice(index, 1);
         setEmployeeNumber(updatedEmployeeNumber);
     };
+
     //handles employee number change
     const handleEmployeeNumberChange = (index, event) => {
         const newEmployeeNumber = parseInt(event.target.value, 10) || 0;
@@ -271,6 +278,7 @@ const WorkersCompensationForm = () => {
         updatedEmployeeNumbers[index] = newEmployeeNumber;
         setEmployeeNumber(updatedEmployeeNumbers);
     };
+
     //handle employee number input blur event
     const handleEmployeNumberInputBlur = () => {
         const totalEmployeeNumber = employeeNumber.reduce(
@@ -335,9 +343,12 @@ const WorkersCompensationForm = () => {
 
     const handlePayrollChange = (event) => {
         const payrollDropdownChange = event.value;
-        setPayrollDropdownValue(event);
+        setPayrollDropdownValue({
+            value: event.value,
+            label: event.label,
+        });
 
-        if (payrollDropdownChange === 1) {
+        if (event.value == 1) {
             setTotalPayroll(employeePayroll + ownersPayroll);
         } else {
             setTotalPayroll(employeePayroll);
@@ -464,7 +475,9 @@ const WorkersCompensationForm = () => {
             setTotalPayroll(workersCompData.totalPayroll || 0);
             setIsHaveLossChecked(workersCompData.ishaveLossChecked || false);
             setHaveLossDateOption(workersCompData.haveLossDateOption || 1);
-            setPayrollDropdownValue(workersCompData.payrollDropdownValue || 1);
+            setPayrollDropdownValue(
+                workersCompData.isOwnerPayrollIncluded || 1
+            );
             setSpecificDescriptionOfEmployee(
                 workersCompData.specificDescriptionOfEmployee || ""
             );

@@ -66,7 +66,16 @@
                 <button class="btn btn-primary editSelectedQuote" id="editSelectedQuote">
                     EDIT QUOTE
                 </button>
-                @if ($paymentInformation && $paymentInformation->status == 'Pending')
+                {{-- @if (($paymentInformation && $paymentInformation->status == 'Pending') || $paymentInformation->status == 'declined')
+                    <button class="btn btn-primary editMakePayment" id="makePaymentButton">
+                        EDIT MAKE PAYMENT
+                    </button>
+                @else
+                    <button class="btn btn-success makePaymentButton" id="makePaymentButton">
+                        MAKE PAYMENT
+                    </button>
+                @endif --}}
+                @if ($paymentInformation && ($paymentInformation->status == 'Pending' || $paymentInformation->status == 'declined'))
                     <button class="btn btn-primary editMakePayment" id="makePaymentButton">
                         EDIT MAKE PAYMENT
                     </button>
@@ -283,9 +292,10 @@
 
 <script>
     Dropzone.autoDiscover = false;
-    var myDropzone;
+    var quoteRenewalDropzone;
     $(document).ready(function() {
         var id = {{ $quoteProduct->id }};
+
         $('.qoutation-table').DataTable({
             processing: true,
             serverSide: true,
@@ -331,12 +341,80 @@
                 }
             ]
         });
+
+        //submition of form
+        $('#quotationForm').on('submit', function(event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+            var action_url = '';
+            $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
+            let fullPayment = parseFloat($('#fullPayment').val()) || 0;
+            let downPayment = parseFloat($('#downPayment').val()) || 0;
+
+            if ($('#action').val() == 'add') {
+                action_url = "{{ route('save-quotation-comparison') }}";
+            }
+
+            if ($('#action').val() == 'edit') {
+                action_url = "{{ route('update-quotation-comparison') }}";
+            }
+            if (fullPayment < downPayment) {
+                $('#fullPayment').addClass('input-error');
+                $('#downPayment').addClass('input-error');
+            } else {
+                $.ajax({
+                    url: action_url,
+                    method: "POST",
+                    processData: false, // Prevent jQuery from processing the data
+                    contentType: false,
+                    data: formData,
+                    dataType: "json",
+                    success: function(response) {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Quotation Comparison has been saved',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            $('#addQuoteModal').modal('hide');
+                            $('#qoutation-table').DataTable().ajax.reload();
+                            $('.modal-backdrop').remove();
+                            $('#quotationForm select').val('');
+                            $('#quotationForm input[type="text"], #quotationForm textarea')
+                                .val('');
+                            $('#quotationForm input[type="file"]').val('');
+                            $('#quotationForm .input-mask').trigger('input');
+                        });
+                    },
+                    error: function(data) {
+                        var errors = data.responseJSON.errors;
+                        console.log(data);
+                        if (data.status == 422) {
+                            Swal.fire({
+                                title: 'Error',
+                                text: data.responseJSON.error,
+                                icon: 'error'
+                            });
+                            $('#marketDropdown').addClass('input-error');
+                        }
+                        if (errors) {
+                            $.each(errors, function(key, value) {
+                                $('#' + key).addClass('input-error');
+                                $('#' + key + '_error').html(value);
+                            });
+                        }
+                    }
+                });
+            }
+        });
+
         var url = "{{ env('APP_FORM_URL') }}" + "/upload";
-        myDropzone = new Dropzone(".dropzone", {
-            clickable: true,
+
+        quoteRenewalDropzone = new Dropzone("#dropzone", {
+            clickable: false,
             init: function() {
                 this.on("sending", function(file, xhr, formData) {
-
                     // Get the value from the hidden input
                     var hiddenId = $('#hidden_id').val();
                     // Append it to the FormData object
@@ -432,7 +510,46 @@
             }
         });
 
+        function addExistingFiles(files) {
+            files.forEach(file => {
+                var mockFile = {
+                    id: file.id,
+                    name: file.basename,
+                    size: parseInt(file.size),
+                    type: file.type,
+                    status: Dropzone.ADDED,
+                    url: file.filepath // URL to the file's location
+                };
+                quoteRenewalDropzone.emit("addedfile", mockFile);
+                // myDropzone.emit("thumbnail", mockFile, file.filepath); // If you have thumbnails
+                quoteRenewalDropzone.emit("complete", mockFile);
+            });
+        };
 
+
+
+        //upload file button functionalities
+        $(document).on('click', '.uploadFileButton', function(e) {
+            e.preventDefault();
+            var id = $(this).attr('id');
+
+            $.ajax({
+                url: "{{ route('edit-quotation-comparison') }}",
+                method: "POST",
+                data: {
+                    id: id,
+                    _token: "{{ csrf_token() }}"
+                },
+                dataType: "json",
+                success: function(response) {
+                    $('#hidden_id').val(response.data.id);
+                    var files = response.media;
+                    console.log(files);
+                    addExistingFiles(files);
+                    $('#uploadFileModal').modal('show');
+                }
+            });
+        });
 
         //checkbox for recommended
         $('#reccomended').change(function() {
@@ -510,22 +627,6 @@
             reader.readAsDataURL(file);
         })
 
-        function addExistingFiles(files) {
-            files.forEach(file => {
-                var mockFile = {
-                    id: file.id,
-                    name: file.basename,
-                    size: parseInt(file.size),
-                    type: file.type,
-                    status: Dropzone.ADDED,
-                    url: file.filepath // URL to the file's location
-                };
-                myDropzone.emit("addedfile", mockFile);
-                // myDropzone.emit("thumbnail", mockFile, file.filepath); // If you have thumbnails
-                myDropzone.emit("complete", mockFile);
-            });
-        };
-
         $('#addQuoteModal').on('hidden.bs.modal', function() {
             $('#quotationForm select').val('');
             $('#quotationForm input[type="text"], #quotationForm textarea')
@@ -538,153 +639,6 @@
         $('#uploadFileModal').on('hide.bs.modal', function() {
             $(".dropzone .dz-preview").remove(); // This removes file previews from the DOM
             myDropzone.files.length = 0;
-        });
-
-        //upload file button functionalities
-        $(document).on('click', '.uploadFileButton', function(e) {
-            e.preventDefault();
-            var id = $(this).attr('id');
-
-            $.ajax({
-                url: "{{ route('edit-quotation-comparison') }}",
-                method: "POST",
-                data: {
-                    id: id,
-                    _token: "{{ csrf_token() }}"
-                },
-                dataType: "json",
-                success: function(response) {
-                    $('#hidden_id').val(response.data.id);
-                    var files = response.media;
-                    addExistingFiles(files);
-                    $('#uploadFileModal').modal('show');
-                }
-            });
-        });
-
-        //edit button functionalities
-        $(document).on('click', '.editButton', function(e) {
-            e.preventDefault();
-            var id = $(this).attr('id');
-            $('#action').val('edit');
-            $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
-            $.ajax({
-                url: "{{ route('edit-quotation-comparison') }}",
-                method: "POST",
-                data: {
-                    id: id,
-                    _token: "{{ csrf_token() }}"
-                },
-                dataType: "json",
-                success: function(response) {
-                    // console.log(response.data.id)
-                    var url = `{{ asset('${response.media.filepath}') }}`;
-                    var filename = response.data.basename;
-
-                    //pricing breakdown inputs
-                    $('#premium').val(response.pricingBreakdown.premium);
-                    $('#endorsements').val(response.pricingBreakdown.endorsements);
-                    $('#policyFee').val(response.pricingBreakdown.policy_fee);
-                    $('#inspectionFee').val(response.pricingBreakdown.inspection_fee);
-                    $('#stampingFee').val(response.pricingBreakdown.stamping_fee);
-                    $('#suplusLinesTax').val(response.pricingBreakdown.surplus_lines_tax);
-                    $('#placementFee').val(response.pricingBreakdown.placement_fee);
-                    $('#miscellaneousFee').val(response.pricingBreakdown.miscellaneous_fee);
-
-                    //quote comparison inputs
-                    $('#marketDropdown').val(String(response.data.quotation_market_id));
-                    $('#fullPayment').val(response.data.full_payment);
-                    $('#downPayment').val(response.data.down_payment);
-                    $('#monthlyPayment').val(response.data.monthly_payment);
-                    $('#numberOfPayment').val(response.data.number_of_payments);
-                    $('#brokerFee').val(response.data.broker_fee);
-                    $('#product_hidden_id').val(response.data.id);
-                    $('#productId').val(response.data.quotation_product_id);
-                    $('#quoteNo').val(response.data.quote_no);
-                    $('#currentMarketId').val(response.data.quotation_market_id);
-                    $('#effectiveDate').val(response.data.effective_date);
-
-                    $('#medias').hide();
-                    $('#mediaLabelId').hide();
-                    $('#action_button').val('Update');
-                    if (response.data.recommended == 1) {
-                        $('#reccomended').prop('checked', true);
-                        $('#recommended_hidden').val(1);
-                    } else {
-                        $('#reccomended').prop('checked', false);
-                        $('#recommended_hidden').val(0);
-                    }
-                    $('#addQuoteModal').modal('show');
-                }
-            });
-
-        });
-
-        //submition of form
-        $('#quotationForm').on('submit', function(event) {
-            event.preventDefault();
-            var formData = new FormData(this);
-            var action_url = '';
-            $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
-            let fullPayment = parseFloat($('#fullPayment').val()) || 0;
-            let downPayment = parseFloat($('#downPayment').val()) || 0;
-
-            if ($('#action').val() == 'add') {
-                action_url = "{{ route('save-quotation-comparison') }}";
-            }
-
-            if ($('#action').val() == 'edit') {
-                action_url = "{{ route('update-quotation-comparison') }}";
-            }
-            if (fullPayment < downPayment) {
-                $('#fullPayment').addClass('input-error');
-                $('#downPayment').addClass('input-error');
-            } else {
-                $.ajax({
-                    url: action_url,
-                    method: "POST",
-                    processData: false, // Prevent jQuery from processing the data
-                    contentType: false,
-                    data: formData,
-                    dataType: "json",
-                    success: function(response) {
-                        Swal.fire({
-                            position: 'center',
-                            icon: 'success',
-                            title: 'Quotation Comparison has been saved',
-                            showConfirmButton: false,
-                            timer: 1500
-                        }).then(() => {
-                            $('#addQuoteModal').modal('hide');
-                            $('#qoutation-table').DataTable().ajax.reload();
-                            $('.modal-backdrop').remove();
-                            $('#quotationForm select').val('');
-                            $('#quotationForm input[type="text"], #quotationForm textarea')
-                                .val('');
-                            $('#quotationForm input[type="file"]').val('');
-                            $('#quotationForm .input-mask').trigger('input');
-                        });
-                    },
-                    error: function(data) {
-                        var errors = data.responseJSON.errors;
-                        console.log(data);
-                        if (data.status == 422) {
-                            Swal.fire({
-                                title: 'Error',
-                                text: data.responseJSON.error,
-                                icon: 'error'
-                            });
-                            $('#marketDropdown').addClass('input-error');
-                        }
-                        if (errors) {
-                            $.each(errors, function(key, value) {
-                                $('#' + key).addClass('input-error');
-                                $('#' + key + '_error').html(value);
-                            });
-                        }
-                    }
-                });
-            }
         });
 
         //send quote button functionalities
@@ -726,48 +680,13 @@
             });
         });
 
-        $(document).on('click', '.renewQuotation', function() {
-            var id = $(this).attr('id');
-            Swal.fire({
-                title: 'Are you sure?',
-                text: 'You are about to renew this quote',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, renew it!',
-                cancelButtonText: 'No, keep it'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: "{{ route('renewal-quote.store') }}",
-                        method: "POST",
-                        data: {
-                            id: id,
-                            _token: "{{ csrf_token() }}"
-                        },
-                        dataType: "json",
-                        success: function(response) {
-                            Swal.fire({
-                                position: 'center',
-                                icon: 'success',
-                                title: 'Quotation Comparison has been renewed',
-                                showConfirmButton: false,
-                                timer: 1500
-                            }).then(() => {
-                                location.reload();
-                            });
-                        },
-                        error: function(data) {
-                            Swal.fire({
-                                title: 'Error',
-                                text: data.responseJSON.error,
-                                icon: 'error'
-                            });
-                        }
-                    });
-                }
-            });
-        });
+
     });
+
+
+
+
+
 
     //function for parsing
     function parseCurrency(num) {
@@ -927,6 +846,7 @@
             },
             dataType: "json",
             success: function(response) {
+                console.log(response);
                 var paymentMethod = response.paymentInformation.payment_method;
                 $('#paymentType').val(response.paymentInformation.payment_type);
                 $('#insuranceCompliance').val(response.paymentInformation.compliance_by);
@@ -959,6 +879,7 @@
                 $('#leadsId').val(response.lead.id);
                 $('#quoteComparisonId').val(response.quoteComparison.id);
                 $('#paymentInformationId').val(response.paymentInformation.id);
+                $('#policyDetailId').val({{ $policyDetail->id }});
                 $('#selectedQuoteId').val({{ $selectedQuoteId }});
                 $('#makePaymentModal').modal('show');
             }
@@ -1023,6 +944,110 @@
                     $('#selectedRecommended_hidden').val(0);
                 }
                 $('#editSelectedQuoteModal').modal('show');
+            }
+        });
+    });
+
+
+
+    //edit button functionalities
+    $(document).on('click', '.editButton', function(e) {
+        e.preventDefault();
+        var id = $(this).attr('id');
+        $('#action').val('edit');
+        $('#marketDropdown, #fullPayment, #downPayment').removeClass('input-error');
+        $.ajax({
+            url: "{{ route('edit-quotation-comparison') }}",
+            method: "POST",
+            data: {
+                id: id,
+                _token: "{{ csrf_token() }}"
+            },
+            dataType: "json",
+            success: function(response) {
+                // console.log(response.data.id)
+                var url = `{{ asset('${response.media.filepath}') }}`;
+                var filename = response.data.basename;
+
+                //pricing breakdown inputs
+                $('#premium').val(response.pricingBreakdown.premium);
+                $('#endorsements').val(response.pricingBreakdown.endorsements);
+                $('#policyFee').val(response.pricingBreakdown.policy_fee);
+                $('#inspectionFee').val(response.pricingBreakdown.inspection_fee);
+                $('#stampingFee').val(response.pricingBreakdown.stamping_fee);
+                $('#suplusLinesTax').val(response.pricingBreakdown.surplus_lines_tax);
+                $('#placementFee').val(response.pricingBreakdown.placement_fee);
+                $('#miscellaneousFee').val(response.pricingBreakdown.miscellaneous_fee);
+
+                //quote comparison inputs
+                $('#marketDropdown').val(String(response.data.quotation_market_id));
+                $('#fullPayment').val(response.data.full_payment);
+                $('#downPayment').val(response.data.down_payment);
+                $('#monthlyPayment').val(response.data.monthly_payment);
+                $('#numberOfPayment').val(response.data.number_of_payments);
+                $('#brokerFee').val(response.data.broker_fee);
+                $('#product_hidden_id').val(response.data.id);
+                $('#productId').val(response.data.quotation_product_id);
+                $('#quoteNo').val(response.data.quote_no);
+                $('#currentMarketId').val(response.data.quotation_market_id);
+                $('#effectiveDate').val(response.data.effective_date);
+
+                $('#medias').hide();
+                $('#mediaLabelId').hide();
+                $('#action_button').val('Update');
+                if (response.data.recommended == 1) {
+                    $('#reccomended').prop('checked', true);
+                    $('#recommended_hidden').val(1);
+                } else {
+                    $('#reccomended').prop('checked', false);
+                    $('#recommended_hidden').val(0);
+                }
+                $('#addQuoteModal').modal('show');
+            }
+        });
+
+    });
+
+
+    // renew the quotation
+    $(document).on('click', '.renewQuotation', function() {
+        var id = $(this).attr('id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You are about to renew this quote',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, renew it!',
+            cancelButtonText: 'No, keep it'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ route('renewal-quote.store') }}",
+                    method: "POST",
+                    data: {
+                        id: id,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: 'Quotation Comparison has been renewed',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            location.reload();
+                        });
+                    },
+                    error: function(data) {
+                        Swal.fire({
+                            title: 'Error',
+                            text: data.responseJSON.error,
+                            icon: 'error'
+                        });
+                    }
+                });
             }
         });
     });

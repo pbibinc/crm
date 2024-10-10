@@ -5,18 +5,55 @@
     use App\Models\UserProfile;
 @endphp
 <style>
-    .dropdown .dropdown-menu .notification-item.unread {
-        background-color: #f5f5f5 !important;
-        /* Increased specificity and !important for testing */
-        color: black !important;
+    .custom-notification-dropdown .dropdown-menu {
+        width: 400px !important;
+        /* Use !important to enforce the width */
+        min-width: 400px !important;
+        /* Ensure the width doesn't shrink */
+        max-width: 400px !important;
+        /* Prevent it from growing too wide */
     }
 
-    .dropdown .dropdown-menu .notification-item.read {
-        background-color: #e0e0e0 !important;
-        color: grey !important;
+    .custom-notification-dropdown .notification-item h6 {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 280px;
+        /* Adjust this to fit within your design */
+    }
+
+    .custom-notification-dropdown .notification-item .text-muted {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 280px;
+        /* Adjust accordingly */
+    }
+
+    .custom-notification-dropdown .avatar-xs {
+        width: 35px;
+        height: 35px;
+    }
+
+    .custom-notification-dropdown .avatar-title {
+        font-size: 16px;
+    }
+
+    .custom-notification-dropdown [data-simplebar] {
+        overflow-y: auto;
+        max-height: 230px;
+    }
+
+    .custom-notification-dropdown .notification-item .d-flex {
+        align-items: center;
+    }
+
+    .custom-notification-dropdown .notification-item .flex-1 {
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 </style>
-<div class="dropdown d-inline-block">
+<div class="dropdown d-inline-block custom-notification-dropdown">
     <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-notifications-dropdown"
         data-bs-toggle="dropdown" aria-expanded="false">
         <i class="ri-notification-3-line"></i>
@@ -88,6 +125,30 @@
                     {{-- <pre>{{ dump($imagePath) }}</pre> --}}
                     <a href="{{ route('appointed-list-profile-view', $notification->data['lead_id']) }}"
                         class="text-reset notification-item ">
+                        <div class="d-flex">
+                            <div class="avatar-xs me-3">
+                                {{-- <span class="avatar-title bg-success rounded-circle font-size-16">
+                                    <i class="mdi mdi-account-arrow-right-outline"></i>
+                                </span> --}}
+                                <img src="{{ asset($imagePath) }}" class="me-3 rounded-circle avatar-xs" alt="user-pic">
+                            </div>
+
+                            <div class="flex-1">
+                                <h6 class="mb-1">
+                                    {{ $notification->data['title'] ?? 'Default message' }}
+                                </h6>
+                                <div class="font-size-12 text-muted">
+                                    {{ $notification->data['description'] ?? 'Default message' }}
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                @elseif($notification->type == 'App\Notifications\GeneralNotification')
+                    @php
+                        $imagePath = UserProfile::find($notification->data['notifyBy'])->media->filepath;
+                    @endphp
+                    {{-- <pre>{{ dump($imagePath) }}</pre> --}}
+                    <a href="{{ url($notification->data['link']) }}" class="text-reset notification-item ">
                         <div class="d-flex">
                             <div class="avatar-xs me-3">
                                 {{-- <span class="avatar-title bg-success rounded-circle font-size-16">

@@ -1,33 +1,23 @@
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-    <h4 style="font-size: 18px;"></h4>
-    <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#auditInformationModal"
-        style="font-size: 14px; padding: 8px 20px;">
-        Add Audit Information
-    </button>
-</div>
-
-<table id="auditInformationTable" class="table table-bordered dt-responsive nowrap auditInformationTable"
+<table id="auditInformationTable" class="table table-bordered dt-responsive nowrap"
     style="border-collapse: collapse; border-spacing: 0; width: 100%; font-size: 13px;">
-    <thead style="background-color: #f0f0f0; font-size: 13px;">
+    <thead style="background-color: #f0f0f0; font-size: 12px;">
         <tr>
-            <th style="padding: 8px;">Policy</th>
-            <th style="padding: 8px;">Product</th>
-            <th style="padding: 8px;">Audit Letter</th>
-            <th style="padding: 8px;">Status</th>
-            <th style="padding: 8px;">Audit By</th>
-            <th style="padding: 8px;"></th>
+            <th style="padding: 7px;">Policy</th>
+            <th style="padding: 7px;">Product</th>
+            <th style="padding: 7px;">Audit Letter</th>
+            <th style="padding: 7px;">Status</th>
+            <th style="padding: 7px;">Audit By</th>
+            <th style="padding: 7px;"></th>
         </tr>
     </thead>
-    <tbody>
-        <!-- Table content -->
-    </tbody>
+
 </table>
 
-@include('customer-service.audit.upload-required-file-modal');
+@include('customer-service.audit.upload-required-file-modal')
 
 <script>
     $(document).ready(function() {
-        $('.auditInformationTable').DataTable({
+        $('#auditInformationTable').DataTable({
             processing: true,
             serverSide: true,
             ajax: {

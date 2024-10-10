@@ -18,6 +18,7 @@
                                     <option value="Make A Payment">Make A Payment</option>
                                     <option value="Additional Premium">Additional Premium</option>
                                     <option value="Submitted To The Market">Submitted To The Market</option>
+                                    <option value="Close Even">Close Event</option>
                                     <option value="Done">Done</option>
                                 </select>
                             </div>
@@ -98,6 +99,5 @@
                 }
             });
         });
-
     });
 </script>

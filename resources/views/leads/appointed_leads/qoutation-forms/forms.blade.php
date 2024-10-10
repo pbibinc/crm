@@ -4,9 +4,21 @@
     @include('leads.appointed_leads.qoutation-forms.quoation-form', [
         'generalInformation' => $generalInformation,
         'quationMarket' => $quationMarket->getMarketByProduct('General Liability'),
-        'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+        // 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+        //     'General Liability',
+        //     $lead->quoteLead->QuoteInformation->id),
+        'quoteProduct' => $product,
+        'formId' => 'form_' . $product->id,
+        'products' => $products,
+        'productsDropdown' => [
+            'Workers Compensation',
             'General Liability',
-            $lead->quoteLead->QuoteInformation->id),
+            'Commercial Auto',
+            'Excess Liability',
+            'Tools Equipment',
+            'Builders Risk',
+            'Business Owners',
+        ],
     ])
 @endif
 
@@ -14,9 +26,21 @@
     @include('leads.appointed_leads.qoutation-forms.quoation-form', [
         'generalInformation' => $generalInformation,
         'quationMarket' => $quationMarket->getMarketByProduct('Workers Compensation'),
-        'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+        // 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+        //     'Workers Compensation',
+        //     $lead->quoteLead->QuoteInformation->id),
+        'quoteProduct' => $product,
+        'formId' => 'form_' . $product->id,
+        'products' => $products,
+        'productsDropdown' => [
             'Workers Compensation',
-            $lead->quoteLead->QuoteInformation->id),
+            'General Liability',
+            'Commercial Auto',
+            'Excess Liability',
+            'Tools Equipment',
+            'Builders Risk',
+            'Business Owners',
+        ],
     ])
 @endif
 
@@ -24,9 +48,21 @@
     @include('leads.appointed_leads.qoutation-forms.quoation-form', [
         'generalInformation' => $generalInformation,
         'quationMarket' => $quationMarket->getMarketByProduct('Commercial Auto'),
-        'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+        // 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+        //     'Commercial Auto',
+        //     $lead->quoteLead->QuoteInformation->id),
+        'quoteProduct' => $product,
+        'formId' => 'form_' . $product->id,
+        'products' => $products,
+        'productsDropdown' => [
+            'Workers Compensation',
+            'General Liability',
             'Commercial Auto',
-            $lead->quoteLead->QuoteInformation->id),
+            'Excess Liability',
+            'Tools Equipment',
+            'Builders Risk',
+            'Business Owners',
+        ],
     ])
 @endif
 
@@ -34,9 +70,21 @@
     @include('leads.appointed_leads.qoutation-forms.quoation-form', [
         'generalInformation' => $generalInformation,
         'quationMarket' => $quationMarket->getMarketByProduct('Excess Liability'),
-        'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+        // 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+        //     'Excess Liability',
+        //     $lead->quoteLead->QuoteInformation->id),
+        'quoteProduct' => $product,
+        'formId' => 'form_' . $product->id,
+        'products' => $products,
+        'productsDropdown' => [
+            'Workers Compensation',
+            'General Liability',
+            'Commercial Auto',
             'Excess Liability',
-            $lead->quoteLead->QuoteInformation->id),
+            'Tools Equipment',
+            'Builders Risk',
+            'Business Owners',
+        ],
     ])
 @endif
 
@@ -44,9 +92,21 @@
     @include('leads.appointed_leads.qoutation-forms.quoation-form', [
         'generalInformation' => $generalInformation,
         'quationMarket' => $quationMarket->getMarketByProduct('Tools Equipment'),
-        'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+        // 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+        //     'Tools Equipment',
+        //     $lead->quoteLead->QuoteInformation->id),
+        'quoteProduct' => $product,
+        'formId' => 'form_' . $product->id,
+        'products' => $products,
+        'productsDropdown' => [
+            'Workers Compensation',
+            'General Liability',
+            'Commercial Auto',
+            'Excess Liability',
             'Tools Equipment',
-            $lead->quoteLead->QuoteInformation->id),
+            'Builders Risk',
+            'Business Owners',
+        ],
     ])
 @endif
 
@@ -54,9 +114,21 @@
     @include('leads.appointed_leads.qoutation-forms.quoation-form', [
         'generalInformation' => $generalInformation,
         'quationMarket' => $quationMarket->getMarketByProduct('Builders Risk'),
-        'quoteProduct' => $generalInformation->lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+        // 'quoteProduct' => $generalInformation->lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+        //     'Builders Risk',
+        //     $generalInformation->lead->quoteLead->QuoteInformation->id),
+        'quoteProduct' => $product,
+        'formId' => 'form_' . $product->id,
+        'products' => $products,
+        'productsDropdown' => [
+            'Workers Compensation',
+            'General Liability',
+            'Commercial Auto',
+            'Excess Liability',
+            'Tools Equipment',
             'Builders Risk',
-            $generalInformation->lead->quoteLead->QuoteInformation->id),
+            'Business Owners',
+        ],
     ])
 @endif
 
@@ -64,8 +136,20 @@
     @include('leads.appointed_leads.qoutation-forms.quoation-form', [
         'generalInformation' => $generalInformation,
         'quationMarket' => $quationMarket->getMarketByProduct('Business Owners Policy'),
-        'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+        // 'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+        //     'Business Owners',
+        //     $lead->quoteLead->QuoteInformation->id),
+        'quoteProduct' => $product,
+        'formId' => 'form_' . $product->id,
+        'products' => $products,
+        'productsDropdown' => [
+            'Workers Compensation',
+            'General Liability',
+            'Commercial Auto',
+            'Excess Liability',
+            'Tools Equipment',
+            'Builders Risk',
             'Business Owners',
-            $lead->quoteLead->QuoteInformation->id),
+        ],
     ])
 @endif

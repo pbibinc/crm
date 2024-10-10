@@ -2,20 +2,13 @@
     style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-center mb-2">
-            <div>
-                <h4>{{ $leads->GeneralInformation->firstname . ' ' . $leads->GeneralInformation->lastname }}</h4>
-                <div class="">
-                    {{ $leads->GeneralInformation->job_position }}
-                </div>
-                <div class="">
-                    {{ $leads->company_name }}
-                </div>
-                <div class="">
-                    {{ $leads->GeneralInformation->email_address }}
-                </div>
-                <div>
-                    <b>{{ $leads->tel_num }}</b>
-                </div>
+            <div style="font-size: 14px;">
+                <h5 style="margin-bottom: 5px;">
+                    {{ $leads->GeneralInformation->firstname . ' ' . $leads->GeneralInformation->lastname }}</h5>
+                <div>{{ $leads->GeneralInformation->job_position }}</div>
+                <div>{{ $leads->company_name }}</div>
+                <div>{{ $leads->GeneralInformation->email_address }}</div>
+                <div><b>{{ $leads->tel_num }}</b></div>
             </div>
             <div class="d-flex">
                 {{-- <div class="mr-2" style="margin-right: .5rem">
@@ -43,48 +36,50 @@
             </div>
         </div>
 
-        <ul class="nav nav-tabs nav-tabs-custom nav-justified mb-0" role="tablist" style="margin-top: 1rem">
+        <ul class="nav nav-tabs nav-tabs-custom nav-justified mb-0" role="tablist" style="margin-top: 0.5rem">
             <li class="nav-item">
-                <a class="nav-link active" data-bs-toggle="tab" href="#summary" role="tab">
-                    <span class="d-none d-sm-block d-flex align-items-center justify-content-center">
-                        Summary
-                    </span>
+                <a class="nav-link active" data-bs-toggle="tab" href="#summary" role="tab"
+                    style="padding: 5px 10px; font-size: 14px;">
+                    Overview
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#product" role="tab">
-                    <span class="d-none d-sm-block d-flex align-items-center justify-content-center">
-                        {{ $product->product }} Information
-                    </span>
+                <a class="nav-link" data-bs-toggle="tab" href="#product" role="tab"
+                    style="padding: 5px 10px; font-size: 14px;">
+                    Client Info
+                </a>
+            </li>
+
+
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#quotation" role="tab"
+                    style="padding: 5px 10px; font-size: 14px;">
+                    Quote Products
+                </a>
+            </li>
+
+
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#activityLog" role="tab"
+                    style="padding: 5px 10px; font-size: 14px;">
+                    History Log
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#activityLog" role="tab">
-                    <span class="d-none d-sm-block d-flex align-items-center justify-content-center">History Log</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#quotation" role="tab">
-                    <span class="d-none d-sm-block d-flex align-items-center justify-content-center">Quotation</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#messages" role="tab">
-                    <h5><i class="ri-file-edit-line"></i></h5>
+                <a class="nav-link" data-bs-toggle="tab" href="#messages" role="tab" style="padding: 5px 10px;">
+                    <h6><i class="ri-file-edit-line"></i></h6>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#emails" role="tab">
-                    <h5><i class="ri-mail-send-line"></i></h5>
+                <a class="nav-link" data-bs-toggle="tab" href="#emails" role="tab" style="padding: 5px 10px;">
+                    <h6><i class="ri-mail-send-line"></i></h6>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" href="#policyList" role="tab">
-                    <h5><i class="ri-folders-line"></i></h5>
+                <a class="nav-link" data-bs-toggle="tab" href="#policyList" role="tab" style="padding: 5px 10px;">
+                    <h6><i class="ri-folders-line"></i></h6>
                 </a>
             </li>
 

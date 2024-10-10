@@ -30,6 +30,7 @@ class PoliciesDataController extends BaseController
             'directRewrite' => $directRewrite
         ]);
     }
+
 }
 
 

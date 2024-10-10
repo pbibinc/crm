@@ -260,6 +260,11 @@ class PoliciesController extends Controller
                     case 'Follow Up Renewal':
                     case 'Renewal Make A Payment':
                     case 'Renewal Request To Bind':
+                    case 'Rewrite Request To Bind':
+                    case 'For Rewrite Quotation':
+                    case 'pending':
+                    case 'Subject For Rewrite':
+                    case 'Process Quoted Renewal':
                         $class = 'bg-warning';
                         break;
 
@@ -281,7 +286,7 @@ class PoliciesController extends Controller
                 $effectiveDate = $data->effective_date;
 
                 $class = now()->isAfter($expirationDate) || $data->status == 'Dead Policy'  ? 'bg-danger' : 'bg-success';
-                return"$effectiveDate - $expirationDate";
+                return $expirationDate;
             })
             ->addColumn('action', function($data){
                 if($data->status == 'Intent' || $data->status == 'Notice of Cancellation'){
@@ -342,6 +347,145 @@ class PoliciesController extends Controller
             ->rawColumns(['policyStatus', 'action', 'effectiveDate'])
             ->make(true);
         }
+    }
+
+    public function getClientActivePolicyList(Request $request)
+    {
+        $policyDetail = new PolicyDetail();
+        $data = $policyDetail->getActivePolicyDetailByLeadId($request['id']);
+        return DataTables::of($data)
+        ->addIndexColumn()
+        ->addColumn('product', function($data){
+            $product = $data->QuotationProduct->product;
+            return $product;
+        })
+        ->addColumn('total_cost', function($data){
+            // $totalCost = SelectedQuote::find($data['policy']['selected_quote_id']);
+            // return $totalCost ? $totalCost->full_payment : ' ';
+            return ' ';
+        })
+        ->addColumn('policyStatus', function($data){
+            $policyStatus = $data->status;
+            $statusLabel = $policyStatus;;
+            $class = 'bg-secondary';
+            switch ($policyStatus) {
+                case 'issued':
+                case 'Renewal Issued':
+                case 'Rewrite':
+                case 'Renewal Quoted':
+                case 'renewal issued':
+                case 'Renewal Payment Processed':
+                case 'Reinstate':
+                case 'recovered policy issued':
+                    $class = 'bg-success';
+                    break;
+
+                case 'Cancelled':
+                case 'Declined':
+                case 'Renewal Declined Payment':
+                case 'Renewal Binding Declined':
+                case 'Cancellation Request By Customer':
+                    $class = 'bg-danger';
+                    break;
+
+                case 'Endorsing':
+                case 'Notice of Cancellation':
+                case 'Renewal Notice of Cancellation':
+                case 'Intent':
+                case 'Potential For Rewrite':
+                case 'Not Interested':
+                case 'Process Renewal':
+                case 'Renewal Quote':
+                case 'Renewal Quoted Assigned':
+                case 'Follow Up Renewal':
+                case 'Renewal Make A Payment':
+                case 'Renewal Request To Bind':
+                case 'Rewrite Request To Bind':
+                case 'For Rewrite Quotation':
+                case 'pending':
+                case 'Subject For Rewrite':
+                case 'Process Quoted Renewal':
+                    $class = 'bg-warning';
+                    break;
+
+                case 'old policy':
+                    $class = 'bg-secondary';
+                    break;
+            }
+            // $status = now()->isAfter($effectiveDate) ? 'Inactive' : 'Active';
+            // $class = now()->isAfter($effectiveDate) ? 'bg-danger' : 'bg-success';
+            // Special case for 'Notice of Cancellation'
+            if ($policyStatus === 'Notice of Cancellation') {
+               $cancellationStatus = CancellationReport::where('policy_details_id', $data->id)->latest()->first();
+               $statusLabel = $cancellationStatus->type_of_cancellation ?? $policyStatus;
+            }
+            return "<span class='badge {$class}'>$statusLabel</span>";
+        })
+        ->addColumn('effectiveDate', function($data){
+            $expirationDate = $data->expiration_date;
+            $effectiveDate = $data->effective_date;
+
+            $class = now()->isAfter($expirationDate) || $data->status == 'Dead Policy'  ? 'bg-danger' : 'bg-success';
+            return"$effectiveDate - $expirationDate";
+        })
+        ->addColumn('action', function($data){
+            if($data->status == 'Intent' || $data->status == 'Notice of Cancellation'){
+                $cancelButton = '<button type="button" class="btn btn-danger btn-sm waves-effect waves-light intentCancelButton" id="'.$data->id.'"><i class="mdi mdi-book-cancel-outline"></i></button>';
+            }else{
+                $cancelButton = '<button type="button" class="btn btn-danger btn-sm waves-effect waves-light cancelButton" id="'.$data->id.'"><i class="mdi mdi-book-cancel-outline"></i></button>';
+            }
+            $viewButton = '<button type="button" class="btn btn-outline-primary btn-sm waves-effect waves-light viewButton" id="'.$data->id.'" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-eye-line"></i></button>';
+
+            $uploadFileButton = '<button type="button" class="btn btn-success btn-sm waves-effect waves-light uploadPolicyFileButton" id="'.$data->id.'" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-upload-2-line"></i></button>';
+
+            $editButton = '<button type="button" class="btn btn-info btn-sm waves-effect waves-light editButton" id="'.$data->id.'" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-pencil-line"></i></button>';
+
+            $auditInformationButton = '<button type="button" class="btn btn-warning btn-sm waves-effect waves-light auditInformationButton" id="'.$data->id.'"><i class="ri-file-list-3-line"></i></button>';
+            // $dropdown = '
+            // <div class="dropdown">
+            //     <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="actionMenu" data-bs-toggle="dropdown" aria-expanded="false">
+            //         Actions
+            //     </button>
+            //     <ul class="dropdown-menu" aria-labelledby="actionMenu">
+            //         <li><a class="dropdown-item auditInformationButton text-warning" href="#" id="'.$data->id.'"><i class="mdi mdi-book-search-outline"></i> Audit Info</a></li>
+            //         <li><a class="dropdown-item '.($data->status == 'Intent' || $data->status == 'Notice of Cancellation' ? 'intentCancelButton' : 'cancelButton').' text-danger" href="#" id="'.$data->id.'"><i class="mdi mdi-book-cancel-outline"></i> Cancel</a></li>
+            //     </ul>
+            // </div>';
+            // return $viewButton. ' ' .  ' '. $editButton . ' ' . $uploadFileButton .  ' '. $auditInformationButton . ' ' . $cancelButton;
+            $dropdown = '
+            <div class="dropdown" style="display: inline-block;">
+                <button class="btn btn-sm dropdown-toggle" type="button" id="actionMenu' . $data->id . '" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #6c757d; color: white; border: none; padding: 5px; font-size: 16px; line-height: 1; border-radius: 50%; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center;">
+                    &#x2022;&#x2022;&#x2022;
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="actionMenu' . $data->id . '" style="min-width: 100px;">
+                    <li><a class="dropdown-item uploadPolicyFileButton text-success" href="#" id="' . $data->id . '"><i class="ri-upload-2-line"></i> Upload File</a></li>
+                    <li><a class="dropdown-item auditInformationButton text-warning" href="#" id="' . $data->id . '"><i class="mdi mdi-book-search-outline"></i> Audit Info</a></li>
+                    <li><a class="dropdown-item ' . ($data->status == 'Intent' || $data->status == 'Notice of Cancellation' ? 'intentCancelButton' : 'cancelButton') . ' text-danger" href="#" id="' . $data->id . '"><i class="mdi mdi-book-cancel-outline"></i> Cancel</a></li>
+                </ul>
+            </div>';
+
+
+
+            // $dropdown = '
+            // <div class="dropdown">
+            //     <button class="btn btn-primary btn-xs dropdown-toggle" type="button" id="actionMenu' . $data->id . '" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 2px 6px; font-size: 12px;">
+            //         Actions
+            //     </button>
+            //     <ul class="dropdown-menu" aria-labelledby="actionMenu' . $data->id . '" style="max-height: 150px; overflow-y: auto; min-width: 100px;">
+            //         <li><a class="dropdown-item viewButton text-primary" href="#" id="' . $data->id . '" style="padding: 3px 10px; font-size: 12px;"><i class="ri-eye-line"></i> View</a></li>
+            //         <li><a class="dropdown-item editButton text-info" href="#" id="' . $data->id . '" style="padding: 3px 10px; font-size: 12px;"><i class="ri-pencil-line"></i> Edit</a></li>
+            //         <li><a class="dropdown-item uploadPolicyFileButton text-success" href="#" id="' . $data->id . '" style="padding: 3px 10px; font-size: 12px;"><i class="ri-upload-2-line"></i> Upload File</a></li>
+            //         <li><a class="dropdown-item auditInformationButton text-warning" href="#" id="' . $data->id . '" style="padding: 3px 10px; font-size: 12px;"><i class="mdi mdi-book-search-outline"></i> Audit Info</a></li>
+            //         <li><a class="dropdown-item ' . ($data->status == 'Intent' || $data->status == 'Notice of Cancellation' ? 'intentCancelButton' : 'cancelButton') . ' text-danger" href="#" id="' . $data->id . '" style="padding: 3px 10px; font-size: 12px;"><i class="mdi mdi-book-cancel-outline"></i> Cancel</a></li>
+
+            //     </ul>
+            // </div>';
+
+
+            return $viewButton. '  ' .  '  '. $editButton . ' ' . $dropdown;
+        })
+        ->rawColumns(['policyStatus', 'action', 'effectiveDate'])
+        ->make(true);
     }
 
     public function updatePolicyFile(Request $request)

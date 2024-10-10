@@ -168,14 +168,14 @@ class UserProfile extends Model
         return $this->hasMany(AuditInformation::class, 'processed_by');
     }
 
-    // PDF User Files
-    public function pdfUserFiles()
+    public function assignedToTasks()
     {
-        return $this->belongsToMany(Metadata::class, 'pdffiller_users_files_table', 'user_profile_id', 'media_id');
+        return $this->hasMany(LeadTaskScheduler::class, 'assigned_to');
     }
 
-    // PDF Template Files
-    public function pdfTemplateFiles() {
-        return $this->hasMany(PdfFillerTemplateFiles::class, 'uploaded_by');
+    public function assignedByTasks()
+    {
+        return $this->hasMany(LeadTaskScheduler::class, 'assigned_by');
     }
+
 }

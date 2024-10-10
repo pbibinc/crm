@@ -193,6 +193,36 @@ class PolicyDetail extends Model
         return $policies;
     }
 
+    public function getActivePolicyDetailByLeadId($leadId)
+    {
+        $lead = Lead::find($leadId);
+        if (!$lead) {
+            return [];
+        }
+
+        $quoteInformationId = optional($lead->quoteLead)->QuoteInformation->id;
+        if (!$quoteInformationId) {
+            return [];
+        }
+
+        $quoteProducts = QuotationProduct::where('quote_information_id', $quoteInformationId)->get();
+        $policies = [];
+
+        foreach ($quoteProducts as $product) {
+            $productPolicies = self::where('quotation_product_id', $product->id)->whereNotIn('status', ['Dead policy', 'Cancelled', 'Declined', 'Not Interested', 'old policy'])->get();
+
+
+            if ($productPolicies->isNotEmpty()) {
+                // Push each policy individually
+                foreach ($productPolicies as $policy) {
+                    $policies[] = $policy;
+                }
+            }
+        }
+
+        return $policies;
+    }
+
     public function getTotalSales()
     {
         $totalSales = 0;
@@ -250,7 +280,5 @@ class PolicyDetail extends Model
             $query->whereIn('status', $statueses);
         });
     }
-
-
 
 }

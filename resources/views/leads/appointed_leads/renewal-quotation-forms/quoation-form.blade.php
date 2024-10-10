@@ -92,7 +92,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form class="dropzone mt-4 border-dashed" id="dropzone" action="{{ url('/file-upload') }}"
+                <form class="dropzone mt-4 border-dashed" id="quotationDropzone" action="{{ url('/file-upload') }}"
                     method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="_token" value="{{ csrf_token() }}" />
@@ -281,10 +281,11 @@
 {{-- @include('leads.appointed_leads.broker-forms.make-payment-form', compact('complianceOfficer')) --}}
 <script>
     Dropzone.autoDiscover = false;
-    var myDropzone;
+    var quotationDropzone;
     $(document).ready(function() {
         var url = "{{ env('APP_FORM_URL') }}" + "/upload";
-        myDropzone = new Dropzone(".dropzone", {
+
+        quotationDropzone = new Dropzone("#quotationDropzone", {
             clickable: true,
             init: function() {
                 this.on("sending", function(file, xhr, formData) {
@@ -517,9 +518,9 @@
                     status: Dropzone.ADDED,
                     url: file.filepath // URL to the file's location
                 };
-                myDropzone.emit("addedfile", mockFile);
+                quotationDropzone.emit("addedfile", mockFile);
                 // myDropzone.emit("thumbnail", mockFile, file.filepath); // If you have thumbnails
-                myDropzone.emit("complete", mockFile);
+                quotationDropzone.emit("complete", mockFile);
             });
         };
 
@@ -551,6 +552,7 @@
                 },
                 dataType: "json",
                 success: function(response) {
+                    console.log(response);
                     $('#hidden_id').val(response.data.id);
                     var files = response.media;
                     addExistingFiles(files);
@@ -750,7 +752,9 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             }).then(() => {
-                                location.reload();
+                                $('#qoutation-table').DataTable()
+                                    .ajax
+                                    .reload();
                             });
                         },
                         error: function(data) {

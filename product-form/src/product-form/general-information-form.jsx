@@ -32,6 +32,7 @@ import { useGeneralInformation } from "../contexts/general-information-context";
 
 const GeneralInformationForm = () => {
     const { lead, zipcodes, cities, zipCity } = useContext(ContextData);
+    console.log(cities);
     const { generalInformation } = useGeneralInformation() || {};
     const methods = useForm();
     const getStoredGeneralInformation = () => {

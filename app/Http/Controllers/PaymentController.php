@@ -100,25 +100,36 @@ class PaymentController extends Controller
             $request->validate([
                 'paymentType' => 'required',
                 'paymentMethod' => 'required',
-                'insuranceCompliance' => 'required',
+                // 'insuranceCompliance' => 'required',
                 'chargedAmount' => 'required',
                 'note' => 'required',
             ]);
+
             if($request->paymentInformationId){
                 $paymentInformation = PaymentInformation::find($request->paymentInformationId);
-                $paymentInformation->status = 'resend';
+                if($request->paymentInformationAction == 'Request A Payment'){
+                    $paymentInformation->status = 'resend';
+                }
                 $selectedQuote = $paymentInformation->SelectedQuote;
                 $selectedQuote->quote_no = $request->quoteNumber;
                 $selectedQuote->save();
+            }
+            if($request->paymentType == 'Audit' || $request->paymentType == 'Monthly Payment'){
+                $paymentInformation = new PaymentInformation();
+                $paymentInformation->payment_term = 'PIF';
+                $paymentInformation->compliance_by = 'N/A';
             }else{
                 $paymentInformation = new PaymentInformation();
                 $selectedQuote = SelectedQuote::find($request->quoteComparisonId);
                 $selectedPricingBreakdown = $selectedQuote->SelectedPricingBreakDown;
-
+                $paymentInformation->payment_term = $request->paymentTerm;
                 //Updating quotation product status
+
                 $paymentProduct = $selectedQuote->QuotationProduct;
                 $paymentProduct->status = 9;
                 $paymentProduct->save();
+
+                $paymentInformation->compliance_by = $request->insuranceCompliance;
             }
 
             //direct renewals make a payment
@@ -144,8 +155,8 @@ class PaymentController extends Controller
             }else{
                 $paymentInformation->payment_method = $request->paymentMethod;
             }
-            $paymentInformation->payment_term = $request->paymentTerm;
-            $paymentInformation->compliance_by = $request->insuranceCompliance;
+
+
             $paymentInformation->amount_to_charged = $request->chargedAmount;
             $paymentInformation->note = $request->note;
             $paymentInformation->selected_quote_id = $request->selectedQuoteId;
@@ -190,7 +201,25 @@ class PaymentController extends Controller
 
     public function resendPaymentInformation(Request $request)
     {
+    }
 
+    public function delete($id)
+    {
+        try{
+            DB::beginTransaction();
+            $paymentInformation = PaymentInformation::find($id);
+            $paymentCharged = $paymentInformation->PaymentCharged;
+            if($paymentCharged){
+                $paymentCharged->delete();
+            }
+            $paymentInformation->delete();
+            DB::commit();
+            return response()->json(['success' => 'Payment Information has been deleted.'], 200);
+        }catch(\Exception $e){
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function getPaymentInformation(Request $request)
