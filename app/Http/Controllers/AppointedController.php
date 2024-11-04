@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\API\RecreationalController;
 use App\Http\Controllers\Controller;
 use App\Models\ClassCodeLead;
+use App\Models\FinancingCompany;
 use App\Models\Insurer;
 use App\Models\Lead;
 use App\Models\PolicyDetail;
@@ -29,8 +30,7 @@ class AppointedController extends Controller
     {
         $user = Auth::user();
         $leads = Lead::getAppointedLeadsByUserProfileId($user->id);
-        if($request->ajax())
-        {
+        if($request->ajax()){
             return DataTables::of($leads)
             ->addColumn('formatted_created_at', function($lead) {
                 return \Carbon\Carbon::parse($lead->general_created_at)->format('m/d/Y');
@@ -99,8 +99,9 @@ class AppointedController extends Controller
             $productIds = $leads->getQuotationProducts()->pluck('id')->toArray();
             $selectedQuotes = SelectedQuote::whereIn('quotation_product_id', $productIds)->get() ?? [];
             $userProfiles = UserProfile::get()->sortBy('first_name');
+            $financeCompany = FinancingCompany::all();
 
-            return view('leads.appointed_leads.apptaker-leads-view.index', compact('leads', 'localTime', 'usAddress', 'products', 'sortedClassCodeLeads', 'classCodeLeads', 'recreationalFacilities', 'states', 'quationMarket', 'carriers', 'markets', 'templates', 'complianceOfficer', 'selectedQuotes', 'activePolicies', 'userProfiles'));
+            return view('leads.appointed_leads.apptaker-leads-view.index', compact('leads', 'localTime', 'usAddress', 'products', 'sortedClassCodeLeads', 'classCodeLeads', 'recreationalFacilities', 'states', 'quationMarket', 'carriers', 'markets', 'templates', 'complianceOfficer', 'selectedQuotes', 'activePolicies', 'userProfiles', 'financeCompany'));
         } catch (\Exception $e) {
             Log::error('Error in leadsProfileView method', [
                 'message' => $e->getMessage(),
@@ -113,5 +114,7 @@ class AppointedController extends Controller
             return redirect()->back()->with('error', 'Something went wrong while processing the leads profile.');
         }
     }
+
+
 
 }

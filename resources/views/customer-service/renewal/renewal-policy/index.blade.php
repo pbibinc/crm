@@ -42,27 +42,27 @@
                         <div class="tab-pane active" id="policyForRenewal" role="tabpanel">
                             @include(
                                 'customer-service.renewal.renewal-policy.policy-for-renewal-list',
-                                compact('userProfiles'))
+                                compact('userProfiles', 'userProfileId'))
                         </div>
                         <div class="tab-pane" id="renewalProcess" role="tabpanel">
                             @include(
                                 'customer-service.renewal.renewal-policy.policy-renewal-process-list',
-                                compact('userProfiles'))
+                                compact('userProfiles', 'userProfileId'))
                         </div>
                         <div class="tab-pane" id="renewalMakeAPayment" role="tabpanel">
                             @include(
                                 'customer-service.renewal.renewal-policy.policy-renewal-make-payment',
-                                compact('userProfiles', 'complianceOfficer'))
+                                compact('userProfiles', 'complianceOfficer', 'userProfileId'))
                         </div>
                         <div class="tab-pane" id="requestToBind" role="tabpanel">
                             @include(
                                 'customer-service.renewal.renewal-policy.policy-renewal-request-to-bind',
-                                compact('userProfiles'))
+                                compact('userProfiles', 'userProfileId'))
                         </div>
                         <div class="tab-pane" id="newRenewedPolicy" role="tabpanel">
                             @include(
                                 'customer-service.renewal.renewal-policy.policy-renewed-list',
-                                compact('userProfiles'))
+                                compact('userProfiles', 'userProfileId'))
                         </div>
                     </div>
 

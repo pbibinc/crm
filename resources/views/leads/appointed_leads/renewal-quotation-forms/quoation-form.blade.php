@@ -10,9 +10,7 @@
     use App\Models\SelectedQuote;
     use App\Models\PaymentInformation;
 
-    $selectedQuoteData = SelectedQuote::find($product->selected_quote_id)
-        ->latest()
-        ->first();
+    $selectedQuoteData = SelectedQuote::find($quoteProduct->selected_quote_id);
 
     $selectedQuote = $selectedQuoteData ? $selectedQuoteData : null;
     $selectedQuoteId = $selectedQuote ? $selectedQuote->id : null;
@@ -20,16 +18,31 @@
     if ($selectedQuote) {
         $paymentInformation = PaymentInformation::where('selected_quote_id', $selectedQuote->id)->first();
     }
+
+    $productIds = [];
+    foreach ($products as $product) {
+        $productIds[] = $product->id;
+    }
+
 @endphp
 
 <div class="row mb-2">
     <div class="col-6 title-card">
-        <h4 class="card-title mb-0" style="color: #ffffff">Quoations</h4>
+        <h4 class="card-title mb-0" style="color: #ffffff">Request Quoation For {{ $quoteProduct->product }} </h4>
     </div>
     <div class="d-flex justify-content-between">
-        <div>
-
+        <div class="row">
+            <div class="col-12">
+                <label for="product" class="form-label">Product</label>
+                <select name="product" id="tableProductDropdown" class="form-select form-select-sm">
+                    <option value="">Select Product</option>
+                    @foreach ($productsDropdown as $product)
+                        <option value="{{ $product }}">{{ $product }}</option>
+                    @endforeach
+                </select>
+            </div>
         </div>
+
         <div>
             <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addQuoteModal"
                 id="create_record">
@@ -37,7 +50,7 @@
             </a>
 
             @if ($policyDetail->status == 'Renewal Quote')
-                <button href="#" class="btn btn-primary" id="sendQuoteButton">SEND QUOTE</button>
+                <button href="#" class="btn btn-primary" id="sendQuoteButton">Request For Approval</button>
             @endif
         </div>
     </div>
@@ -61,7 +74,7 @@
     </table>
 </div>
 
-@if ($product->selected_quote_id)
+@if ($quoteProduct->selected_quote_id)
     <div class="row mb-2">
         <div class="col-6 title-card">
             <h4 class="card-title mb-0" style="color: #ffffff">Selected Quote Information</h4>
@@ -80,7 +93,7 @@
     <div class="row">
         @include(
             'leads.appointed_leads.broker-quotation-forms.selected-quotation-form',
-            compact('quoteProduct'));
+            compact('quoteProduct', 'selectedQuoteId'));
     </div>
 @endif
 
@@ -386,6 +399,12 @@
         });
 
         var id = {{ $quoteProduct->id }};
+        var ids = @json($productIds);
+        $('#tableProductDropdown').val('{{ $quoteProduct->product }}').change();
+
+        $('#tableProductDropdown').on('change', function() {
+            $('#qoutation-table').DataTable().ajax.reload();
+        });
         $('#qoutation-table').DataTable({
             processing: true,
             serverSide: true,
@@ -394,11 +413,16 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
                         'content')
                 },
-                url: "{{ route('get-general-liabilities-quotation-table') }}",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    id: id
-                }
+                // url: "{{ route('get-general-liabilities-quotation-table') }}",
+                url: "{{ route('get-quote-list-table') }}",
+                data: function(d) {
+                    d._token = "{{ csrf_token() }}";
+                    d.ids = ids;
+                    d.product = $('#tableProductDropdown').val();
+                    // d.status = $('#tableStatusDropdown').val();
+
+                },
+                method: 'POST'
             },
             columns: [{
                     data: 'market_name',

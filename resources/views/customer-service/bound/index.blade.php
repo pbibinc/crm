@@ -7,6 +7,7 @@
             <th>Company Name</th>
             <th>Total Cost</th>
             <th>Effective Date</th>
+            <th>Action</th>
         </thead>
         <tbody>
 
@@ -28,6 +29,9 @@
             processing: true,
             serverSide: true,
             ajax: {
+                data: {
+                    "_token": "{{ csrf_token() }}"
+                },
                 url: "{{ route('bound-list') }}",
                 type: "POST",
 
@@ -51,6 +55,12 @@
                 {
                     data: 'effective_date',
                     name: 'effective_date'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
                 }
 
             ],

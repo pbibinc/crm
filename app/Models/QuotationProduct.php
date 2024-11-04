@@ -55,7 +55,7 @@ class QuotationProduct extends Model
 
     public function quotedProduct()
     {
-        return self::where('status', 1)->get();
+        return self::where('status', 30)->get();
     }
 
     public function pendingProduct()

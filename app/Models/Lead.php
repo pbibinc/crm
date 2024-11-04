@@ -219,7 +219,10 @@ class Lead extends Model
         return $this->belongsToMany(Metadata::class, 'lead_media_table', 'lead_id', 'metadata_id');
     }
 
-
+    public function emailMessages()
+    {
+        return $this->hasMany(Messages::class, 'lead_id');
+    }
 
 
 }

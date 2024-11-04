@@ -40,11 +40,12 @@ class QuoteLead extends Model
         {
             $query = self::where('leads_id', $lead->id)->first();
             if($query){
-                $products = $query->QuoteInformation->QuotationProduct()->where('user_profile_id', null)->where('status', 7)->get();
+                $products = $query->QuoteInformation->QuotationProduct()->where('user_profile_id', null)->whereIn('status', [7, 29])->orderBy('created_at')->get();
                 foreach($products as $product)
                 {
                     $quoteProducts[] = [
                         'company' => $product->QuoteInformation->QuoteLead->leads->company_name,
+                        'leadId' => $product->QuoteInformation->QuoteLead->leads->id,
                         'product' => $product,
                         'sent_out_date' => $product->sent_out_date,
                         'status' => $product->status,
@@ -64,7 +65,7 @@ class QuoteLead extends Model
         {
             $query = self::where('leads_id', $lead->id)->first();
             if($query){
-                $products = $query->QuoteInformation->QuotationProduct()->where('user_profile_id', null)->where('status', 29)->get();
+                $products = $query->QuoteInformation->QuotationProduct()->where('user_profile_id', null)->where('status', 30)->get();
                 foreach($products as $product)
                 {
                     $quoteProducts[] = [

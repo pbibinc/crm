@@ -119,7 +119,7 @@ class CommercialAutoController extends BaseController
                $quoteProduct->quote_information_id = $quoteInformation->id;
             }
             $quoteProduct->product = 'Commercial Auto';
-            $quoteProduct->status = 7;
+            $quoteProduct->status = 29;
             $quoteProduct->save();
 
             // if($data['cross_sell']){

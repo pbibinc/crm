@@ -355,6 +355,7 @@
                         $('#leadsId').val(response.lead.id);
                         $('#quoteComparisonId').val(response.quoteComparison.id);
                         $('#paymentInformationId').val(response.paymentInformation.id);
+                        $('#paymentInformationAction').val('Request A Payment');
                         $('#policyDetailId').val(policyId);
                         $('#selectedQuoteId').val(response.paymentInformation
                             .selected_quote_id);

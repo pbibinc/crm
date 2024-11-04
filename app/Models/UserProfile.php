@@ -178,4 +178,9 @@ class UserProfile extends Model
         return $this->hasMany(LeadTaskScheduler::class, 'assigned_by');
     }
 
+    public function paymentInformation()
+    {
+        return $this->hasMany(PaymentInformation::class, 'requested_by');
+    }
+
 }

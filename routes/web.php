@@ -97,6 +97,7 @@ use App\Http\Controllers\BussinessOwnersPolicyDetailsController;
 use App\Http\Controllers\ExcessLiabilityInsurancePolicyController;
 use App\Http\Controllers\CancelledPolicyForRecall as ControllersCancelledPolicyForRecall;
 use App\Http\Controllers\GeneralNotificationController;
+use App\Http\Controllers\MediaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -207,6 +208,7 @@ Route::middleware(['auth'])->group(function (){
 
       Route::prefix('leads')->group(function(){
         Route::resource('/appointed-product-list', AppointedProductListController::class);
+        Route::post('/change-appointed-product-status', [AppointedProductListController::class, 'changeProductStatus'])->name('change-appointed-product-status');
       });
 
       //route for website creation and function
@@ -312,6 +314,7 @@ Route::middleware(['auth'])->group(function (){
          Route::post('/assign-appointed-lead/assign-lead', [AssignAppointedLeadController::class, 'assignAppointedLead'])->name('assign-leads-market-specialist');
          Route::get('/assign-appointed-lead/get-data-table', [AssignAppointedLeadController::class, 'getDataTable'])->name('get-data-table');
          Route::post('/request-to-quoute', [AssignAppointedLeadController::class, 'requestToQuote'])->name('request-to-quote');
+         Route::post('/decline-appointed-product', [AssignAppointedLeadController::class, 'declineAppointedProduct'])->name('decline-appointed-product');
          Route::post('/assign-remark-leads', [AppTakerLeadsController::class, 'storeLeadRemarksDisposition'])->name('assign-remark-leads');
          Route::post('/update-remark-leads', [AppTakerLeadsController::class, 'updateLeadRemarksDisposition'])->name('update-remark-leads');
         });
@@ -357,6 +360,9 @@ Route::middleware(['auth'])->group(function (){
          Route::get('/get-broker-product', [QuotationController::class, 'getBrokerProduct'])->name('get-broker-product');
          //getting table for quotation
          Route::get('/get-general-liabilities-quotation-table', [QuotationController::class, 'getGeneralLiabilitiesTable'])->name('get-general-liabilities-quotation-table');
+         Route::post('/get-quotation-product-data', [QuotationController::class, 'getQuotationProductData'])->name('get-quotation-product-data');
+         Route::post('/forward-to-broker', [QuotationController::class, 'forwardToBroker'])->name('forward-to-broker');
+         Route::post('/request-for-broker-call', [QuotationController::class, 'requestForBrokerCall'])->name('request-for-broker-call');
 
          //route for notes
          Route::post('/create-notes', [NotesController::class, 'createNotes'])->name('create-notes');
@@ -525,6 +531,11 @@ Route::middleware(['auth'])->group(function (){
                 Route::post('/financing-aggrement/new-financing-agreement', [FinancingController::class, 'newFinancingAgreement'])->name('financing-aggrement.new-financing-agreement');
                 Route::post('/get-customers-financing-agreement', [FinancingController::class, 'getCustomersPfa'])->name('get-customers-financing-agreement');
                 Route::post('/get-incomplete-pfa', [FinancingController::class, 'incompletePfa'])->name('get-incomplete-pfa');
+                Route::get('/get-financing-data/{id}', [FinancingController::class, 'getFinancingData'])->name('get-financing-data');
+                Route::post('/update-financing-agreement', [FinancingController::class, 'updateFinancingAgreement'])->name('update-financing-agreement');
+                Route::post('/upload-pfa-file', [FinancingController::class, 'uploadPfaFile'])->name('upload-pfa-file');
+                Route::post('/upload-recurring-file', [FinancingController::class, 'uploadReacurringFile'])->name('upload-recurring-file');
+                Route::post('/remove-recurring-file', [FinancingController::class, 'removeReacurringFile'])->name('remove-recurring-file');
             });
 
             //route for renewal
@@ -554,6 +565,9 @@ Route::middleware(['auth'])->group(function (){
                 Route::resource('/audit', AuditInformationController::class);
                 Route::post('/get-audit-information-table', [AuditInformationController::class, 'getAuditInformationTable'])->name('get-audit-information-table');
                 Route::resource('/required-audit-file', AuditRequiredFileController::class);
+                Route::post('/delete-required-file', [AuditRequiredFileController::class, 'deleteRequiredFile'])->name('delete-required-file');
+                Route::post('/delete-audit-letter', [AuditInformationController::class, 'deleteAuditLetter'])->name('delete-audit-letter');
+                Route::post('/upload-audit-letter', [AuditInformationController::class, 'uploadAuditLetter'])->name('upload-audit-letter');
             });
 
         });
@@ -652,8 +666,15 @@ Route::middleware(['auth'])->group(function (){
 
         //routes for Departments
         Route::prefix('departments')->group(function(){
-          Route::get('/it-department', [DepartmentListController::class, 'getItEmployeeList'])->name('it-department');
+          Route::get('/it-department', [DepartmentListController::class, 'getAdminEmployeeList'])->name('admin-department');
           Route::get('/csr-department', [DepartmentListController::class, 'getCsrEmployeeList'])->name('csr-department');
+          Route::get('/sales-department', [DepartmentListController::class, 'getSalesDepartment'])->name('sales-department');
+            Route::get('/quotation-department', [DepartmentListController::class, 'getquoatationDepartment'])->name('quotation-department');
+        });
+
+        Route::prefix('media')->group(function(){
+            Route::resource('/media', MediaController::class);
+
         });
 
             //middleware route for adming

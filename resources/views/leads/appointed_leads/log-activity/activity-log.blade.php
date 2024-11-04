@@ -26,11 +26,11 @@
 
     </div>
     @foreach ($generalInformation->lead->leadHistories as $leadHistory)
-        <div class="cd-timeline-block">
-            @php
-                $changes = json_decode($leadHistory->changes);
-            @endphp
-            @if (isset($changes->assigned_at))
+        @php
+            $changes = json_decode($leadHistory->changes);
+        @endphp
+        @if (isset($changes->assigned_at))
+            <div class="cd-timeline-block">
                 <div class="cd-timeline-img cd-success">
                     <i class="mdi mdi-account-arrow-left"></i>
                 </div>
@@ -39,7 +39,9 @@
                     <span
                         class="cd-date">{{ \Carbon\Carbon::parse($changes->assigned_at)->format('M-j-Y g:iA') }}</span>
                 </div>
-            @elseif (isset($changes->reassigned_at))
+            </div>
+        @elseif (isset($changes->reassigned_at))
+            <div class="cd-timeline-block">
                 <div class="cd-timeline-img cd-success">
                     <i class="mdi mdi-account-arrow-right"></i>
                 </div>
@@ -48,10 +50,13 @@
                     <span
                         class="cd-date">{{ \Carbon\Carbon::parse($changes->reassigned_at)->format('M-j-Y g:iA') }}</span>
                 </div>
-            @elseif(isset($changes->old_owner_name))
-                @php
-                    $product = QuotationProduct::find($changes->product_id);
-                @endphp
+            </div>
+        @elseif(isset($changes->old_owner_name))
+            @php
+                $product = QuotationProduct::find($changes->product_id);
+            @endphp
+            <div class="cd-timeline-block">
+
                 <div class="cd-timeline-img cd-success">
                     <i class="mdi mdi-account-arrow-right"></i>
                 </div>
@@ -61,7 +66,9 @@
                     <span
                         class="cd-date">{{ \Carbon\Carbon::parse($leadHistory->created_at)->format('M-j-Y g:iA') }}</span>
                 </div>
-            @elseif (isset($changes->appointed_by))
+            </div>
+        @elseif (isset($changes->appointed_by))
+            <div class="cd-timeline-block">
                 <div class="cd-timeline-img cd-success">
                     {{-- <i class="mdi mdi-book-edit"></i> --}}
                     <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
@@ -73,10 +80,12 @@
                     <span
                         class="cd-date">{{ \Carbon\Carbon::parse($changes->appointed_by)->format('M-j-Y g:iA') }}</span>
                 </div>
-            @elseif(isset($changes->assign_appointed_at))
-                @php
-                    $product = $leadHistory->getProductByProductId($changes->product_id);
-                @endphp
+            </div>
+        @elseif(isset($changes->assign_appointed_at))
+            @php
+                $product = $leadHistory->getProductByProductId($changes->product_id);
+            @endphp
+            <div class="cd-timeline-block">
                 <div class="cd-timeline-img">
                     {{-- <i class="mdi mdi-book-edit"></i> --}}
                     <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
@@ -88,7 +97,9 @@
                     <span
                         class="cd-date">{{ \Carbon\Carbon::parse($changes->assign_appointed_at)->format('M-j-Y g:iA') }}</span>
                 </div>
-            @elseif(isset($changes->type) && $changes->type == 'renewal_reminder')
+            </div>
+        @elseif(isset($changes->type) && $changes->type == 'renewal_reminder')
+            <div class="cd-timeline-block">
                 <div class="cd-timeline-img cd-success">
                     {{-- <i class="mdi mdi-book-edit"></i> --}}
                     <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
@@ -99,7 +110,9 @@
                         {{ $leadHistory->userProfile->fullName() }}.</p>
                     <span class="cd-date">{{ \Carbon\Carbon::parse($changes->sent_date)->format('M-j-Y g:iA') }}</span>
                 </div>
-            @elseif(isset($changes->changes) && $changes->type == 'general-information-update')
+            </div>
+        @elseif(isset($changes->changes) && $changes->type == 'general-information-update')
+            <div class="cd-timeline-block">
                 <div class="cd-timeline-img cd-success">
                     {{-- <i class="mdi mdi-book-edit"></i> --}}
                     <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
@@ -141,7 +154,9 @@
                         @endforeach
                     </ul>
                 </div>
-            @elseif(isset($changes->changes) && $changes->type == 'general-liabilities-update')
+            </div>
+        @elseif(isset($changes->changes) && $changes->type == 'general-liabilities-update')
+            <div class="cd-timeline-block">
                 <div class="cd-timeline-img cd-success">
                     <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
                         class="me-3 rounded-circle avatar-xs" alt="user-pic">
@@ -157,7 +172,9 @@
                             Changes</button>
                     </p>
                 </div>
-            @elseif(isset($changes->changes) && $changes->type == 'workers-compensation-update')
+            </div>
+        @elseif(isset($changes->changes) && $changes->type == 'workers-compensation-update')
+            <div class="cd-timeline-block">
                 <div class="cd-timeline-img cd-success">
                     <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
                         class="me-3 rounded-circle avatar-xs" alt="user-pic">
@@ -173,7 +190,9 @@
                             Changes</button>
                     </p>
                 </div>
-            @elseif(isset($changes->changes) && $changes->type == 'commercial-auto-update')
+            </div>
+        @elseif(isset($changes->changes) && $changes->type == 'commercial-auto-update')
+            <div class="cd-timeline-block">
                 <div class="cd-timeline-img cd-success">
                     <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
                         class="me-3 rounded-circle avatar-xs" alt="user-pic">
@@ -189,7 +208,9 @@
                             Changes</button>
                     </p>
                 </div>
-            @elseif(isset($changes->changes) && $changes->type == 'excess-liability-update')
+            </div>
+        @elseif(isset($changes->changes) && $changes->type == 'excess-liability-update')
+            <div class="cd-timeline-block">
                 <div class="cd-timeline-img cd-success">
                     <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
                         class="me-3 rounded-circle avatar-xs" alt="user-pic">
@@ -200,12 +221,15 @@
                     <span
                         class="cd-date ">{{ \Carbon\Carbon::parse($changes->sent_out_date)->format('M-j-Y g:iA') }}</span>
                     <p>
-                        <button class="btn btn-sm btn-outline-primary viewChangesButton" value="{{ $leadHistory->id }}"
-                            id="{{ $leadHistory->lead_id }}" form="excess-liability-form">View
+                        <button class="btn btn-sm btn-outline-primary viewChangesButton"
+                            value="{{ $leadHistory->id }}" id="{{ $leadHistory->lead_id }}"
+                            form="excess-liability-form">View
                             Changes</button>
                     </p>
                 </div>
-            @elseif(isset($changes->changes) && $changes->type == 'tools-equipment-update')
+            </div>
+        @elseif(isset($changes->changes) && $changes->type == 'tools-equipment-update')
+            <div class="cd-timeline-block">
                 <div class="cd-timeline-img cd-success">
                     <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
                         class="me-3 rounded-circle avatar-xs" alt="user-pic">
@@ -222,7 +246,9 @@
                             Changes</button>
                     </p>
                 </div>
-            @elseif(isset($changes->changes) && $changes->type == 'builders-risk-update')
+            </div>
+        @elseif(isset($changes->changes) && $changes->type == 'builders-risk-update')
+            <div class="cd-timeline-block">
                 <div class="cd-timeline-img cd-success">
                     <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
                         class="me-3 rounded-circle avatar-xs" alt="user-pic">
@@ -239,7 +265,9 @@
                             Changes</button>
                     </p>
                 </div>
-            @elseif(isset($changes->changes) && $changes->type == 'business-owners-policy-update')
+            </div>
+        @elseif(isset($changes->changes) && $changes->type == 'business-owners-policy-update')
+            <div class="cd-timeline-block">
                 <div class="cd-timeline-img cd-success">
                     <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
                         class="me-3 rounded-circle avatar-xs" alt="user-pic">
@@ -256,8 +284,23 @@
                             Changes</button>
                     </p>
                 </div>
-            @endif
-        </div>
+            </div>
+        @elseif(isset($changes->title) && isset($changes->description))
+            <div class="cd-timeline-block">
+                <div class="cd-timeline-img cd-success">
+                    <img src="{{ asset($leadHistory->userProfile->media->filepath) }}"
+                        class="me-3 rounded-circle avatar-xs" alt="user-pic">
+                </div>
+                <div class="cd-timeline-content">
+                    <p class="mb-0 text-muted font-14 mb-3">{{ $changes->title }}</p>
+                    <ul>
+                        <li>{{ $changes->description }}</li>
+                    </ul>
+                    <span
+                        class="cd-date">{{ \Carbon\Carbon::parse($leadHistory->created_at)->format('M-j-Y g:iA') }}</span>
+                </div>
+            </div>
+        @endif
     @endforeach
 </section>
 <script>

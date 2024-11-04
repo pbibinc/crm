@@ -34,7 +34,7 @@
                                         id="create_record">
                                         ADD USER</a>
                                 </div>
-                                <h4 class="card-title mb-4">Users</h4>
+                                <h4 class="card-title mb-4">Users Accounts</h4>
                                 <div>
                                     <table id="usersTable"class="table table-bordered dt-responsive nowrap"
                                         style="border-collapse: collapse; border-spacing: 0; width: 100%;">
@@ -42,7 +42,7 @@
                                             <tr>
                                                 <th>Id</th>
                                                 <th>Name</th>
-                                                <th>Role</th>
+                                                <th>User Role</th>
                                                 <th>Email</th>
                                                 <th>Username</th>
                                                 <th>Created at</th>

@@ -192,6 +192,7 @@
                                         'customer-service.financing.finance-agreement.financing-table',
                                         [
                                             'leadId' => $leads->id,
+                                            'financeCompany' => $financeCompany,
                                         ]
                                     )
                                 </div>
@@ -213,13 +214,11 @@
 
                         {{-- emails tab --}}
                         <div class="tab-pane" id="emails" role="tabpanel">
-                            <div class="card shadow-lg p-3 mb-5 bg-white rounded">
-                                <div class="card-body">
-                                    @include('email.client-emails-table', [
-                                        'leadId' => $leads->id,
-                                    ])
-                                </div>
-                            </div>
+                            @include('email.client-emails-table', [
+                                'leadId' => $leads->id,
+                                'templates' => $templates,
+                                'productId' => $quotationProduct->id ?? null,
+                            ])
                         </div>
 
                         {{-- policy list tab --}}
@@ -242,4 +241,5 @@
             </div>
         </div>
     </div>
+    @include('customer-service.audit.audit-information-modal')
 @endsection

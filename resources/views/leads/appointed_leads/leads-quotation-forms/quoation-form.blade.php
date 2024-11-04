@@ -10,6 +10,7 @@
     foreach ($products as $product) {
         $productIds[] = $product->id;
     }
+
 @endphp
 
 <div class="card shadow-lg p-3 mb-5 bg-white rounded">
@@ -17,10 +18,6 @@
         <div class="">
             <button class="btn btn-success btn-sm createRecord" id="create_record_" data-product=''
                 data-bs-target="#addQuoteModal_{{ $formId }}">ADD QUOTE</button>
-
-            {{-- @if ($quoteProduct->status == 2)
-                <button class="btn btn-primary btn-sm" id="sendQuoteButton">SEND QUOTE</button>
-            @endif --}}
         </div>
         <div class="row">
             <div class="col-6">
@@ -128,8 +125,8 @@
                             <label for="product">Product</label>
                             <select name="productDropdown" id="productDropdown" class="form-select">
                                 <option value="">Select Product</option>
-                                @foreach ($productsDropdown as $product)
-                                    <option value="{{ $product }}">{{ $product }}</option>
+                                @foreach ($products as $product)
+                                    <option value="{{ $product->id }}">{{ $product->product }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -343,6 +340,12 @@
                 .reload();
         });
 
+        $('#productDropdown').on('change', function() {
+            var productId = $(this).val();
+            $('#product_hidden_id').val(productId);
+            $('#productId').val(productId);
+        });
+
 
         $('#addQuoteModal').on('hidden.bs.modal', function() {
             $('#quotationForm select').val('');
@@ -356,6 +359,8 @@
 
         var formId = @json($formId);
         var product = @json($productForm);
+
+
 
         //send quote button functionalities
         // $('#sendQuoteButton').on('click', function() {

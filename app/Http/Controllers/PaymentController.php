@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\HistoryLogsEvent;
 use App\Http\Controllers\Controller;
 use App\Models\GeneralInformation;
 use App\Models\Lead;
@@ -14,6 +15,7 @@ use App\Models\SelectedPricingBreakDown;
 use App\Models\SelectedQuote;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
@@ -77,7 +79,7 @@ class PaymentController extends Controller
                 return $requestedDate;
             })
             ->addColumn('requested_by', function($paymentInformationData){
-                $requestedBy = $paymentInformationData->QuoteComparison->QuotationProduct->brokerQuotation->fullAmericanName();
+                $requestedBy = $paymentInformationData->RequestedBy ? $paymentInformationData->RequestedBy->fullAmericanName() :'N/A';
                 return $requestedBy;
             })
             ->addColumn('action', function($paymentInformationData){
@@ -97,6 +99,7 @@ class PaymentController extends Controller
     {
         try{
             DB::beginTransaction();
+            $userProfileId = Auth::user()->userProfile->id;
             $request->validate([
                 'paymentType' => 'required',
                 'paymentMethod' => 'required',
@@ -104,7 +107,6 @@ class PaymentController extends Controller
                 'chargedAmount' => 'required',
                 'note' => 'required',
             ]);
-
             if($request->paymentInformationId){
                 $paymentInformation = PaymentInformation::find($request->paymentInformationId);
                 if($request->paymentInformationAction == 'Request A Payment'){
@@ -113,13 +115,15 @@ class PaymentController extends Controller
                 $selectedQuote = $paymentInformation->SelectedQuote;
                 $selectedQuote->quote_no = $request->quoteNumber;
                 $selectedQuote->save();
+            }else{
+                $paymentInformation = new PaymentInformation();
             }
             if($request->paymentType == 'Audit' || $request->paymentType == 'Monthly Payment'){
-                $paymentInformation = new PaymentInformation();
+
                 $paymentInformation->payment_term = 'PIF';
                 $paymentInformation->compliance_by = 'N/A';
             }else{
-                $paymentInformation = new PaymentInformation();
+
                 $selectedQuote = SelectedQuote::find($request->quoteComparisonId);
                 $selectedPricingBreakdown = $selectedQuote->SelectedPricingBreakDown;
                 $paymentInformation->payment_term = $request->paymentTerm;
@@ -135,7 +139,10 @@ class PaymentController extends Controller
             //direct renewals make a payment
             if($request->paymentType == 'Direct Renewals'){
                 $policyDetails = PolicyDetail::find($request->policyDetailId);
-                $policyDetails->status = 'Renewal Make A Payment';
+                if($policyDetails->status = 'Process Quoted Renewal')
+                {
+                    $policyDetails->status = 'Renewal Make A Payment';
+                }
                 $policyDetails->save();
             }else if($request->paymentType == 'CCN'){
                 $policyDetails = PolicyDetail::find($request->policyDetailId);
@@ -156,7 +163,7 @@ class PaymentController extends Controller
                 $paymentInformation->payment_method = $request->paymentMethod;
             }
 
-
+            $paymentInformation->requested_by = $userProfileId;
             $paymentInformation->amount_to_charged = $request->chargedAmount;
             $paymentInformation->note = $request->note;
             $paymentInformation->selected_quote_id = $request->selectedQuoteId;
@@ -175,6 +182,10 @@ class PaymentController extends Controller
             $generalInformation->save();
 
 
+
+
+            event(new HistoryLogsEvent($lead->id, $userProfileId, 'Payment Information', $paymentInformation->payment_type . ' ' . 'Payment Information Requested'));
+
             DB::commit();
             return response()->json(['success' => 'Payment Information Successfully Saved!'], 200);
         }catch(\Exception $e){
@@ -191,6 +202,8 @@ class PaymentController extends Controller
             $paymentInformation = PaymentInformation::find($request->paymentInformationId);
             $paymentInformation->status = 'declined';
             $paymentInformation->save();
+
+            event(new HistoryLogsEvent($paymentInformation->QuoteComparison->QuotationProduct->QuoteInformation->QuoteLead->leads->id, Auth::user()->userProfile->id, 'Payment Information', $paymentInformation->payment_type . ' ' . 'Payment Information Declined'));
             DB::commit();
             return response()->json(['success' => 'Payment Information has been declined.'], 200);
         }catch(\Exception $e){
@@ -201,6 +214,7 @@ class PaymentController extends Controller
 
     public function resendPaymentInformation(Request $request)
     {
+
     }
 
     public function delete($id)

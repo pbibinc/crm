@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\HistoryLogsEvent;
 use App\Models\Lead;
 use App\Models\QuoteLead;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use App\Models\QuotationProduct;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AppointedProductListController extends Controller
 {
@@ -151,5 +155,27 @@ class AppointedProductListController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function changeProductStatus(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+
+            $quotationProduct = QuotationProduct::find($request->id);
+            $quotationProduct->status = $request->status;
+            $quotationProduct->save();
+
+            $leadId = $quotationProduct->QuoteInformation->QuoteLead->leads->id;
+            $userProfileId = Auth::user()->userProfile->id;
+            event(new HistoryLogsEvent($leadId, $userProfileId, 'Send For Quotation', $quotationProduct
+            ->product . ' ' . 'has been sent for quotation'));
+
+            DB::commit();
+        }catch(\Exception $e){
+            Log::error($e->getMessage());
+            DB::rollback();
+            return response()->json(['error' => 'An error occurred'], 500);
+        }
     }
 }

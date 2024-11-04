@@ -120,7 +120,9 @@
                     </a>
                 @elseif($notification->type == 'App\Notifications\LeadNotesNotification')
                     @php
-                        $imagePath = UserProfile::find($notification->data['sender'])->media->filepath;
+                        $imagePath =
+                            UserProfile::find($notification->data['sender'])->media->filepath ??
+                            'assets/images/users/avatar-1.jpg';
                     @endphp
                     {{-- <pre>{{ dump($imagePath) }}</pre> --}}
                     <a href="{{ route('appointed-list-profile-view', $notification->data['lead_id']) }}"

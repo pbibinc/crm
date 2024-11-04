@@ -22,10 +22,13 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
+                data: {
+                    "_token": "{{ csrf_token() }}"
+                }
             },
             columns: [{
-                    data: 'policy_number',
-                    name: 'policy_number'
+                    data: 'policy_link',
+                    name: 'policy_link'
                 },
                 {
                     data: 'company_name',
@@ -50,5 +53,5 @@
 
             ],
         });
-    })
+    });
 </script>

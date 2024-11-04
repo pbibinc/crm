@@ -18,7 +18,8 @@ class PaymentInformation extends Model
         'payment_method',
         'compliance_by',
         'amount_to_charged',
-        'note'
+        'note',
+        'requested_by'
     ];
 
     public function QuoteComparison()
@@ -34,6 +35,11 @@ class PaymentInformation extends Model
     public function PaymentCharged()
     {
         return $this->hasOne(PaymentCharged::class, 'payment_information_id');
+    }
+
+    public function RequestedBy()
+    {
+        return $this->belongsTo(UserProfile::class, 'requested_by');
     }
 
     public function AccountsForPayable()

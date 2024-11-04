@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\HistoryLogsEvent;
 use App\Events\SendRenewalReminderEvent;
 use App\Http\Controllers\Controller;
 use App\Models\BuildersRiskPolicyDetails;
@@ -116,6 +117,11 @@ class PoliciesController extends Controller
         {
             return DataTables::of($data)
             ->addIndexColumn()
+            ->addColumn('policy_link', function($data){
+                $leads = $data->QuotationProduct->QuoteInformation->QuoteLead->leads;
+                $profileViewRoute = route('appointed-list-profile-view', ['leadsId' => $leads->id]);
+                return '<a href="'.$profileViewRoute.'" id="'.$data->id.'" name="viewButton" class="">'.$data->policy_number.'</a>';
+            })
             ->addColumn('product', function($data){
                 return $data->QuotationProduct->product;
             })
@@ -123,6 +129,7 @@ class PoliciesController extends Controller
                 $company_name = $data->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name;
                 return $company_name;
             })
+            ->rawColumns(['policy_link'])
             ->make(true);
         }
     }
@@ -198,6 +205,7 @@ class PoliciesController extends Controller
             if($request['status'] == "Renewal Quote"){
                 event(new SendRenewalReminderEvent($leadId, $policyDetail->policy_number, $quotationProduct->product, $userProfileId->id));
             }
+            event(new HistoryLogsEvent($leadId, $userProfileId->id, 'Policy Status Changed', 'Policy status changed to '. $request['status']));
             DB::commit();
             return response()->json(['sucess' => 'Success'], 200);
         }catch(\Exception $e){

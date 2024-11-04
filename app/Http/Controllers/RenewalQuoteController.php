@@ -156,7 +156,7 @@ class RenewalQuoteController extends Controller
                     $policyNumber = $policiesData->policy_number;
                     $productId =  $policiesData->quotation_product_id;
                     $button = '<a href="/customer-service/renewal/get-renewal-lead-view/'.$policiesData->id.'"  id="'.$policiesData->policy_details_id.'">'.$policyNumber.'</a>';
-                    return $policyNumber;
+                    return $button;
                 })
                 ->addColumn('company_name', function($policiesData){
                     $lead = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;

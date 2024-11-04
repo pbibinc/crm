@@ -45,7 +45,7 @@ class ExcessLiabilityController extends BaseController
                 $quoteProduct->quote_information_id = $quoteInformation->id;
              }
              $quoteProduct->product = 'Excess Liability';
-             $quoteProduct->status = 7;
+             $quoteProduct->status = 29;
              $quoteProduct->save();
 
             // $crossSell = new CrossSell();

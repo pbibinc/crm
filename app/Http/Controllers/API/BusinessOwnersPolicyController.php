@@ -59,7 +59,7 @@ class BusinessOwnersPolicyController extends BaseController
                  $quoteProduct->quote_information_id = $quoteInformation->id;
              }
              $quoteProduct->product = 'Business Owners';
-             $quoteProduct->status = 7;
+             $quoteProduct->status = 29;
              $quoteProduct->save();
 
 

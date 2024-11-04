@@ -92,6 +92,10 @@ class RewriteBindingController extends Controller
         $data = $policyDetail->getForRewritePolicyByProductStatusAndUserProfileId([28, 27, 26, 25, 24], $userProfileId);
         return DataTables($data)
             ->addIndexColumn()
+            ->addColumn('policy_link', function($data){
+                $policyNumber = $data->policy_number;
+                return '<a href="/cancellation/get-for-rewrite-product-lead-view/'.$data->id.'">'.$policyNumber.'</a>';
+            })
             ->addColumn('product', function($data){
                 return $data->QuotationProduct->product;
             })
@@ -153,7 +157,7 @@ class RewriteBindingController extends Controller
                 }
 
             })
-            ->rawColumns(['action', 'policy_status'])
+            ->rawColumns(['action', 'policy_status', 'policy_link'])
             ->make(true);
     }
 }

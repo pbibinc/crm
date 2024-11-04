@@ -57,7 +57,7 @@ class ToolsEquipmentController extends Controller
                 $quoteProduct->quote_information_id = $quoteInformation->id;
             }
             $quoteProduct->product = 'Tools Equipment';
-            $quoteProduct->status = 7;
+            $quoteProduct->status = 29;
             $quoteProduct->save();
 
             $expirationAuto = new ExpirationProduct();

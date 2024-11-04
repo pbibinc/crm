@@ -1,7 +1,12 @@
 <div class="d-flex align-items-center justify-content-between">
     <h5 class="mt-3">Address</h5>
-    <button class="btn btn-light btn-sm waves-effect waves-light" id="editGeneralInformationButton"><i
-            class="ri-edit-2-line"></i></button>
+    <div>
+        <button class="btn btn-light btn-sm waves-effect waves-light" id="editGeneralInformationButton"><i
+                class="ri-edit-2-line"></i></button>
+        <button class="btn btn-success btn-sm waves-effect waves-light" id="addProductButton"><i class="ri-add-line"></i>
+            ADD PRODUCT</button>
+    </div>
+
 </div>
 
 <ul class="list-group">
@@ -84,6 +89,24 @@
                 },
             });
             window.open(`${url}general-information-form/edit`, "s_blank",
+                "width=1000,height=849");
+        });
+
+        $('#addProductButton').on('click', function() {
+            var url = "{{ env('APP_FORM_URL') }}";
+            var id = "{{ $leads->id }}";
+            $.ajax({
+                url: "{{ route('list-lead-id') }}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: 'json',
+                method: 'POST',
+                data: {
+                    leadId: id,
+                },
+            });
+            window.open(`${url}add-product-form`, "s_blank",
                 "width=1000,height=849");
         });
     });

@@ -182,7 +182,7 @@ class BrokerForFollowUpController extends Controller
             return "<span class='badge {$class}'>{$statusLabel}</span>";
         })
         ->addColumn('callBack', function($data){
-            $callBack = $data->QuotationProductCallback->date_time ?? null;
+            $callBack = $data->callback_date ?? null;
             return $callBack ? Carbon::parse($callBack)->format('M d, Y g:i A') : 'N/A';
         })
         ->addColumn('action', function($data){

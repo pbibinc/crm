@@ -74,17 +74,38 @@
         /* Lighter line for subtlety */
     }
 </style>
-
+@php
+    $builderRiskProduct = $generalInformation->lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+        'Builders Risk',
+        $generalInformation->lead->quoteLead->QuoteInformation->id,
+    );
+@endphp
 <div class="row-title">
-    <div class="card-title">
-        <h5>Builders Risk Profile</h5>
+    <div class="card-title d-flex align-items-center">
+        <h5 class="mb-0 me-2">Builders Risk Profile</h5>
+        @if ($builderRiskProduct->status == 5)
+            <span class="badge bg-danger align-middle">Declined</span>
+        @endif
     </div>
-    @if ($actionButtons == true)
-        <button type="button" class="editBuildersRisk btn btn-light btn-sm waves-effect waves-light"
-            value="{{ $generalInformation->lead->id }}">
-            <i class="ri-edit-line"></i> Edit
-        </button>
-    @endif
+
+    <div>
+        @if ($actionButtons == true)
+            <button type="button" class="editBuildersRisk btn btn-light btn-sm waves-effect waves-light"
+                value="{{ $generalInformation->lead->id }}">
+                <i class="ri-edit-line"></i> Edit
+            </button>
+        @endif
+        @if ($builderRiskProduct->status == 29)
+            <button type="button"
+                class="sendAppointedBuildersRiskForQuotation btn btn-success btn-sm waves-effect waves-light"
+                value="{{ $builderRiskProduct->id }}">
+                <i class="ri-task-line"></i> Send For Quotation</button>
+        @elseif($builderRiskProduct->status == 5)
+            <button type="button"
+                class="sendAppointedBuildersRiskForQuotation btn btn-warning btn-sm waves-effect waves-light"
+                value="{{ $builderRiskProduct->id }}">Resend For Quotation</button>
+        @endif
+    </div>
 </div>
 
 <div class="row">
@@ -310,5 +331,42 @@
             window.open(`${url}builders-risk-form/edit`, "s_blank",
                 "width=1000,height=849")
         });
+
+        $('.sendAppointedBuildersRiskForQuotation').on('click', function() {
+            var id = $(this).val();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You want to send this product for quotation',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('change-appointed-product-status') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        method: 'POST',
+                        data: {
+                            id: id,
+                            status: 7
+                        },
+                        success: function(data) {
+                            Swal.fire({
+                                title: 'Success',
+                                text: 'Product Request For Quotation',
+                                icon: 'success'
+                            }).then((result) => {
+                                location.reload();
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
     });
 </script>

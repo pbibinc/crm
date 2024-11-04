@@ -4,7 +4,7 @@
         <div class="container-fluid">
 
             <div class="row">
-                <div class="col-7">
+                <div class="col-10">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h3 class="card-title mb-4"
                             style="display: flex; align-items: center; background-color: #2c3e50; color: #ecf0f1; padding: 10px 20px; border-radius: 5px;">
@@ -47,11 +47,13 @@
                                 <tbody>
                                     @foreach ($groupedProducts as $companyName => $groupedProduct)
                                         <tr style="background-color: #f0f0f0;">
-                                            <td><strong><b>{{ $companyName }}</b></strong></td>
+                                            <td><strong><b>{{ $companyName }}</b></strong>
+                                            </td>
                                             <td><input type="checkbox" class="companyCheckAllBox"
                                                     data-company="{{ $companyName }}" name="company[]"></td>
                                             <td><strong><b>Product</b></strong></td>
                                             <td><strong><b>Telemarketer</b></strong></td>
+                                            <td><strong><b>Status</b></strong></td>
                                             <td><strong><b>Action</b></strong></td>
                                             {{-- <td><strong><b>Sent Out Date</b></strong></td> --}}
                                         </tr>
@@ -61,14 +63,51 @@
                                                 <td><input type="checkbox" class="companyCheckBox"
                                                         value="{{ $product['product']->id }}"
                                                         data-company="{{ $companyName }}" name="company[]"></td>
-                                                <td>{{ $product['product']->product }}</td>
+                                                <td><a
+                                                        href="{{ route('appointed-list-profile-view', ['leadsId' => $product['leadId']]) }}">{{ $product['product']->product }}</a>
+                                                </td>
                                                 <td>{{ $product['telemarketer'] }}</td>
-                                                <td> <button type="button" id="{{ $product['product']->id }}"
-                                                        class="btn btn-sm btn-outline-success waves-effect waves-light mb-4 requestToQuote"
-                                                        data-bs-toggle="tooltip" data-bs-placement="top"
-                                                        title="Button For Requesting To Quote"> <i
-                                                            class=" ri-task-line"></i>
-                                                    </button></td>
+                                                <td> <span
+                                                        class="badge {{ $product['product']->status == 7 ? 'bg-success' : 'bg-warning' }}">
+                                                        {{ $product['product']->status == 7 ? 'Complete' : 'Incomplete' }}
+                                                    </span></td>
+                                                @if ($product['product']->status == 7)
+                                                    <td>
+                                                        <button type="button" id="{{ $product['product']->id }}"
+                                                            class="btn btn-sm btn-outline-success waves-effect waves-light mb-4 requestToQuote"
+                                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                                            title="Button For Requesting To Quote"> <i
+                                                                class="ri-task-line"></i>
+                                                        </button>
+                                                        <button type="button" id="{{ $product['leadId'] }}"
+                                                            class="btn btn-sm btn-outline-primary waves-effect waves-light mb-4 viewProductForm"
+                                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                                            title="Viewing and Editing of Form"> <i
+                                                                class="ri-share-box-line"></i>
+                                                        </button>
+                                                        <button type="button" id="{{ $product['product']->id }}"
+                                                            class="btn btn-sm btn-outline-danger waves-effect waves-light mb-4 declinedAppointedProductButton"
+                                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                                            title="Decline Buttoon For Appointed Product"> <i
+                                                                class="ri-forbid-2-line"></i>
+                                                        </button>
+                                                    </td>
+                                                @elseif($product['product']->status == 29)
+                                                    <td>
+                                                        <button type="button" id="{{ $product['leadId'] }}"
+                                                            class="btn btn-sm btn-outline-primary waves-effect waves-light mb-4 viewProductForm"
+                                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                                            title="Viewing and Editing of Form"> <i
+                                                                class="ri-share-box-line"></i>
+                                                        </button>
+                                                        <button type="button" id="{{ $product['product']->id }}"
+                                                            class="btn btn-sm btn-outline-danger waves-effect waves-light mb-4 declinedAppointedProductButton"
+                                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                                            title="Decline Buttoon For Appointed Product"> <i
+                                                                class="ri-forbid-2-line"></i>
+                                                        </button>
+                                                    </td>
+                                                @endif
                                             </tr>
                                         @endforeach
                                     @endforeach
@@ -378,6 +417,66 @@
                     }
                 })
             });
+
+            $('.viewProductForm').on('click', function() {
+                var url = "{{ env('APP_FORM_URL') }}";
+                var id = $(this).attr('id');
+                $.ajax({
+                    url: "{{ route('list-lead-id') }}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    dataType: 'json',
+                    method: 'POST',
+                    data: {
+                        leadId: id,
+                    },
+                });
+                window.open(`${url}add-product-form`, "s_blank",
+                    "width=1000,height=849");
+            });
+
+            $('.declinedAppointedProductButton').on('click', function() {
+                var id = $(this).attr('id');
+                Swal.fire({
+                    title: 'Decline Product',
+                    text: 'Are you sure you want to decline this product?',
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ route('decline-appointed-product') }}",
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            method: "POST",
+                            data: {
+                                id: id
+                            },
+                            success: function(data) {
+                                Swal.fire({
+                                    title: 'Success',
+                                    text: 'Product has been declined',
+                                    icon: 'success'
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            },
+                            error: function(data) {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: 'There is an error while declining product',
+                                    icon: 'error'
+                                });
+                            }
+                        });
+                    }
+                })
+            });
+
         })
     </script>
 @endsection

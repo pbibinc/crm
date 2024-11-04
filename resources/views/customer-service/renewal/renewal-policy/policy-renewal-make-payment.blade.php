@@ -7,7 +7,9 @@
                     <select name="makepaymentUserProfileDropdown" id="makepaymentUserProfileDropdown" class="form-select">
                         <option value="">Select User</option>
                         @foreach ($userProfiles as $userProfile)
-                            <option value="{{ $userProfile->id }}">{{ $userProfile->fullAmericanName() }}
+                            <option value="{{ $userProfile->id }}"
+                                {{ $userProfile->id == $userProfileId ? 'selected' : '' }}>
+                                {{ $userProfile->fullAmericanName() }}
                             </option>
                         @endforeach
                     </select>
@@ -45,6 +47,7 @@
 
 @include('leads.appointed_leads.broker-forms.make-payment-form', compact('complianceOfficer'))
 @include('leads.appointed_leads.log-activity.note-modal')
+
 <div class="modal fade bs-example-modal-center" id="requestToBindModal" tabindex="-1" role="dialog"
     aria-labelledby="mySmallModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -249,6 +252,7 @@
                     $('#leadsId').val(response.lead.id);
                     $('#quoteComparisonId').val(response.quoteComparison.id);
                     $('#paymentInformationId').val(response.paymentInformation.id);
+                    $('#paymentInformationAction').val('Request A Payment');
                     $('#policyDetailId').val(policyId);
                     $('#selectedQuoteId').val(response.paymentInformation
                         .selected_quote_id);

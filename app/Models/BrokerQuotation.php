@@ -108,9 +108,6 @@ class BrokerQuotation extends Model
       return $quotationProducts->isEmpty() ? [] : $quotationProducts;
     }
 
-
-
-
     public function getProductToBind($userProfileId)
     {
         $brokerQuotations = self::where('user_profile_id', $userProfileId)->with(['quotationProduct' => function($query){

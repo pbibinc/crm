@@ -99,7 +99,7 @@ class GeneralLiabilitiesDataController extends BaseController
                    $quoteProduct->quote_information_id = $quoteInformation->id;
                }
                $quoteProduct->product = 'General Liability';
-               $quoteProduct->status = 7;
+               $quoteProduct->status = 29;
                $quoteProduct->save();
 
                //saving general liabilities subcontract

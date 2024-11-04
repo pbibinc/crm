@@ -86,7 +86,7 @@ class ComplianceController extends Controller
      */
     public function destroy($id)
     {
-        //
+
     }
 
     public function getPendingProduct(Request $request)
