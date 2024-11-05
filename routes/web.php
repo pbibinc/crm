@@ -390,6 +390,7 @@ Route::middleware(['auth'])->group(function (){
 
         Route::prefix('notification')->group(function(){
             Route::resource('/general-notification', GeneralNotificationController::class);
+            Route::post('/get-notification', [GeneralNotificationController::class, 'getNotification'])->name('get-notification');
         });
 
         Route::prefix('broker-assistant')->group(function(){
