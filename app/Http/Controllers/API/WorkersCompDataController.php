@@ -77,6 +77,7 @@ class WorkersCompDataController extends BaseController
          }
          $quoteProduct->product = 'Workers Compensation';
          $quoteProduct->status = 29;
+         $quoteProduct->product_appointer_id = $data['userProfileId'];
          $quoteProduct->save();
 
 

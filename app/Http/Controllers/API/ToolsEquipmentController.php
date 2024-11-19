@@ -58,6 +58,7 @@ class ToolsEquipmentController extends Controller
             }
             $quoteProduct->product = 'Tools Equipment';
             $quoteProduct->status = 29;
+            $quoteProduct->product_appointer_id = $data['userProfileId'];
             $quoteProduct->save();
 
             $expirationAuto = new ExpirationProduct();

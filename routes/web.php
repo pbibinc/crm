@@ -96,8 +96,10 @@ use App\Http\Controllers\PaymentInformationArchivedController;
 use App\Http\Controllers\BussinessOwnersPolicyDetailsController;
 use App\Http\Controllers\ExcessLiabilityInsurancePolicyController;
 use App\Http\Controllers\CancelledPolicyForRecall as ControllersCancelledPolicyForRecall;
+use App\Http\Controllers\CustomerUserController;
 use App\Http\Controllers\GeneralNotificationController;
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\RegisterCustomerController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -131,17 +133,17 @@ Route::controller(AdminController::class)->group(function () {
 Route::middleware(['auth'])->group(function (){
     Route::post('/broadcasting/auth', '\Illuminate\Broadcasting\BroadcastController@authenticate');
    // Dashboard
-   Route::prefix('dashboard')->group(function () {
-     Route::resource('/', DashboardControllerNew::class)->except(['edit', 'update', 'delete', 'create', 'show', 'edit']);
-     Route::get('/', [DashboardControllerNew::class, 'index'])->name('dashboard');
-     Route::post('/store', [DashboardControllerNew::class, 'store'])->name('dashboard.store');
-     Route::get('/aux-duration', [DashboardControllerNew::class, 'getAuxDuration'])->name('dashboard.getAuxDuration');
-     Route::get('/table-data', [DashboardControllerNew::class, 'getTableData'])->name('dashboard.table-data');
-     Route::get('/aux-history-data', [DashboardControllerNew::class, 'getAuxHistoryData'])->name('dashboard.aux-history-data');
-     Route::get('/check-aux-status', [DashboardControllerNew::class, 'checkAuxLogoutStatus'])->name('dashboard.check-aux-status');
+    Route::prefix('dashboard')->group(function () {
+      Route::resource('/', DashboardControllerNew::class)->except(['edit', 'update', 'delete', 'create', 'show', 'edit']);
+      Route::get('/', [DashboardControllerNew::class, 'index'])->name('dashboard');
+      Route::post('/store', [DashboardControllerNew::class, 'store'])->name('dashboard.store');
+      Route::get('/aux-duration', [DashboardControllerNew::class, 'getAuxDuration'])->name('dashboard.getAuxDuration');
+      Route::get('/table-data', [DashboardControllerNew::class, 'getTableData'])->name('dashboard.table-data');
+      Route::get('/aux-history-data', [DashboardControllerNew::class, 'getAuxHistoryData'])->name('dashboard.aux-history-data');
+      Route::get('/check-aux-status', [DashboardControllerNew::class, 'checkAuxLogoutStatus'])->name('dashboard.check-aux-status');
 
-     //route for dashboard report
-     Route::get('/dashboard-report', [DashboardControllerNew::class, 'dashBoardReport'])->name('dashboard-report');
+      //route for dashboard report
+      Route::get('/dashboard-report', [DashboardControllerNew::class, 'dashBoardReport'])->name('dashboard-report');
     });
 
     //accounting module
@@ -424,6 +426,11 @@ Route::middleware(['auth'])->group(function (){
             Route::resource('/assign-agent-to-broker', AssignAgentToBrokerController::class);
         });
 
+        Route::prefix('register-customer')->group(function(){
+            Route::resource('/register-customer', RegisterCustomerController::class);
+            Route::post('/register-customer/account-setting', [RegisterCustomerController::class, 'accountSetting'])->name('register-customer.account-setting');
+        });
+
         //route for insurer module
         Route::prefix('insurer')->group(function(){
             Route::get('', [InsurerController::class, 'index'])->name('insurer');
@@ -571,6 +578,13 @@ Route::middleware(['auth'])->group(function (){
                 Route::post('/upload-audit-letter', [AuditInformationController::class, 'uploadAuditLetter'])->name('upload-audit-letter');
             });
 
+            //customer account setting
+            Route::prefix('customer-account-setting')->group(function(){
+                Route::resource('/customer-account-setting', CustomerUserController::class);
+                Route::post('/get-user-account-setting', [CustomerUserController::class, 'getUserAccountSetting'])->name('get-user-account-setting');
+                Route::post('/account-setting-view', [CustomerUserController::class, 'accountSettingView'])->name('account-setting-view');
+            });
+
         });
 
         Route::prefix('product')->group(function(){
@@ -677,6 +691,7 @@ Route::middleware(['auth'])->group(function (){
             Route::resource('/media', MediaController::class);
 
         });
+
 
             //middleware route for adming
     Route::middleware(['role:admin'])->group(function(){

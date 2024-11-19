@@ -34,7 +34,6 @@
         </div>
     </div>
     @include('leads.appointed_leads.log-activity.note-modal')
-
     <script>
         $(document).ready(function() {
             $(document).on('click', '.viewNotedButton', function() {
@@ -84,6 +83,25 @@
                     }
                 });
             });
+
+            $(document).on('click', '.viewButton', function() {
+                $id = $(this).attr('id');
+                $.ajax({
+                    url: "{{ route('quoted-product-profile') }}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    method: "POST",
+                    data: {
+                        id: $id
+                    },
+                    success: function(data) {
+                        window.location.href =
+                            `{{ url('quoatation/broker-profile-view/${data.leadId}/${data.generalInformationId}/${data.productId}') }}`;
+                    }
+                })
+            });
+
         });
     </script>
 @endsection

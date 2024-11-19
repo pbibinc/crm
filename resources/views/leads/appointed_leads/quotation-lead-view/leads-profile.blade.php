@@ -132,9 +132,6 @@
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                                 <div class="card-body">
                                     @include('leads.appointed_leads.qoutation-forms.quoation-form', [
-                                        // 'product' => $product,
-                                        // 'generalInformation' => $generalInformation,
-                                        // 'quationMarket' => $quationMarket,
                                         'generalInformation' => $generalInformation,
                                         'quationMarket' => $quationMarket->getMarketByProduct(
                                             $quotationProduct->product),

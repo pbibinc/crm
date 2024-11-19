@@ -150,8 +150,6 @@ class PaymentController extends Controller
                 $policyDetails->save();
             }
 
-            //Saving Payment Information
-            // $paymentInformation->quote_comparison_id = $request->quoteComparisonId;
             $paymentInformation->payment_type = $request->paymentType;
             if($request->paymentMethod == 'Credit Card'){
                 if($request->cardType == 'Other'){

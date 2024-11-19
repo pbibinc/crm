@@ -2,27 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\BrokerQuotation;
-use App\Models\GeneralLiabilitiesPolicyDetails;
-use App\Models\Insurer;
 use App\Models\Lead;
-use App\Models\Metadata;
-use App\Models\PaymentInformation;
-use App\Models\PolicyDetail;
-use App\Models\QuoationMarket;
-use App\Models\QuotationProduct;
-use App\Models\QuoteComparison;
-use App\Models\SelectedQuote;
 use App\Models\User;
+use App\Models\Insurer;
+use App\Models\Metadata;
+use App\Models\Templates;
 use App\Models\UserProfile;
+use App\Models\PolicyDetail;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\SelectedQuote;
+use App\Models\QuoationMarket;
+use App\Models\BrokerQuotation;
+use App\Models\QuoteComparison;
+use App\Mail\sendTemplatedEmail;
+use App\Models\QuotationProduct;
+use App\Models\PaymentInformation;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Validation\ValidationException;
+use App\Models\GeneralLiabilitiesPolicyDetails;
 
 class BindingController extends Controller
 {
@@ -343,13 +346,14 @@ class BindingController extends Controller
                 $generalLiabilitiesDetails->status = 'issued';
                 $generalLiabilitiesDetails->save();
 
-
-
                 //code for quotation
                 $quotationComparison = SelectedQuote::find($data['glHiddenQuoteId']);
                 $quotationComparison->quote_no = $data['glPolicyNumber'];
                 $quotationComparison->save();
 
+                $subject = 'Welcome' . ' ' .  $quotationProduct->QuoteInformation->quoteLead->leads->customer_name;
+                $template = Templates::find(15);
+                $sendingMail = Mail::to('maechael108@gmail.com')->send(new sendTemplatedEmail($subject, $template->html, $policyDetails->medias->filepath));
                 DB::commit();
                 return response()->json(['success' => 'File uploaded successfully']);
             }catch(ValidationException $e){

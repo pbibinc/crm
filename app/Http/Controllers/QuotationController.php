@@ -42,6 +42,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\File;
+use PhpParser\Node\Stmt\Switch_;
 
 class QuotationController extends Controller
 {
@@ -114,8 +115,8 @@ class QuotationController extends Controller
         $userProfile = new UserProfile();
         $complianceOfficer = $userProfile->complianceOfficer();
         $financeCompany = FinancingCompany::all();
-
-        return view('leads.appointed_leads.quotation-lead-view.leads-profile', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'quotationProduct', 'products', 'carriers', 'markets', 'templates', 'activePolicies', 'userProfiles', 'selectedQuotes', 'complianceOfficer', 'financeCompany'));
+        $customerUsers = User::where('role_id', 12)->orderBy('email')->get();
+        return view('leads.appointed_leads.quotation-lead-view.leads-profile', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'quotationProduct', 'products', 'carriers', 'markets', 'templates', 'activePolicies', 'userProfiles', 'selectedQuotes', 'complianceOfficer', 'financeCompany', 'customerUsers'));
     }
 
     public function brokerProfileView($leadId, $generalInformationId, $productId)
@@ -168,7 +169,8 @@ class QuotationController extends Controller
         $selectedQuotes = SelectedQuote::whereIn('quotation_product_id', $productIds)->get() ?? [];
         $financeCompany = FinancingCompany::all();
         $userProfiles = UserProfile::get()->sortBy('first_name');
-        return view('leads.appointed_leads.broker-lead-profile-view.index', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'products', 'complianceOfficer', 'markets', 'carriers','leadId',  'templates', 'product', 'productId', 'productIds', 'selectedQuotes', 'activePolicies', 'userProfiles', 'quoteProduct', 'financeCompany'));
+        $customerUsers = User::where('role_id', 12)->orderBy('email')->get();
+        return view('leads.appointed_leads.broker-lead-profile-view.index', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'products', 'complianceOfficer', 'markets', 'carriers','leadId',  'templates', 'product', 'productId', 'productIds', 'selectedQuotes', 'activePolicies', 'userProfiles', 'quoteProduct', 'financeCompany', 'customerUsers'));
     }
 
     public function brokerProfileViewProduct($productId)
@@ -499,16 +501,30 @@ class QuotationController extends Controller
         {
             try{
                 DB::beginTransaction();
+
                 $id = $request->input('id');
                 $quoteProduct = QuotationProduct::find($id);
                 $quoteProduct->status = 1;
                 $quoteProduct->sent_out_date = Carbon::now();
                 $quoteProduct->save();
+
+                $user = Auth::user();
+                $useProfile = UserProfile::where('user_id', $user->id)->first();
+                $apppointerUserProfile = UserProfile::find($quoteProduct->product_appointer_id);
+                $appointerUserModal = User::find($apppointerUserProfile->user_id);
+
+                $appointerUserModal->sendNoteNotification($appointerUserModal, 'Qutation Comparisons Ready', $useProfile->id, 'Quotation Comparison Compeleted', $quoteProduct->QuoteInformation->QuoteLead->leads->id);
+
+                broadcast(new LeadNotesNotificationEvent('Quotation Comparisons Ready', 'Quotation Comparison Compeleted', $apppointerUserProfile->user_id, $quoteProduct->QuoteInformation->QuoteLead->leads->id, $useProfile->id, 'info'));
+
+                event(new HistoryLogsEvent($quoteProduct->QuoteInformation->QuoteLead->leads->id, $useProfile->id, 'Send Quote Comparison', $quoteProduct->product . ' ' . 'Quotation Comparison has been sent'));
+
                 DB::commit();
-                return response()->json(['success' => 'Quotation product sent successfully', 200]);
+                return response()->json(['success' => 'Quotation product sent successfully'],200);
             }catch(\Exception $e){
+                DB::rollback();
                 Log::error('Error in sending quotation product', [$e->getMessage()]);
-                return response()->json(['error' => $e->getMessage()]);
+                return response()->json(['error' => $e->getMessage()], 500);
             }
 
 
@@ -771,6 +787,101 @@ class QuotationController extends Controller
                 if ($qoutationProduct) {
                     $qoutationProduct->status = $status;
                     $quotationProductSaving = $qoutationProduct->save();
+                    if($quotationProductSaving){
+                        $quotationProductStatus = $qoutationProduct->status;
+                        $description = ' ';
+                        Switch ($quotationProductStatus){
+                            case 1:
+                                $description = 'Quotated Product';
+                                break;
+                            case 2:
+                                $description = 'Quoting Product';
+                                break;
+                            case 3:
+                                $description = 'Complied';
+                                break;
+                            case 4:
+                                $description = 'For Follow Up';
+                                break;
+                            case 5:
+                                $description = 'Declined Product';
+                                break;
+                            case 6:
+                                $description = 'Request To Bind';
+                                break;
+                            case 7:
+                                $description = 'Appointed';
+                                break;
+                            case 8 :
+                                $description = 'Issued';
+                                break;
+                            case 9 :
+                                $description = 'Request To Payment';
+                                break;
+                            case 10 :
+                                $description = 'Payment Approved';
+                                break;
+                            case 11 :
+                                $description = 'Bound';
+                                break;
+                            case 12 :
+                                $description = 'Binding';
+                                break;
+                            case 13:
+                                $description = 'Payment Declined';
+                                break;
+                            case 14:
+                                $description = 'Binding Declined';
+                                break;
+                            case 15:
+                                $description = 'Resent RTB';
+                                break;
+                            case 16:
+                                $description = 'Old Quote';
+                                break;
+                            case 17:
+                                $description = 'Request To Bind Direct Renewals';
+                                break;
+                            case 18:
+                                $description = 'Renewal Resend RTB';
+                                break;
+                            case 19:
+                                $description = 'Renewal Binding';
+                                break;
+                            case 20:
+                                $description = 'Renewal Bound';
+                                break;
+                            case 21:
+                                $description = 'For Compliance';
+                                break;
+                            case 22:
+                                $description = 'Pending';
+                                break;
+                            case 23:
+                                $description = 'Renewal Binding Declined';
+                                break;
+                            case 24:
+                                $description = 'Rewrite RTB';
+                                break;
+                            case 25:
+                                $description = 'Rewrite Binding';
+                                break;
+                            case 26:
+                                $description = 'Rewrite Bound';
+                                break;
+                            case 27:
+                                $description = 'Rewrite Binding Declined';
+                                break;
+                            case 28:
+                                $description = 'Rewrite Resend RTB';
+                                break;
+                            case 29:
+                                $description = 'Inc Appointed';
+                                break;
+                        }
+
+                        event(new HistoryLogsEvent($lead->id, $userProfile->id, 'Product Status Changed', $qoutationProduct->product . ' ' . 'Product Status Change To' . $description));
+                    }
                 } else {
                     // Handle the case where QuotationProduct is not found
                     return response()->json([

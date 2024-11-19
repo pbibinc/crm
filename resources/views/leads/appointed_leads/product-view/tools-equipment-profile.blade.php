@@ -138,6 +138,11 @@
                 value="{{ $toolsEquipmentProduct->id }}">
                 <i class="ri-task-line"></i> Send For Quotation
             </button>
+        @elseif($toolsEquipmentProduct->status == 1)
+            <button type="button"
+                class="sendOutToolsEquipmentQuotation btn btn-success btn-sm waves-effect waves-light"
+                value="{{ $toolsEquipmentProduct->id }}">
+                <i class="ri-task-line"></i> Send Out Quotation</button>
         @elseif($toolsEquipmentProduct->status == 5)
             <button type="button"
                 class="sendAppointedToolsEquipmentForQuotation btn btn-warning btn-sm waves-effect waves-light"
@@ -323,6 +328,42 @@
                 }
             });
 
+        });
+
+        $('.sendOutToolsEquipmentQuotation').on('click', function() {
+            var id = $(this).val();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You want to send out this quotation',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('change-appointed-product-status') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        method: 'POST',
+                        data: {
+                            id: id,
+                            status: 30
+                        },
+                        success: function(data) {
+                            Swal.fire({
+                                title: 'Success',
+                                text: 'Quotation Sent Out',
+                                icon: 'success'
+                            }).then((result) => {
+                                location.reload();
+                            });
+                        }
+                    });
+                }
+            });
         });
     });
 </script>

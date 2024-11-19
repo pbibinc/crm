@@ -28,6 +28,7 @@ class QuotationProduct extends Model
         return $this->hasMany(SelectedQuote::class, 'quotation_product_id');
     }
 
+
     // public function SelectedQuote()
     // {
     //     return $this->hasMany(SelectedQuote::class, 'quotation_product_id');
@@ -45,7 +46,7 @@ class QuotationProduct extends Model
 
     public function PolicyDetail()
     {
-        return $this->belongsTo(PolicyDetail::class, 'quotation_product_id');
+        return $this->hasMany(PolicyDetail::class, 'quotation_product_id');
     }
 
     public function QuotationProductCallback()
@@ -100,7 +101,7 @@ class QuotationProduct extends Model
                     'product' => $product,
                     'sent_out_date' => $product->sent_out_date,
                     'status' => $product->status,
-                    'telemarketer' => UserProfile::where('id', $product->QuoteInformation->telemarket_id)->first()->fullAmericanName(),
+                    'telemarketer' => UserProfile::where('id', $product->product_appointer_id)->first()->fullAmericanName(),
                 ];
             }
             return $products;

@@ -128,7 +128,6 @@
         });
     }
 
-
     function processNotificationQueue() {
         if (notificationQueue.length > 0 && !processingQueue) {
             const notification = notificationQueue.shift(); // Get the first notification from the queue
@@ -154,7 +153,6 @@
 
         }
     }
-
 
     function displayToast(message, title, icon) {
         return new Promise((resolve) => {

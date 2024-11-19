@@ -93,7 +93,6 @@
             _token: "{{ csrf_token() }}",
         },
         success: function(response) {
-            console.log(response.data);
             appendNotifications(response.data);
         }
     })
@@ -115,7 +114,7 @@
                 'App\\Notifications\\GeneralNotification') {
                 avatarContent =
                     `<img src="${baseUrl}/${notification['sender_image']}" class="me-3 rounded-circle avatar-xs" alt="user-pic">`;
-                link = notification.link || '#';
+                link = "{{ env('APP_FORM_LINK') }}" + `appointed-list/${notification['data']['lead_id']}`;
 
                 title = notification['data']['title'] || ' ';
                 description = notification['data']['description'] || ' ';

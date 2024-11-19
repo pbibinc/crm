@@ -74,10 +74,17 @@
         /* Lighter line for subtlety */
     }
 </style>
+@php
+    $generalLiabilitiProduct = $generalLiabilities->generalInformation->lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+        'General Liability',
+        $generalLiabilities->generalInformation->lead->quoteLead->QuoteInformation->id,
+    );
+@endphp
 <div class="row-title">
+
     <div class="card-title d-flex align-items-center">
         <h5 class="mb-0 me-2">General Liability Profile</h5>
-        @if ($generalLiabilities->generalInformation->lead->quoteLead->QuoteInformation->QuotationProduct->status == 5)
+        @if ($generalLiabilitiProduct->status == 5)
             <span class="badge bg-danger align-middle">Declined</span>
         @endif
     </div>
@@ -88,15 +95,19 @@
                 <i class="ri-edit-line"></i> Edit
             </button>
         @endif
-        @if ($generalLiabilities->generalInformation->lead->quoteLead->QuoteInformation->QuotationProduct->status == 29)
+        @if ($generalLiabilitiProduct->status == 29)
             <button type="button"
                 class="sendAppointedProductForQuotation btn btn-success btn-sm waves-effect waves-light"
-                value="{{ $generalLiabilities->generalInformation->lead->quoteLead->QuoteInformation->QuotationProduct->id }}">
+                value="{{ $generalLiabilitiProduct->id }}">
                 <i class="ri-task-line"></i> Send For Quotation</button>
-        @elseif($generalLiabilities->generalInformation->lead->quoteLead->QuoteInformation->QuotationProduct->status == 5)
+        @elseif($generalLiabilitiProduct->status == 1)
+            <button type="button" class="sendOutQuotation btn btn-success btn-sm waves-effect waves-light"
+                value="{{ $generalLiabilitiProduct->id }}">
+                <i class="ri-task-line"></i> Send Out Quotation</button>
+        @elseif($generalLiabilitiProduct->status == 5)
             <button type="button"
                 class="sendAppointedProductForQuotation btn btn-warning btn-sm waves-effect waves-light"
-                value="{{ $generalLiabilities->generalInformation->lead->quoteLead->QuoteInformation->QuotationProduct->id }}">
+                value="{{ $generalLiabilitiProduct->id }}">
                 <i class="ri-task-line"></i> Resend For Quotation</button>
         @endif()
     </div>
@@ -305,6 +316,29 @@
             });
         }
 
+        function sendOutQuotation(id) {
+            $.ajax({
+                url: "{{ route('change-appointed-product-status') }}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                method: 'POST',
+                data: {
+                    id: id,
+                    status: 30
+                },
+                success: function(data) {
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'Product Request For Quotation',
+                        icon: 'success'
+                    }).then((result) => {
+                        location.reload();
+                    });
+                }
+            });
+        }
+
         $('.sendAppointedProductForQuotation').on('click', function(e) {
             var id = $(this).val();
             Swal.fire({
@@ -318,6 +352,23 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     sendForQuotation(id);
+                }
+            });
+        });
+
+        $('.sendOutQuotation').on('click', function(e) {
+            var id = $(this).val();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You want to send out this quotation',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    sendOutQuotation(id);
                 }
             });
         });

@@ -16,6 +16,7 @@
     <div class="col-6 title-card">
         <h4 class="card-title mb-0" style="color: #ffffff">Request Quoation For {{ $quoteProduct->product }} </h4>
     </div>
+
     <div class="d-flex justify-content-between">
 
         <div class="row">
@@ -44,7 +45,7 @@
                 ADD QUOTE
             </a>
             @if ($quoteProduct->status == 2)
-                <button href="#" class="btn btn-primary" id="sendQuoteButton">REQUEST FOR APPROVAL</button>
+                <button href="#" class="btn btn-primary" id="sendQuoteButton">FORWARD QUOTE COMPARISON</button>
             @endif
         </div>
     </div>
@@ -793,6 +794,13 @@
                             }).then(() => {
                                 console.log('test this code');
                                 location.reload();
+                            });
+                        },
+                        error: function(data) {
+                            Swal.fire({
+                                title: 'Error',
+                                text: data.responseJSON.error,
+                                icon: 'error'
                             });
                         }
                     });

@@ -17,7 +17,9 @@
                                 @if (!empty($selectedQuotes))
                                     @foreach ($selectedQuotes ? $selectedQuotes : [] as $quote)
                                         <option value="{{ $quote->id }}">{{ $quote->quote_no }}
-                                            {{ $quote->QuotationMarket->name }}</option>
+                                            {{ $quote->QuotationMarket->name }}
+                                            ({{ $quote->QuotationProduct->product }})
+                                        </option>
                                     @endforeach
                                 @endif
                             </select>

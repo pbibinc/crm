@@ -16,12 +16,12 @@
                             <span class="d-none d-sm-block">Create PFA</span>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="#incompletePfa" role="tab">
                             <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
                             <span class="d-none d-sm-block">Pending PFA</span>
                         </a>
-                    </li>
+                    </li> --}}
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="tab" href="#new-pfa" role="tab">
                             <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
@@ -30,24 +30,22 @@
                     </li>
                 </ul>
                 <div class="tab-content p-3 text-muted">
-                    <div class="tab-pane active" id="request-for-pfa" role="tabpanel">
-                        @include('customer-service.financing.finance-agreement.request-for-financing')
-                    </div>
-                    <div class="tab-pane" id="creation-of-pfa" role="tabpanel">
-                        @include(
-                            'customer-service.financing.finance-agreement.create-pfa',
-                            compact('financeCompany'))
-                    </div>
-                    <div class="tab-pane" id="incompletePfa" role="tabpanel">
+                    @include('customer-service.financing.finance-agreement.request-for-financing')
+                </div>
+                <div class="tab-pane" id="creation-of-pfa" role="tabpanel">
+                    @include(
+                        'customer-service.financing.finance-agreement.create-pfa',
+                        compact('financeCompany'))
+                </div>
+                {{-- <div class="tab-pane" id="incompletePfa" role="tabpanel">
                         @include('customer-service.financing.finance-agreement.incomplete-pfa')
-                    </div>
-                    <div class="tab-pane" id="new-pfa" role="tabpanel">
-                        @include('customer-service.financing.finance-agreement.new-pfa')
-                    </div>
+                    </div> --}}
+                <div class="tab-pane" id="new-pfa" role="tabpanel">
+                    @include('customer-service.financing.finance-agreement.new-pfa')
                 </div>
             </div>
-
         </div>
+    </div>
     </div>
     @include('leads.appointed_leads.log-activity.note-modal')
     <script>

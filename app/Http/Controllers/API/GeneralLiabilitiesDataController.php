@@ -100,6 +100,7 @@ class GeneralLiabilitiesDataController extends BaseController
                }
                $quoteProduct->product = 'General Liability';
                $quoteProduct->status = 29;
+               $quoteProduct->product_appointer_id = $data['userProfileId'];
                $quoteProduct->save();
 
                //saving general liabilities subcontract

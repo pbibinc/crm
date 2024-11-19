@@ -8,7 +8,13 @@
                     <div class="card shadow-lg mb-5 bg-white rounded">
                         <div class="card-body">
 
-                            @include('leads.appointed_leads.apptaker-leads-view.client-general-information')
+                            @include(
+                                'leads.appointed_leads.apptaker-leads-view.client-general-information',
+                                [
+                                    'leads' => $leads,
+                                    'customerUsers' => $customerUsers,
+                                ]
+                            )
                         </div>
                     </div>
                 </div>

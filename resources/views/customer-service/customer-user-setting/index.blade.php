@@ -1,0 +1,318 @@
+@extends('admin.admin_master')
+@section('admin')
+    <div class="page-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="dropdown float-end">
+                                <a class="btn btn-success" data-bs-toggle="modal" data-bs-target="#dataModal"
+                                    id="create_record">
+                                    ADD USER</a>
+                            </div>
+                            <h4 class="card-title mb-4">Customer User Accounts</h4>
+                            <div>
+                                <table id="customerUserTable"
+                                    class="customerUserTable table table-bordered dt-responsive nowrap"
+                                    style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                    <thead>
+                                        <tr style="background-color: #f0f0f0;">
+                                            <th>Name</th>
+                                            <th>User Role</th>
+                                            <th>Email</th>
+                                            <th>Username</th>
+                                            <th>Created at</th>
+                                            <th>Updated at</th>
+                                            <th style="width: 120px;">Action</th>
+                                        </tr>
+                                    </thead><!-- end thead -->
+                                    <tbody>
+
+                                    </tbody><!-- end tbody -->
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {{-- start of modal for creation of user --}}
+    <div class="modal fade" id="dataModal" tabindex="-1" aria-labelledby="dataModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dataModalLabel">Add Position</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="dataModalForm">
+                    <div class="modal-body">
+
+                        @csrf
+                        <div class="form-group mb-3">
+                            <label for="name" class="form-label">Name:</label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Name">
+                            <div class="invalid-feedback" id="nameError"></div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="username" class="form-label">Username:</label>
+                            <input type="text" class="form-control" id="username" name="username"
+                                placeholder="Username">
+                            <div class="invalid-feedback" id="usernameError"></div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="email">Email:</label>
+                            <input type="text" class="form-control" id="email" name="email" placeholder="Email">
+                            {{-- <div class="invalid-feedback" id="emailError"></div> --}}
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control mb-3" id="password" name="password" name="password"
+                                placeholder="Password">
+
+                            <label for="password_confirmation">Password Confirmation</label>
+                            <input type="password" class="form-control" placeholder="Password Confirmation"
+                                name="password_confirmation" id="password_confirmation">
+                            <div class="invalid-feedback" id="passwordError"></div>
+                        </div>
+
+
+                        <input type="hidden" name="role_id" id="role_id" value=12>
+                        <input type="hidden" name="action" id="action" value="add">
+                        <input type="hidden" name="hidden_id" id="hidden_id" />
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <input type="submit" name="action_button" id="action_button" value="Add"
+                            class="btn btn-primary">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{-- end of modal --}}
+
+
+    {{-- start of deletion of modal --}}
+    <div class="modal fade" id="confirmModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><b>Confirmation</b></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to remove this data?.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" name="ok_button" id="ok_button">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- end of deletion of modal --}}
+
+    <script>
+        $(document).ready(function() {
+            $('.customerUserTable').DataTable({
+                "processing": true,
+                "serverSide": true,
+                ajax: {
+                    url: "{{ route('get-user-account-setting') }}",
+                    type: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                    }
+                },
+                columns: [{
+                        data: 'name',
+                        name: 'name'
+                    },
+                    {
+                        data: 'role_name',
+                        name: 'role_name'
+                    },
+                    {
+                        data: 'email',
+                        name: 'email'
+                    },
+                    {
+                        data: 'username',
+                        name: 'username'
+                    },
+                    {
+                        data: 'created_at_formatted',
+                        name: 'created_at',
+                        searchable: false
+                    },
+                    {
+                        data: 'updated_at_formatted',
+                        name: 'updated_at',
+                        searchable: false
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false
+                    }
+                ]
+            })
+        });
+
+        // configuring of modal for creating
+        $('#create_record').on('click', function(event) {
+            $('.modal-title').text('Add New Record');
+            // $('#name').val(data.result.name);
+            $('#action_button').val('Add');
+            $('#action').val('Add');
+            $('#dataModal').modal('show');
+        });
+
+        // script for configuring edit modal
+        $(document).on('click', '.edit', function(event) {
+            event.preventDefault();
+            var id = $(this).attr('id');
+            $('#form_result').html
+            $.ajax({
+                url: "/admin/users/" + id + "/edit",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: "json",
+                success: function(data) {
+                    $('#name').val(data.result.name);
+                    $('#username').val(data.result.username);
+                    $('#email').val(data.result.email);
+                    $('#role_id').val(data.result.role_id);
+                    $('#hidden_id').val(id);
+                    $('.modal-title').text('Edit Record');
+                    $('#action_button').val('Update');
+                    $('#action').val('Update');
+                    $('#dataModal').modal('show');
+                    $('#password, #password_confirmation').css('display', 'none');
+                    $('#errorPassword').css('display', 'none');
+                    var passwordLabel = $('label[for="password"]');
+                    var passwordConfirmationLabel = $('label[for="password_confirmation"]');
+                    $('#password, #password_confirmation').removeAttr('required');
+                    passwordLabel.hide();
+                    passwordConfirmationLabel.hide();
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    console.log(errors);
+                }
+
+            })
+
+        })
+
+        //script for submission of form
+        $('#dataModalForm').on('submit', function(event) {
+            event.preventDefault();
+            var action_url = '';
+
+            if ($('#action').val() == 'Add') {
+                action_url = "{{ route('admin.users.store') }}"
+            } else if ($('#action').val() == 'Update') {
+                action_url = "{{ route('admin.users.update') }}"
+            }
+
+            var name = $('#name').val();
+            console.log($(this).serialize());
+            //form sending on creationg
+            $.ajax({
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: action_url,
+                data: $(this).serialize(),
+                success: function(response) {
+                    $('#dataModal').modal('hide');
+                    location.reload();
+                },
+                error: function(jqXHR, xhr, status, error) {
+                    if (jqXHR.status == 422) {
+                        const errors = jqXHR.responseJSON.errors;
+                        // Remove any existing errors
+                        $('.is-invalid').removeClass('is-invalid');
+                        $('.invalid-feedback').empty();
+
+                        // Loop through and display error messages
+                        for (let field in errors) {
+                            const errorMessage = errors[field];
+                            console.log(field);
+                            $(`#${field}`).addClass('is-invalid');
+                            $(`#${field}Error`).text(errorMessage[0]).show();
+                        }
+                    }
+
+                },
+            });
+        })
+
+
+
+        //script for deletion
+        var UserId
+        $(document).on('click', '.delete', function() {
+            console.log('test')
+            UserId = $(this).attr('id');
+            console.log(UserId);
+            $('#confirmModal').modal('show');
+        })
+
+
+
+        //script for sending delete
+        $('#ok_button').click(function() {
+            $.ajax({
+                url: "/admin/users/" + UserId,
+                type: "DELETE",
+                beforeSend: function() {
+                    $('#ok_button').text('Deleting.....');
+                },
+                success: function($data) {
+                    setTimeout(() => {
+                        $('#confirmModal').modal('hide');
+                        location.reload();
+                    }, 1000);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR.status);
+                    console.log('Error: ' + textStatus + ' - ' + errorThrown);
+                }
+            });
+        });
+
+        $(document).ready(function() {
+            $("#dataModal").on('hidden.bs.modal', function() {
+                var form = document.querySelector('#dataModalForm');
+                form.reset();
+                $('#password, #password_confirmation').css('display', 'block');
+                $('#errorPassword').html('').removeClass('error-text');
+                var passwordLabel = $('label[for="password"]');
+                var passwordConfirmationLabel = $('label[for="password_confirmation"]');
+                $('#password, #password_confirmation').attr('required', 'required');
+                passwordLabel.show();
+                passwordConfirmationLabel.show();
+                $('#action_button').val('Add');
+                $('#action').val('add');
+                $('.modal-title').text('Add New Record');
+            });
+        });
+
+        $(document).ready(function() {
+            $('#dataModalForm').parsley();
+        });
+    </script>
+@endsection

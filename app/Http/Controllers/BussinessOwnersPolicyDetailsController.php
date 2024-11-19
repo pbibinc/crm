@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Mail\sendTemplatedEmail;
 use App\Models\BusinessOwnersPolicyDetails;
 use App\Models\Metadata;
 use App\Models\PolicyAdditionalValue;
@@ -10,10 +11,13 @@ use App\Models\PolicyDetail;
 use App\Models\QuotationProduct;
 use App\Models\QuoteComparison;
 use App\Models\SelectedQuote;
+use App\Models\Templates;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
+
 class BussinessOwnersPolicyDetailsController extends Controller
 {
     /**
@@ -131,6 +135,10 @@ class BussinessOwnersPolicyDetailsController extends Controller
             $quotationComparison = SelectedQuote::find($data['businessOwnersHiddenQuoteId']);
             $quotationComparison->quote_no = $data['businessOwnersNumber'];
             $quotationComparison->save();
+
+            $subject = 'Welcome' . ' ' . $quotationProduct->QuoteInformation->quoteLead->leads->customer_name;
+            $template = Templates::find(15);
+            $sendingMail = Mail::to('maechael108@gmail.com')->send(new sendTemplatedEmail($subject, $template->html, $policyDetails->medias->filepath));
 
             DB::commit();
             return response()->json(['success' => 'Business Owners Policy Details has been saved successfully']);

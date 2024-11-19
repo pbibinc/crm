@@ -360,7 +360,54 @@
         var formId = @json($formId);
         var product = @json($productForm);
 
+        $(document).on('click', '.selectQuoteButton', function(e) {
+            e.preventDefault();
+            var id = $(this).attr('id');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to select this quote?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('selected-quote.store') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                'content')
+                        },
+                        method: "POST",
+                        data: {
+                            id: id
+                        },
+                        success: function() {
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: 'Quotation Comparison has been selected',
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            var errorMessage = xhr.status + ': ' + xhr.statusText
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Something went wrong: ' +
+                                    errorMessage,
+                                icon: 'error'
+                            });
+                        }
+                    });
+                }
+            })
 
+        });
 
         //send quote button functionalities
         // $('#sendQuoteButton').on('click', function() {

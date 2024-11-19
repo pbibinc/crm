@@ -91,4 +91,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(UserProfile::class);
 
     }
+
+    public function userLead()
+    {
+        return $this->belongsToMany(Lead::class, 'customer_user_lead', 'user_id', 'lead_id')->withTimestamps();
+    }
 }

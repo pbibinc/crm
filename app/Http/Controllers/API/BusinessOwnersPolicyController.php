@@ -60,6 +60,7 @@ class BusinessOwnersPolicyController extends BaseController
              }
              $quoteProduct->product = 'Business Owners';
              $quoteProduct->status = 29;
+             $quoteProduct->product_appointer_id = $data['userProfileId'];
              $quoteProduct->save();
 
 

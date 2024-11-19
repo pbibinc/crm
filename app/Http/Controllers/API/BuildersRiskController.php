@@ -64,6 +64,7 @@ class BuildersRiskController extends BaseController
               }
               $quoteProduct->product = 'Builders Risk';
               $quoteProduct->status = 29;
+              $quoteProduct->product_appointer_id = $data['userProfileId'];
               $quoteProduct->save();
 
             if($statusConstruction == "New Construction")

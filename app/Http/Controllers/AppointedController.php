@@ -16,6 +16,7 @@ use App\Models\RecreationalFacilities;
 use App\Models\SelectedQuote;
 use App\Models\Templates;
 use App\Models\UnitedState;
+use App\Models\User;
 use App\Models\UserProfile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -100,8 +101,9 @@ class AppointedController extends Controller
             $selectedQuotes = SelectedQuote::whereIn('quotation_product_id', $productIds)->get() ?? [];
             $userProfiles = UserProfile::get()->sortBy('first_name');
             $financeCompany = FinancingCompany::all();
+            $customerUsers = User::where('role_id', 12)->orderBy('email')->get();
 
-            return view('leads.appointed_leads.apptaker-leads-view.index', compact('leads', 'localTime', 'usAddress', 'products', 'sortedClassCodeLeads', 'classCodeLeads', 'recreationalFacilities', 'states', 'quationMarket', 'carriers', 'markets', 'templates', 'complianceOfficer', 'selectedQuotes', 'activePolicies', 'userProfiles', 'financeCompany'));
+            return view('leads.appointed_leads.apptaker-leads-view.index', compact('leads', 'localTime', 'usAddress', 'products', 'sortedClassCodeLeads', 'classCodeLeads', 'recreationalFacilities', 'states', 'quationMarket', 'carriers', 'markets', 'templates', 'complianceOfficer', 'selectedQuotes', 'activePolicies', 'userProfiles', 'financeCompany', 'customerUsers'));
         } catch (\Exception $e) {
             Log::error('Error in leadsProfileView method', [
                 'message' => $e->getMessage(),

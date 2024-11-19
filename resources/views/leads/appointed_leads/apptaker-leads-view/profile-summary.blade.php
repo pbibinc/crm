@@ -11,11 +11,10 @@
             'linear-gradient(to right, #c8e6c9, #a5d6a7)', // Light Mint to Pale Green
             'linear-gradient(to right, #fff9c4, #fff59d)', // Soft Yellow to Light Lemon
             'linear-gradient(to right, #ffe0b2, #ffcc80)', // Pale Orange to Light Apricot
-            'linear-gradient(to right, #bbdefb, #b3e5fc)', // Soft Sky Blue to Light Cyan
+            'linear-gradient(to right, #bbdefb, #b3e5fc)', // Soft Sky Blue to Ligpht Cyan
         ];
         return $colors[$index % count($colors)]; // Cycle through colors
     }
-
 @endphp
 
 <style>

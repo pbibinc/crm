@@ -179,12 +179,19 @@ class PolicyDetail extends Model
 
         foreach ($quoteProducts as $product) {
             $productPolicies = self::where('quotation_product_id', $product->id)->get();
-                // ->whereIn('status', ['issued', 'Cancelled', 'Declined', 'Endorsing', 'Notice of Cancellation', 'old policy', 'renewal issued', 'Renewal Notice of Cancellation', 'Intent', 'Potential For Rewrite', 'Rewrite', 'Not Interested', 'Process Renewal', 'Renewal Quote', 'Renewal Quoted', ''])
-
 
             if ($productPolicies->isNotEmpty()) {
                 // Push each policy individually
                 foreach ($productPolicies as $policy) {
+                    $quotationProduct = QuotationProduct::find($policy->quotation_product_id);
+                    $policy->QuotationProduct = $quotationProduct;
+                    if($quotationProduct->product == 'General Liability'){
+                        $generalLiabilty = GeneralLiabilitiesPolicyDetails::where('policy_details_id', $policy->id)->first();
+                        $policy->GeneralLiabilty = $generalLiabilty;
+                    }else if($quotationProduct->product == 'Tools Equipment'){
+                        $toolsEquipment = ToolsEquipmentPolicy::where('policy_details_id', $policy->id)->first();
+                        $policy->ToolsEquipment = $toolsEquipment;
+                    }
                     $policies[] = $policy;
                 }
             }
@@ -215,6 +222,7 @@ class PolicyDetail extends Model
             if ($productPolicies->isNotEmpty()) {
                 // Push each policy individually
                 foreach ($productPolicies as $policy) {
+
                     $policies[] = $policy;
                 }
             }

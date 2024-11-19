@@ -50,7 +50,7 @@
             </a>
 
             @if ($policyDetail->status == 'Renewal Quote')
-                <button href="#" class="btn btn-primary" id="sendQuoteButton">Request For Approval</button>
+                <button href="#" class="btn btn-primary" id="sendQuoteButton">FORWARD QUOTE COMPARISON</button>
             @endif
         </div>
     </div>

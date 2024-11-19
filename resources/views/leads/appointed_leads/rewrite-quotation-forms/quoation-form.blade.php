@@ -81,7 +81,7 @@
                 ADD QUOTE
             </a>
             @if ($quoteProduct->status == 2)
-                <button href="#" class="btn btn-primary" id="sendQuoteButton">REQUEST FOR APPROVAL</button>
+                <button href="#" class="btn btn-primary" id="sendQuoteButton">FORWARD QUOTE COMPARISON</button>
             @endif
         </div>
     </div>

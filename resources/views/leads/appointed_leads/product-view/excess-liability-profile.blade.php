@@ -148,6 +148,11 @@
                 class="sendAppointedExcessLiabilityForQuotation btn btn-success btn-sm waves-effect waves-light"
                 value="{{ $excessLiabilityProduct->id }}">
                 <i class="ri-task-line"></i> Send For Quotation</button>
+        @elseif($excessLiabilityProduct->status == 1)
+            <button type="button"
+                class="sendOutExcessLiabilityQuotation btn btn-success btn-sm waves-effect waves-light"
+                value="{{ $excessLiabilityProduct->id }}">
+                <i class="ri-task-line"></i> Send Out Quotation</button>
         @elseif($excessLiabilityProduct->status == 5)
             <button type="button"
                 class="sendAppointedExcessLiabilityForQuotation btn btn-warning btn-sm waves-effect waves-light"
@@ -269,5 +274,41 @@
                 }
             });
         });
+
+        $('.sendOutExcessLiabilityQuotation').on('click', function() {
+            var id = $(this).val();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You want to send out this product for quotation',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('change-appointed-product-status') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        method: 'POST',
+                        data: {
+                            id: id,
+                            status: 30
+                        },
+                        success: function(data) {
+                            Swal.fire({
+                                title: 'Success',
+                                text: 'Product Request For Quotation',
+                                icon: 'success'
+                            }).then((result) => {
+                                location.reload();
+                            });
+                        }
+                    });
+                }
+            });
+        })
     });
 </script>

@@ -33,7 +33,8 @@
                         <i class="ri-dashboard-line"></i><span class="badge rounded-pill bg-success float-end">3</span>
                         <span>Dashboard</span>
                     </a>
-
+                    <ul class="sub-menu" aria-expanded="false">
+                    </ul>
                 </li>
                 <li>
                     <a href="{{ route('dashboard-report') }}" class="waves-effect">
@@ -233,6 +234,7 @@
                         <ul class="sub-menu" aria-expanded="false">
                             <li><a href="{{ route('binding') }}">Bind Queue</a></li>
                             <li><a href="{{ route('policy-list') }}">Policy List</a></li>
+                            <li><a href="{{ route('customer-account-setting.index') }}">Customer Account Setting</a></li>
                         </ul>
                     </li>
                     <li>
@@ -242,7 +244,7 @@
                             <span>Financing</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
-                            <li><a href="{{ route('financing-agreement.index') }}">Financing Agreement</a></li>
+                            <li><a href="{{ route('financing-agreement.index') }}">Fiancing Agreement</a></li>
                             <li><a href="{{ route('finance-agreement-list.index') }}">PFA Records</a></li>
                             <li><a href="{{ route('financing-company.index') }}">Financing Companies</a></li>
                         </ul>
