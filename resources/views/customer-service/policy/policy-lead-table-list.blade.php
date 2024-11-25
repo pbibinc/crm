@@ -61,6 +61,7 @@
                 },
                 url: "{{ route('client-policy-list') }}",
                 method: "POST",
+                async: false,
                 data: {
                     _token: "{{ csrf_token() }}",
                     id: id

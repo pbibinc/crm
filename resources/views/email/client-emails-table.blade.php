@@ -82,10 +82,12 @@
             "ajax": {
                 url: "{{ route('get-clients-emails') }}",
                 type: 'POST',
+                async: false,
                 data: {
                     _token: "{{ csrf_token() }}",
                     id: "{{ $leadId }}"
-                }
+                },
+
             },
             "columns": [{
                     data: 'product',

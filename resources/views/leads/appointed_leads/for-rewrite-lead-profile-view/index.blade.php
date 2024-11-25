@@ -214,6 +214,43 @@
                             </div>
                         </div>
 
+                        {{-- audit tab --}}
+                        <div class="tab-pane" id="audit" role="tabpanel">
+                            <div class="card shadow-lg mb-5 bg-white rounded">
+                                <div class="card-body">
+                                    @include('customer-service.audit.audit-information-table', [
+                                        'leadId' => $leads->id,
+                                    ])
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- policy list tab --}}
+                        <div class="tab-pane" id="policyList" role="tabpanel">
+                            <div class="card shadow-lg p-3 mb-5 bg-white rounded">
+                                <div class="card-body">
+                                    @include('customer-service.policy.policy-lead-table-list', [
+                                        'leadId' => $leads->id,
+                                        'carriers' => $carriers,
+                                        'markets' => $markets,
+                                        'templates' => $templates,
+                                    ])
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- activity log --}}
+                        <div class="tab-pane fade show" id="activityLog" role="tabpanel">
+                            <div class="card shadow-lg p-3 mb-5 bg-white rounded"
+                                style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
+                                <div class="card-body">
+                                    @include('leads.appointed_leads.log-activity.activity-log', [
+                                        'generalInformation' => $leads->generalInformation,
+                                    ])
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

@@ -23,6 +23,7 @@
             ajax: {
                 url: "{{ route('get-audit-information-table') }}",
                 type: "POST",
+                async: false,
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
