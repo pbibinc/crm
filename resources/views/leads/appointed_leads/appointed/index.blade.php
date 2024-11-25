@@ -36,6 +36,9 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
+                    data: {
+                        "_token": "{{ csrf_token() }}"
+                    },
                     url: "{{ route('appointed-list') }}"
                 },
                 columns: [{

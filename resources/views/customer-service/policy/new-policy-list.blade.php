@@ -22,13 +22,16 @@
             processing: true,
             serverSide: true,
             ajax: {
+                data: {
+                    "_token": "{{ csrf_token() }}"
+                },
                 url: "{{ route('new-policy-list') }}",
                 type: "POST",
 
             },
             columns: [{
-                    data: 'policy_number',
-                    name: 'policy_number'
+                    data: 'policy_link',
+                    name: 'policy_link'
                 },
                 {
                     data: 'product',

@@ -92,6 +92,10 @@ class ForRewriteMakePaymentController extends Controller
         $data = $policyDetail->getForRewritePolicyByStatusAndUserProfileId('For Rewrite Make A Payment', $userProfileId);
         return DataTables($data)
             ->addIndexColumn()
+            ->addColumn('policy_link', function($data){
+                $policyNumber = $data->policy_number;
+                return "<a href='/cancellation/get-for-rewrite-product-lead-view/$data->id'>$policyNumber</a>";
+            })
             ->addColumn('product', function($data){
                 return $data->QuotationProduct->product;
             })
@@ -146,7 +150,7 @@ class ForRewriteMakePaymentController extends Controller
                     return $viewButton . ' ' . $viewNotedButton;
                 }
             })
-            ->rawColumns(['action', 'policy_status'])
+            ->rawColumns(['action', 'policy_status', 'policy_link'])
             ->make(true);
     }
 }

@@ -34,15 +34,14 @@
                                         id="create_record">
                                         ADD USER</a>
                                 </div>
-                                <h4 class="card-title mb-4">Users</h4>
+                                <h4 class="card-title mb-4">Users Accounts</h4>
                                 <div>
                                     <table id="usersTable"class="table table-bordered dt-responsive nowrap"
                                         style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                         <thead class="table-light">
                                             <tr>
-                                                <th>Id</th>
                                                 <th>Name</th>
-                                                <th>Role</th>
+                                                <th>User Role</th>
                                                 <th>Email</th>
                                                 <th>Username</th>
                                                 <th>Created at</th>
@@ -156,12 +155,13 @@
             $('#usersTable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('admin.users.index') }}",
+                ajax: {
+                    url: "{{ route('admin.users.index') }}",
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                    }
+                },
                 columns: [{
-                        data: 'id',
-                        name: 'id'
-                    },
-                    {
                         data: 'name',
                         name: 'name'
                     },
@@ -346,31 +346,5 @@
         $(document).ready(function() {
             $('#dataModalForm').parsley();
         });
-
-        //script for saving
-        // $('#dataModalForm').on('submit', function(event){
-        //     event.preventDefault();
-        //     console.log($(this).serialize());
-        //     $.ajax({
-        //          type: 'POST',
-        //          headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        //          url: "{{ route('admin.users.store') }}",
-        //          data:$(this).serialize(),
-        //       success: function(response){
-
-        //          alert(response.success);
-        //             $('#dataModal').modal('hide');
-        //            location.reload();
-
-        //      },
-        //      error: function (xhr, status, error) {
-        //             var errors = xhr.responseJSON.errors;
-        //     }
-
-        //    });
-
-        // });
     </script>
-
-    </div>
 @endsection

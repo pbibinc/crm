@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Events\LeadNotesNotificationEvent;
 use App\Models\User;
+use App\Models\UserProfile;
 
 class GeneralNotificationController extends Controller
 {
@@ -107,5 +108,40 @@ class GeneralNotificationController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getNotification(Request $request)
+    {
+        try{
+            $user = User::find(auth()->user()->id);
+            $notifications = $user->notifications;
+            $notificationData = $notifications->map(function($notification){
+                $data = $notification->data;
+                $senderImage = null;
+                if(isset($data['sender'])){
+                    $senderProfile = UserProfile::find($data['sender']);
+                    $senderImage = $senderProfile ? $senderProfile->media->filepath ?? null : null;
+                }
+                if(isset($data['notifyBy'])){
+                    $senderProfile = UserProfile::find($data['notifyBy']);
+                    $senderImage = $senderProfile ? $senderProfile->media->filepath :  null;
+                }
+
+                return array_merge($data, [
+                    'id' => $notification->id,
+                    'type' => $notification->type,
+                    'notifiable_type' => $notification->notifiable_type,
+                    'notifiable_id' => $notification->notifiable_id,
+                    'data' => $data,
+                    'read_at' => $notification->read_at,
+                    'created_at' => $notification->created_at,
+                    'updated_at' => $notification->updated_at,
+                    'sender_image' => $senderImage ?? null,
+                ]);
+            });
+            return response()->json(['data' => $notificationData], 200);
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }

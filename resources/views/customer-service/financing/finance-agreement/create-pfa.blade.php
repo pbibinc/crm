@@ -2,11 +2,12 @@
     <table id="creationOfPFA" class="table table-bordered dt-responsive nowrap creationOfPFA"
         style="border-collapse: collapse; border-spacing: 0; width: 100%;">
         <thead style="background-color: #f0f0f0;">
-            <th>Policy Number</th>
             <th>Company Name</th>
             <th>Product</th>
+            <th>Policy Number</th>
             <th>Total Cost</th>
             <th>Effective Date</th>
+            <th>Action</th>
         </thead>
     </table>
 </div>
@@ -50,6 +51,25 @@
                         </div>
                         <div class="col-6">
                             <div class="form-group">
+                                <label for="" class="form-label">Amount Financed</label>
+                                <input type="text" class="form-control input-mask text-left"
+                                    data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                    inputmode="decimal" style="text-align: right;" id="amountFinanced"
+                                    name="amountFinanced">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="" class="form-label">Down Payment</label>
+                                <input type="text" class="form-control input-mask text-left"
+                                    data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
+                                    inputmode="decimal" style="text-align: right;" id="downPayment" name="downPayment">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
                                 <label for="" class="form-label">Monthly Payment</label>
                                 <input type="text" class="form-control input-mask text-left"
                                     data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'digits': 2, 'digitsOptional': false, 'prefix': '$ ', 'placeholder': '0'"
@@ -62,7 +82,7 @@
 
                         <div class="col-6">
                             <div class="form-group">
-                                <label for="">Payment Start</label>
+                                <label for="">Monthly Payment start date</label>
                                 <input class="form-control" type="date" value="2011-08-19" id="paymentStart"
                                     name="paymentStart" required>
                             </div>
@@ -70,8 +90,8 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="">Due Date</label>
-                                <input class="form-control" type="number" id="dueDate" min="1" max="31"
-                                    name="dueDate" required>
+                                <input class="form-control" type="number" id="dueDate" min="1"
+                                    max="31" name="dueDate" required>
                             </div>
                         </div>
                     </div>
@@ -102,8 +122,9 @@
                             </select>
                         </div>
                         <div class="col-6">
-                            <label for="" id="autoPayFileLabel" hidden>Upload File</label>
-                            <input type="file" name="autoPayFile" id="autoPayFile" class="form-control" hidden>
+                            <label for="" id="autoPayFileLabel" hidden>Upload Recuring File </label>
+                            <input type="file" name="autoPayFile[]" id="autoPayFile" class="form-control"
+                                multiple hidden>
                         </div>
                     </div>
                     <input type="hidden" name="selectedQuoteId" id="selectedQuoteId">
@@ -131,10 +152,6 @@
                 type: "POST",
             },
             columns: [{
-                    data: 'policy_number',
-                    name: 'policy_number'
-                },
-                {
                     data: 'company_name',
                     name: 'company_name'
                 },
@@ -143,12 +160,20 @@
                     name: 'product'
                 },
                 {
-                    data: 'full_payment',
-                    name: 'full_payment'
+                    data: 'policy_number',
+                    name: 'policy_number'
+                },
+                {
+                    data: 'total_cost',
+                    name: 'total_cost'
                 },
                 {
                     data: 'effective_date',
                     name: 'effective_date'
+                },
+                {
+                    data: 'action',
+                    name: 'action'
                 }
             ],
         });
@@ -182,9 +207,11 @@
                     _token: token
                 },
                 success: function(response) {
+                    console.log('response', response);
                     $('#policyNumber').val(response.selectedQuote.quote_no);
                     $('#product').val(response.quoteProduct.product);
                     $('#createPfaModalgModalTitle').text(response.leads.company_name);
+                    $('#downPayment').val(response.selectedQuote.down_payment);
                     $('#monthlyPayment').val(response.selectedQuote.monthly_payment);
                     $('#selectedQuoteId').val(response.selectedQuote.id);
                     $('#financialStatusId').val(response.financialStatus.id);
@@ -205,7 +232,7 @@
                 success: function(response) {
                     Swal.fire(
                         'Success!',
-                        response.message,
+                        'PFA Successfully Created',
                         'success'
                     ).then((result) => {
                         $('#createPfaModal').modal('hide');
@@ -222,5 +249,6 @@
                 }
             })
         });
+
     })
 </script>

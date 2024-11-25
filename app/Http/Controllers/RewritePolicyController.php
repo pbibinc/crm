@@ -139,6 +139,12 @@ class RewritePolicyController extends Controller
         $data = $policyDetail->getForRewritePolicyByStatusAndUserProfileId('For Rewrite', $userProfileId);
         return DataTables($data)
             ->addIndexColumn()
+            ->addColumn('policy_link', function($data){
+                $policyNumber = $data->policy_number;
+                $leadId = $data->QuotationProduct->QuoteInformation->QuoteLead->leads->id;
+                $button = '<a href="/appointed-list/'.$leadId.'"  id="'.$data->id.'">'.$policyNumber.'</a>';
+                return $button;
+            })
             ->addColumn('product', function($data){
                 return $data->QuotationProduct->product;
             })
@@ -164,6 +170,7 @@ class RewritePolicyController extends Controller
                 $sendForQuotationButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light sendForQuotationButton" id="'.$data->id.'"><i class=" ri-clipboard-line"></i></button>';
                 return $viewButton . ' ' . $viewNotedButton . ' ' . $sendForQuotationButton;
             })
+            ->rawColumns(['action', 'policy_link'])
             ->make(true);
 
     }

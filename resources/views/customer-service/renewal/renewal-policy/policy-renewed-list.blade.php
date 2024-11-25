@@ -8,7 +8,9 @@
                         id="renewalNewRenewedPolicyUserProdfileDropdown" class="form-select">
                         <option value="">Select User</option>
                         @foreach ($userProfiles as $userProfile)
-                            <option value="{{ $userProfile->id }}">{{ $userProfile->fullAmericanName() }}
+                            <option value="{{ $userProfile->id }}"
+                                {{ $userProfile->id == $userProfileId ? 'selected' : '' }}>
+                                {{ $userProfile->fullAmericanName() }}
                             </option>
                         @endforeach
                     </select>

@@ -2,27 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\BrokerQuotation;
-use App\Models\GeneralLiabilitiesPolicyDetails;
-use App\Models\Insurer;
 use App\Models\Lead;
-use App\Models\Metadata;
-use App\Models\PaymentInformation;
-use App\Models\PolicyDetail;
-use App\Models\QuoationMarket;
-use App\Models\QuotationProduct;
-use App\Models\QuoteComparison;
-use App\Models\SelectedQuote;
 use App\Models\User;
+use App\Models\Insurer;
+use App\Models\Metadata;
+use App\Models\Templates;
 use App\Models\UserProfile;
+use App\Models\PolicyDetail;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\SelectedQuote;
+use App\Models\QuoationMarket;
+use App\Models\BrokerQuotation;
+use App\Models\QuoteComparison;
+use App\Mail\sendTemplatedEmail;
+use App\Models\QuotationProduct;
+use App\Models\PaymentInformation;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Validation\ValidationException;
+use App\Models\GeneralLiabilitiesPolicyDetails;
 
 class BindingController extends Controller
 {
@@ -31,8 +34,8 @@ class BindingController extends Controller
     {
         $markets = QuoationMarket::all()->sortBy('name');
         $carriers = Insurer::all()->sortBy('name');
-
-        return view('customer-service.binding.index', compact('markets', 'carriers'));
+        $userProfileId = Auth::user()->userProfile->id;
+        return view('customer-service.binding.index', compact('markets', 'carriers', 'userProfileId'));
     }
 
     public function requestToBind(Request $request)
@@ -138,6 +141,7 @@ class BindingController extends Controller
             ->rawColumns(['policy_number', 'bindingType', 'action'])
             ->make(true);
         }
+
         return view('customer-service.binding.request-to-bind-view');
     }
 
@@ -172,7 +176,6 @@ class BindingController extends Controller
         try{
         $quoationProduct = new QuotationProduct();
         $data = $quoationProduct->getIncompleteBinding();
-        // dd($data);
         return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('company_name', function($data){
@@ -186,14 +189,16 @@ class BindingController extends Controller
                 return $userProfile;
             })
             ->addColumn('policy_number', function($data){
+                $lead = $data->QuoteInformation->QuoteLead->leads;
+                $profileViewRoute = route('appointed-list-profile-view', ['leadsId' => $lead->id]);
                 if($data->status == 23)
                 {
                     $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
                     $selectedQuote = SelectedQuote::find($data->selected_quote_id);
-                    $policy_number = '<a href="" id="'.$policyDetail->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind">'.$selectedQuote->quote_no.'</a>';
+                    $policy_number = '<a href="'.$profileViewRoute.'" id="'.$policyDetail->id.'" data-status="'.$data->status.'" name="viewButton" class="">'.$selectedQuote->quote_no.'</a>';
                 }else{
                     $selectedQuote = SelectedQuote::find($data->selected_quote_id);
-                    $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind">'.$selectedQuote->quote_no.'</a>';
+                    $policy_number = '<a href="'.$profileViewRoute.'" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="">'.$selectedQuote->quote_no.'</a>';
                 }
                 return $policy_number;
 
@@ -231,7 +236,21 @@ class BindingController extends Controller
                 }
                 return QuoationMarket::find($selectedQuote->quotation_market_id)->name;
             })
-            ->rawColumns(['policy_number'])
+            ->addColumn('action', function($data){
+                $lead = $data->QuoteInformation->QuoteLead->leads;
+                if($data->status == 23)
+                {
+                    $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
+                    $selectedQuote = SelectedQuote::find($data->selected_quote_id);
+                    $policy_number = '<a href="" id="'.$policyDetail->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind btn btn-outline-success btn-sm waves-effect waves-light"><i class="ri-task-line"></i></a>';
+                }else{
+                    $selectedQuote = SelectedQuote::find($data->selected_quote_id);
+                    $policy_number = '<a href="" id="'.$data->id.'" data-status="'.$data->status.'" name="viewButton" class="viewRequestToBind btn btn-outline-success btn-sm waves-effect waves-light"><i class="ri-task-line"></i></a>';
+                }
+                $viewNoteButton = '<button class="btn btn-outline-primary btn-sm waves-effect waves-light viewNotedButton" id="'.$lead->id.'"><i class="ri-message-2-line"></i></button>';
+                return $viewNoteButton;
+            })
+            ->rawColumns(['policy_number', 'action'])
             ->make(true);
 
 
@@ -327,13 +346,14 @@ class BindingController extends Controller
                 $generalLiabilitiesDetails->status = 'issued';
                 $generalLiabilitiesDetails->save();
 
-
-
                 //code for quotation
                 $quotationComparison = SelectedQuote::find($data['glHiddenQuoteId']);
                 $quotationComparison->quote_no = $data['glPolicyNumber'];
                 $quotationComparison->save();
 
+                $subject = 'Welcome' . ' ' .  $quotationProduct->QuoteInformation->quoteLead->leads->customer_name;
+                $template = Templates::find(15);
+                $sendingMail = Mail::to('maechael108@gmail.com')->send(new sendTemplatedEmail($subject, $template->html, $policyDetails->medias->filepath));
                 DB::commit();
                 return response()->json(['success' => 'File uploaded successfully']);
             }catch(ValidationException $e){
@@ -402,6 +422,7 @@ class BindingController extends Controller
             ->addIndexColumn()
             ->addColumn('policy_number', function($data){
                 $lead = $data->QuoteInformation->QuoteLead->leads;
+
                 $profileViewRoute = route('appointed-list-profile-view', ['leadsId' => $lead->id]);
                 if($data->status == 19 || $data->status == 25){
                     $policyDetail = PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();

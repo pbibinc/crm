@@ -127,5 +127,32 @@ class AuditRequiredFileController extends Controller
     public function destroy($id)
     {
         //
+        try{
+            DB::beginTransaction();
+            $auditInformation = AuditInformation::find($id);
+            $auditInformation->requiredFiles()->detach();
+            DB::commit();
+            return response()->json(['message' => 'Files deleted successfully'], 200);
+        }catch(\Exception $e){
+            Log::error($e->getMessage());
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+
+    }
+
+    public function deleteRequiredFile(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+            $auditInformation = AuditInformation::find($request->hiddenId);
+            $auditInformation->requiredFiles()->detach($request->fileId);
+            DB::commit();
+            return response()->json(['message' => 'File deleted successfully'], 200);
+        }catch(\Exception $e){
+            Log::error($e->getMessage());
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }

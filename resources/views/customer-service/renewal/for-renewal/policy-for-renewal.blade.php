@@ -4,7 +4,7 @@
             <th>Policy Number</th>
             <th>Company Name</th>
             <th>Product</th>
-            <th>Previous Policy Cost</th>
+            <th>Previous Policy Price</th>
             <th>Renewal Date</th>
             <th></th>
         </tr>

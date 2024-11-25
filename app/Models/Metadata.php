@@ -45,4 +45,9 @@ class Metadata extends Model
     {
         return $this->belongsToMany(AuditInformation::class, 'audit_required_file', 'media_id', 'audit_information_id');
     }
+
+    public function reaccuringMedia()
+    {
+        return $this->belongsToMany(FinancingAgreement::class, 'recurring_ach_media', 'media_id', 'financing_aggreement_id');
+    }
 }

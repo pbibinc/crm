@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\AssignAppointedLeadEvent;
+use App\Events\HistoryLogsEvent;
 use App\Events\ReassignedAppointedLead;
 use App\Http\Controllers\Controller;
 use App\Models\GeneralInformation;
@@ -14,6 +15,7 @@ use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
@@ -32,7 +34,7 @@ class AssignAppointedLeadController extends Controller
         $lead = new Lead();
         $quoteLead = new QuoteLead();
         $appointedLeads = $lead->getAppointedLeads();
-        $requestForQuoteProduct = QuotationProduct::where('status', 29)->count( );
+        $requestForQuoteProduct = QuotationProduct::where('status', 30)->count();
         $appointedProducts =  $quoteLead->requestForQuoteAppointedProductByLeads($appointedLeads);
         $appointedLeadCount = $appointedLeads->count();
         $quotationProduct = new QuotationProduct();
@@ -215,28 +217,34 @@ class AssignAppointedLeadController extends Controller
             DB::beginTransaction();
             $data = $request->all();
             $products = $data['productId'];
-
+            $userProfileId = Auth::user()->userProfile->id;
             if (is_array($products)) {
                 foreach ($products as $product) {
                     $QuotationProduct = QuotationProduct::find($product);
                     if ($QuotationProduct) {
-                        $QuotationProduct->status = 29;
+                        $QuotationProduct->status = 30;
                         $QuotationProduct->save();
                     } else {
                         Log::info("QuotationProduct not found for product ID: " . $product);
                         return response()->json(['error' => 'QuotationProduct not found for product ID: ' . $product], 404);
                     }
+                    $leadId = $QuotationProduct->quoteInformation->quoteLead->leads->id;
+                    event(new HistoryLogsEvent($leadId, $userProfileId, 'Appoint Approved', $QuotationProduct->product . ' ' . 'Product has been approved for quotation'));
                 }
             } else {
                 $QuotationProduct = QuotationProduct::find($products);
                 if ($QuotationProduct) {
-                    $QuotationProduct->status = 29;
+                    $QuotationProduct->status = 30;
                     $QuotationProduct->save();
                 } else {
                     Log::info("QuotationProduct not found for product ID: " . $products);
                     return response()->json(['error' => 'QuotationProduct not found for product ID: ' . $products], 404);
                 }
+                $leadId = $QuotationProduct->quoteInformation->quoteLead->leads->id;
+                event(new HistoryLogsEvent($leadId, $userProfileId, 'Appoint Approved', $QuotationProduct->product . ' ' . 'Product has been approved for quotation'));
             }
+
+
 
             DB::commit();
             return response()->json(['success' => 'Quote request processed successfully']);
@@ -249,5 +257,34 @@ class AssignAppointedLeadController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function declineAppointedProduct(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+            $productId = $request->input('id');
+            $userProfileId = Auth::user()->userProfile->id;
+
+            $quotationProduct = QuotationProduct::find($productId);
+            $quotationProduct->status = 5;
+            $quotationProduct->save();
+
+            $userProfileId = $quotationProduct->QuoteInformation->telemarketer_id;
+            $user = User::find(UserProfile::find($userProfileId)->user_id);
+
+            $user->sendNoteNotification($user, 'Declined' . ' ' . $quotationProduct->product, );
+
+
+            $leadId = $quotationProduct->quoteInformation->quoteLead->leads->id;
+            event(new HistoryLogsEvent($leadId, $userProfileId, 'Declined', $quotationProduct->product . ' ' . 'Product has been declined'));
+
+            DB::commit();
+        }catch(\Exception $e){
+            DB::rollBack();
+            Log::info("Error for Declining", [$e->getMessage()]);
+            return response()->json(['error' => $e->getMessage()]);
+        }
+
     }
 }

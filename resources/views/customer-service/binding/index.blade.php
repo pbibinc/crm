@@ -18,7 +18,7 @@
                                 <li class="nav-item">
                                     <a class="nav-link" data-bs-toggle="tab" href="#incompleteBinding" role="tab">
                                         <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
-                                        <span class="d-none d-sm-block">Incomplete Binding</span>
+                                        <span class="d-none d-sm-block">Declined/Incomplete Binding</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -36,7 +36,7 @@
                                 <li class="nav-item">
                                     <a class="nav-link" data-bs-toggle="tab" href="#policyList" role="tab">
                                         <span class="d-block d-sm-none"><i class="fas fa-cog"></i></span>
-                                        <span class="d-none d-sm-block">New Policies</span>
+                                        <span class="d-none d-sm-block">Recent Bound Policies</span>
                                     </a>
                                 </li>
                             </ul>
@@ -44,26 +44,34 @@
                             <!-- Tab panes -->
                             <div class="tab-content p-3 text-muted">
                                 <div class="tab-pane active" id="request-to-bind" role="tabpanel">
-                                    @include('customer-service.binding.request-to-bind-view')
+                                    @include(
+                                        'customer-service.binding.request-to-bind-view',
+                                        compact('userProfileId'))
+                                </div>
+                                <div class="tab-pane" id="incompleteBinding" role="incompleteBinding">
+                                    <p class="mb-0">
+                                        @include(
+                                            'customer-service.incomplete-binding.index',
+                                            compact('userProfileId'))
+                                    </p>
                                 </div>
                                 <div class="tab-pane" id="binding" role="tabpanel">
-                                    @include('customer-service.binding.binding-view')
+                                    @include(
+                                        'customer-service.binding.binding-view',
+                                        compact('userProfileId'))
                                 </div>
                                 <div class="tab-pane" id="bound" role="tabpanel">
                                     <p class="mb-0">
                                         @include(
                                             'customer-service.bound.index',
-                                            compact('carriers', 'markets'))
-                                    </p>
-                                </div>
-                                <div class="tab-pane" id="incompleteBinding" role="incompleteBinding">
-                                    <p class="mb-0">
-                                        @include('customer-service.incomplete-binding.index')
+                                            compact('carriers', 'markets', 'userProfileId'))
                                     </p>
                                 </div>
                                 <div class="tab-pane" id="policyList" role="policyList">
                                     <p class="mb-0">
-                                        @include('customer-service.policy.new-policy-list')
+                                        @include(
+                                            'customer-service.policy.new-policy-list',
+                                            compact('userProfileId'))
                                     </p>
                                 </div>
                             </div>

@@ -20,9 +20,10 @@
              <a href="#" class="text-decoration-none text-primary me-3">
                  <i class="fas fa-envelope"></i> {{ $leads->GeneralInformation->email_address }}
              </a>
-             <a href="#" class="text-decoration-none text-secondary">
-                 <i class="bi bi-globe"></i> <!-- Website Icon -->
-             </a>
+             {{-- <a href="{{ route('customer-account-setting.show', ['customer_account_setting' => $leads->id]) }}"
+                 class="text-decoration-none text-primary me-3">
+                 <i class="ri-user-settings-line"></i> Account Setting <!-- Website Icon -->
+             </a> --}}
          </div>
      </div>
      <div class="card">

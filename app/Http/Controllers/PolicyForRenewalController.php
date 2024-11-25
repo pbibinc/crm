@@ -27,8 +27,8 @@ class PolicyForRenewalController extends Controller
             ->addIndexColumn()
             ->addColumn('policy_no', function($policiesData){
                 $policyNumber = $policiesData->policy_number;
-                $policyNumberLink = '<a href="" class="proccessRenewal" id="'.$policiesData->id.'">'.$policyNumber.'</a>';
-                return $policyNumber;
+                $policyNumberLink = '<a href="/customer-service/renewal/get-renewal-lead-view/'.$policiesData->id.'"  id="'.$policiesData->id.'">'.$policyNumber.'</a>';
+                return $policyNumberLink;
             })
             ->addColumn('company_name', function($policiesData){
                 $lead = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;

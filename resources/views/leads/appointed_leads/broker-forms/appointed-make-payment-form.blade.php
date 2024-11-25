@@ -17,7 +17,9 @@
                                 @if (!empty($selectedQuotes))
                                     @foreach ($selectedQuotes ? $selectedQuotes : [] as $quote)
                                         <option value="{{ $quote->id }}">{{ $quote->quote_no }}
-                                            {{ $quote->QuotationMarket->name }}</option>
+                                            {{ $quote->QuotationMarket->name }}
+                                            ({{ $quote->QuotationProduct->product }})
+                                        </option>
                                     @endforeach
                                 @endif
                             </select>
@@ -284,7 +286,6 @@
 
         $('#makePaymentForm').on('submit', function(e) {
             e.preventDefault();
-            console.log('submitting');
             var button = $('#savePaymentInformation');
             var status = $('#statusInput').val();
             var productId = $('#quotationProductId').val();
@@ -342,7 +343,7 @@
                             icon: 'success'
                         }).then(function() {
                             $('#makePaymentModal').modal('hide');
-                            location.reload();
+                            $('#accountingTable').DataTable().ajax.reload();
                         });
                     }
 
@@ -359,8 +360,9 @@
             })
         });
 
-        $('#makePaymentModal').on('hide-bs-modal', function() {
-            $('#makePaymentForm').trigger('reset');
+        $('#makePaymentModal').on('hide.bs.modal', function() {
+            console.log('Modal is being hidden');
+            $('#makePaymentForm').trigger('reset'); // Reset the form when the modal is hidden
         });
 
         // $('#savePaymentInformation').on('click', function() {

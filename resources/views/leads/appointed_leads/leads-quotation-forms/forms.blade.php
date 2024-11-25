@@ -292,6 +292,52 @@
             });
         });
 
+        //forward to broker
+        $(document).on('click', '.forwardToBrokerButton', function(e) {
+            e.preventDefault();
+            var id = $(this).attr('id');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You want to forward this quote to broker?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, forward it!',
+                cancelButtonText: 'No, keep it'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('forward-to-broker') }}",
+                        method: "POST",
+                        data: {
+                            id: id,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: 'Quotation Comparison has been forwarded',
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                $('#qoutation-table').DataTable()
+                                    .ajax
+                                    .reload();
+                            });
+                        },
+                        error: function(data) {
+                            Swal.fire({
+                                title: 'Error',
+                                text: data.responseJSON.error,
+                                icon: 'error'
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
 
         //deletion of quote
         $(document).on('click', '.deleteButton', function(e) {

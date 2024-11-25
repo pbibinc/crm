@@ -116,7 +116,7 @@ class Lead extends Model
 
     public static function getAppointedLeads()
     {
-        $leads = self::where('disposition_id', 1)->where('status', 3)->with('userProfile')->get();
+        $leads = self::where('disposition_id', 1)->whereIn('status', [3,4])->with('userProfile')->get();
 
         if($leads){
             return $leads;
@@ -219,7 +219,15 @@ class Lead extends Model
         return $this->belongsToMany(Metadata::class, 'lead_media_table', 'lead_id', 'metadata_id');
     }
 
+    public function emailMessages()
+    {
+        return $this->hasMany(Messages::class, 'lead_id');
+    }
 
 
+    public function userLead()
+    {
+        return $this->belongsToMany(User::class, 'customer_user_lead', 'lead_id', 'user_id')->withTimestamps();
+    }
 
 }

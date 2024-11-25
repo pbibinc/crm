@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\ApiAuthController;
+use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\BuildersRiskController;
 use App\Http\Controllers\API\BusinessOwnersPolicyController;
 use App\Http\Controllers\API\ClassCodeDataController;
@@ -43,6 +44,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+
 });
 
 
@@ -124,3 +126,11 @@ Route::get('get-sample-data', [PoliciesDataController::class, 'getSampleData'])-
 Route::get('get-company', [CustomerServiceController::class, 'getCompany'])->withoutMiddleware(['auth:sanctum']);
 Route::get('get-user-list', [CustomerServiceController::class, 'getUserList'])->withoutMiddleware(['auth:sanctum']);
 Route::post('main-line-customer-service', [CustomerServiceController::class, 'mainLineCustomerService'])->withoutMiddleware(['auth:sanctum']);
+
+Route::post('/signup', [AuthController::class, 'signup']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/lead-data/{userId}', [LeadDetailController::class, 'getLeadDataUserId'])->name('get-lead-data-user-id');
+    Route::post('/get-policy-information/{policyId}', [PoliciesDataController::class, 'getPolicyInformation'])->name('get-policy-information');
+});

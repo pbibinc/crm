@@ -76,9 +76,11 @@
                                                 <option value="15" @if ($product->status == 15) selected @endif>
                                                     Resend RTB</option>
                                             @endif
-                                            @if ($product->status == 22)
+                                            @if ($product->status == 22 || $product->status == 21)
                                                 <option value="22" @if ($product->status == 22) selected @endif>
-                                                    Pending</option>
+                                                    Request For Broker Call</option>
+                                                <option value="21" @if ($product->status == 21) selected @endif>
+                                                    Quoted Product</option>
                                             @endif
                                             @if ($product->status == 12)
                                                 <option value="22" @if ($product->status == 12) selected @endif>
@@ -93,7 +95,9 @@
                                             $product->status == 15 ||
                                             $product->status == 3 ||
                                             $product->status == 4 ||
-                                            $product->status == 5)
+                                            $product->status == 5 ||
+                                            $product->status == 22 ||
+                                            $product->status == 21)
                                         <button type="button" class="btn btn-success waves-effect waves-light"
                                             style="padding: 6px 12px; font-size: 14px;"
                                             id="saveStatusButton">Submit</button>
@@ -321,6 +325,7 @@
                                         'customer-service.financing.finance-agreement.financing-table',
                                         [
                                             'leadId' => $leads->id,
+                                            'financeCompany' => $financeCompany,
                                         ]
                                     )
                                 </div>
@@ -342,13 +347,9 @@
 
                         {{-- emails tab --}}
                         <div class="tab-pane" id="emails" role="tabpanel">
-                            <div class="card shadow-lg p-3 mb-5 bg-white rounded">
-                                <div class="card-body">
-                                    @include('email.client-emails-table', [
-                                        'leadId' => $leads->id,
-                                    ])
-                                </div>
-                            </div>
+                            @include('email.client-emails-table', [
+                                'leadId' => $leads->id,
+                            ])
                         </div>
 
                         {{-- policy list tab --}}
@@ -372,6 +373,7 @@
 
         </div>
     </div>
+    @include('customer-service.audit.audit-information-modal')
     <script>
         $(document).ready(function() {
 
@@ -476,6 +478,48 @@
 
                 if (status == 6) {
                     $('#requestToBindModal').modal('show');
+                } else if (status == 22) {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You want to request for a broker call?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: "{{ route('request-for-broker-call') }}",
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                        'content')
+                                },
+                                method: "POST",
+                                data: {
+                                    id: {!! json_encode($quoteProduct->id) !!},
+                                },
+                                success: function() {
+                                    Swal.fire({
+                                        title: 'Success',
+                                        text: 'has been saved',
+                                        icon: 'success'
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            location.reload();
+                                        }
+                                    });
+                                },
+                                error: function() {
+                                    Swal.fire({
+                                        title: 'Error',
+                                        text: 'Something went wrong',
+                                        icon: 'error'
+                                    });
+                                }
+                            })
+                        }
+                    });
                 } else if (status == 15) {
                     $.ajax({
                         url: "{{ route('get-binding-docs') }}",

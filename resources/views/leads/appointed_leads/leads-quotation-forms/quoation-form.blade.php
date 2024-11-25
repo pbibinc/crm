@@ -10,6 +10,7 @@
     foreach ($products as $product) {
         $productIds[] = $product->id;
     }
+
 @endphp
 
 <div class="card shadow-lg p-3 mb-5 bg-white rounded">
@@ -17,10 +18,6 @@
         <div class="">
             <button class="btn btn-success btn-sm createRecord" id="create_record_" data-product=''
                 data-bs-target="#addQuoteModal_{{ $formId }}">ADD QUOTE</button>
-
-            {{-- @if ($quoteProduct->status == 2)
-                <button class="btn btn-primary btn-sm" id="sendQuoteButton">SEND QUOTE</button>
-            @endif --}}
         </div>
         <div class="row">
             <div class="col-6">
@@ -128,8 +125,8 @@
                             <label for="product">Product</label>
                             <select name="productDropdown" id="productDropdown" class="form-select">
                                 <option value="">Select Product</option>
-                                @foreach ($productsDropdown as $product)
-                                    <option value="{{ $product }}">{{ $product }}</option>
+                                @foreach ($products as $product)
+                                    <option value="{{ $product->id }}">{{ $product->product }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -343,6 +340,12 @@
                 .reload();
         });
 
+        $('#productDropdown').on('change', function() {
+            var productId = $(this).val();
+            $('#product_hidden_id').val(productId);
+            $('#productId').val(productId);
+        });
+
 
         $('#addQuoteModal').on('hidden.bs.modal', function() {
             $('#quotationForm select').val('');
@@ -356,6 +359,55 @@
 
         var formId = @json($formId);
         var product = @json($productForm);
+
+        $(document).on('click', '.selectQuoteButton', function(e) {
+            e.preventDefault();
+            var id = $(this).attr('id');
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to select this quote?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('selected-quote.store') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                'content')
+                        },
+                        method: "POST",
+                        data: {
+                            id: id
+                        },
+                        success: function() {
+                            Swal.fire({
+                                position: 'center',
+                                icon: 'success',
+                                title: 'Quotation Comparison has been selected',
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            var errorMessage = xhr.status + ': ' + xhr.statusText
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Something went wrong: ' +
+                                    errorMessage,
+                                icon: 'error'
+                            });
+                        }
+                    });
+                }
+            })
+
+        });
 
         //send quote button functionalities
         // $('#sendQuoteButton').on('click', function() {

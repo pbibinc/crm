@@ -74,16 +74,43 @@
         /* Lighter line for subtlety */
     }
 </style>
+@php
+    $generalLiabilitiProduct = $generalLiabilities->generalInformation->lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+        'General Liability',
+        $generalLiabilities->generalInformation->lead->quoteLead->QuoteInformation->id,
+    );
+@endphp
 <div class="row-title">
-    <div class="card-title">
-        <h5>General Liability Profile</h5>
+
+    <div class="card-title d-flex align-items-center">
+        <h5 class="mb-0 me-2">General Liability Profile</h5>
+        @if ($generalLiabilitiProduct->status == 5)
+            <span class="badge bg-danger align-middle">Declined</span>
+        @endif
     </div>
-    @if ($actionButtons == true)
-        <button type="button" class="editGeneralLiabilitiesButton btn btn-light btn-sm waves-effect waves-light"
-            value="{{ $generalLiabilities->generalInformation->lead->id }}">
-            <i class="ri-edit-line"></i> Edit
-        </button>
-    @endif
+    <div>
+        @if ($actionButtons == true)
+            <button type="button" class="editGeneralLiabilitiesButton btn btn-light btn-sm waves-effect waves-light"
+                value="{{ $generalLiabilities->generalInformation->lead->id }}">
+                <i class="ri-edit-line"></i> Edit
+            </button>
+        @endif
+        @if ($generalLiabilitiProduct->status == 29)
+            <button type="button"
+                class="sendAppointedProductForQuotation btn btn-success btn-sm waves-effect waves-light"
+                value="{{ $generalLiabilitiProduct->id }}">
+                <i class="ri-task-line"></i> Send For Quotation</button>
+        @elseif($generalLiabilitiProduct->status == 1)
+            <button type="button" class="sendOutQuotation btn btn-success btn-sm waves-effect waves-light"
+                value="{{ $generalLiabilitiProduct->id }}">
+                <i class="ri-task-line"></i> Send Out Quotation</button>
+        @elseif($generalLiabilitiProduct->status == 5)
+            <button type="button"
+                class="sendAppointedProductForQuotation btn btn-warning btn-sm waves-effect waves-light"
+                value="{{ $generalLiabilitiProduct->id }}">
+                <i class="ri-task-line"></i> Resend For Quotation</button>
+        @endif()
+    </div>
 </div>
 
 
@@ -258,12 +285,93 @@
                 dataType: 'json',
                 method: 'POST',
                 data: {
-                    leadId: id
+                    id: id
                 },
             });
             window.open(`${url}general-liabilities-form/edit`, "s_blank",
                 "width=1000,height=849");
 
-        })
+        });
+
+        function sendForQuotation(id) {
+            $.ajax({
+                url: "{{ route('change-appointed-product-status') }}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                method: 'POST',
+                data: {
+                    id: id,
+                    status: 7
+                },
+                success: function(data) {
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'Product Request For Quotation',
+                        icon: 'success'
+                    }).then((result) => {
+                        location.reload();
+                    });
+                }
+            });
+        }
+
+        function sendOutQuotation(id) {
+            $.ajax({
+                url: "{{ route('change-appointed-product-status') }}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                method: 'POST',
+                data: {
+                    id: id,
+                    status: 30
+                },
+                success: function(data) {
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'Product Request For Quotation',
+                        icon: 'success'
+                    }).then((result) => {
+                        location.reload();
+                    });
+                }
+            });
+        }
+
+        $('.sendAppointedProductForQuotation').on('click', function(e) {
+            var id = $(this).val();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You want to send this product for quotation',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    sendForQuotation(id);
+                }
+            });
+        });
+
+        $('.sendOutQuotation').on('click', function(e) {
+            var id = $(this).val();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You want to send out this quotation',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    sendOutQuotation(id);
+                }
+            });
+        });
+
     })
 </script>

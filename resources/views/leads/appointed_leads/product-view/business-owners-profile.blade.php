@@ -24,16 +24,43 @@
         </div>
     </div>
 @endif --}}
+@php
+    $businessOwnersProduct = $generalInformation->lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+        'Business Owners',
+        $generalInformation->lead->quoteLead->QuoteInformation->id,
+    );
+@endphp
 <div class="row-title">
-    <div class="card-title">
-        <h5>Business Owners Profile</h5>
+    <div class="card-title d-flex align-items-center">
+        <h5 class="mb-0 me-2">Business Owners Profile</h5>
+        @if ($businessOwnersProduct->status == 5)
+            <span class="badge bg-danger align-middle">Declined</span>
+        @endif
     </div>
-    @if ($actionButtons == true)
-        <button type="button" class="editBusinessOwnersPolicy btn btn-light btn-sm waves-effect waves-light"
-            value="{{ $generalInformation->lead->id }}">
-            <i class="ri-edit-line"></i> Edit
-        </button>
-    @endif
+    <div>
+        @if ($actionButtons == true)
+            <button type="button" class="editBusinessOwnersPolicy btn btn-light btn-sm waves-effect waves-light"
+                value="{{ $generalInformation->lead->id }}">
+                <i class="ri-edit-line"></i> Edit
+            </button>
+        @endif
+        @if ($businessOwnersProduct->status == 29)
+            <button type="button"
+                class="sendAppointedBusinessOwnersForQuotation btn btn-success btn-sm waves-effect waves-light"
+                value="{{ $businessOwnersProduct->id }}">
+                <i class="ri-task-line"></i> Send For Quotation
+            </button>
+        @elseif($businessOwnersProduct->status == 1)
+            <button type="button"
+                class="sendOutBusinessOwnersQuotation btn btn-success btn-sm waves-effect waves-light"
+                value="{{ $businessOwnersProduct->id }}">
+                <i class="ri-task-line"></i> Send Out Quotation</button>
+        @elseif($businessOwnersProduct->status == 5)
+            <button type="button"
+                class="sendAppointedBusinessOwnersForQuotation btn btn-warning btn-sm waves-effect waves-light"
+                value="{{ $businessOwnersProduct->id }}">Resend For Quotation</button>
+        @endif
+    </div>
 </div>
 <div class="row">
     <div class="col-md-12">
@@ -208,5 +235,77 @@
             window.open(`${url}business-owners-policy-form/edit`, "s_blank",
                 "width=1000,height=849")
         });
+
+        $('.sendAppointedBusinessOwnersForQuotation').on('click', function(e) {
+            var id = $(this).val();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You want to send this product for quotation',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('change-appointed-product-status') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        method: 'POST',
+                        data: {
+                            id: id,
+                            status: 7
+                        },
+                        success: function(data) {
+                            Swal.fire({
+                                title: 'Success',
+                                text: 'Product Request For Quotation',
+                                icon: 'success'
+                            }).then((result) => {
+                                location.reload();
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        $('.sendOutBusinessOwnersQuotation').on('click', function(e) {
+            var id = $(this).val();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You want to send out this quotation',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('change-appointed-product-status') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        method: 'POST',
+                        data: {
+                            id: id,
+                            status: 30
+                        },
+                        success: function(data) {
+                            Swal.fire({
+                                title: 'Success',
+                                text: 'Quotation Sent Out',
+                                icon: 'success'
+                            }).then((result) => {
+                                location.reload();
+                            });
+                        }
+                    });
+                }
+            });
+        })
     });
 </script>

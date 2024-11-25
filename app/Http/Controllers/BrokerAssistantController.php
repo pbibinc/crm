@@ -130,7 +130,7 @@ class BrokerAssistantController extends Controller
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
             $companyLink = '<a href="" class="viewButton" id="'.$data->id.'">'.$companyName.'</a>';
-            return $data->status == 3 ? $companyLink : $companyName;
+            return $companyLink;
         })
         ->addColumn('quotedBy', function($data){
             $quoter = UserProfile::find($data->user_profile_id);
@@ -165,7 +165,12 @@ class BrokerAssistantController extends Controller
         })
         ->addColumn('action', function($data){
             $viewButton = '<button class="btn btn-outline-info btn-sm viewButton" id="'.$data->id.'" ><i class="ri-eye-line"></i></button>';
-            return $viewButton;
+            $requestForBrokerCall = '<button class="btn btn-outline-success btn-sm requestForBrokerCall" id="'.$data->id.'"  data-bs-toggle="tooltip" data-bs-placement="top" title="Button For Requesting Broker Call"><i class=" ri-shield-user-line"></i></button>';
+            if($data->status == 21){
+                return $viewButton . ' ' . $requestForBrokerCall;
+            }else{
+                return $viewButton;
+            }
         })
         ->rawColumns(['companyName', 'complianceStatus', 'action'])
         ->make(true);
@@ -241,7 +246,7 @@ class BrokerAssistantController extends Controller
             return "<span class='badge {$class}'>{$statusLabel}</span>";
         })
         ->addColumn('callBack', function($data){
-            $callBack = $data->QuotationProductCallback->date_time;
+            $callBack = $data->callback_date;
             return $callBack ? Carbon::parse($callBack)->format('M d, Y g:i A') : 'N/A';
         })
         ->addColumn('action', function($data){
