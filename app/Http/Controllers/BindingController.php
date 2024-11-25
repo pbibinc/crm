@@ -358,6 +358,7 @@ class BindingController extends Controller
                 return response()->json(['success' => 'File uploaded successfully']);
             }catch(ValidationException $e){
                 DB::rollBack();
+                Log::info("General Liabilities Policy Creating policy failed". $e->getMessage());
                 return response()->json([
                     'errors' => $e->validator->errors(),
                     'message' => 'Validation failed'
