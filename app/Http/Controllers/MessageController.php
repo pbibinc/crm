@@ -50,7 +50,7 @@ class MessageController extends Controller
             DB::beginTransaction();
             $userId = auth()->user()->id;
             $userProfileId = UserProfile::where('user_id', $userId)->first()->id;
-            $lead = QuotationProduct::find($request['productId'])->QuoteInformation->QuoteLead->leads;
+            $lead = Lead::find($request['leadId']);
 
             if(is_array($request['dateTime'])){
                 foreach($request['dateTime'] as $dateTime){
@@ -186,7 +186,7 @@ class MessageController extends Controller
         ->addIndexColumn()
         ->addColumn('product', function($data){
             $quotationProduct = QuotationProduct::find($data->quotation_product_id);
-            return $quotationProduct->product;
+            return $quotationProduct ? $quotationProduct->product : 'N/A';
         })
         ->addColumn('email_status', function($data){
             $status = $data->status;
