@@ -41,7 +41,7 @@ class LeadController extends Controller
         $classCodeLeads = ClassCodeLead::all();
         $websiteOriginated = Website::distinct()->orderBy('name')->pluck('name');;
         if ($request->ajax()) {
-        $query = Lead::select('id', 'company_name', 'website_originated','tel_num', 'state_abbr', 'created_at')->orderBy('id');
+        $query = Lead::whereNot('status', 7)->select('id', 'company_name', 'website_originated','tel_num', 'state_abbr', 'created_at')->orderBy('id');
         return DataTables::of($query)
         ->addColumn('action_button', function ($query){
             $editButton =  '<button class="btn btn-outline-primary waves-effect waves-light btn-sm btnEdit" data-id="'.$query->id.'" name="edit"  type="button " ><i class="mdi mdi-pencil-outline"></i></button>';
@@ -583,15 +583,22 @@ class LeadController extends Controller
             foreach($ids as $id) {
                 $tempDnc = new TempDnc();
                 $lead = Lead::find($id);
+
+
                 $tempDnc->company_name = $lead->company_name;
                 $tempDnc->tel_num = $lead->tel_num;
                 $tempDnc->save();
-                $lead->update(['status' => 7]);
-                $lead->delete();
+
+                $lead->status = 7;
+                $lead->disposition_id = 18;
+                $lead->save();
+
+
             }
             DB::commit();
             return response()->json(['message' => 'The leads are successfully added to DNC Queue']);
         }catch(\Exception $e) {
+            DB::rollBack();
             Log::error($e->getMessage());
             return response()->json(['message' => $e->getMessage()]);
         }

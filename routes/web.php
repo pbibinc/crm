@@ -91,6 +91,7 @@ use App\Http\Controllers\CancellationEndorsementController;
 use App\Http\Controllers\CancelledPolicyForRecallController;
 use App\Http\Controllers\QuotationProductCallbackController;
 use App\Http\Controllers\AssignQuotedRenewalPolicyController;
+use App\Http\Controllers\BrokerAssistLeadsLogContoller;
 use App\Http\Controllers\BuildersRiskPolicyDetailsController;
 use App\Http\Controllers\PaymentInformationArchivedController;
 use App\Http\Controllers\BussinessOwnersPolicyDetailsController;
@@ -99,6 +100,7 @@ use App\Http\Controllers\CancelledPolicyForRecall as ControllersCancelledPolicyF
 use App\Http\Controllers\CustomerUserController;
 use App\Http\Controllers\GeneralNotificationController;
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\OldRenewalController;
 use App\Http\Controllers\RegisterCustomerController;
 
 Route::get('/', function () {
@@ -405,7 +407,11 @@ Route::middleware(['auth'])->group(function (){
             Route::post('/get-request-to-bind', [BrokerAssistantController::class, 'getRequestToBind'])->name('get-broker-request-to-bind');
             Route::post('/get-for-follow-up-product', [BrokerAssistantController::class, 'getForFollowUpProduct'])->name('get-for-follow-up-product');
             Route::post('/get-recent-bound-product', [BrokerAssistantController::class, 'getRecentBoundProduct'])->name('get-recent-bound-product');
+            Route::post('/change-broker-status', [BrokerAssistantController::class, 'changeBrokerStatus'])->name('change-broker-status');
 
+
+            Route::resource('/broker-assist-leads-log', BrokerAssistLeadsLogContoller::class);
+            Route::post('/get-broker-assist-log-leads-list', [BrokerAssistLeadsLogContoller::class, 'getBrokerAssistLeadsLog'])->name('get-broker-assist-log-leads-list');
 
             //Leads For Follow Up Broker Assistant
             Route::resource('/leads-for-follow-up', BrokerForFollowUpController::class);
@@ -505,6 +511,12 @@ Route::middleware(['auth'])->group(function (){
             Route::post('/renewal-make-payment', [RenewalPolicyController::class, 'renewalMakePaymentList'])->name('renewal-make-payment-list');
             Route::post('/renewal-request-to-bind', [RenewalPolicyController::class, 'renewalRequestToBind'])->name('renewal-request-to-bind');
             Route::post('/new-renewed-policy', [RenewalPolicyController::class, 'newRenewedPolicy'])->name('new-renewed-policy');
+
+
+            //router for old renewal
+            Route::resource('/old-renewal-policy', OldRenewalController::class);
+            Route::post('/get-old-renewal-policy', [OldRenewalController::class, 'getOldRenewalPolicyList'])->name('get-old-renewal-policy');
+            Route::post('/for-recover-rewrite-policy', [OldRenewalController::class, 'forRewritePolicy'])->name('for-recover-rewrite-policy');
 
             //routes for policies
             Route::get('/get-policy-list', [PoliciesController::class, 'getPolicyList'])->name('get-policy-list');

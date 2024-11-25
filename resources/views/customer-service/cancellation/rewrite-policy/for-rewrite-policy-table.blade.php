@@ -5,8 +5,7 @@
             <th>Old Policy</th>
             <th>Company Name</th>
             <th>Product</th>
-            <th>Cancellation Type</th>
-            <th>Cancelled Date</th>
+            <th>Origin</th>
             <th></th>
         </tr>
     </thead>
@@ -39,12 +38,8 @@
                     name: 'product'
                 },
                 {
-                    data: 'cancellation_type',
-                    name: 'cancellation_type'
-                },
-                {
-                    data: 'cancelled_date',
-                    name: 'cancelled_date'
+                    data: 'recovery_origin',
+                    name: 'recovery_origin'
                 },
                 {
                     data: 'action',

@@ -144,7 +144,7 @@ class PaymentController extends Controller
                     $policyDetails->status = 'Renewal Make A Payment';
                 }
                 $policyDetails->save();
-            }else if($request->paymentType == 'CCN'){
+            }else if($request->paymentType == 'Rewrite/Recovery'){
                 $policyDetails = PolicyDetail::find($request->policyDetailId);
                 $policyDetails->status = 'For Rewrite Make A Payment';
                 $policyDetails->save();

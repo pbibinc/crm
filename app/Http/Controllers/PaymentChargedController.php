@@ -125,6 +125,7 @@ class PaymentChargedController extends Controller
             $selectedQuote = SelectedQuote::find($request->quoteComparisonId);
             $selectedQuote->recommended = 3;
             $selectedQuote->save();
+
             $notifiableUserProfile = UserProfile::find($paymentInformation->requested_by);
             $notifiableUser = User::find($notifiableUserProfile->user_id);
             if($notifiableUser){
@@ -140,6 +141,7 @@ class PaymentChargedController extends Controller
                 'status' => 'success',
                 'message' => 'Payment charged successfully',
             ], 200);
+
         }catch(\Exception $e){
             DB::rollback();
             Log::info($e->getMessage());

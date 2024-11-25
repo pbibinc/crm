@@ -157,6 +157,9 @@ class GeneralLiabilitiesDataController extends BaseController
             }, $flattenedAnswers, $flattenedQuestions, $flattenClassCodeQuestionareId);
 
             foreach($mergedClassCodeQuestionareData as $flattenItem){
+                if($flattenItem['answer'] == null || $flattenItem['questionare'] == null){
+                    continue;
+                }
                 $ClassCodeQuesionare = new ClassCodeQuestionare();
                 $ClassCodeQuesionare->lead_id = $data['leadId'];
                 $ClassCodeQuesionare->classcode_id = $flattenItem['classcodeQuestionareId'];

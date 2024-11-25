@@ -254,7 +254,8 @@ class RenewalController extends Controller
             $selectedQuotes = SelectedQuote::whereIn('quotation_product_id', $productIds)->get() ?? [];
             $financeCompany = FinancingCompany::all();
             $templates = Templates::all();
-            return view('leads.appointed_leads.renewal-lead-profile-view.index', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer', 'carriers', 'markets', 'policyDetail', 'products', 'activePolicies', 'userProfiles', 'quotationProduct', 'selectedQuotes', 'productIds', 'financeCompany', 'templates'));
+            $customerUsers = User::where('role_id', 12)->orderBy('email')->get();
+            return view('leads.appointed_leads.renewal-lead-profile-view.index', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer', 'carriers', 'markets', 'policyDetail', 'products', 'activePolicies', 'userProfiles', 'quotationProduct', 'selectedQuotes', 'productIds', 'financeCompany', 'templates', 'customerUsers'));
     }
 
     public function getRenewalReminder(Request $request)

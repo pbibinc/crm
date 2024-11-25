@@ -94,9 +94,8 @@
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <h4 class="card-title mb-4"></h4>
                                 <div>
-                                    <button class="btn btn-danger" id="deleteLeads"><i
-                                            class="mdi mdi-trash-can-outline"></i>
-                                        Delete</button>
+                                    <button class="btn btn-danger" id="setLeadDnc"><i class="mdi mdi-trash-can-outline"></i>
+                                        SET DNC </button>
                                 </div>
                             </div>
                             <table id="requestForDncTable"class="table table-bordered dt-responsive nowrap"
@@ -337,7 +336,7 @@
                 });
 
                 var dncLeadsId = []
-                $('#deleteLeads').on('click', function(e) {
+                $('#setLeadDnc').on('click', function(e) {
                     e.preventDefault();
                     $('.leads_checkbox').each(function() {
                         var id = $(this).val();
@@ -375,14 +374,15 @@
                             dncLeadsId: dncLeadsId
                         },
                         success: function(response) {
-                            // Swal.fire({
-                            //     title: 'Success',
-                            //     text: 'the leads sucessfully delete',
-                            //     icon: 'success'
-                            // }).then(function() {
-                            //     $('#deleteLeadModal').modal('hide');
-                            //     location.reload();
-                            // });
+                            Swal.fire({
+                                title: 'Success',
+                                text: 'the leads sucessfully delete',
+                                icon: 'success'
+                            }).then(function() {
+                                $('#deleteLeadModal').modal('hide');
+                                $('#requestForDncTable').DataTable().ajax.reload();
+                                $('#dataTable').DataTable().ajax.reload();
+                            });
                         },
                         error: function(xhr) {
                             var errorMessage = 'An Error Occured';

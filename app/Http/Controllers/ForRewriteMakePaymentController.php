@@ -103,17 +103,6 @@ class ForRewriteMakePaymentController extends Controller
                 $company_name = $data->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name;
                 return $company_name;
             })
-            ->addColumn('cancelled_date', function($data){
-                return Carbon::parse($data->cancellationEndorsement->cancellation_date)->format('M-d-Y');
-            })
-            ->addColumn('cancelled_by', function($data){
-                $userProfile = $data->cancellationEndorsement->UserProfile;
-                return $userProfile ? $userProfile->fullAmericanName() : '';
-            })
-            ->addColumn('cancellation_type', function($data){
-                $cancellationEndorsement = $data->cancellationEndorsement;
-                return $cancellationEndorsement  ? $cancellationEndorsement->type_of_cancellation : '';
-            })
             ->addColumn('policy_status', function($data){
                 $status = $data->QuotationProduct->QouteComparison()->latest()->first()->PaymentInformation->status;
                 $statusLabel = $status;

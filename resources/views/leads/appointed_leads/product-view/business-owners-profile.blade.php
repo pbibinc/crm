@@ -217,6 +217,7 @@
 </div>
 <script>
     $(document).ready(function() {
+
         $('.editBusinessOwnersPolicy').on('click', function(e) {
             e.preventDefault();
             var leadId = $(this).val();

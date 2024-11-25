@@ -245,6 +245,7 @@ class PoliciesController extends Controller
                     case 'Renewal Payment Processed':
                     case 'Reinstate':
                     case 'recovered policy issued':
+                    case 'Rewrite Old Renewal';
                         $class = 'bg-success';
                         break;
 
@@ -309,17 +310,7 @@ class PoliciesController extends Controller
                 $editButton = '<button type="button" class="btn btn-info btn-sm waves-effect waves-light editButton" id="'.$data->id.'" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-pencil-line"></i></button>';
 
                 $auditInformationButton = '<button type="button" class="btn btn-warning btn-sm waves-effect waves-light auditInformationButton" id="'.$data->id.'"><i class="ri-file-list-3-line"></i></button>';
-                // $dropdown = '
-                // <div class="dropdown">
-                //     <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="actionMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                //         Actions
-                //     </button>
-                //     <ul class="dropdown-menu" aria-labelledby="actionMenu">
-                //         <li><a class="dropdown-item auditInformationButton text-warning" href="#" id="'.$data->id.'"><i class="mdi mdi-book-search-outline"></i> Audit Info</a></li>
-                //         <li><a class="dropdown-item '.($data->status == 'Intent' || $data->status == 'Notice of Cancellation' ? 'intentCancelButton' : 'cancelButton').' text-danger" href="#" id="'.$data->id.'"><i class="mdi mdi-book-cancel-outline"></i> Cancel</a></li>
-                //     </ul>
-                // </div>';
-                // return $viewButton. ' ' .  ' '. $editButton . ' ' . $uploadFileButton .  ' '. $auditInformationButton . ' ' . $cancelButton;
+
                 $dropdown = '
                 <div class="dropdown" style="display: inline-block;">
                     <button class="btn btn-sm dropdown-toggle" type="button" id="actionMenu' . $data->id . '" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #6c757d; color: white; border: none; padding: 5px; font-size: 16px; line-height: 1; border-radius: 50%; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center;">
@@ -331,25 +322,6 @@ class PoliciesController extends Controller
                         <li><a class="dropdown-item ' . ($data->status == 'Intent' || $data->status == 'Notice of Cancellation' ? 'intentCancelButton' : 'cancelButton') . ' text-danger" href="#" id="' . $data->id . '"><i class="mdi mdi-book-cancel-outline"></i> Cancel</a></li>
                     </ul>
                 </div>';
-
-
-
-                // $dropdown = '
-                // <div class="dropdown">
-                //     <button class="btn btn-primary btn-xs dropdown-toggle" type="button" id="actionMenu' . $data->id . '" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 2px 6px; font-size: 12px;">
-                //         Actions
-                //     </button>
-                //     <ul class="dropdown-menu" aria-labelledby="actionMenu' . $data->id . '" style="max-height: 150px; overflow-y: auto; min-width: 100px;">
-                //         <li><a class="dropdown-item viewButton text-primary" href="#" id="' . $data->id . '" style="padding: 3px 10px; font-size: 12px;"><i class="ri-eye-line"></i> View</a></li>
-                //         <li><a class="dropdown-item editButton text-info" href="#" id="' . $data->id . '" style="padding: 3px 10px; font-size: 12px;"><i class="ri-pencil-line"></i> Edit</a></li>
-                //         <li><a class="dropdown-item uploadPolicyFileButton text-success" href="#" id="' . $data->id . '" style="padding: 3px 10px; font-size: 12px;"><i class="ri-upload-2-line"></i> Upload File</a></li>
-                //         <li><a class="dropdown-item auditInformationButton text-warning" href="#" id="' . $data->id . '" style="padding: 3px 10px; font-size: 12px;"><i class="mdi mdi-book-search-outline"></i> Audit Info</a></li>
-                //         <li><a class="dropdown-item ' . ($data->status == 'Intent' || $data->status == 'Notice of Cancellation' ? 'intentCancelButton' : 'cancelButton') . ' text-danger" href="#" id="' . $data->id . '" style="padding: 3px 10px; font-size: 12px;"><i class="mdi mdi-book-cancel-outline"></i> Cancel</a></li>
-
-                //     </ul>
-                // </div>';
-
-
                 return $viewButton. '  ' .  '  '. $editButton . ' ' . $dropdown;
             })
             ->rawColumns(['policyStatus', 'action', 'effectiveDate'])
@@ -385,6 +357,7 @@ class PoliciesController extends Controller
                 case 'Renewal Payment Processed':
                 case 'Reinstate':
                 case 'recovered policy issued':
+                case 'Rewrite Old Renewal';
                     $class = 'bg-success';
                     break;
 

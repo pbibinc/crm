@@ -6,6 +6,7 @@ use App\Http\Controllers\API\BuildersRiskController;
 use App\Http\Controllers\API\BusinessOwnersPolicyController;
 use App\Http\Controllers\API\ClassCodeDataController;
 use App\Http\Controllers\API\CommercialAutoController;
+use App\Http\Controllers\API\CreateCertificateController;
 use App\Http\Controllers\API\CustomerServiceController;
 use App\Http\Controllers\API\ExcessLiabilityController;
 use App\Http\Controllers\API\GeneralInformationData;
@@ -133,4 +134,5 @@ Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logo
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/lead-data/{userId}', [LeadDetailController::class, 'getLeadDataUserId'])->name('get-lead-data-user-id');
     Route::post('/get-policy-information/{policyId}', [PoliciesDataController::class, 'getPolicyInformation'])->name('get-policy-information');
+    Route::post('/generate-cert-pdf', [CreateCertificateController::class, 'generateCertPdf'])->name('generate-cert-pdf');
 });

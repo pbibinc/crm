@@ -97,6 +97,8 @@
     </div>
 
     @include('leads.appointed_leads.log-activity.note-modal')
+    @include('leads.broker_leads.change-broker-status')
+
     <script>
         $(document).ready(function() {
             Dropzone.autoDiscover = false;
@@ -387,6 +389,13 @@
                         $('#notesModal').modal('show');
                     }
                 });
+            });
+
+            $(document).on('click', '.changeStatusButton', function() {
+                var id = $(this).attr('id');
+                console.log(id);
+                $('#brokerProductId').val(id);
+                $('#changeStatusModal').modal('show');
             });
 
 

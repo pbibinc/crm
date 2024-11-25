@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use League\CommonMark\Extension\SmartPunct\EllipsesParser;
 
 class LeadTaskSchedulerController extends Controller
 {
@@ -59,7 +60,7 @@ class LeadTaskSchedulerController extends Controller
 
             $user->sendNoteNotification($user, 'Task Schedule On'. ' ' . $data['taskDate'] , $leadTaskScheduler->assigned_by, $data['taskDescription'], $data['leadId']);
 
-            broadcast(new LeadNotesNotificationEvent('Task Schedule On'. ' ' .$data['taskDate'],  $data['taskDescription'], $data['taskAssignTo'], $data['leadId'], $leadTaskScheduler->assigned_by, 'info'));
+            broadcast(new LeadNotesNotificationEvent('Task Schedule On'. ' ' .$data['taskDate'],  $data['taskDescription'], $user->id, $data['leadId'], $leadTaskScheduler->assigned_by, 'info'));
 
             DB::commit();
             return response()->json(['message' => 'Task has been successfully assigned'], 200);
@@ -118,7 +119,6 @@ class LeadTaskSchedulerController extends Controller
         $data = $request->all();
 
         $leadTaskScheduler = LeadTaskScheduler::find($id);
-        $leadTaskScheduler->assigned_by = auth()->user()->userProfile->id;
         $leadTaskScheduler->assigned_to = $data['taskAssignTo'];
         $leadTaskScheduler->leads_id = $data['leadId'];
         $leadTaskScheduler->description = $data['taskDescription'];
@@ -129,8 +129,17 @@ class LeadTaskSchedulerController extends Controller
         $assignedToUserProfile  = UserProfile::find($data['taskAssignTo']);
 
         $user = User::find($assignedToUserProfile->user_id);
-        $user->sendNoteNotification($user, 'Task Schedule On'. $data['taskDate'] , $leadTaskScheduler->assigned_by, $data['taskDescription'], $data['leadId']);
-        broadcast(new LeadNotesNotificationEvent('Task Schedule On'. $data['taskDate'],  $data['taskDescription'], $data['taskAssignTo'], $data['leadId'], $leadTaskScheduler->assigned_by, 'info'));
+
+        if($leadTaskScheduler->status == 'Completed'){
+            $user = User::find($leadTaskScheduler->assigned_by);
+
+            $user->sendNoteNotification($user, 'Completed Task', $leadTaskScheduler->assigned_to, $data['taskDescription'], $data['leadId']);
+
+            broadcast(new LeadNotesNotificationEvent('Completed Task',  $data['taskDescription'], $user->id, $data['leadId'], $leadTaskScheduler->assigned_to, 'info'));
+        }else{
+            $user->sendNoteNotification($user, 'Task Schedule On'. $data['taskDate'] , $leadTaskScheduler->assigned_by, $data['taskDescription'], $data['leadId']);
+            broadcast(new LeadNotesNotificationEvent('Task Schedule On'. $data['taskDate'],  $data['taskDescription'], $data['taskAssignTo'], $data['leadId'], $leadTaskScheduler->assigned_by, 'info'));
+        }
         DB::commit();
         return response()->json(['message' => 'Task has been successfully assigned'], 200);
     }catch(\Exception $e){
