@@ -194,6 +194,7 @@
             ajax: {
                 url: "{{ route('get-customers-financing-agreement') }}",
                 type: "POST",
+                async: false,
                 data: {
                     "_token": "{{ csrf_token() }}",
                     "id": id
