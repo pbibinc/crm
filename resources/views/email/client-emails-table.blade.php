@@ -143,7 +143,7 @@
                 type: method,
                 data: {
                     _token: "{{ csrf_token() }}",
-                    productId: null,
+                    leadId: "{{ $leadId }}",
                     dateTime: dataTime,
                     templateId: templateId,
                     type: selectedTemplateName,
