@@ -104,7 +104,7 @@ class BrokerAssistLeadsLogContoller extends Controller
         ->addColumn('status', function($data){
             $statusLabel = '';
             $class = '';
-            Switch ($data->status) {
+        Switch ($data->status) {
                 case 31:
                     $statusLabel = 'Not Interested';
 
