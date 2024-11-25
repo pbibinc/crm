@@ -6,7 +6,6 @@
             <th>Company Name</th>
             <th>Product</th>
             <th>Status</th>
-            <th>Cancelled Date</th>
             <th></th>
         </tr>
     </thead>
@@ -41,10 +40,6 @@
                 {
                     data: 'policy_status',
                     name: 'policy_status'
-                },
-                {
-                    data: 'cancelled_date',
-                    name: 'cancelled_date'
                 },
                 {
                     data: 'action',

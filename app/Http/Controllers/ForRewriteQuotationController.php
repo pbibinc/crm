@@ -13,6 +13,7 @@ use App\Models\QuotationProduct;
 use App\Models\SelectedQuote;
 use App\Models\Templates;
 use App\Models\UnitedState;
+use App\Models\User;
 use App\Models\UserProfile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -114,17 +115,6 @@ class ForRewriteQuotationController extends Controller
                 $company_name = $data->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name;
                 return $company_name;
             })
-            ->addColumn('cancelled_date', function($data){
-                return Carbon::parse($data->cancellationEndorsement->cancellation_date)->format('M-d-Y');
-            })
-            ->addColumn('cancelled_by', function($data){
-                $userProfile = $data->cancellationEndorsement->UserProfile;
-                return $userProfile ? $userProfile->fullAmericanName() : '';
-            })
-            ->addColumn('cancellation_type', function($data){
-                $cancellationEndorsement = $data->cancellationEndorsement;
-                return $cancellationEndorsement  ? $cancellationEndorsement->type_of_cancellation : '';
-            })
             ->addColumn('policy_status', function($data){
                 $policyStatus = $data->status;
                 $statusLabel = $policyStatus;;
@@ -219,7 +209,8 @@ class ForRewriteQuotationController extends Controller
         $userProfile = new UserProfile();
         $userProfiles = UserProfile::get()->sortBy('first_name');
         $financeCompany = FinancingCompany::all()->sortBy('name');
-        return view('leads.appointed_leads.for-rewrite-lead-profile-view.index', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer', 'carriers', 'markets', 'policyDetail', 'products', 'leads', 'activePolicies', 'selectedQuotes', 'userProfiles', 'quotationProduct', 'financeCompany'));
+        $customerUsers = User::where('role_id', 12)->orderBy('email')->get();
+        return view('leads.appointed_leads.for-rewrite-lead-profile-view.index', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer', 'carriers', 'markets', 'policyDetail', 'products', 'leads', 'activePolicies', 'selectedQuotes', 'userProfiles', 'quotationProduct', 'financeCompany', 'customerUsers'));
     }
 
 }

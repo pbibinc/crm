@@ -70,4 +70,44 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '.setOldRenewalButton', function() {
+                var id = $(this).attr('id');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You want to change the status to 'Old Renewal'?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ route('change-status-for-policy') }}",
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            method: "POST",
+                            data: {
+                                id: id,
+                                status: 'Old Renewal'
+                            },
+                            success: function(data) {
+                                if (data.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Success',
+                                        text: data.success,
+                                    });
+                                    location.reload();
+                                }
+                            }
+                        })
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

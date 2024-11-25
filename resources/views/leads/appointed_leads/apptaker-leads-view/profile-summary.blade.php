@@ -207,6 +207,17 @@
                                             style="font-size: 11px;">{{ \Carbon\Carbon::parse($changes->sent_out_date)->format('M-j-Y g:iA') }}</span>
                                     </div>
                                 </div>
+                            @else
+                                <div class="d-flex align-items-start mb-1">
+                                    <i class="ri-list-check mr-1" style="font-size: 12px;"></i>
+                                    <div class="ml-2" style="margin-left: 0.5rem;">
+                                        <p class="mb-0 text-muted" style="font-size: 12px;">
+                                            {{ $changes->description }} By:
+                                            {{ $history->userProfile->fullName() }}.</p>
+                                        <span class="cd-date"
+                                            style="font-size: 11px;">{{ \Carbon\Carbon::parse($history->created_at)->format('M-j-Y g:iA') }}</span>
+                                    </div>
+                                </div>
                             @endif
                         @endforeach
                     </div>

@@ -5,8 +5,7 @@
             <th>Old Policy</th>
             <th>Company Name</th>
             <th>Product</th>
-            <th>Cancellation Type</th>
-            <th>Cancelled Date</th>
+            <th>Status</th>
             <th></th>
         </tr>
     </thead>
@@ -43,14 +42,9 @@
                     name: 'policy_status'
                 },
                 {
-                    data: 'cancelled_date',
-                    name: 'cancelled_date'
-                },
-                {
                     data: 'action',
                     name: 'action'
                 }
-
             ],
         });
     });

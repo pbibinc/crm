@@ -140,6 +140,7 @@
                                 'generalInformation' => $leads->generalInformation,
                                 'quotationMarket' => $quationMarket,
                                 'lead' => $leads,
+                                'products' => $leads->getQuotationProducts(),
                             ])
                         </div>
 

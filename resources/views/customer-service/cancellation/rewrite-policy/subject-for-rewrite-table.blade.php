@@ -38,8 +38,8 @@
                     name: 'product'
                 },
                 {
-                    data: 'cancelled_date',
-                    name: 'cancelled_date'
+                    data: 'recovery_origin',
+                    name: 'recovery_origin'
                 },
                 {
                     data: 'action',

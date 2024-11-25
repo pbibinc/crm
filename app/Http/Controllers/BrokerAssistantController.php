@@ -12,7 +12,9 @@ use App\Models\BoundInformation;
 use App\Models\QuotationProduct;
 use App\Models\PaymentInformation;
 use App\Http\Controllers\Controller;
+use App\Models\Lead;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
 class BrokerAssistantController extends Controller
@@ -214,7 +216,7 @@ class BrokerAssistantController extends Controller
         $quotationProduct = new BrokerQuotation();
         $userProfileId = Auth::user()->userProfile->id;
         $date30DaysAgo = $today->copy()->subDays(30);
-        $data = $quotationProduct->getAssigQuotedLeadByDate($userProfileId, 4, $date30DaysAgo->toDateString());
+        $data = $quotationProduct->getBrokerProductByUserProfileId($userProfileId, 4);
         return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('companyName', function($data){
@@ -254,7 +256,18 @@ class BrokerAssistantController extends Controller
             $viewButton = '<button class="edit btn btn-outline-info btn-sm viewButton" id="'.$data->id.'"><i class="ri-eye-line"></i></button>';
             $viewNoteButton = '<button class="btn btn-outline-primary btn-sm waves-effect waves-light viewNotedButton" id="'.$leadId.'"><i class="ri-message-2-line"></i></button>';
             $processButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light processButton" id="'.$data->id.'"><i class=" ri-task-line"></i></button>';
-            return $viewButton . ' ' . $viewNoteButton ;
+            $changeStatusButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light changeStatusButton" id="'.$data->id.'">Change Status</button>';
+
+            $dropdown = '<div class="btn-group">
+            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="ri-more-line"></i>
+            </button>
+            <ul class="dropdown-menu">
+                <li><button class="dropdown-item changeStatusButton" id="' . $data->id . '"><i class="ri-swap-line"></i>Change Status</button></li>
+            </ul>
+
+         </div>';
+            return $viewButton . ' ' . $viewNoteButton . ' ' . $dropdown;
         })
         ->rawColumns(['action', 'status', 'companyName'])
         ->make(true);
@@ -516,5 +529,31 @@ class BrokerAssistantController extends Controller
         })
         ->rawColumns(['action', 'status', 'companyName'])
         ->make(true);
+    }
+
+    public function changeBrokerStatus(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+            if($request->status == 34){
+                $quotationProduct = QuotationProduct::find($request->productId);
+                $quotationProduct->status = $request->status;
+                $quotationProduct->save();
+
+                $lead = Lead::find($quotationProduct->QuoteInformation->quoteLead->leads->id);
+                $lead->disposition_id = 13;
+                $lead->save();
+
+            }else{
+                $quotationProduct = QuotationProduct::find($request->productId);
+                $quotationProduct->status = $request->status;
+                $quotationProduct->save();
+            }
+            DB::commit();
+            return response()->json(['success' => 'Status has been changed successfully']);
+        }catch(\Exception $e){
+            DB::rollBack();
+            return response()->json(['error' => $e->getMessage()]);
+        }
     }
 }

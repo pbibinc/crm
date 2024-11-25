@@ -68,6 +68,7 @@
             "ajax": {
                 url: "{{ route('get-messages') }}",
                 type: 'POST',
+                async: false,
                 data: {
                     _token: "{{ csrf_token() }}",
                     leadId: "{{ $leadId }}"
@@ -99,7 +100,9 @@
         $('#addScheduleButton').on('click', function() {
             $('#addScheduleModal').modal('show');
         });
+
         var selectedTemplateName = '';
+
         $('#templateDropdown').change(function() {
             selectedTemplateName = $(this).find(":selected").text();
         });

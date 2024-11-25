@@ -187,6 +187,7 @@
                                 @can('viewBrokerAssistantLeadList', App\Models\Lead::find(1))
                                     <li><a href="{{ route('broker-assistant.index') }}">Quoted Leads Distribution</a></li>
                                     <li><a href="{{ route('leads-for-follow-up.index') }}">Follow-Up Calls</a></li>
+                                    <li><a href="{{ route('broker-assist-leads-log.index') }}">Leads Logs</a></li>
                                 @endcan
                                 {{-- <li><a href="{{route('get-confirmed-product')}}">Confirmed Product</a></li> --}}
                             </ul>
@@ -258,7 +259,16 @@
                             <li><a href="{{ route('primary-cancellation.index') }}">Primary CCN</a></li>
                             <li><a href="{{ route('request-cancellation.index') }}">Cancellation Request</a></li>
                             <li><a href="{{ route('cancelled-policy.index') }}">Cancelled Policy List</a></li>
-                            <li><a href="{{ route('rewrite-policy.index') }}">Cancellation Rewrite</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-recycle-variant"></i>
+                            <span>Recovery</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+
+                            <li><a href="{{ route('rewrite-policy.index') }}">Recovery/Rewrite</a></li>
                         </ul>
                     </li>
                     <li>
@@ -271,6 +281,7 @@
                             <li><a href="{{ route('assign-quoted-policy.index') }}">Assign Renewal Policies</a></li>
                             <li><a href="{{ route('for-renewal.index') }}">Renewal Quoting</a></li>
                             <li><a href="{{ route('renewal-policy.index') }}">Policy For Renewal</a></li>
+                            <li><a href="{{ route('old-renewal-policy.index') }}">Old Renewal</a></li>
                         </ul>
                     </li>
                 @endcan

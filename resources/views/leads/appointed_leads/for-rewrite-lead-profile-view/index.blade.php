@@ -20,7 +20,7 @@
                     @include('leads.appointed_leads.apptaker-leads-view.company-navigation-tab')
                     <div class="tab-content text-muted mt-3">
                         {{-- overview tab --}}
-                        {{-- <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                        <div class="tab-pane fade show active" id="overview" role="tabpanel">
                             @include('leads.appointed_leads.apptaker-leads-view.profile-summary', [
                                 'leads' => $leads,
                                 'leadId' => $leads->id,
@@ -30,7 +30,7 @@
                                 'activePolicies' => $activePolicies,
                                 'userProfiles' => $userProfiles,
                             ])
-                        </div> --}}
+                        </div>
 
                         {{-- client info tab --}}
                         <div class="tab-pane fade show" id="clientinfo" role="tabpanel">
@@ -192,7 +192,7 @@
                                             'generalInformation' => $leads->generalInformation,
                                             'selectedQuotes' => $selectedQuotes,
                                             'policyDetailId' => $policyDetail->id,
-                                            'paymentType' => 'CCN',
+                                            'paymentType' => 'Rewrite/Recovery',
                                         ]
                                     )
                                 </div>

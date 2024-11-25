@@ -15,6 +15,7 @@ use App\Models\QuoteComparison;
 use App\Models\SelectedQuote;
 use App\Models\Templates;
 use App\Models\UnitedState;
+use App\Models\User;
 use App\Models\UserProfile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -141,7 +142,8 @@ class RenewalPolicyController extends Controller
                 $leads = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;
                 $viewNoteButton = '<button class="btn btn-outline-primary btn-sm waves-effect waves-light viewNotedButton" id="'.$leads->id.'"><i class="ri-message-2-line"></i></button>';
                 $renewPolicyButton = '<a href=""  id="'.$policiesData->id.'" class="renewalPolicyButton btn btn-outline-success btn-sm waves-effect waves-light"><i class="ri-task-line"></i></a>';
-                return $viewNoteButton . ' ' . $renewPolicyButton;
+                $setOldRenewalButton = '<button class="btn btn-outline-danger btn-sm waves-effect waves-light setOldRenewalButton" id="'.$policiesData->id.'"><i class=" ri-forbid-line"></i></button>';
+                return $viewNoteButton . ' ' . $renewPolicyButton . ' ' . $setOldRenewalButton;
             })
             ->rawColumns(['company_name', 'policy_no', 'action'])
             ->make(true);
@@ -237,7 +239,8 @@ class RenewalPolicyController extends Controller
         $userProfiles = UserProfile::get()->sortBy('first_name');
         $financeCompany = FinancingCompany::all();
         $templates = Templates::all();
-        return view('leads.appointed_leads.renewal-quoted-policy-view.index', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer', 'markets', 'carriers', 'policyDetail', 'products', 'productIds', 'selectedQuotes', 'activePolicies', 'userProfiles', 'quotationProduct', 'financeCompany', 'templates'));
+        $customerUsers = User::where('role_id', 12)->orderBy('email')->get();
+        return view('leads.appointed_leads.renewal-quoted-policy-view.index', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer', 'markets', 'carriers', 'policyDetail', 'products', 'productIds', 'selectedQuotes', 'activePolicies', 'userProfiles', 'quotationProduct', 'financeCompany', 'templates', 'customerUsers'));
     }
 
     public function renewalMakePaymentList(Request $request)

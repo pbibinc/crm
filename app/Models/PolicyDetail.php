@@ -263,7 +263,7 @@ class PolicyDetail extends Model
 
     public function getSubjectForRewriteList()
     {
-        return $this->whereIn('status', ['Subject For Rewrite', 'Rewrite']);
+        return $this->whereIn('status', ['Subject For Rewrite', 'Rewrite', 'Subject For Rewrite Old Renewal']);
     }
 
     public function getCancelledPolicyList()

@@ -23,11 +23,7 @@
 @include('leads.appointed_leads.leads-quotation-forms.quoation-form', [
     'generalInformation' => $generalInformation,
     'quationMarket' => $quationMarket->getMarketByProduct('General Liability'),
-    'quoteProduct' => $lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
-        'General Liability',
-        $lead->quoteLead->QuoteInformation->id),
     'products' => $lead->getQuotationProducts(),
-    'formId' => 'form_' . $product->id,
     'productForm' => 'General_Liability',
     'productsDropdown' => [
         'Workers Compensation',
