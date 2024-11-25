@@ -39,8 +39,8 @@ const GeneralLiabilitiesForm = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const getLeadStoredData = () => {
-        const storedData = JSON.parse(sessionStorage.getItem("lead") || "{}");
-        return storedData;
+        const storedData = sessionStorage.getItem("lead") || "{}";
+        return JSON.parse(storedData);
     };
     const getGeneralLiabilitiesStoredData = () => {
         const storedData = JSON.parse(
@@ -840,7 +840,7 @@ const GeneralLiabilitiesForm = () => {
             setAmount(storedData.amount || "");
             setHaveLossAmount(storedData.haveLossAmount || "");
 
-            setUserProfileId(getLeadStoredData?.data?.userProfileId) ||
+            setUserProfileId(getLeadStoredData()?.data?.userProfileId) ||
                 lead?.data?.userProfileId;
 
             setConcreteFoundationWork(
