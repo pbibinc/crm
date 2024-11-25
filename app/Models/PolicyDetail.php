@@ -216,7 +216,7 @@ class PolicyDetail extends Model
         $policies = [];
 
         foreach ($quoteProducts as $product) {
-            $productPolicies = self::where('quotation_product_id', $product->id)->whereNotIn('status', ['Dead policy', 'Cancelled', 'Declined', 'Not Interested', 'old policy'])->get();
+            $productPolicies = self::where('quotation_product_id', $product->id)->whereNotIn('status', ['Dead policy', 'Cancelled', 'Declined', 'Not Interested', 'old policy', 'Old Renewal'])->get();
 
 
             if ($productPolicies->isNotEmpty()) {
