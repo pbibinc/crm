@@ -594,6 +594,8 @@ const GeneralLiabilitiesForm = () => {
         { value: "Business Owner Policy", label: "Business Owner Policy" },
     ];
 
+    console.log("userProfileId", getLeadStoredData());
+
     const generalLiabilitiesFormData = {
         //objects for coverage limit table
         limit: selectedLimit?.value,
@@ -658,7 +660,7 @@ const GeneralLiabilitiesForm = () => {
             return e.value;
         }),
 
-        userProfileId: userProfileId,
+        userProfileId: getLeadStoredData()?.data?.userProfileId,
     };
 
     const generalLiabilitiesStoredFormData = {
@@ -840,8 +842,10 @@ const GeneralLiabilitiesForm = () => {
             setAmount(storedData.amount || "");
             setHaveLossAmount(storedData.haveLossAmount || "");
 
-            setUserProfileId(getLeadStoredData()?.data?.userProfileId) ||
-                lead?.data?.userProfileId;
+            setUserProfileId(
+                getLeadStoredData()?.data?.userProfileId ||
+                    lead?.data?.userProfileId
+            );
 
             setConcreteFoundationWork(
                 storedData.concrete_foundation_work || false
