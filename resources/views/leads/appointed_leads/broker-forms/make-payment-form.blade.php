@@ -16,7 +16,7 @@
                                 <option value="">Select Payment Type</option>
                                 <option value="Endorsement">Endorsement</option>
                                 <option value="Audit">Audit</option>
-                                <option value="CCN">CCN</option>
+                                <option value="Rewrite/Recovery">Rewrite/Recovery</option>
                                 <option value="Reinstate">Reinstate</option>
                                 <option value="Monthly Payment">Monthly Payment</option>
                                 <option value="Direct New">Direct New</option>

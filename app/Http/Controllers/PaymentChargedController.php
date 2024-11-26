@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\HistoryLogsEvent;
+use App\Events\LeadNotesNotificationEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Metadata;
 use App\Models\PaymentCharged;
@@ -10,10 +12,13 @@ use App\Models\PolicyDetail;
 use App\Models\QuotationProduct;
 use App\Models\QuoteComparison;
 use App\Models\SelectedQuote;
+use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Spatie\SimpleExcel\SimpleExcelWriter;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -64,12 +69,14 @@ class PaymentChargedController extends Controller
         }
         return view('admin.accounting.accounts-for-charged.index');
     }
+
     //
     public function store(Request $request)
     {
         try{
             DB::beginTransaction();
-            $userProfileId = auth()->user()->userProfile->id;
+            $user = Auth::user();
+            $userProfile = auth()->user()->userProfile;
             $file = $request->file('invoiceFile');
             $basename = $file->getClientOriginalName();
             $directoryPath = public_path('backend/assets/invoice');
@@ -101,7 +108,7 @@ class PaymentChargedController extends Controller
 
             $paymentCharged = new PaymentCharged();
             $paymentCharged->payment_information_id = $request->paymentInformationId;
-            $paymentCharged->user_profile_id = $userProfileId;
+            $paymentCharged->user_profile_id = $userProfile->id;
             $paymentCharged->invoice_number = $request->invoiceNumber;
             $paymentCharged->charged_date = now();
             $paymentCharged->save();
@@ -119,17 +126,29 @@ class PaymentChargedController extends Controller
             $selectedQuote->recommended = 3;
             $selectedQuote->save();
 
+            $notifiableUserProfile = UserProfile::find($paymentInformation->requested_by);
+            $notifiableUser = User::find($notifiableUserProfile->user_id);
+            if($notifiableUser){
+                event(new HistoryLogsEvent($quoteProduct->QuoteInformation->QuoteLead->leads->id, $userProfile->id, 'Payment Charged', 'Payment charged successfully'));
+
+                $notifiableUser->sendNoteNotification($notifiableUser, 'Payment Charged', $userProfile->id, 'Payment Charged Completed', $quoteProduct->QuoteInformation->QuoteLead->leads->id);
+
+                broadcast(new LeadNotesNotificationEvent('Payment Charged', 'Payment Charged Completed For' . ' ' . $quoteProduct->QuoteInformation->QuoteLead->leads->company_name, $paymentInformation->requested_by, $quoteProduct->QuoteInformation->QuoteLead->leads->id, $userProfile->id, 'info'));
+            }
+
             DB::commit();
             return response()->json([
                 'status' => 'success',
                 'message' => 'Payment charged successfully',
-            ]);
+            ], 200);
+
         }catch(\Exception $e){
             DB::rollback();
+            Log::info($e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage(),
-            ]);
+            ], 500);
         }
     }
 

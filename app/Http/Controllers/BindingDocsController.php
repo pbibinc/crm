@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+
 class BindingDocsController extends Controller
 {
     //
@@ -70,7 +72,10 @@ class BindingDocsController extends Controller
             $quotationProduct = QuotationProduct::find($quoteProductId);
             $quotationProduct->medias()->attach($mediaIds);
             DB::commit();
+            return response()->json(['success' => 'File uploaded successfully']);
         }catch(\Exception $e){
+            DB::rollBack();
+            Log::error($e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
 

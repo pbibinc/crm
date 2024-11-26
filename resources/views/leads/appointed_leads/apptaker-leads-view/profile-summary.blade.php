@@ -11,11 +11,10 @@
             'linear-gradient(to right, #c8e6c9, #a5d6a7)', // Light Mint to Pale Green
             'linear-gradient(to right, #fff9c4, #fff59d)', // Soft Yellow to Light Lemon
             'linear-gradient(to right, #ffe0b2, #ffcc80)', // Pale Orange to Light Apricot
-            'linear-gradient(to right, #bbdefb, #b3e5fc)', // Soft Sky Blue to Light Cyan
+            'linear-gradient(to right, #bbdefb, #b3e5fc)', // Soft Sky Blue to Ligpht Cyan
         ];
         return $colors[$index % count($colors)]; // Cycle through colors
     }
-
 @endphp
 
 <style>
@@ -208,6 +207,17 @@
                                             style="font-size: 11px;">{{ \Carbon\Carbon::parse($changes->sent_out_date)->format('M-j-Y g:iA') }}</span>
                                     </div>
                                 </div>
+                            @else
+                                <div class="d-flex align-items-start mb-1">
+                                    <i class="ri-list-check mr-1" style="font-size: 12px;"></i>
+                                    <div class="ml-2" style="margin-left: 0.5rem;">
+                                        <p class="mb-0 text-muted" style="font-size: 12px;">
+                                            {{ $changes->description }} By:
+                                            {{ $history->userProfile->fullName() }}.</p>
+                                        <span class="cd-date"
+                                            style="font-size: 11px;">{{ \Carbon\Carbon::parse($history->created_at)->format('M-j-Y g:iA') }}</span>
+                                    </div>
+                                </div>
                             @endif
                         @endforeach
                     </div>
@@ -272,7 +282,8 @@
                     style="padding: 10px; background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                     <div class="card-body" style="padding: 10px;">
                         <div class="row">
-                            <h6 class="card-title">Policies</h6>
+                            <h6 class="card-title">
+                                {{ count($activePolicies) == 1 ? 'Active Policy' : 'Active Policies' }}</h6>
                             <hr>
                         </div>
                         <div class="row">
@@ -314,61 +325,10 @@
                     </div>
                 </div>
             </div>
-
         </div>
+
     </div>
-    {{-- <div class="col-3">
-        <div class="row">
-            <div class="col-12">
-                <div class="card shadow-lg p-3 mb-5 bg-white rounded">
-                    <div class="card-body p-1">
-                        <div class="row">
 
-                        </div>
-                        <div>
-                            @foreach ($activePolicies as $policy)
-                                <div class="alert alert-primary d-flex justify-content-between align-items-center py-1 px-2 mb-1"
-                                    role="alert" style="font-size: 0.75rem;">
-                                    <span class="text-truncate">{{ $policy->policy_number }}</span>
-                                    <!-- Truncated text for compact display -->
-
-                                    <div class="dropdown ms-auto">
-                                        <a href="#" class="text-secondary small" id="dropdownMenuLink"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="dripicons-dots-3"></i> <!-- Three dots icon -->
-                                        </a>
-                                        <ul class="dropdown-menu dropdown-menu-end"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <li><a class="dropdown-item" href="#">Action 1</a></li>
-                                            <li><a class="dropdown-item" href="#">Action 2</a></li>
-                                            <li><a class="dropdown-item" href="#">Action 3</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> --}}
-
-    {{-- <table id="policySummaryList"
-                            class="table table-bordered dt-responsive nowrap policySummaryList"
-                            style="border-collapse: collapse; width: 100%; font-size: 12px;">
-                            <thead style="background-color: #f0f0f0; font-size: 12px;">
-                                <tr>
-                                    <th style="padding: 5px;">Policy Number</th>
-                                    <th style="padding: 5px;">Product</th>
-                                    <th style="padding: 5px;">Market</th>
-                                    <th style="padding: 5px;">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Your table data here -->
-                            </tbody>
-                        </table> --}}
 
 </div>
 @include('leads.task-scheduler.taskscheduler-modal', [
@@ -421,60 +381,6 @@
                 //     name: 'action',
                 // }
             ],
-        });
-
-
-        policyDropzone = new Dropzone("#policyFileDropZone", {
-            url: "{{ route('update-file-policy') }}",
-            autoProcessQueue: true, // Prevent automatic upload
-            clickable: true, // Allow opening file dialog on click
-            maxFiles: 1, //
-            init: function() {
-                this.on("addedfile", function(file) {
-                    file.previewElement.addEventListener("click", function() {
-                        var url = "{{ env('APP_FORM_LINK') }}";
-                        var fileUrl = url + file.url;
-                        Swal.fire({
-                            title: 'File Options',
-                            text: 'Choose an action for the file',
-                            showDenyButton: true,
-                            confirmButtonText: `Download`,
-                            denyButtonText: `View`,
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                var downloadLink = document.createElement(
-                                    "a");
-                                downloadLink.href = fileUrl;
-                                downloadLink.download = file.name;
-                                document.body.appendChild(downloadLink);
-                                downloadLink.click();
-                                document.body.removeChild(downloadLink);
-                            } else if (result.isDenied) {
-                                window.open(fileUrl, '_blank');
-                            }
-                        });
-
-
-                    });
-                });
-                this.on('sending', function(file, xhr, formData) {
-                    formData.append('id', $('#policyId').val());
-                });
-                this.on('success', function(file, response) {
-                    swal.fire({
-                        title: 'Success',
-                        text: response.message,
-                        icon: 'success',
-                        confirmButtonText: 'Ok'
-                    }).then(() => {
-                        $('#uploadPolicyFile').modal('hide');
-                        $('.policyList').DataTable().ajax.reload();
-                    });
-                    // if (this.files.length > 0) {
-                    //     this.removeFile(this.files[0]);
-                    // }
-                });
-            }
         });
 
         function addPoliciesFile(file) {

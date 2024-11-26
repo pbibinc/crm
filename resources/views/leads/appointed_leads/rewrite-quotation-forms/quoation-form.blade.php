@@ -20,9 +20,15 @@
     if ($selectedQuote) {
         $paymentInformation = PaymentInformation::where('selected_quote_id', $selectedQuote->id)->first();
     }
+
+    $productIds = [];
+    foreach ($products as $product) {
+        $productIds[] = $product->id;
+    }
+
 @endphp
 
-<div class="row mb-2">
+{{-- <div class="row mb-2">
     <div class="col-6 title-card">
         <h4 class="card-title mb-0" style="color: #ffffff">Quoations</h4>
     </div>
@@ -38,6 +44,44 @@
 
             @if ($policyDetail->status == 'Renewal Quote')
                 <button href="#" class="btn btn-primary" id="sendQuoteButton">SEND QUOTE</button>
+            @endif
+        </div>
+    </div>
+</div> --}}
+
+<div class="row mb-2">
+    <div class="col-6 title-card">
+        <h4 class="card-title mb-0" style="color: #ffffff">Request Quoation For {{ $quoteProduct->product }} </h4>
+    </div>
+    <div class="d-flex justify-content-between">
+
+        <div class="row">
+            <div class="col-6">
+                <label for="product" class="form-label">Product</label>
+                <select name="product" id="tableProductDropdown" class="form-select form-select-sm">
+                    <option value="">Select Product</option>
+                    @foreach ($productsDropdown as $product)
+                        <option value="{{ $product }}">{{ $product }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-6">
+                <label for="Status" class="form-label">Filter By Status</label>
+                <select name="status" id="tableStatusDropdown" class="form-select form-select-sm">
+                    <option value="New Quote">New Quote</option>
+                    <option value="Old Quote">Old Quote</option>
+                </select>
+            </div>
+
+        </div>
+        <div>
+
+            <a href="#" class="btn btn-success createRecord" data-bs-toggle="modal"
+                data-bs-target="#addQuoteModal" id="create_record">
+                ADD QUOTE
+            </a>
+            @if ($quoteProduct->status == 2)
+                <button href="#" class="btn btn-primary" id="sendQuoteButton">FORWARD QUOTE COMPARISON</button>
             @endif
         </div>
     </div>
@@ -61,7 +105,7 @@
     </table>
 </div>
 
-@if ($product->selected_quote_id)
+@if ($quoteProduct->selected_quote_id)
     <div class="row mb-2">
         <div class="col-6 title-card">
             <h4 class="card-title mb-0" style="color: #ffffff">Selected Quote Information</h4>
@@ -73,9 +117,7 @@
                 <button class="btn btn-primary editSelectedQuote" id="editSelectedQuote">
                     EDIT QUOTE
                 </button>
-                @if (
-                    $paymentInformation &&
-                        (Str::lower($paymentInformation->status) == 'pending' || Str::lower($paymentInformation->status) == 'declined'))
+                {{-- @if ($paymentInformation && (Str::lower($paymentInformation->status) == 'pending' || Str::lower($paymentInformation->status) == 'declined'))
                     <button class="btn btn-primary editMakePayment" id="editMakePayment">
                         EDIT MAKE PAYMENT
                     </button>
@@ -83,7 +125,7 @@
                     <button class="btn btn-success makePaymentButton" id="makePaymentButton">
                         MAKE PAYMENT
                     </button>
-                @endif
+                @endif --}}
             </div>
 
         </div>
@@ -137,8 +179,8 @@
                         </div>
                         <div class="col-6">
                             <label for="quoteNo" class="form-label">Policy No/Quote No:</label>
-                            <input type="text" class="form-control" id="quoteNo" name="quoteNo" autocomplete="off"
-                                required>
+                            <input type="text" class="form-control" id="quoteNo" name="quoteNo"
+                                autocomplete="off" required>
                         </div>
                     </div>
                     <div class="row mb-2">
@@ -289,7 +331,7 @@
 @include(
     'leads.appointed_leads.broker-quotation-forms.selected-quote-edit-form',
     compact('selectedQuoteId'))
-@include('leads.appointed_leads.broker-forms.make-payment-form', compact('complianceOfficer'))
+{{-- @include('leads.appointed_leads.broker-forms.make-payment-form', compact('complianceOfficer')) --}}
 <script>
     Dropzone.autoDiscover = false;
     var myDropzone;
@@ -396,6 +438,13 @@
         });
 
         var id = {{ $quoteProduct->id }};
+        var ids = @json($productIds);
+        $('#tableProductDropdown').val('{{ $quoteProduct->product }}').change();
+
+        $('#tableProductDropdown, #tableStatusDropdown').on('change', function() {
+            $('#qoutation-table').DataTable().ajax.reload();
+        });
+
         $('#qoutation-table').DataTable({
             processing: true,
             serverSide: true,
@@ -404,11 +453,14 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
                         'content')
                 },
-                url: "{{ route('get-general-liabilities-quotation-table') }}",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    id: id
-                }
+                url: "{{ route('get-quote-list-table') }}",
+                data: function(d) {
+                    d._token = "{{ csrf_token() }}";
+                    d.ids = ids;
+                    d.product = $('#tableProductDropdown').val();
+                    d.status = $('#tableStatusDropdown').val();
+                },
+                method: 'POST'
             },
             columns: [{
                     data: 'market_name',
@@ -909,127 +961,6 @@
 
     $('.calculateInput').on('input', function() {
         calculateFullPayment();
-    });
-
-    //broker side make payment button
-    $(document).on('click', '.makePaymentButton', function() {
-        var id = "{{ $selectedQuoteId }}";
-        var policyId = "{{ $policyDetail->id }}";
-        $.ajax({
-            url: "{{ route('edit-selected-quote') }}",
-            method: "POST",
-            data: {
-                id: id,
-                _token: "{{ csrf_token() }}"
-            },
-            dataType: "json",
-            success: function(response) {
-                $('#paymentType').val('CCN').trigger('change');
-                $('#quoteNumber').val(response.data.quote_no);
-                $('#market').val(response.market.name);
-                $('#companyName').val(response.leads.company_name);
-                $('#firstName').val(response.generalInformation.firstname);
-                $('#lastName').val(response.generalInformation.lastname);
-                $('#emailAddress').val(response.generalInformation.email_address);
-                $('#totalPremium').val(response.data.full_payment);
-                $('#brokerFeeAmount').val(response.data.broker_fee);
-                $('#generalInformationId').val(response.generalInformation.id);
-                $('#leadsId').val(response.leads.id);
-                $('#quoteComparisonId').val(id);
-                $('#selectedQuoteId').val(id);
-                $('#makePaymentEffectiveDate').val(response.data.effective_date);
-                $('#policyDetailId').val(policyId);
-                $('#makePaymentModal').modal('show');
-
-            }
-        });
-        var paymentInformation = $(this).attr('data-payment-information') ? JSON.parse($(this).attr(
-            'data-payment-information')) : {};
-
-        if (Object.keys(paymentInformation).length !== 0) {
-            $('#paymentTerm').val(paymentInformation.payment_term);
-            if (paymentInformation.payment_method == 'Visa' || paymentInformation.payment_method ==
-                'Master Card' || paymentInformation.payment_method == 'American Express' ||
-                paymentInformation
-                .payment_method == 'Discover') {
-                $('#paymentMethodMakePayment').val('Credit Card');
-                $('#cardType').attr('hidden', false);
-                $('#cardTypeLabel').attr('hidden', false);
-                $('#cardType').val(paymentInformation.payment_method);
-            } else if (paymentInformation.method == 'Checking') {
-                $('#paymentMethodMakePayment').val('Checking');
-
-            } else {
-                $('#paymentMethodMakePayment').val('Credit Card');
-                $('#cardType').attr('hidden', false);
-                $('#cardType').val('Other');
-                $('#cardTypeLabel').attr('hidden', false);
-                $('#otherCardLabel').attr('hidden', false);
-                $('#otherCard').attr('hidden', false);
-                $('#otherCard').val(paymentInformation.payment_method);
-            }
-        }
-        $('#paymentType').val(paymentInformation.payment_type);
-        $('#insuranceCompliance').val(paymentInformation.compliance_by);
-        $('#paymentMethod').val(paymentInformation.payment_method);
-        $('#statusInput').val($(this).attr('data-status'));
-        $('#quotationProductId').val($(this).attr('data-productId'));
-        $('#chargedAmount').val(paymentInformation.amount_to_charged);
-        $('#note').val(paymentInformation.note);
-        $('#paymentInformationId').val(paymentInformation.id);
-    });
-
-    //edit make payment
-    $(document).on('click', '.editMakePayment', function() {
-        var policyId = "{{ $policyDetail->id }}";
-        $.ajax({
-            url: "{{ route('get-payment-information') }}",
-            method: "GET",
-            data: {
-                id: "{{ $paymentInformation ? $paymentInformation->id : '' }}",
-                _token: "{{ csrf_token() }}"
-            },
-            dataType: "json",
-            success: function(response) {
-                console.log(response);
-                var paymentMethod = response.paymentInformation.payment_method;
-                $('#paymentType').val(response.paymentInformation.payment_type);
-                $('#insuranceCompliance').val(response.paymentInformation.compliance_by);
-                $('#market').val(response.market.name);
-                $('#firstName').val(response.generalInformation.firstname);
-                $('#companyName').val(response.lead.company_name);
-                $('#makePaymentEffectiveDate').val(response.quoteComparison.effective_date);
-                $('#quoteNumber').val(response.quoteComparison.quote_no);
-                $('#paymentTerm').val(response.paymentInformation.payment_term);
-                $('#lastName').val(response.generalInformation.lastname);
-                $('#emailAddress').val(response.generalInformation.email_address);
-
-                // Set the payment method dropdown based on the fetched payment method
-                if (paymentMethod.toLowerCase() == 'checking') {
-                    $('#paymentMethodMakePayment').val('Checking').trigger('change');
-                } else {
-                    $('#paymentMethodMakePayment').val("Credit Card").trigger('change');
-                    // Handling other card types
-                    if (['Visa', 'Master Card', 'American Express'].includes(paymentMethod)) {
-                        $('#cardType').val(paymentMethod).trigger('change');
-                    } else {
-                        $('#cardType').val('Other').trigger('change');
-                        $('#otherCard').val(paymentMethod);
-                    }
-                }
-                $('#totalPremium').val(response.quoteComparison.full_payment);
-                $('#brokerFeeAmount').val(response.quoteComparison.broker_fee);
-                $('#chargedAmount').val(response.paymentInformation.amount_to_charged);
-                $('#note').val(response.paymentInformation.note);
-                $('#generalInformationId').val(response.generalInformation.id);
-                $('#leadsId').val(response.lead.id);
-                $('#quoteComparisonId').val(response.quoteComparison.id);
-                $('#paymentInformationId').val(response.paymentInformation.id);
-                $('#policyDetailId').val(policyId);
-                $('#selectedQuoteId').val({{ $selectedQuoteId }});
-                $('#makePaymentModal').modal('show');
-            }
-        })
     });
 
     $(document).on('click', '.editSelectedQuote', function(e) {

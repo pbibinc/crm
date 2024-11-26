@@ -5,8 +5,7 @@
             <th>Old Policy</th>
             <th>Company Name</th>
             <th>Product</th>
-            <th>Cancellation Type</th>
-            <th>Cancelled Date</th>
+            <th>Status</th>
             <th></th>
         </tr>
     </thead>
@@ -22,10 +21,13 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
+                data: {
+                    "_token": "{{ csrf_token() }}"
+                }
             },
             columns: [{
-                    data: 'policy_number',
-                    name: 'policy_number'
+                    data: 'policy_link',
+                    name: 'policy_link'
                 },
                 {
                     data: 'company_name',
@@ -40,15 +42,10 @@
                     name: 'policy_status'
                 },
                 {
-                    data: 'cancelled_date',
-                    name: 'cancelled_date'
-                },
-                {
                     data: 'action',
                     name: 'action'
                 }
-
             ],
         });
-    })
+    });
 </script>

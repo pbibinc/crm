@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\FinancingCompany;
 use App\Models\GeneralInformation;
 use App\Models\Insurer;
 use App\Models\Lead;
@@ -14,9 +15,11 @@ use App\Models\QuoteComparison;
 use App\Models\SelectedQuote;
 use App\Models\Templates;
 use App\Models\UnitedState;
+use App\Models\User;
 use App\Models\UserProfile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RenewalPolicyController extends Controller
 {
@@ -30,8 +33,8 @@ class RenewalPolicyController extends Controller
         $userProfile = new UserProfile();
         $userProfiles = UserProfile::orderBy('firstname')->get();
         $complianceOfficer = $userProfile->complianceOfficer();
-
-        return view('customer-service.renewal.renewal-policy.index', compact('userProfiles', 'complianceOfficer'));
+        $userProfileId = Auth::user()->userProfile->id;
+        return view('customer-service.renewal.renewal-policy.index', compact('userProfiles', 'complianceOfficer', 'userProfileId'));
     }
 
     /**
@@ -117,7 +120,8 @@ class RenewalPolicyController extends Controller
             ->addColumn('policy_no', function($policiesData){
                 $policyNumber = $policiesData->policy_number;
                 $productId =  $policiesData->quotation_product_id;
-                return '<a href=""  id="'.$policiesData->id.'" class="renewalPolicyButton">'.$policyNumber.'</a>';
+
+                return '<a href="/customer-service/get-renewal-policy-view/'.$policiesData->id.'"  id="'.$policiesData->id.'">'.$policyNumber.'</a>';
             })
             ->addColumn('company_name', function($policiesData){
                 $lead = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;
@@ -134,7 +138,14 @@ class RenewalPolicyController extends Controller
                 $quotedRenewalUserProfile = $policiesData->quotedRenewalUserprofile()->first();
                 return $quotedRenewalUserProfile ? $quotedRenewalUserProfile->fullAmericanName() : 'N/A';
             })
-            ->rawColumns(['company_name', 'policy_no'])
+            ->addColumn('action', function($policiesData){
+                $leads = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;
+                $viewNoteButton = '<button class="btn btn-outline-primary btn-sm waves-effect waves-light viewNotedButton" id="'.$leads->id.'"><i class="ri-message-2-line"></i></button>';
+                $renewPolicyButton = '<a href=""  id="'.$policiesData->id.'" class="renewalPolicyButton btn btn-outline-success btn-sm waves-effect waves-light"><i class="ri-task-line"></i></a>';
+                $setOldRenewalButton = '<button class="btn btn-outline-danger btn-sm waves-effect waves-light setOldRenewalButton" id="'.$policiesData->id.'"><i class=" ri-forbid-line"></i></button>';
+                return $viewNoteButton . ' ' . $renewPolicyButton . ' ' . $setOldRenewalButton;
+            })
+            ->rawColumns(['company_name', 'policy_no', 'action'])
             ->make(true);
         }
     }
@@ -182,9 +193,10 @@ class RenewalPolicyController extends Controller
     {
         $policyDetail = PolicyDetail::find($id);
         $product = QuotationProduct::find($policyDetail->quotation_product_id);
+        $quotationProduct = $product;
         $products = QuotationProduct::where('quote_information_id', $product->quote_information_id)->get();
-        $lead = Lead::find($product->QuoteInformation->QuoteLead->leads->id);
-        $generalInformation = GeneralInformation::find($lead->generalInformation->id);
+        $leads = Lead::find($product->QuoteInformation->QuoteLead->leads->id);
+        $generalInformation = GeneralInformation::find($leads->generalInformation->id);
         $userProfile = new UserProfile();
         $complianceOfficer = $userProfile->complianceOfficer();
         $timezones = [
@@ -206,13 +218,13 @@ class RenewalPolicyController extends Controller
         $timezoneForState = null;
         $quationMarket = new QuoationMarket();
         $templates = Templates::all();
-        if(!$lead || !$generalInformation){
+        if(!$leads || !$generalInformation){
             return redirect()->route('leads.appointed-leads')->withErrors('No DATA found');
             // dd($lead, $generalInformation );
         }
         $usAddress = UnitedState::getUsAddress($generalInformation->zipcode);
         foreach($timezones as $timezone => $states){
-            if(in_array($lead->state_abbr, $states)){
+            if(in_array($leads->state_abbr, $states)){
                 $timezoneForState =  $timezoneStrings[$timezone];
             }
         }
@@ -220,9 +232,15 @@ class RenewalPolicyController extends Controller
         $generalLiabilities = $generalInformation->generalLiabilities;
         $markets = QuoationMarket::all()->sortBy('name');
         $carriers = Insurer::all()->sortBy('name');
-        $productIds = $lead->getQuotationProducts()->pluck('id')->toArray();
-        $selectedQuotes = SelectedQuote::whereIn('quotation_product_id', $productIds)->get() ?? [];
-        return view('leads.appointed_leads.renewal-quoted-policy-view.index', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer', 'markets', 'carriers', 'policyDetail', 'products', 'productIds', 'selectedQuotes'));
+        $productIds = $leads->getQuotationProducts()->pluck('id')->toArray();
+        $selectedQuoteIds = $leads->getQuotationProducts()->pluck('selected_quote_id')->toArray();
+        $selectedQuotes = SelectedQuote::whereIn('id', $selectedQuoteIds)->get() ?? [];
+        $activePolicies = $policyDetail->getActivePolicyDetailByLeadId($leads->id);
+        $userProfiles = UserProfile::get()->sortBy('first_name');
+        $financeCompany = FinancingCompany::all();
+        $templates = Templates::all();
+        $customerUsers = User::where('role_id', 12)->orderBy('email')->get();
+        return view('leads.appointed_leads.renewal-quoted-policy-view.index', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer', 'markets', 'carriers', 'policyDetail', 'products', 'productIds', 'selectedQuotes', 'activePolicies', 'userProfiles', 'quotationProduct', 'financeCompany', 'templates', 'customerUsers'));
     }
 
     public function renewalMakePaymentList(Request $request)
@@ -249,8 +267,8 @@ class RenewalPolicyController extends Controller
                 $productId = $policiesData->quotation_product_id;
                 $product = QuotationProduct::find($productId);
                 $selectedQuote = SelectedQuote::find($product->selected_quote_id);
-                // return '<a href="/customer-service/get-renewal-policy-view/'.$policiesData->id.'"  id="'.$policiesData->id.'">'.$selectedQuote->quote_no.'</a>';
-                return $selectedQuote->quote_no;
+                return '<a href="/customer-service/get-renewal-policy-view/'.$policiesData->id.'"  id="'.$policiesData->id.'">'.$selectedQuote->quote_no.'</a>';
+                // return $selectedQuote->quote_no;
             })
             ->addColumn('company_name', function($policiesData){
                 $lead = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;
@@ -278,7 +296,7 @@ class RenewalPolicyController extends Controller
                 $product = QuotationProduct::find($productId);
                 $selectedQuote = SelectedQuote::find($product->selected_quote_id);
 
-                $paymentStatus = PaymentInformation::where('selected_quote_id', $selectedQuote->id)->first();
+                $paymentStatus = PaymentInformation::where('selected_quote_id', $selectedQuote->id)->latest()->first();
                 $paymentStatusData = $paymentStatus ? $paymentStatus->status : 'N/A';
                 $statusLabel = '';
                 $class = '';
@@ -307,7 +325,7 @@ class RenewalPolicyController extends Controller
                 return "<span class='badge {$class}'>{$statusLabel}</span>";
             })
             ->addColumn('action', function($policiesData){
-                $paymentInformation = PaymentInformation::where('selected_quote_id', QuotationProduct::find($policiesData->quotation_product_id)->selected_quote_id)->first();
+                $paymentInformation = PaymentInformation::where('selected_quote_id', QuotationProduct::find($policiesData->quotation_product_id)->selected_quote_id)->latest()->first();
                 $lead = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;
                 $resendButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light resendButton" id="'.$paymentInformation->id.'" data-policy-id="'.$policiesData->id.'"><i class="  ri-repeat-2-line"></i></button>';
                 $viewProfileButton = '<a href="'.route('get-renewal-policy-view', ['productId' => $policiesData->id]).'" class="btn btn-sm btn-outline-primary"><i class="ri-eye-line"></i></a>';
@@ -317,6 +335,8 @@ class RenewalPolicyController extends Controller
                 if($paymentInformation->status == 'declined'){
                     return $viewProfileButton . ' ' . $viewNotedButton . ' ' . $resendButton;
                 }elseif($paymentInformation->status == 'pending'){
+                    return $viewProfileButton . ' ' . $viewNotedButton;
+                }elseif($paymentInformation->status == 'resend'){
                     return $viewProfileButton . ' ' . $viewNotedButton;
                 }elseif($paymentInformation->status == 'charged'){
                     return $viewProfileButton . ' ' . $viewNotedButton . ' ' . $processButton;

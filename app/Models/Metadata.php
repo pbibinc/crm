@@ -46,6 +46,11 @@ class Metadata extends Model
         return $this->belongsToMany(AuditInformation::class, 'audit_required_file', 'media_id', 'audit_information_id');
     }
 
+    public function reaccuringMedia()
+    {
+        return $this->belongsToMany(FinancingAgreement::class, 'recurring_ach_media', 'media_id', 'financing_aggreement_id');
+    }
+
     // PDF User Files
     public function pdfUserFiles()
     {
@@ -57,3 +62,4 @@ class Metadata extends Model
         return $this->hasOne(Metadata::class, 'media_id');
     }
 }
+

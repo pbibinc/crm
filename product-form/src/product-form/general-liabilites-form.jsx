@@ -37,9 +37,10 @@ const GeneralLiabilitiesForm = () => {
     const [isDataReady, setIsDataReady] = useState(false);
 
     const [isLoading, setIsLoading] = useState(false);
+
     const getLeadStoredData = () => {
-        const storedData = JSON.parse(sessionStorage.getItem("lead") || "{}");
-        return storedData;
+        const storedData = sessionStorage.getItem("lead") || "{}";
+        return JSON.parse(storedData);
     };
     const getGeneralLiabilitiesStoredData = () => {
         const storedData = JSON.parse(
@@ -98,6 +99,7 @@ const GeneralLiabilitiesForm = () => {
         const leads_item_value = JSON.parse(sessionStorage.getItem("lead"));
         return leads_item_value ? leads_item_value.data.id : "";
     });
+
     const [userProfileId, setUserProfileId] = useState(() => {
         var userProfileId = getLeadStoredData()?.data?.userProfileId;
         return userProfileId;
@@ -425,9 +427,27 @@ const GeneralLiabilitiesForm = () => {
 
     //handle the calsscodequestionare change
     const handleClassCodeData = (index, data) => {
-        clasCodeDescription[index] = data.description;
-        classCodeIdData[index] = data.classcodeId;
-        classCodeFormData[index] = data.value;
+        // Ensure the arrays have the required index, filling undefined spots if necessary
+        clasCodeDescription[index] = data.description || "";
+        classCodeIdData[index] = data.classcodeId || null;
+        classCodeFormData[index] = data.value || "";
+
+        // Update session storage with the latest data
+        const storedData =
+            JSON.parse(
+                sessionStorage.getItem("generalLiabilitiesStoredData")
+            ) || {};
+
+        // Update the specific class code data in the stored object
+        storedData.classCodeAnswer = classCodeFormData;
+        storedData.classCodeQuestion = clasCodeDescription;
+        storedData.classCodeid = classCodeIdData;
+
+        // Save the updated object back to session storage
+        sessionStorage.setItem(
+            "generalLiabilitiesStoredData",
+            JSON.stringify(storedData)
+        );
     };
 
     //script for defining classcode data dropdown
@@ -573,12 +593,8 @@ const GeneralLiabilitiesForm = () => {
         { value: "Builders Risk", label: "Builders Risk" },
         { value: "Business Owner Policy", label: "Business Owner Policy" },
     ];
-    let generalLiabilitiesCrossSellOptions = crossSellArray.map(
-        ({ value, label }) => ({
-            value,
-            label,
-        })
-    );
+
+    console.log("userProfileId", getLeadStoredData());
 
     const generalLiabilitiesFormData = {
         //objects for coverage limit table
@@ -644,7 +660,7 @@ const GeneralLiabilitiesForm = () => {
             return e.value;
         }),
 
-        userProfileId: userProfileId,
+        userProfileId: getLeadStoredData()?.data?.userProfileId,
     };
 
     const generalLiabilitiesStoredFormData = {
@@ -827,9 +843,8 @@ const GeneralLiabilitiesForm = () => {
             setHaveLossAmount(storedData.haveLossAmount || "");
 
             setUserProfileId(
-                lead?.data?.userProfileId
-                    ? lead?.data?.userProfileId
-                    : storedData.userProfileId
+                getLeadStoredData()?.data?.userProfileId ||
+                    lead?.data?.userProfileId
             );
 
             setConcreteFoundationWork(
@@ -854,7 +869,7 @@ const GeneralLiabilitiesForm = () => {
 
             setIsDataReady(true);
         }
-    }, [generalLiabilitiesData]);
+    }, [generalLiabilitiesData, lead]);
 
     // if (!isDataReady) {
     //     return <div>Loading...</div>;
@@ -1071,7 +1086,7 @@ const GeneralLiabilitiesForm = () => {
                             classValue="col-4"
                             colContent={
                                 <>
-                                    <Label labelContent="Are you working on multiple state?" />
+                                    <Label labelContent="Conducts business in multiple states?" />
                                     <Form.Check
                                         type="switch"
                                         id="multipleStateCheckSwitch"
@@ -1088,7 +1103,7 @@ const GeneralLiabilitiesForm = () => {
                                 classValue="col-4"
                                 colContent={
                                     <>
-                                        <Label labelContent="Self Performing Roofing" />
+                                        <Label labelContent="Self Performs Roofing Jobs" />
                                         <Form.Check
                                             type="switch"
                                             id="selfPerformingCheckSwitch"
@@ -1110,7 +1125,7 @@ const GeneralLiabilitiesForm = () => {
                                 classValue="col-3"
                                 colContent={
                                     <>
-                                        <Label labelContent="Concrete Foundation Work" />
+                                        <Label labelContent="Does Concrete foundation work" />
                                         <Form.Check
                                             type="switch"
                                             id="concreteFoundationWorkCheckSwitch"
@@ -1217,7 +1232,7 @@ const GeneralLiabilitiesForm = () => {
                             classValue="col-4"
                             colContent={
                                 <>
-                                    <Label labelContent="Self Performing Roofing" />
+                                    <Label labelContent="Self Performs Roofing Jobs" />
                                     <Form.Check
                                         type="switch"
                                         id="selfPerformingCheckSwitch"
@@ -1237,7 +1252,7 @@ const GeneralLiabilitiesForm = () => {
                             classValue="col-3"
                             colContent={
                                 <>
-                                    <Label labelContent="Concrete Foundation Work" />
+                                    <Label labelContent="Does Concrete foundation work" />
                                     <Form.Check
                                         type="switch"
                                         id="concreteFoundationWorkCheckSwitch"
@@ -1272,7 +1287,7 @@ const GeneralLiabilitiesForm = () => {
                         classValue="col-4"
                         colContent={
                             <>
-                                <Label labelContent="Do you do work for condominium" />
+                                <Label labelContent="Works on Condominium" />
                             </>
                         }
                     />,
@@ -1350,7 +1365,7 @@ const GeneralLiabilitiesForm = () => {
                 rowContent={
                     <label>
                         <h6>
-                            Would you perform or subcontract work involving:
+                            Do you perform or subcontract any work involving:
                         </h6>
                     </label>
                 }
@@ -1440,7 +1455,7 @@ const GeneralLiabilitiesForm = () => {
                         classValue="col-6"
                         colContent={
                             <>
-                                <Label labelContent="Any Recreational Facilities" />
+                                <Label labelContent="Do you perform work on any recreational facilities" />
                                 <Select
                                     closeMenuOnSelect={false}
                                     className="basic=single"

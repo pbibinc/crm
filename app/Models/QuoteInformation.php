@@ -28,6 +28,11 @@ class QuoteInformation extends Model
         return $this->hasOne(QuotationProduct::class, 'quote_information_id');
     }
 
+    public function QuotationProducts()
+    {
+        return $this->hasMany(QuotationProduct::class, 'quote_information_id');
+    }
+
     public static function getInformationByLeadId($leadId)
     {
         $quoteLeadId = QuoteLead::where('leads_id', $leadId)->first();

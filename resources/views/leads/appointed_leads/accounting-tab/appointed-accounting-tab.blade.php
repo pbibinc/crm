@@ -76,6 +76,7 @@
                         'content')
                 },
                 url: "{{ route('payment-list') }}",
+                async: false,
                 data: {
                     _token: "{{ csrf_token() }}",
                     id: id

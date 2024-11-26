@@ -132,11 +132,18 @@ class AppTakerLeadsController extends Controller
 
         if($leadId == $cachedLeadId){
             Cache::get('lead_id');
-            Cache::get('user_id');
+
         }else{
             Cache::put('lead_id', $leadId, 60 * 60);
             Cache::put('user_id', $user->id, 60 * 360);
         }
+
+        if($user->id == $cachedUser ){
+            Cache::get('user_id');
+        }else{
+            Cache::put('user_id', $user->id, 60 * 360);
+        }
+
         return response()->json(['success' => 'Lead id added to cache']);
     }
 

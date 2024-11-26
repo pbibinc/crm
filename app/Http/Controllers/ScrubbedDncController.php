@@ -70,8 +70,15 @@ class ScrubbedDncController extends Controller
         foreach($filteredLeadIds as $leadId) {
             $scrubbedDnc = new ScrubbedDnc();
             if($scrubbedDnc->where('lead_id', $leadId)->exists()) {
+                $lead = Lead::find($leadId);
+                $lead->status = 7;
+                $lead->save();
                 continue;
             }else{
+                $lead = Lead::find($leadId);
+                $lead->status = 7;
+                $lead->save();
+
                 $scrubbedDnc->lead_id = $leadId;
                 $scrubbedDnc->save();
             }

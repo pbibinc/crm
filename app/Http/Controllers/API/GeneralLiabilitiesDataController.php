@@ -99,7 +99,8 @@ class GeneralLiabilitiesDataController extends BaseController
                    $quoteProduct->quote_information_id = $quoteInformation->id;
                }
                $quoteProduct->product = 'General Liability';
-               $quoteProduct->status = 7;
+               $quoteProduct->status = 29;
+               $quoteProduct->product_appointer_id = $data['userProfileId'];
                $quoteProduct->save();
 
                //saving general liabilities subcontract
@@ -156,6 +157,9 @@ class GeneralLiabilitiesDataController extends BaseController
             }, $flattenedAnswers, $flattenedQuestions, $flattenClassCodeQuestionareId);
 
             foreach($mergedClassCodeQuestionareData as $flattenItem){
+                if($flattenItem['answer'] == null || $flattenItem['questionare'] == null){
+                    continue;
+                }
                 $ClassCodeQuesionare = new ClassCodeQuestionare();
                 $ClassCodeQuesionare->lead_id = $data['leadId'];
                 $ClassCodeQuesionare->classcode_id = $flattenItem['classcodeQuestionareId'];

@@ -36,17 +36,19 @@ class BoundController extends Controller
                     return $company_name;
                 })
                 ->addColumn('policy_number', function($data){
+                    $leads = $data->QuoteInformation->QuoteLead->leads;
+                    $profileViewRoute = route('appointed-list-profile-view', ['leadsId' => $leads->id]);
                     if($data->status == 20){
                         $policyDetail =PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
                         $selectedQuote = SelectedQuote::find($data->selected_quote_id);
-                        $policyNumber = '<a href="" id="'.$policyDetail->id.'" type="renewal" name="showPolicyForm" class="showPolicyForm" data-product='.$data->product.'>'.$selectedQuote->quote_no.'</a>';
+                        $policyNumber = '<a href="'.$profileViewRoute.'" id="'.$policyDetail->id.'" type="renewal" name="" class="" data-product='.$data->product.'>'.$selectedQuote->quote_no.'</a>';
                     }else if($data->status == 26){
                         $policyDetail =PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Dead policy')->first();
                         $selectedQuote = SelectedQuote::find($data->selected_quote_id);
-                        $policyNumber = '<a href="" id="'.$policyDetail->id.'" type="renewal" name="showPolicyForm" class="showPolicyForm" data-product='.$data->product.'>'.$selectedQuote->quote_no.'</a>';
+                        $policyNumber = '<a href="'.$profileViewRoute.'" id="'.$policyDetail->id.'" type="renewal" name="" class="" data-product='.$data->product.'>'.$selectedQuote->quote_no.'</a>';
                     }else{
                         $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
-                        $policyNumber = '<a href="" id="'.$data->id.'" name="showPolicyForm" type="new" class="showPolicyForm" data-product='.$data->product.'>'.$selectedQuote->quote_no.'</a>';
+                        $policyNumber = '<a href="'.$profileViewRoute.'" id="'.$data->id.'" name="" type="new" class="" data-product='.$data->product.'>'.$selectedQuote->quote_no.'</a>';
                     }
                     return $policyNumber;
                 })
@@ -55,7 +57,7 @@ class BoundController extends Controller
                         $policyDetail =PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
                         $selectedQuote = SelectedQuote::find($data->selected_quote_id);
                     }else{
-                        $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
+                        $selectedQuote = SelectedQuote::find($data->selected_quote_id)->first();
                     }
                     return $selectedQuote ? $selectedQuote->TotalCost() : 0;
                 })
@@ -67,6 +69,23 @@ class BoundController extends Controller
                         $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
                     }
                     return $selectedQuote ? $selectedQuote->effective_date : '';
+                })
+                ->addColumn('action', function($data){
+
+                    if($data->status == 20){
+                        $policyDetail =PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Renewal Request To Bind')->first();
+                        $selectedQuote = SelectedQuote::find($data->selected_quote_id);
+                        $policyNumber = '<a href="" id="'.$policyDetail->id.'" type="renewal" name="showPolicyForm" class="showPolicyForm btn btn-outline-success btn-sm waves-effect waves-light" data-product='.$data->product.'><i class="ri-task-line"></i></a>';
+                    }else if($data->status == 26){
+                        $policyDetail =PolicyDetail::where('quotation_product_id', $data->id)->where('status', 'Dead policy')->first();
+                        $selectedQuote = SelectedQuote::find($data->selected_quote_id);
+                        $policyNumber = '<a href="" id="'.$policyDetail->id.'" type="renewal" name="showPolicyForm" class="showPolicyForm btn btn-outline-success btn-sm waves-effect waves-light" data-product='.$data->product.'><i class="ri-task-line"></i></a>';
+                    }else{
+                        $selectedQuote = SelectedQuote::where('quotation_product_id', $data->id)->first();
+                        $policyNumber = '<a href="" id="'.$data->id.'" name="showPolicyForm" type="new" class="showPolicyForm btn btn-outline-success btn-sm waves-effect waves-light" data-product='.$data->product.'><i class="ri-task-line"></i></a>';
+                    }
+
+                    return $policyNumber;
                 })
                 ->rawColumns(['action', 'policy_number'])
                 ->make(true);
@@ -156,4 +175,5 @@ class BoundController extends Controller
             return response()->json(['message' => $e->getMessage()], 500);
         }
     }
+
 }

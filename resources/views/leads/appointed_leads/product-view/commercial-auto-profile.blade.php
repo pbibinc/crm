@@ -129,16 +129,45 @@
         </div>
     </div>
 @endif --}}
+@php
+    $commercialAutoProduct = $generalInformation->lead->quoteLead->QuoteInformation->QuotationProduct->getQuotationProductByProduct(
+        'Commercial Auto',
+        $generalInformation->lead->quoteLead->QuoteInformation->id,
+    );
+
+@endphp
 <div class="row-title">
-    <div class="card-title">
-        <h5>Commercial Auto Profile</h5>
+    <div class="card-title d-flex align-items-center">
+        <h5 class="mb-0 me-2">Commercial Auto Profile</h5>
+        @if ($commercialAutoProduct->status == 5)
+            <span class="badge bg-danger align-middle">Declined</span>
+        @endif
     </div>
-    @if ($actionButtons == true)
-        <button type="button" class="editCommercialAuto btn btn-light btn-sm waves-effect waves-light"
-            value="{{ $generalInformation->lead->id }}">
-            <i class="ri-edit-line"></i> Edit
-        </button>
-    @endif
+    <div>
+        @if ($actionButtons == true)
+            <button type="button" class="editCommercialAuto btn btn-light btn-sm waves-effect waves-light"
+                value="{{ $generalInformation->lead->id }}">
+                <i class="ri-edit-line"></i> Edit
+            </button>
+        @endif
+        @if ($commercialAutoProduct->status == 29)
+            <button type="button"
+                class="sendAppointedCommercialAutoForQuotation btn btn-success btn-sm waves-effect waves-light"
+                value="{{ $commercialAutoProduct->id }}">
+                <i class="ri-task-line"></i> Send For Quotation
+            </button>
+        @elseif($commercialAutoProduct->status == 1)
+            <button type="button"
+                class="sendOutCommercialAutoQuotation btn btn-success btn-sm waves-effect waves-light"
+                value="{{ $commercialAutoProduct->id }}">
+                <i class="ri-task-line"></i> Send Out Quotation</button>
+        @elseif($commercialAutoProduct->status == 5)
+            <button type="button"
+                class="sendAppointedCommercialAutoForQuotation btn btn-warning btn-sm waves-effect waves-light"
+                value="{{ $commercialAutoProduct->id }}">Resend For Quotation</button>
+        @endif
+    </div>
+
 </div>
 
 <div class="row">
@@ -361,8 +390,6 @@
     </div>
 @endif
 
-
-
 <script>
     $(document).ready(function() {
         $('.editCommercialAuto').on('click', function() {
@@ -382,5 +409,77 @@
             window.open(`${url}commercial-auto-form/edit`, "s_blank",
                 "width=1000,height=849")
         });
+
+        $('.sendAppointedCommercialAutoForQuotation').on('click', function() {
+            var id = $(this).val();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You want to send this product for quotation',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('change-appointed-product-status') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        method: 'POST',
+                        data: {
+                            id: id,
+                            status: 7
+                        },
+                        success: function(data) {
+                            Swal.fire({
+                                title: 'Success',
+                                text: 'Product Request For Quotation',
+                                icon: 'success'
+                            }).then((result) => {
+                                location.reload();
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
+        $('.sendOutCommercialAutoQuotation').on('click', function(e) {
+            var id = $(this).val();
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You want to send out this quotation',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('change-appointed-product-status') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        method: 'POST',
+                        data: {
+                            id: id,
+                            status: 30
+                        },
+                        success: function(data) {
+                            Swal.fire({
+                                title: 'Success',
+                                text: 'Quotation Sent Out',
+                                icon: 'success'
+                            }).then((result) => {
+                                location.reload();
+                            });
+                        }
+                    });
+                }
+            });
+        })
     });
 </script>

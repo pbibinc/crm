@@ -19,11 +19,10 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => array_merge(
-        env('CORS_DEV_ORIGINS', ['http://localhost:3000', 'http://localhost:5173', 'http://127.0.0.1:8000']),
-        env('CORS_PROD_ORIGIN', ['https://form.pbibinc.com'])
+    'allowed_origins' =>array_merge(
+        explode(',', env('CORS_DEV_ORIGIN', '')),
+        explode(',', env('CORS_PROD_ORIGIN', ''))
     ),
-
 
     'allowed_origins_patterns' => [],
 

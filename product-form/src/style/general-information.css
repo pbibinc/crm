@@ -55,4 +55,11 @@
     }
 }
 
+.sticky-footer {
+    position: sticky;
+    bottom: 0;
+    background-color: #fff; /* Optional: to ensure it’s visible */
+    z-index: 1000; /* Ensures it’s on top of other elements */
+    padding: 10px 0;
+}
 /* Add more styles as needed */

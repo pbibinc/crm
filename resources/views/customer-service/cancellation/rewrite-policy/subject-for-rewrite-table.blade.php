@@ -21,6 +21,9 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
+                data: {
+                    "_token": "{{ csrf_token() }}"
+                }
             },
             columns: [{
                     data: 'policy_number',
@@ -35,8 +38,8 @@
                     name: 'product'
                 },
                 {
-                    data: 'cancelled_date',
-                    name: 'cancelled_date'
+                    data: 'recovery_origin',
+                    name: 'recovery_origin'
                 },
                 {
                     data: 'action',

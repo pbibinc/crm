@@ -8,6 +8,7 @@ use App\Models\RecoverCancelledPolicy;
 use App\Models\UserProfile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use PhpParser\Node\Stmt\Switch_;
 use Yajra\DataTables\Facades\DataTables;
 
 class RewritePolicyController extends Controller
@@ -117,14 +118,27 @@ class RewritePolicyController extends Controller
                 $companyName = $data->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name;
                 return $companyName ? $companyName : '';
             })
-            ->addColumn('cancelled_date', function($data){
-                $cancellationEndorsement = $data->CancellationEndorsement;
-                return $cancellationEndorsement ? $cancellationEndorsement->cancellation_date->format('M-d-Y') : '';
+            ->addColumn('recovery_origin', function($data){
+                $recoveryOrigin = $data->status;
+                Switch ($recoveryOrigin){
+                    case 'Subject For Rewrite':
+                        return 'Cancelled Policy';
+                        break;
+                    case 'For Rewrite':
+                        return 'Rewrite Policy';
+                        break;
+                    case 'Subject For Rewrite Old Renewal':
+                        return 'Old Renewal';
+                        break;
+                    default:
+                       return '';
+                       break;
+                }
+
             })
             ->addColumn('action', function($data){
                 $leadId = $data->QuotationProduct->QuoteInformation->QuoteLead->leads->id;
                 $viewButton = '<a href="/appointed-list/'.$leadId.'" data-toggle="tooltip" data-id="'.$data->id.'" data-original-title="View" class="view btn btn-primary btn-sm viewCancellation"><i class="ri-eye-line"></i></a>';
-
                 return $viewButton;
             })
             ->rawColumns(['action'])
@@ -136,9 +150,15 @@ class RewritePolicyController extends Controller
     {
         $policyDetail = new PolicyDetail();
         $userProfileId = auth()->user()->userProfile->id;
-        $data = $policyDetail->getForRewritePolicyByStatusAndUserProfileId('For Rewrite', $userProfileId);
+        $data = $policyDetail->getForRewritePolicyByStatusAndUserProfileId(['For Rewrite', 'Rewrite Old Renewal'], $userProfileId);
         return DataTables($data)
             ->addIndexColumn()
+            ->addColumn('policy_link', function($data){
+                $policyNumber = $data->policy_number;
+                $leadId = $data->QuotationProduct->QuoteInformation->QuoteLead->leads->id;
+                $button = '<a href="/appointed-list/'.$leadId.'"  id="'.$data->id.'">'.$policyNumber.'</a>';
+                return $button;
+            })
             ->addColumn('product', function($data){
                 return $data->QuotationProduct->product;
             })
@@ -146,16 +166,23 @@ class RewritePolicyController extends Controller
                 $company_name = $data->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name;
                 return $company_name;
             })
-            ->addColumn('cancelled_date', function($data){
-                return Carbon::parse($data->cancellationEndorsement->cancellation_date)->format('M-d-Y');
-            })
-            ->addColumn('cancelled_by', function($data){
-                $userProfile = $data->cancellationEndorsement->UserProfile;
-                return $userProfile ? $userProfile->fullAmericanName() : '';
-            })
             ->addColumn('cancellation_type', function($data){
                 $cancellationEndorsement = $data->cancellationEndorsement;
                 return $cancellationEndorsement  ? $cancellationEndorsement->type_of_cancellation : '';
+            })
+            ->addColumn('recovery_origin', function($data){
+                $recoveryOrigin = $data->status;
+                Switch ($recoveryOrigin){
+                    case 'For Rewrite':
+                        return 'Cancellation';
+                        break;
+                    case 'Rewrite Old Renewal':
+                        return 'Old Renewal';
+                        break;
+                    default:
+                       return '';
+                       break;
+                }
             })
             ->addColumn('action', function($data){
                 $leadId = $data->QuotationProduct->QuoteInformation->QuoteLead->leads->id;
@@ -164,6 +191,7 @@ class RewritePolicyController extends Controller
                 $sendForQuotationButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light sendForQuotationButton" id="'.$data->id.'"><i class=" ri-clipboard-line"></i></button>';
                 return $viewButton . ' ' . $viewNotedButton . ' ' . $sendForQuotationButton;
             })
+            ->rawColumns(['action', 'policy_link'])
             ->make(true);
 
     }

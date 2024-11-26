@@ -109,27 +109,6 @@
                 confirmButtonText: 'Yes, Send it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // $.ajax({
-                    //     url: "{{ route('save-bound-information') }}",
-                    //     headers: {
-                    //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    //     },
-                    //     method: "POST",
-                    //     data: {
-                    //         id: id,
-                    //         productStatus: productStatus
-                    //     },
-                    //     success: function() {
-
-                    //     },
-                    //     error: function() {
-                    //         Swal.fire({
-                    //             title: 'Error',
-                    //             text: 'Something went wrong',
-                    //             icon: 'error'
-                    //         });
-                    //     }
-                    // })
                     $.ajax({
                         url: "{{ route('change-quotation-status') }}",
                         headers: {

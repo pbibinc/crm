@@ -29,7 +29,7 @@
 
     Echo.channel('assign-appointed-lead-notification').listen('.AssignAppointedLead', (notification) => {
         alert('test this notification');
-        console.log('test this notification');
+
     });
 
     Echo.channel('assign-appointed-lead').listen('AssignAppointedLeadEvent', (e) => {
@@ -100,10 +100,33 @@
             });
             if (!processingQueue) {
                 processNotificationQueue();
+                $.ajax({
+                    url: "{{ route('get-notification') }}",
+                    type: 'POST',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+                        appendNotifications(response.data);
+                        fetchAndDisplayNotifications();
+                    }
+                });
             }
         }
     }
 
+    function fetchAndDisplayNotifications() {
+        $.ajax({
+            url: "{{ route('get-notification') }}",
+            type: 'POST',
+            data: {
+                _token: "{{ csrf_token() }}",
+            },
+            success: function(response) {
+                appendNotifications(response.data);
+            }
+        });
+    }
 
     function processNotificationQueue() {
         if (notificationQueue.length > 0 && !processingQueue) {
@@ -130,7 +153,6 @@
 
         }
     }
-
 
     function displayToast(message, title, icon) {
         return new Promise((resolve) => {
