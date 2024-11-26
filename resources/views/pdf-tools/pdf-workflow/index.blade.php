@@ -247,6 +247,21 @@
                 </div>
             </div>
         </div>
+        {{-- Create Template Modals --}}
+        <div class="modal fade" id="templatesModal" tabindex="-1" role="dialog"
+            aria-labelledby="templatesModalScrollableTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="templatesModalScrollableTitle">Create Template Here</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                </div>
+            </div>
+        </div>
         {{-- End Modals --}}
 
     </div>

@@ -388,6 +388,22 @@
                                 }).join(' ');
                             }
 
+                            let urlLink = file.link;
+                            let iframeUrl;
+                            if (urlLink != 'Failed to create link') {
+                                urlLink = file.link.data.link;
+                                iframeUrl = `
+                                    <a href="${urlLink}" data-fancybox data-type="iframe"
+                                        class="dropdown-item">
+                                        <i class="ri-edit-box-line align-middle me-2"></i> Edit PDF
+                                    </a>
+                                `;
+                            } else {
+                                iframeUrl = ``;
+                            }
+
+                            console.log(urlLink);
+
                             const fileHtml = `
                                 <div class="card file-card" id="file-card-${file.document.id}">
                                     <div class="card-body gap-8">
@@ -399,10 +415,7 @@
                                                     <i class="mdi mdi-dots-vertical"></i>
                                                 </a>
                                                 <div class="dropdown-menu dropdown-menu-end">
-                                                    <a href="${file.link.data.link}" data-fancybox data-type="iframe"
-                                                        class="dropdown-item">
-                                                        <i class="ri-edit-box-line align-middle me-2"></i> Edit PDF
-                                                    </a>
+                                                    ${iframeUrl}
                                                     <button type="button" data-id="${file.document.id}"
                                                         class="dropdown-item delete-btn">
                                                         <i class="ri-delete-bin-2-line align-middle me-2"></i> Delete File

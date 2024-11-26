@@ -37,31 +37,31 @@ class PdfController extends Controller
         // return view('pdf-tools.pdf-edit.index');
     }
 
-    private function getBaseUrl($type)
-    {
-        // Check if the application is running in a local environment
-        if (app()->environment('local')) {
-            switch ($type) {
-                case 'storage':
-                    Log::info('Server info: ' . config('services.airslate.mockStorageUrl'));
-                    return config('services.airslate.mockStorageUrl');
-                case 'document':
-                    Log::info('Server info: ' . config('services.airslate.mockDocumentUrl'));
-                    return config('services.airslate.mockDocumentUrl');
-                case 'template':
-                    Log::info('Server info: ' . config('services.airslate.mockTemplateUrl'));
-                    return config('services.airslate.mockTemplateUrl');
-                case 'pdftools':
-                    Log::info('Server info: ' . config('services.airslate.mockPdfToolsUrl'));
-                    return config('services.airslate.mockPdfToolsUrl');
-                default:
-                    Log::info('Server info: ' . config('services.airslate.baseUrl'));
-                    return config('services.airslate.baseUrl');
-            }
-        } else {
-            return rtrim(config('services.airslate.'), '/');
-        }
-    }
+    // private function getBaseUrl($type)
+    // {
+    //     // Check if the application is running in a local environment
+    //     if (app()->environment('local')) {
+    //         switch ($type) {
+    //             case 'storage':
+    //                 Log::info('Server info: ' . config('services.airslate.mockStorageUrl'));
+    //                 return config('services.airslate.mockStorageUrl');
+    //             case 'document':
+    //                 Log::info('Server info: ' . config('services.airslate.mockDocumentUrl'));
+    //                 return config('services.airslate.mockDocumentUrl');
+    //             case 'template':
+    //                 Log::info('Server info: ' . config('services.airslate.mockTemplateUrl'));
+    //                 return config('services.airslate.mockTemplateUrl');
+    //             case 'pdftools':
+    //                 Log::info('Server info: ' . config('services.airslate.mockPdfToolsUrl'));
+    //                 return config('services.airslate.mockPdfToolsUrl');
+    //             default:
+    //                 Log::info('Server info: ' . config('services.airslate.baseUrl'));
+    //                 return config('services.airslate.baseUrl');
+    //         }
+    //     } else {
+    //         return rtrim(config('services.airslate.'), '/');
+    //     }
+    // }
 
     // Storage APIS
 
@@ -407,12 +407,14 @@ class PdfController extends Controller
                     'editorAppearanceConfig' => $validatedData['editorAppearanceConfig'] ?? [],
                 ]);
 
+                return $response;
+
                 // Check if the response is successful
-                if ($response->successful()) {
-                    return response()->json($response->json(), 200);
-                } else {
-                    return response()->json(['error' => 'Failed to create document link.'], $response->status());
-                }
+                // if ($response->successful()) {
+                //     return response()->json($response->json(), 200);
+                // } else {
+                //     return response()->json(['error' => 'Failed to create document link.'], $response->status());
+                // }
             } else {
                 throw new Exception('Invalid request, must be a POST method.');
             }

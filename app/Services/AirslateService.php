@@ -11,6 +11,9 @@ class AirslateService
 {
     protected $accessToken;
 
+    // s3
+    public $storageId = "a2ace358-a92a-11ef-a49e-eee0ac634ecf";
+
     public function __construct() {
         $this->accessToken = app('airslate_token');
     }
@@ -20,10 +23,11 @@ class AirslateService
             $response = Http::withHeaders([
                 'Accept-Encoding' => "application/json",
                 'Authorization' => "Bearer {$this->accessToken}"
-            ])->withUrlParameters([
-                'page' => '1',
-                'perPage' => '10'
-            ])->get('https://pdf.airslate.io/v1/documents');
+            ])->get("https://pdf.airslate.io/v1/documents", [
+                'storageId' => $this->storageId,
+                'page' => 1,
+                'perPage' => 10,
+            ]);
 
             if ($response->successful()) {
                 return ['status' => 'success', 'data' => $response->json()];
@@ -35,32 +39,28 @@ class AirslateService
         }
     }
 
-    public function uploadDocumentToStorage($filePath, $documentName)
-    {
+    public function uploadDocumentToStorage($filePath, $documentName) {
         try {
-            // Storage ID (PDFFiller Storage ID)
-            $storageId = "10cb9844-7522-11ef-aa66-5e2d73e72919";
-
-            // Make the HTTP request to upload the document to Airslate
             $response = Http::withHeaders([
                 'Authorization' => "Bearer {$this->accessToken}",
                 'Accept' => 'application/json',
             ])->attach(
                 'document', file_get_contents($filePath), $documentName
-            )->post('https://pdf.airslate.io/v1/documents', [
-                'documentName' => $documentName,
-                'storageId' => $storageId
+            )->post("https://pdf.airslate.io/v1/documents", [
+                ['name' => 'storageId', 'contents' => $this->storageId],
+                ['name' => 'documentName', 'contents' => $documentName],
             ]);
 
             if ($response->successful()) {
                 return ['status' => 'success', 'data' => $response->json()];
             } else {
-                return ['status' => 'error', 'message' => 'Failed to upload document to Airslate'];
+                return ['status' => 'error', 'message' => $response->body()];
             }
         } catch (Exception $e) {
             return ['status' => 'error', 'message' => $e->getMessage()];
         }
     }
+
 
     public function addTagsToDocument($documentId, $tags){
         try {
@@ -69,7 +69,8 @@ class AirslateService
                 'Authorization' => "Bearer {$this->accessToken}",
                 'Content-Type' => "application/json"
             ])->post("https://pdf.airslate.io/v1/documents/{$documentId}/tags", [
-                'data' => $tags
+                ['name' => 'storageId', 'contents' => $this->storageId],
+                ['name' => 'data', 'contents' => $tags],
             ]);
 
             if ($response->successful()) {
@@ -82,8 +83,7 @@ class AirslateService
         }
     }
 
-    public function createDocumentLink($documentId)
-    {
+    public function createDocumentLink($documentId) {
         try {
             $url = "https://pdf.airslate.io/v1/documents/{$documentId}/link";
             $editorUiConfig = [
@@ -146,10 +146,14 @@ class AirslateService
                 'Authorization' => "Bearer {$this->accessToken}",
                 'Content-Type' => "application/json"
             ])->post($url, [
+                'storageId' => $this->storageId,
                 'documentId' => $documentId,
                 'expirationInSeconds' => 3600,
                 'editorAppearanceConfig' => $editorUiConfig
             ]);
+
+            // return $response;
+
             if ($response->successful()) {
                 return ['status' => 'success', 'data' => $response->json()];
             } else {
@@ -160,7 +164,7 @@ class AirslateService
         }
     }
 
-    public function downloadDocument($documentId, $withFillableFields = 1) {
+    public function downloadDocument($documentId, $withFillableFields = 0) {
         try {
             $response = Http::withHeaders([
                 'Accept' => 'application/pdf',
@@ -180,43 +184,6 @@ class AirslateService
         }
     }
 
-    // public function downloadDocument($documentId, $withFillableFields = true) {
-    //     try {
-    //         // Ensure withFillableFields is 'true' or 'false' as a string
-    //         $withFillableFields = $withFillableFields ? 'true' : 'false';
-
-    //         // Include the parameter in the URL query string
-    //         $url = "https://api.airslate.com/v1/documents/{$documentId}/download?withFillableFields={$withFillableFields}";
-
-    //         $response = Http::withHeaders([
-    //             'Authorization' => "Bearer {$this->accessToken}",
-    //         ])->get($url);
-
-    //         if ($response->successful()) {
-    //             $pdfContent = $response->body();
-    //             return response($pdfContent, 200)
-    //                 ->header('Content-Type', 'application/pdf')
-    //                 ->header('Content-Disposition', "attachment; filename={$documentId}.pdf");
-    //         } else {
-    //             Log::error('Failed to download document', [
-    //                 'documentId' => $documentId,
-    //                 'status' => $response->status(),
-    //                 'body' => $response->body(),
-    //             ]);
-
-    //             return response()->json(['error' => 'Failed to download the document.'], $response->status());
-    //         }
-
-    //     } catch (Exception $e) {
-    //         Log::error('Exception when downloading document', [
-    //             'documentId' => $documentId,
-    //             'exception' => $e->getMessage(),
-    //         ]);
-    //         return response()->json(['error' => $e->getMessage()], 500);
-    //     }
-    // }
-
-
     public function deleteDocument($documentId) {
         try {
             $response = Http::withHeaders([
@@ -230,6 +197,44 @@ class AirslateService
                 return ['status' => 'success', 'data' => $response->json()];
             } else {
                 return ['status' => 'error', 'message' => 'Failed to delete the document from Airslate'];
+            }
+        } catch (Exception $e) {
+            return ['status' => 'error', 'message' => $e->getMessage()];
+        }
+    }
+
+    public function getDocumentFields($documentId) {
+        try {
+            $response = Http::withHeaders([
+               'Accept-Encoding' => "application/json, text/csv",
+               'Authorization' => "Bearer {$this->accessToken}"
+            ])->withUrlParameters([
+                'documentId' => $documentId
+            ])->get('https://pdf.airslate.io/v1/documents/{documentId}/fields');
+
+            if ($response->successful()) {
+                return ['status' => 'success', 'data' => $response->json()];
+            } else {
+                return ['status' => 'error', 'message' => 'Failed to get document fields from Airslate'];
+            }
+        } catch (Exception $e) {
+            return ['status' => 'error', 'message' => $e->getMessage()];
+        }
+    }
+
+    public function prefillFields($documentId, $dataArr) {
+        try {
+            $response = Http::withHeaders([
+                'Accept-Encoding' => "application/json",
+                'Authorization' => "Bearer {$this->accessToken}"
+            ])->withUrlParameters([
+                'documentId' => $documentId
+            ])->patch("https://pdf.airslate.io/v1/documents/{documentId}/fields");
+
+            if ($response->successful()) {
+                return ['status' => 'success', 'data' => $response->json()];
+            } else {
+                return ['status' => 'error', 'message' => 'Failed to prefill fields from Airslate'];
             }
         } catch (Exception $e) {
             return ['status' => 'error', 'message' => $e->getMessage()];
