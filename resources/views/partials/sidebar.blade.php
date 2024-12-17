@@ -189,6 +189,8 @@
 
                 @endcan
 
+
+
                 @can('viewAnySales', App\Models\Lead::find(1))
                     <li class="menu-title">Sales</li>
                     <li>
@@ -253,33 +255,36 @@
                         @endcan
                     </li>
                 @endcan
-                <li class="menu-title">Broker</li>
-                <li>
-                    @can('viewAnyBrokerAssistant', App\Models\Lead::find(1))
+
+                @can('viewBrokerAssisantCompliance', App\Models\Lead::find(1))
+                    <li class="menu-title">Broker</li>
+                    <li>
+                        @can('viewAnyBrokerAssistant', App\Models\Lead::find(1))
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="ri-briefcase-line"></i>
+                                <span>Primary Leads</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                @can('viewBrokerAssistantLeadList', App\Models\Lead::find(1))
+                                    <li><a href="{{ route('product.index') }}">Direct New Leads</a></li>
+                                @endcan
+                                @can('viewBrokerAssistantLeadList', App\Models\Lead::find(1))
+                                    <li><a href="{{ route('product.index') }}">Direct Renewal Leads</a></li>
+                                @endcan
+                                {{-- <li><a href="{{route('get-confirmed-product')}}">Confirmed Product</a></li> --}}
+                            </ul>
+                        @endcan
+                    </li>
+                    <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="ri-briefcase-line"></i>
-                            <span>Primary Leads</span>
+                            <i class="ri-settings-2-line"></i>
+                            <span>Settings</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
-                            @can('viewBrokerAssistantLeadList', App\Models\Lead::find(1))
-                                <li><a href="{{ route('product.index') }}">Direct New Leads</a></li>
-                            @endcan
-                            @can('viewBrokerAssistantLeadList', App\Models\Lead::find(1))
-                                <li><a href="{{ route('product.index') }}">Direct Renewal Leads</a></li>
-                            @endcan
-                            {{-- <li><a href="{{route('get-confirmed-product')}}">Confirmed Product</a></li> --}}
+                            <li><a href="{{ route('assign-agent-to-broker.index') }}">Assigning Agent</a></li>
                         </ul>
-                    @endcan
-                </li>
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="ri-settings-2-line"></i>
-                        <span>Settings</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ route('assign-agent-to-broker.index') }}">Assigning Agent</a></li>
-                    </ul>
-                </li>
+                    </li>
+                @endcan
 
 
                 @can('viewAnyCustomerService', App\Models\Lead::find(1))
