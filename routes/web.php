@@ -336,6 +336,7 @@ Route::middleware(['auth'])->group(function (){
         Route::post('/assign-premium-leads',[AssignLeadController::class, 'assignPremiumLead'])->name('assign-premium-leads');
         Route::post('/delete-selected-leads', [AssignLeadController::class, 'deleteSelectedLeads'])->name('delete-selected-leads');
         Route::get('getStates', [AssignLeadController::class, 'getStates'])->name('get-states');
+        Route::post('/assign-random-spanish-leads', [AssignLeadController::class, 'assignRandomSpanishLeads'])->name('assign-random-spanish-leads');
 
         //routes for apptaker leads
         Route::prefix('list-leads')->group(function  () {

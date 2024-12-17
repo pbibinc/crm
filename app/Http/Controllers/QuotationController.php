@@ -540,8 +540,13 @@ class QuotationController extends Controller
         $quoatedProduct = $quoationProduct->quotedProduct();
         $products = [];
         foreach($quoatedProduct as $product){
+            $isSpanish = $product->QuoteInformation->QuoteLead->leads->is_spanish;
+            $companyName = $product->QuoteInformation->QuoteLead->leads->company_name;
+            if($isSpanish == 1){
+                $companyName = $companyName . ' <span style="color: red; font-weight: bold;">(ES)</span>';
+            }
             $products[] = [
-                'company_name'=> $product->QuoteInformation->QuoteLead->leads->company_name,
+                'company_name'=> $companyName,
                 'product' => $product,
                 'quoted_by' => $product->userProfile ? $product->userProfile->fullAmericanName() : 'N/A',
                 'leadId' => $product->QuoteInformation->QuoteLead->leads->id,

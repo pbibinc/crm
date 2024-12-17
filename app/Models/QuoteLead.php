@@ -49,9 +49,19 @@ class QuoteLead extends Model
                 ->get();
 
             foreach ($products as $product) {
+                $isSpanish = $product->quoteInformation->quoteLead->leads->is_spanish ?? 0;
+                $companyName = $product->quoteInformation->quoteLead->leads->company_name ?? 'N/A';
+                if ($isSpanish == 1) {
+                    $companyName .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+                } elseif ($isSpanish == 0) {
+                    $companyName .= ''; // Optionally handle non-Spanish cases
+                } else {
+                    $companyName .= ' (Unknown)';
+                }
                 $quoteProducts[] = [
-                    'company' => $product->quoteInformation->quoteLead->leads->company_name ?? 'N/A',
+                    'company' => $companyName ?? 'N/A',
                     'leadId' => $product->quoteInformation->quoteLead->leads->id ?? 'N/A',
+                    'is_spanish' => $product->quoteInformation->quoteLead->leads->is_spanish ?? 'N/A',
                     'product' => $product,
                     'sent_out_date' => $product->sent_out_date,
                     'status' => $product->status,
@@ -94,8 +104,13 @@ class QuoteLead extends Model
                 $products = $query->QuoteInformation->QuotationProduct()->where('user_profile_id', null)->where('status', 30)->get();
                 foreach($products as $product)
                 {
+                    $isSpanish = $product->QuoteInformation->QuoteLead->leads->is_spanish;
+                    $companyName = $product->QuoteInformation->QuoteLead->leads->company_name;
+                    if($isSpanish == 1){
+                        $companyName .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+                    }
                     $quoteProducts[] = [
-                        'company' => $product->QuoteInformation->QuoteLead->leads->company_name,
+                        'company' => $companyName,
                         'product' => $product,
                         'sent_out_date' => $product->sent_out_date,
                         'status' => $product->status,

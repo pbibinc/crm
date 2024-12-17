@@ -159,6 +159,14 @@ class AssignLeadController extends Controller
                       $redeployButton = '<button class="btn btn-outline-info waves-effect waves-light btn-sm" id="' . $leadId . '" name="redeploy"  type="button " ><i class="ri-user-shared-line"></i></button>';
                       return $redeployButton . ' '. $voidButton;
                   })
+                  ->addColumn('company_name', function($row){
+                    $companyName = $row->company_name;
+                    if ($row->is_spanish == 1) {
+                        $companyName .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+                    }
+                    return $companyName;
+                  })
+                  ->rawColumns(['action', 'company_name'])
                   ->make(true);
           }
     }
@@ -216,49 +224,69 @@ class AssignLeadController extends Controller
     //assigning random leads into random users
     public function assignRandomLeads(Request $request)
     {
-     $quantityLeadsRandom = $request->input('leadsQuantityRandom');
-     $newLeads = Lead::where('status', 1)->get();
-     $shuffledLeads =  $newLeads->shuffle()->take($quantityLeadsRandom);
-     $userProfiles = UserProfile::whereHas('position', function ($query){
-            $query->where('name', 'Application Taker');
-        })->get();
-     $shuffledUsers = $userProfiles->shuffle();
-        foreach ($shuffledLeads as $index => $lead){
-            $user = $shuffledUsers[$index % $shuffledUsers->count()];
-            $lead->userProfile()->attach($user->id, [
-                'assigned_at' => now(),
-                'current_user_id' => $user->id
-         ]);
-            $lead->status = 2;
-            $lead->save();
-            event(new LeadAssignEvent($lead, $user->id, $user->id, now()));
-        }
-        return response()->json(['success' => 'Random Leads are Assign to Different Users']);
-    }
+      $quantityLeadsRandom = $request->input('leadsQuantityRandom');
+      $newLeads = Lead::where('status', 1)
+      ->whereNot('is_spanish', 1)
+      ->inRandomOrder()
+      ->take($quantityLeadsRandom)
+      ->get();
 
+       // Retrieve and shuffle user profiles
+      $userProfiles = UserProfile::whereHas('position', function ($query) {
+        $query->where('name', 'Application Taker');
+      })->inRandomOrder()->get();
+
+      if ($newLeads->isEmpty() || $userProfiles->isEmpty()) {
+        return response()->json(['error' => 'No available leads or users for assignment.'], 400);
+      }
+
+      $userCount = $userProfiles->count();
+
+      $shuffledUsers = $userProfiles->shuffle();
+      foreach ($newLeads as $index => $lead) {
+        $user = $userProfiles[$index % $userCount];
+        $lead->userProfile()->attach($user->id, [
+            'assigned_at' => now(),
+            'current_user_id' => $user->id,
+        ]);
+        $lead->status = 2;
+        $lead->save();
+
+        // Fire the event for lead assignment
+        event(new LeadAssignEvent($lead, $user->id, $user->id, now()));
+      }
+      return response()->json(['success' => 'Random Leads have been assigned to different users.']);
+    }
 
     public function assignLeadsUser(Request $request)
     {
         $quantityUserLeads = $request->input('leadsQuantityUser');
-        $newLeads = Lead::where('status', 1)->get();
-        $userProfileIdValue = $request->input('userProfileId');
-        $accountProfile = $request->input('accountProfileValue');
-        $shuffledLeads =  $newLeads->shuffle()->take($quantityUserLeads);
+        $userProfileId = $request->input('userProfileId') ?? $request->input('accountProfileValue');
 
-        if($userProfileIdValue){
-            $userProfileId = $userProfileIdValue;
-        }elseif($accountProfile){
-            $userProfileId = $accountProfile;
+        $newLeads = Lead::where('status', 1)
+        ->whereNot('is_spanish', 1)
+        ->inRandomOrder()
+        ->take($quantityUserLeads)
+        ->get();
+
+
+        if ($newLeads->isEmpty()) {
+            return response()->json(['error' => 'No available leads for assignment.'], 400);
         }
-        foreach($shuffledLeads as $lead){
+        foreach ($newLeads as $lead) {
+            // Assign lead to the user
             $lead->userProfile()->attach($userProfileId, [
                 'assigned_at' => now(),
-                'current_user_id' => $userProfileId
+                'current_user_id' => $userProfileId,
             ]);
+
             $lead->status = 2;
             $lead->save();
+
+            // Fire the event for lead assignment
             event(new LeadAssignEvent($lead, $userProfileId, $userProfileId, now()));
-         }
+        }
+
         Cache::forget('leads_funnel');
         Cache::forget('leads_data');
         Cache::forget('apptaker_leads');
@@ -338,8 +366,6 @@ class AssignLeadController extends Controller
 
     public function voidAll(Request $request)
     {
-    //    $leadsId =  Lead::where('user_profile_id', $request->input('userProfileId'))->pluck('id')->toArray();
-
        $userProfileId = $request->input('userProfileId');
        $accounProfileId = $request->input('accountProfileId');
        if($userProfileId){
@@ -377,9 +403,6 @@ class AssignLeadController extends Controller
         if($request->get('userProfileValue')){
             $selectedUserProfile = UserProfile::find($request->get('userProfileValue'));
         }
-        // if ($request->get('accountsId')) {
-        //     $selectedUserProfile = UserProfile::find($request->get('accountsId'));
-        // }
         if($selectedUserProfile){
             $leadsCountByState = $selectedUserProfile->getLeadCountByState();
 
@@ -403,4 +426,46 @@ class AssignLeadController extends Controller
         }
         return response()->json($stateArray);
     }
+
+    public function assignRandomSpanishLeads(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+
+            $quantityLeadsRandom = $request->input('spanishLeadsQuantityRandom');
+            $newLeads = Lead::where('status', 1)->where('is_spanish', 1)->inRandomOrder()->take($quantityLeadsRandom)->get();
+            $userProfile = UserProfile::find($request->input('userProfileId'));
+
+
+            if($userProfile->is_spanish == 0){
+                return response()->json(['error' => 'The user is not a spanish speaker'], 500);
+            }else{
+                if($newLeads->isEmpty()){
+                    return response()->json(['error' => 'No available leads for assignment.'], 400);
+                }else{
+                    foreach($newLeads as $lead){
+                        $lead->userProfile()->attach($userProfile, [
+                            'assigned_at' => now(),
+                            'current_user_id' => $userProfile->id
+                        ]);
+                        $lead->status = 2;
+                        $lead->save();
+                        event(new LeadAssignEvent($lead, $userProfile->id, $userProfile->id, now()));
+                    }
+                }
+            }
+
+            DB::commit();
+            return  response()->json(['success' => 'Leads has been successfully assigned'], 200);
+        }catch(\Exception $e){
+            DB::rollBack();
+            Log::info("assign random leads err", ['error' => $e->getMessage()]);
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+
+
+
+
+    }
+
 }

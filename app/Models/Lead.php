@@ -138,7 +138,7 @@ class Lead extends Model
             $query->where('user_id', $userProfileId);
         })
         ->join('general_information_table', 'general_information_table.leads_id', '=', 'leads.id')
-        ->select('leads.id', 'company_name', 'tel_num', 'class_code', 'state_abbr', 'leads.created_at', 'general_information_table.created_at as general_created_at')->orderBy('general_created_at', 'desc');
+        ->select('leads.id', 'company_name', 'tel_num', 'class_code', 'state_abbr', 'is_spanish', 'leads.created_at', 'general_information_table.created_at as general_created_at')->orderBy('general_created_at', 'desc');
     }
 
     public static function getLeads($id)

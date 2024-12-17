@@ -231,7 +231,6 @@ const GeneralInformationForm = () => {
     };
 
     //script for city and zipcode dropdown
-
     let zipCodeArray = [];
     if (zipcodes !== undefined && zipcodes !== null) {
         zipCodeArray = Object.values(zipcodes.toString().split(","));

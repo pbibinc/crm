@@ -19,7 +19,7 @@
             @endphp
             @if ($displayCompany)
                 <tr style="background-color: #f0f0f0;">
-                    <td><strong><b>{{ $company }}</b></strong></td>
+                    <td><strong><b>{!! $company !!}</b></strong></td>
                     <td><strong><b>Product</b></strong></td>
                     <td><strong><b>Telemarketer</b></strong></td>
                     <td><strong><b>Status</b></strong></td>

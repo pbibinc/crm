@@ -45,6 +45,9 @@ class CallBackController extends Controller
                 $lead = Lead::find($data->lead_id);
                 $remarkId = 0;
                 $companyName = '<a href="#" data-toggle="modal" id="companyLink" name="companyLinkButtonData" data-target="#leadsDataModal" data-id="'.$lead->id.'" data-callbackid="'.$data->id.'" data-type="'.$data->type.'" data-remarks="'.$data->remarks.'" data-date="'.$data->date_time.'" data-remarksid="'.$remarkId.'" data-name="'.$lead->company_name.'">'.$lead->company_name.'</a>';
+                if($lead->is_spanish == 1){
+                    $companyName .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+                }
                 return $lead ? $companyName : '';
             })
             ->addColumn('tel_num', function ($data){
@@ -77,6 +80,9 @@ class CallBackController extends Controller
             ->addColumn('company_name_link', function($data){
                 $callData = Callback::where('lead_id', $data->id)->first();
                 $companyName = '<a href="#" data-toggle="modal" id="companyLink" name="companyLinkButtonData" data-target="#leadsDataModal" data-id="'.$data->id.'" data-callbackid="'.$callData->id.'" data-type="'.$callData->type.'" data-remarks="'.$callData->remarks.'" data-date="'.$callData->date_time.'" data-remarksid="'.$data->id.'" data-name="'.$data->company_name.'">'.$data->company_name.'</a>';
+                if($data->is_spanish == 1){
+                    $companyName .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+                }
                 return $companyName;
             })
             ->addColumn('disposition', function($data){
@@ -203,6 +209,9 @@ class CallBackController extends Controller
                 $lead = Lead::find($data->lead_id);
                 $callBackId = 0;
                 $companyName = '<a href="#" data-toggle="modal" id="companyLink" name="companyLinkButtonData" data-target="#leadsDataModal" data-id="'.$lead->id.'" data-remarksid="'.$data->id.'" data-type="'.$data->type.'" data-remarks="'.$data->remarks.'" data-name="'.$lead->company_name.'" data-callbackid="'.$callBackId.'" class="companyLink">'.$lead->company_name.'</a>';
+                if($lead->is_spanish == 1){
+                    $companyName .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+                }
                 return $lead ? $companyName : '';
             })
             ->addColumn('disposition', function ($data){
