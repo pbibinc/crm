@@ -268,6 +268,7 @@
                     </div>
 
                     <div class="modal-footer">
+                        <input type="hidden" id='dispoId'>
                         <button type="button" class="btn btn-success waves-effect waves-light callbackDispoSubmitButton"
                             id="callbackDispoSubmitButton">Submit</button>
                         <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
@@ -454,7 +455,8 @@
                 });
 
                 $(document).on('change', '#dispositionDropDown', function(e) {
-                    var dropdownId = $(this).attr('id')
+                    var dropdownId = $(this).attr('id');
+
                     var rowId = dropdownId.replace('dispositionDropDown', '');
                     var selectedDisposition = $(this).val();
                     var url = "{{ env('APP_FORM_URL') }}";
@@ -479,21 +481,25 @@
                     }
                     if (selectedDisposition == '2') {
                         $('#callbackModal').modal('show');
+                        $('#dispoId').val(selectedDisposition);
                         $('#transactionLogModal').modal('hide');
                     }
 
                     if (selectedDisposition == '6') {
                         $('#callbackModal').modal('show');
+                        $('#dispoId').val(selectedDisposition);
                         $('#transactionLogModal').modal('hide');
                     }
 
                     if (selectedDisposition == '11') {
                         $('#callbackModal').modal('show');
+                        $('#dispoId').val(selectedDisposition);
                         $('#transactionLogModal').modal('hide');
                     }
 
                     if (selectedDisposition == '12') {
                         $('#callbackModal').modal('show');
+                        $('#dispoId').val(selectedDisposition);
                         $('#transactionLogModal').modal('hide');
                     }
 
@@ -521,7 +527,8 @@
                     e.preventDefault();
                     var dateTime = $('#callBackDateTime').val();
                     var callBackRemarks = $('#callBackRemarks').val();
-                    var dispositionId = $('#dispositionDropDown').val();
+                    var dispositionId = $('#dispoId').val();
+
                     var leadId = $('#leadId').val();
                     $.ajax({
                         url: "{{ route('call-back.store') }}",

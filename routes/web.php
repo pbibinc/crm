@@ -17,6 +17,7 @@ use App\Models\CancelledPolicyForRecall;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BoundController;
 use App\Http\Controllers\EmailController;
+use App\Http\Controllers\MediaController;
 use App\Http\Controllers\NotesController;
 use App\Http\Controllers\IntentController;
 use App\Http\Controllers\QuotedController;
@@ -43,7 +44,9 @@ use App\Http\Controllers\ClasscodesController;
 use App\Http\Controllers\ComplianceController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\MarketListController;
+use App\Http\Controllers\OldRenewalController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ZeroBounceController;
 use App\Http\Controllers\AirSlatePDFController;
 use App\Http\Controllers\BindingDocsController;
 use App\Http\Controllers\DispositionController;
@@ -51,19 +54,16 @@ use App\Http\Controllers\ScrubbedDncController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\BrokerHandleController;
 use App\Http\Controllers\CancellationController;
+use App\Http\Controllers\CustomerUserController;
 use App\Http\Controllers\DashboardControllerNew;
 use App\Http\Controllers\RenewalQuoteController;
-use App\Http\Controllers\QuoteFormInfoController;
-use App\Http\Controllers\RenewalPolicyController;
-use App\Http\Controllers\RewritePolicyController;
-use App\Http\Controllers\SelectedQuoteController;
 use App\Http\Controllers\AppTakerLeadsController;
+use App\Http\Controllers\QuoteFormInfoController;
 use App\Http\Controllers\RenewalPolicyController;
 use App\Http\Controllers\RewritePolicyController;
 use App\Http\Controllers\SelectedQuoteController;
 use App\Http\Controllers\TecnickcomPdfController;
 use App\Http\Controllers\API\LeadDetailController;
-use App\Http\Controllers\AppointedProductListController;
 use App\Http\Controllers\DepartmentListController;
 use App\Http\Controllers\PaymentChargedController;
 use App\Http\Controllers\RewriteBindingController;
@@ -75,6 +75,7 @@ use App\Http\Controllers\FinanceAgreementPolicyList;
 use App\Http\Controllers\FinancingCompanyController;
 use App\Http\Controllers\PolicyForRenewalController;
 use App\Http\Controllers\PricingBreakdownController;
+use App\Http\Controllers\RegisterCustomerController;
 use App\Http\Controllers\AuditRequiredFileController;
 use App\Http\Controllers\BrokerForFollowUpController;
 use App\Http\Controllers\EmbeddedSignatureController;
@@ -85,7 +86,11 @@ use App\Http\Controllers\CancellationReportController;
 use App\Http\Controllers\GeneralInformationController;
 use App\Http\Controllers\AssignAgentToBrokerController;
 use App\Http\Controllers\AssignAppointedLeadController;
+use App\Http\Controllers\BrokerAssistLeadsLogContoller;
 use App\Http\Controllers\ForRewriteQuotationController;
+use App\Http\Controllers\GeneralNotificationController;
+use App\Http\Controllers\InsuranceSurveyInfoController;
+use App\Http\Controllers\AppointedProductListController;
 use App\Http\Controllers\CommercialAutoPolicyController;
 use App\Http\Controllers\ToolsEquipmentPolicyController;
 use App\Http\Controllers\ForRewriteMakePaymentController;
@@ -96,17 +101,12 @@ use App\Http\Controllers\CancellationEndorsementController;
 use App\Http\Controllers\CancelledPolicyForRecallController;
 use App\Http\Controllers\QuotationProductCallbackController;
 use App\Http\Controllers\AssignQuotedRenewalPolicyController;
-use App\Http\Controllers\BrokerAssistLeadsLogContoller;
 use App\Http\Controllers\BuildersRiskPolicyDetailsController;
 use App\Http\Controllers\PaymentInformationArchivedController;
 use App\Http\Controllers\BussinessOwnersPolicyDetailsController;
 use App\Http\Controllers\ExcessLiabilityInsurancePolicyController;
 use App\Http\Controllers\CancelledPolicyForRecall as ControllersCancelledPolicyForRecall;
-use App\Http\Controllers\CustomerUserController;
-use App\Http\Controllers\GeneralNotificationController;
-use App\Http\Controllers\MediaController;
-use App\Http\Controllers\OldRenewalController;
-use App\Http\Controllers\RegisterCustomerController;
+use App\Http\Controllers\CertificateController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -635,6 +635,10 @@ Route::middleware(['auth'])->group(function (){
             Route::resource('insurance-needs-survey-form', InsuranceSurveyInfoController::class);
             Route::get('/download-report/{id}', [InsuranceSurveyInfoController::class, 'downloadReport'])->name('insurance-needs-report');
 
+            Route::resource('certificate', CertificateController::class);
+            Route::post('get-request-for-cert', [CertificateController::class, 'getRequestForCert'])->name('get-request-for-cert');
+            Route::post('approved-cert', [CertificateController::class, 'approvedCert'])->name('approved-cert');
+
         });
 
         Route::prefix('product')->group(function(){
@@ -693,6 +697,7 @@ Route::middleware(['auth'])->group(function (){
         Route::prefix('scheduler')->group(function(){
             route::resource('/task-scheduler', LeadTaskSchedulerController::class);
             Route::post('/get-task-scheduler', [LeadTaskSchedulerController::class, 'getTaskScheduler'])->name('get-task-scheduler');
+            Route::post('/get-task-scheduler-list', [LeadTaskSchedulerController::class, 'getTaskSchedulerList'])->name('get-task-scheduler-list');
         });
 
 

@@ -222,24 +222,56 @@ class AirslateService
         }
     }
 
-    public function prefillFields($documentId, $dataArr) {
+    public function createDocumentCopy($documentId){
         try {
             $response = Http::withHeaders([
-                'Accept-Encoding' => "application/json",
-                'Authorization' => "Bearer {$this->accessToken}"
+               'Accept-Encoding' => "application/json, text/csv",
+               'Authorization' => "Bearer {$this->accessToken}"
             ])->withUrlParameters([
                 'documentId' => $documentId
-            ])->patch("https://pdf.airslate.io/v1/documents/{documentId}/fields");
+            ])->post('https://pdf.airslate.io/v1/documents/{documentId}/copy');
 
             if ($response->successful()) {
                 return ['status' => 'success', 'data' => $response->json()];
             } else {
-                return ['status' => 'error', 'message' => 'Failed to prefill fields from Airslate'];
+                return ['status' => 'error', 'message' => 'Failed to get document fields from Airslate'];
             }
         } catch (Exception $e) {
             return ['status' => 'error', 'message' => $e->getMessage()];
         }
     }
+
+    public function prefillFields($documentId, $dataArr)
+    {
+        try {
+            $response = Http::withHeaders([
+                'Accept' => 'application/json', // Correct Accept header
+                'Authorization' => "Bearer {$this->accessToken}",
+                'Content-Type' => 'application/json', // Required Content-Type header
+            ])->patch(
+                "https://pdf.airslate.io/v1/documents/{$documentId}/fields",
+                $dataArr // Add the data array in JSON format
+            );
+
+            if ($response->successful()) {
+                return [
+                    'status' => 'success',
+                    'data' => $response->json() ,
+                ];
+            } else {
+                return [
+                    'status' => 'error',
+                    'message' => json_decode($response->body(), $this->accessToken), // Provide more detailed error feedback
+                ];
+            }
+        } catch (Exception $e) {
+            return [
+                'status' => 'error',
+                'message' => json_decode($e, $this->accessToken),
+            ];
+        }
+    }
+
 
     public function extractDataFromPdf($filePath, $documentName, $fields) {
         try {

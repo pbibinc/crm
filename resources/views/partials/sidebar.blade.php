@@ -319,6 +319,15 @@
                             <li><a href="{{ route('old-renewal-policy.index') }}">Old Renewal</a></li>
                         </ul>
                     </li>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-autorenew"></i>
+                            <span>Certificate</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="{{ route('certificate.index') }}">Certificate Request</a></li>
+                        </ul>
+                    </li>
                 @endcan
             </ul>
         </div>

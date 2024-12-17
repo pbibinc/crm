@@ -1189,36 +1189,7 @@
                     // Clear the existing task list
                     $('#task-list').empty();
 
-                    // Loop through each task and create the HTML structure
-                    // tasks.forEach(function(task) {
-                    //     var taskItem = $('<div></div>')
-                    //         .addClass(
-                    //             'list-group-item d-flex justify-content-between align-items-center'
-                    //         );
 
-                    //     // Task content with checkbox and task name
-                    //     var taskContent = $('<div></div>')
-                    //         .addClass('d-flex align-items-center')
-                    //         .append($('<input>')
-                    //             .addClass('form-check-input me-2')
-                    //             .attr('type', 'checkbox')
-                    //             .attr('value', task.id)
-                    //         ) // Assuming task ID is used in the checkbox value
-                    //         .append($('<span></span>').text(task.description));
-
-                    //     // Badge for the task due date
-                    //     var taskDueDate = $('<span></span>')
-                    //         .addClass('badge bg-info rounded-pill')
-                    //         .text(task
-                    //             .date_schedule
-                    //         ); // Assuming 'due_date' is a readable date string
-
-                    //     // Append task content and due date badge to the task item
-                    //     taskItem.append(taskContent, taskDueDate);
-
-                    //     // Append the task item to the task list
-                    //     $('#task-list').append(taskItem);
-                    // });
 
                     tasks.forEach(function(task) {
                         // Create the main task item div

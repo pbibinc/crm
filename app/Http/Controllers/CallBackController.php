@@ -124,7 +124,7 @@ class CallBackController extends Controller
             DB::rollback();
             Log::error($e->getMessage());
             // Handle the exception and return an appropriate error response
-            return response()->json(['error' => 'An error occurred'], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
 
     }

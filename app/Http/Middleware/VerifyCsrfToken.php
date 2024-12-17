@@ -26,7 +26,7 @@ class VerifyCsrfToken extends Middleware
 
         'api/main-line-customer-service',
 
-        'webhook-receiving-url'
+        // 'webhook-receiving-url'
     ];
 
     protected function shouldPassThrough($request)

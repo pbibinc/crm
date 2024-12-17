@@ -54,7 +54,7 @@
                                     </div>
 
                                     <div class="row mb-3">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="classCodeLeadDropdown" class="form-label">Class Code</label>
                                                 <select name="classCodeLead" id="classCodeLeadDropdown"
@@ -70,7 +70,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="leadTypeDropdown" class="form-label">Leads Type</label>
                                                 <select name="lead_type" id="leadTypeDropdown" class="form-control select2">
@@ -81,6 +81,20 @@
                                                 </select>
                                             </div>
                                         </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="spanishLeadDropdown" class="form-label">Spanish Lead</label>
+                                                <select name="spanishLeadDropdown" id="spanishLeadDropdown"
+                                                    class="form-control select2">
+
+                                                    <option value="">ALL</option>
+                                                    <option value="1">Spanish</option>
+                                                    <option value="0">English</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
                                     </div>
 
                                 </div>
@@ -197,8 +211,12 @@
                                                         $numberOfRatings = $ratings->count();
                                                         $sumOfRatings = $ratings->sum('rating');
                                                         $divisorRatings = $numberOfRatings * 5;
-                                                        $overallRating = $numberOfRatings > 0 ? $sumOfRatings / $numberOfRatings : 0;
-                                                        $overallRatingPercentage = $numberOfRatings > 0 ? ($sumOfRatings / $divisorRatings) * 100 : 0;
+                                                        $overallRating =
+                                                            $numberOfRatings > 0 ? $sumOfRatings / $numberOfRatings : 0;
+                                                        $overallRatingPercentage =
+                                                            $numberOfRatings > 0
+                                                                ? ($sumOfRatings / $divisorRatings) * 100
+                                                                : 0;
                                                         $leadsCounter = count(
                                                             $userProfile->leads->filter(function ($lead) {
                                                                 return $lead->pivot->current_user_id !== 0;
@@ -437,7 +455,8 @@
                             // d.search = $('input[type="search"]').val(),
                             d.leadType = $('#leadTypeDropdown').val(),
                             d.appTakerId = $('#userProfileDropdown').val(),
-                            d.accountsId = $('#accountsDropdown').val()
+                            d.accountsId = $('#accountsDropdown').val(),
+                            d.isSpanish = $('#spanishLeadDropdown').val()
                     }
                 },
                 columns: [{
@@ -550,6 +569,11 @@
                 var classCodeLead = $(this).val();
                 $('#dataTable').DataTable().ajax.url("{{ route('assign') }}?classCodeLead=" +
                     classCodeLead).load();
+            });
+
+            $('#spanishLeadDropdown').on('change', function() {
+                var isSpanish = $(this).val();
+                $('#dataTable').DataTable().ajax.reload();
             });
 
 
@@ -801,8 +825,13 @@
                                 });
                             },
                             error: function(data) {
-                                var errors = data.responseJSON;
-                                console.log(errors);
+                                console.log(data);
+                                laddaButton.stop();
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: data.responseJSON.error,
+                                    icon: 'error'
+                                })
                             }
 
                         });

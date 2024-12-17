@@ -20,6 +20,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Name</th>
+                                        <th>Naic Number</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -43,11 +44,22 @@
                         <form id="dataModalForm">
                             <div class="modal-body">
                                 @csrf
-                                <div class="form-group mb-3">
-                                    <label for="name" class="form-label">Name:</label>
+                                <div class="form-group mb-4">
+                                    <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="name" name="name"
-                                        placeholder="Name">
+                                        placeholder="Enter your name" aria-describedby="nameHelp" required>
+                                    <small id="nameHelp" class="form-text text-muted">Please provide your full
+                                        name.</small>
                                     <div class="invalid-feedback" id="nameError"></div>
+                                </div>
+
+                                <!-- Section for Naic Number -->
+                                <div class="form-group mb-4">
+                                    <label for="naicNumber" class="form-label">Naic Number</label>
+                                    <input type="text" class="form-control" id="naicNumber" name="naicNumber"
+                                        placeholder="Enter Naic Number" aria-describedby="naicNumberHelp">
+                                    <small id="naicNumberHelp" class="form-text text-muted">Enter a valid NAIC number, if
+                                        applicable.</small>
                                 </div>
 
                                 <input type="hidden" name="action" id="action" value="add">
@@ -81,16 +93,22 @@
                         name: 'name'
                     },
                     {
+                        data: 'naic_number',
+                        name: 'naic_number'
+                    },
+                    {
                         data: 'action_button',
                         name: 'action_button',
                     }
                 ]
             });
-            $('#dataModal').on('submit', function(e) {
+
+            $('#dataModalForm').on('submit', function(e) {
                 e.preventDefault();
                 var id = $('#hidden_id').val();
                 var action = $('#action').val();
                 var name = $('#name').val();
+                var naicNumber = $('#naicNumber').val();
                 var button = $('#action_button');
                 var laddaButton = Ladda.create(button[0]);
                 laddaButton.start();
@@ -101,6 +119,7 @@
                         data: {
                             "_token": "{{ csrf_token() }}",
                             name: name,
+                            naicNumber: naicNumber
                         },
                         dataType: "json",
                         success: function(data) {
@@ -116,7 +135,7 @@
                                 timer: 1500
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    location.reload();
+                                    $('dataTable').ajaxReload();
                                 }
                             })
                         },
@@ -138,6 +157,7 @@
                         data: {
                             "_token": "{{ csrf_token() }}",
                             name: name,
+                            naicNumber: naicNumber
                         },
                         dataType: "json",
                         success: function(data) {
@@ -153,7 +173,7 @@
                                 timer: 1500
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    location.reload();
+                                    $('dataTable').ajaxReload();
                                 }
                             })
                         },
@@ -162,14 +182,15 @@
                             Swal.fire({
                                 position: 'center',
                                 icon: 'warning',
-                                title: 'Err',
-                                showConfirmButton: ture,
+                                title: 'Error, Call Your IT ',
+                                showConfirmButton: true,
                                 timer: 1500
                             })
                         }
                     })
                 }
             });
+
             $(document).on('click', '.btnEdit', function() {
                 var id = $(this).data('id');
                 $.ajax({
@@ -185,6 +206,7 @@
                     }
                 })
             });
+
             $(document).on('click', '.btnDelete', function() {
                 var id = $(this).data('id');
                 Swal.fire({
@@ -220,6 +242,7 @@
                     }
                 })
             });
+
         })
     </script>
 @endsection

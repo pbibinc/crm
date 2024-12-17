@@ -70,6 +70,36 @@
     </tbody>
 </table>
 
+
+<!--Modal for Call Back Disposition-->
+<div class="modal fade bs-example-modal-center" id="declinedProductModal" tabindex="-1" role="dialog"
+    aria-labelledby="declinedProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="declinedProductModalLabel">Declined Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="">
+                    <div class="row">
+                        <label>Remarks</label>
+                        <div>
+                            <textarea required class="form-control" rows="5" id="declinedProductTextArea"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" name="hiddenProductId" id="hiddenProductId">
+                <button type="button" class="btn btn-success waves-effect waves-light submitDeclinedProductButton"
+                    id="submitDeclinedProductButton">Submit</button>
+                <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Pagination Links -->
 <div class="d-flex justify-content-center mt-4">
     {{ $appointedProducts->links() }}
@@ -199,6 +229,7 @@
 
         });
         var productId = [];
+
         $('#voidAppointedLeads').on('click', function() {
             // var productsArray = [];
             // $('.companyCheckBox:checked').each(function(){
@@ -393,6 +424,7 @@
 
         $('.declinedAppointedProductButton').on('click', function() {
             var id = $(this).attr('id');
+            $('#hiddenProductId').val(id);
             Swal.fire({
                 title: 'Decline Product',
                 text: 'Are you sure you want to decline this product?',
@@ -402,34 +434,54 @@
                 cancelButtonText: 'No'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    $.ajax({
-                        url: "{{ route('decline-appointed-product') }}",
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        method: "POST",
-                        data: {
-                            id: id
-                        },
-                        success: function(data) {
-                            Swal.fire({
-                                title: 'Success',
-                                text: 'Product has been declined',
-                                icon: 'success'
-                            }).then(() => {
-                                location.reload();
-                            });
-                        },
-                        error: function(data) {
-                            Swal.fire({
-                                title: 'Error',
-                                text: 'There is an error while declining product',
-                                icon: 'error'
-                            });
-                        }
-                    });
+                    $('#declinedProductModal').modal('show');
                 }
             })
         });
+
+        $('#submitDeclinedProductButton').on('click', function() {
+            var remarks = $('#declinedProductTextArea').val();
+            var productId = $('#hiddenProductId').val();
+            if (remarks) {
+                sumbitDeclinedProduct(productId, remarks);
+            } else {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Please enter remarks',
+                    icon: 'error'
+                });
+            }
+        });
+
+        function sumbitDeclinedProduct(productId, remarks) {
+            $.ajax({
+                url: "{{ route('decline-appointed-product') }}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                method: "POST",
+                data: {
+                    productId: productId,
+                    remarks: remarks
+                },
+                success: function(data) {
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'Product has been declined',
+                        icon: 'success'
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+                error: function(data) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'There is an error while declining product',
+                        icon: 'error'
+                    });
+                }
+            });
+        };
+
     });
 </script>

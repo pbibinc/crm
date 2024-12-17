@@ -11,6 +11,11 @@ class Metadata extends Model
 
     protected $table = 'metadata';
 
+    public function Certificate()
+    {
+        return $this->hasMany(Certificate::class, 'media_id');
+    }
+
     public function QuoteComparison()
     {
         return $this->belongsToMany(QuoteComparison::class, 'quoatation_comparison_media_table', 'metadata_id', 'quote_comparison_id');
@@ -62,4 +67,3 @@ class Metadata extends Model
         return $this->hasOne(Metadata::class, 'media_id');
     }
 }
-

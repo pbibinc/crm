@@ -67,6 +67,7 @@ class AirSlatePDFController extends Controller
     public function pdfEditorFetch(Request $request) {
         try {
             if ($request->isMethod('get')) {
+
                 // Fetch document lists from Airslate API
                 $documentListsRes = $this->airslateService->getDocumentLists();
 

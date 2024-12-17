@@ -22,6 +22,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Collective\Html\FormFacade as Form;
 use function PHPUnit\TestFixture\func;
 use DateTimeZone;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class AssignLeadController extends Controller
@@ -71,11 +72,7 @@ class AssignLeadController extends Controller
         }
 
         if($request->ajax()){
-                $query = Lead::select('id', 'company_name', 'state_abbr', 'class_code', 'website_originated', 'created_at')->where('status', 1)->orderBy('id');
-                // if ($request->filled('website_originated')) {
-                //     $query->where('website_originated', $request->website_originated);
-                // }
-                // dd($request->website_originated);
+                $query = Lead::select('id', 'company_name', 'state_abbr', 'class_code', 'website_originated', 'is_spanish', 'created_at')->where('status', 1)->orderBy('id');
                 if ($request->filled('timezone')) {
                     $timezoneStates = $timezones[$request->timezone];
                     $query->whereIn('state_abbr', $timezoneStates);
@@ -89,6 +86,9 @@ class AssignLeadController extends Controller
 
                 if (!empty($request->get('leadType'))){
                     $query->where('prime_lead', $request->get('leadType'));
+                }
+                if (!empty($request->get('isSpanish'))){
+                    $query->where('is_spanish', $request->get('isSpanish'));
                 }
 
                 if($request->filled('website_originated')){
@@ -109,6 +109,13 @@ class AssignLeadController extends Controller
             //   if($request->fille)
 
             return DataTables::of($query)->addIndexColumn()
+                ->addColumn('company_name', function($lead){
+                    $companyName = $lead->company_name;
+                    if ($lead->is_spanish == 1) {
+                        $companyName .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+                    }
+                    return $companyName;
+                })
                 ->addColumn('created_at_formatted', function ($lead) {
                     return Carbon::parse($lead->created_at)->format('M d,Y');
                 })
@@ -118,7 +125,7 @@ class AssignLeadController extends Controller
                 ->addColumn('checkbox', function ($lead) {
                     return '<input type="checkbox" name="users_checkbox[]" class="users_checkbox" value="' . $lead->id . '" />';
                 })
-                ->rawColumns(['checkbox'])
+                ->rawColumns(['checkbox', 'company_name'])
                 ->make(true);
         }
         return view('leads.assign_leads.index', compact('userProfiles', 'sites','timezones', 'accounts', 'classCodeLeads', 'leadsCountByState', 'states', 'websitesOriginated'));
@@ -170,28 +177,40 @@ class AssignLeadController extends Controller
     //assign single leads into a user
     public function assign(Request $request, Lead $lead)
     {
-        $leadsId = $request->input('id');
-        $userProfileId = $request->input('userProfileId');
-        $accountProfileId = $request->input('accountProfileId');
+        try{
+            DB::beginTransaction();
+            $leadsId = $request->input('id');
+            $userProfileId = $request->input('userProfileId');
+            $accountProfileId = $request->input('accountProfileId');
 
-        if($userProfileId){
-            $userProfile = UserProfile::find($userProfileId);
-            $leadsRecevierId = $userProfileId;
-        }elseif ($accountProfileId){
-            $userProfile = UserProfile::find($accountProfileId);
-            $leadsRecevierId = $accountProfileId;
-        }
-            $leads = Lead::whereIn('id', $leadsId)->get();
-            foreach($leads as $lead){
-               $lead->userProfile()->attach($userProfile , [
-                'assigned_at' => now(),
-                'current_user_id' => $userProfile->id
-            ]);
-               $lead->status = 2;
-               $lead->save();
-               event(new LeadAssignEvent($lead, $userProfile->id, $userProfile->id, now()));
+            if($userProfileId){
+                $userProfile = UserProfile::find($userProfileId);
+                $leadsRecevierId = $userProfileId;
+            }elseif ($accountProfileId){
+                $userProfile = UserProfile::find($accountProfileId);
+                $leadsRecevierId = $accountProfileId;
             }
-        return response()->json(['success' => 'the leads are succesfully assign into'. ' '  . $userProfile->firstname . ' ' . $userProfile->american_surname]);
+                $leads = Lead::whereIn('id', $leadsId)->get();
+
+                foreach($leads as $lead){
+                 if($lead->is_spanish == 1 && !$userProfile->is_spanish == 1){
+                    return response()->json(['error' => 'The user is not a spanish speaker'], 500);
+                 }else{
+                    $lead->userProfile()->attach($userProfile , [
+                        'assigned_at' => now(),
+                        'current_user_id' => $userProfile->id
+                       ]);
+                    $lead->status = 2;
+                    $lead->save();
+                    event(new LeadAssignEvent($lead, $userProfile->id, $userProfile->id, now()));
+                 }
+
+                }
+            DB::commit();
+            return response()->json(['success' => 'the leads are succesfully assign into'. ' '  . $userProfile->firstname . ' ' . $userProfile->american_surname], 200);
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     //assigning random leads into random users
