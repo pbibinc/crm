@@ -34,31 +34,31 @@ class PaymentChargedController extends Controller
                 return DataTables::of($paymentChargedData)
                 ->addIndexColumn()
                 ->addColumn('product_name', function($paymentChargedData){
-                    $product = $paymentChargedData->paymentInformation->QuoteComparison->QuotationProduct->product;
+                    $product = $paymentChargedData->paymentInformation->QuoteComparison->QuotationProduct->product ?? 'N/A';
                     return $product;
                 })
                 ->addColumn('company_name', function($paymentChargedData){
-                    $lead = $paymentChargedData->paymentInformation->QuoteComparison->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name;
+                    $lead = $paymentChargedData->paymentInformation->QuoteComparison->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name ?? 'N/A';
                     return $lead;
                 })
                 ->addColumn('payment_method', function($paymentChargedData){
-                    $paymentMethod = $paymentChargedData->paymentInformation->payment_method;
+                    $paymentMethod = $paymentChargedData->paymentInformation->payment_method ?? 'N/A';
                     return $paymentMethod;
                 })
                 ->addColumn('amount_to_charged', function($paymentChargedData){
-                    $amountToCharged = $paymentChargedData->paymentInformation->amount_to_charged;
+                    $amountToCharged = $paymentChargedData->paymentInformation->amount_to_charged ?? 'N/A';
                     return $amountToCharged;
                 })
                 ->addColumn('compliance', function($paymentChargedData){
-                    $compliance = $paymentChargedData->paymentInformation->compliance_by;
+                    $compliance = $paymentChargedData->paymentInformation->compliance_by ?? 'N/A';
                     return $compliance;
                 })
                 ->addColumn('payment_type', function($paymentChargedData){
-                    $type = $paymentChargedData->paymentInformation->payment_type;
+                    $type = $paymentChargedData->paymentInformation->payment_type ?? 'N/A';
                     return $type;
                 })
                 ->addColumn('charged_by', function($paymentChargedData){
-                    $chargedBy = $paymentChargedData->userProfile->fullName();
+                    $chargedBy = $paymentChargedData->userProfile->fullName() ?? 'N/A';
                     return $chargedBy ? $chargedBy : 'N/A';
                 })
                 ->addColumn('action', function($paymentChargedData){
