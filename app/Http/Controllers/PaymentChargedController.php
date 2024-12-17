@@ -71,7 +71,7 @@ class PaymentChargedController extends Controller
 
             }catch(\Exception $e){
 
-                Log::info($e->getMessage());
+                Log::info($e);
                 return response()->json(['error' => $e], 500);
             }
         }
