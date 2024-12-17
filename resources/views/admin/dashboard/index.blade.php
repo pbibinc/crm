@@ -251,7 +251,7 @@
                                 <h2 class="card-title">Attendance Records for <b>{{ $currentMonth }}</b>
                                     <i class="ri ri-information-fill" style="font-size: 1.5em;" data-bs-toggle="tooltip"
                                         data-bs-placement="top"
-                                        data-bs-original-title="Here is the reference of your attendance records for the month of May. Note: Every month the record will be archived."></i>
+                                        data-bs-original-title="Here is the reference of your attendance records for the month of {{ $currentMonth }}. Note: Every month the record will be archived."></i>
                                 </h2>
 
                                 <div class="table-responsive">
