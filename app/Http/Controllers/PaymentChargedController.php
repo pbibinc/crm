@@ -29,45 +29,54 @@ class PaymentChargedController extends Controller
     {
         if($request->ajax())
         {
-            $paymentChargedData = PaymentCharged::orderBy('charged_date', 'desc')->get();
-            return DataTables::of($paymentChargedData)
-            ->addIndexColumn()
-            ->addColumn('product_name', function($paymentChargedData){
-                $product = $paymentChargedData->paymentInformation->QuoteComparison->QuotationProduct->product;
-                return $product;
-            })
-            ->addColumn('company_name', function($paymentChargedData){
-                $lead = $paymentChargedData->paymentInformation->QuoteComparison->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name;
-                return $lead;
-            })
-            ->addColumn('payment_method', function($paymentChargedData){
-                $paymentMethod = $paymentChargedData->paymentInformation->payment_method;
-                return $paymentMethod;
-            })
-            ->addColumn('amount_to_charged', function($paymentChargedData){
-                $amountToCharged = $paymentChargedData->paymentInformation->amount_to_charged;
-                return $amountToCharged;
-            })
-            ->addColumn('compliance', function($paymentChargedData){
-                $compliance = $paymentChargedData->paymentInformation->compliance_by;
-                return $compliance;
-            })
-            ->addColumn('payment_type', function($paymentChargedData){
-                $type = $paymentChargedData->paymentInformation->payment_type;
-                return $type;
-            })
-            ->addColumn('charged_by', function($paymentChargedData){
-                $chargedBy = $paymentChargedData->userProfile->fullName();
-                return $chargedBy ? $chargedBy : 'N/A';
-            })
-            ->addColumn('action', function($paymentChargedData){
-                $editButton = '<a href="#" class="btn btn-sm btn-primary editPaymentButton" data-id="'.$paymentChargedData->id.'"><i class="ri-pencil-line"></i></a>';
-                $editFileButton = '<a href="#" class="btn btn-sm btn-outline-info waves-effect waves-light editFilePaymentButton" data-id="'.$paymentChargedData->id.'"><i class="ri-file-edit-line"></i></a>';
-                return $editButton . ' '. $editFileButton;
-            })
-            ->make(true);
+            try{
+                $paymentChargedData = PaymentCharged::orderBy('charged_date', 'desc')->get();
+                return DataTables::of($paymentChargedData)
+                ->addIndexColumn()
+                ->addColumn('product_name', function($paymentChargedData){
+                    $product = $paymentChargedData->paymentInformation->QuoteComparison->QuotationProduct->product;
+                    return $product;
+                })
+                ->addColumn('company_name', function($paymentChargedData){
+                    $lead = $paymentChargedData->paymentInformation->QuoteComparison->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name;
+                    return $lead;
+                })
+                ->addColumn('payment_method', function($paymentChargedData){
+                    $paymentMethod = $paymentChargedData->paymentInformation->payment_method;
+                    return $paymentMethod;
+                })
+                ->addColumn('amount_to_charged', function($paymentChargedData){
+                    $amountToCharged = $paymentChargedData->paymentInformation->amount_to_charged;
+                    return $amountToCharged;
+                })
+                ->addColumn('compliance', function($paymentChargedData){
+                    $compliance = $paymentChargedData->paymentInformation->compliance_by;
+                    return $compliance;
+                })
+                ->addColumn('payment_type', function($paymentChargedData){
+                    $type = $paymentChargedData->paymentInformation->payment_type;
+                    return $type;
+                })
+                ->addColumn('charged_by', function($paymentChargedData){
+                    $chargedBy = $paymentChargedData->userProfile->fullName();
+                    return $chargedBy ? $chargedBy : 'N/A';
+                })
+                ->addColumn('action', function($paymentChargedData){
+                    $editButton = '<a href="#" class="btn btn-sm btn-primary editPaymentButton" data-id="'.$paymentChargedData->id.'"><i class="ri-pencil-line"></i></a>';
+                    $editFileButton = '<a href="#" class="btn btn-sm btn-outline-info waves-effect waves-light editFilePaymentButton" data-id="'.$paymentChargedData->id.'"><i class="ri-file-edit-line"></i></a>';
+                    return $editButton . ' '. $editFileButton;
+                })
+                ->make(true);
+
+
+            }catch(\Exception $e){
+
+                Log::info($e->getMessage());
+                return response()->json(['error' => $e], 500);
+            }
         }
         return view('admin.accounting.accounts-for-charged.index');
+
     }
 
     //
