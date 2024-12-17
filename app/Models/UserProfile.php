@@ -20,6 +20,11 @@ class UserProfile extends Model
         'is_compliance_officer'
     ];
 
+    public function Certificate()
+    {
+        return $this->hasMany(Certificate::class, 'approved_by');
+    }
+
     public function userProfiles()
     {
         return self::all();

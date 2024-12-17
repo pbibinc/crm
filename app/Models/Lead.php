@@ -22,7 +22,13 @@ class Lead extends Model
         'website_originated',
         'disposition_name',
         'status',
+        'is_spanish',
     ];
+
+    public function Certificate()
+    {
+        return $this->hasMany(Certificate::class, 'lead_id');
+    }
 
     public function dispositions()
     {
@@ -126,20 +132,13 @@ class Lead extends Model
 
     public static function getAppointedLeadsByUserProfileId($userProfileId)
     {
-        // $leads = self::where('disposition_id', 1)
-        // ->wherehas('userProfile', function($query) use ($userProfileId){
-        //     $query->where('user_id', $userProfileId);
-        // })->with('generalInformation')->select('id', 'company_name', 'tel_num', 'class_code', 'state_abbr', 'created_at')->orderBy('id');
-        // if($leads){
-        //     return $leads;
-        // }
-        // return null;
+
         return self::where('disposition_id', 1)
         ->whereHas('userProfile', function($query) use ($userProfileId) {
             $query->where('user_id', $userProfileId);
         })
         ->join('general_information_table', 'general_information_table.leads_id', '=', 'leads.id')
-        ->select('leads.id', 'company_name', 'tel_num', 'class_code', 'state_abbr', 'leads.created_at', 'general_information_table.created_at as general_created_at')->orderBy('general_created_at', 'desc');
+        ->select('leads.id', 'company_name', 'tel_num', 'class_code', 'state_abbr', 'is_spanish', 'leads.created_at', 'general_information_table.created_at as general_created_at')->orderBy('general_created_at', 'desc');
     }
 
     public static function getLeads($id)

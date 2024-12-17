@@ -24,6 +24,11 @@ class PolicyDetail extends Model
         'status'
     ];
 
+    public function Certificate()
+    {
+        return $this->hasMany(Certificate::class, 'policy_details_id');
+    }
+
     public function medias()
     {
         return $this->belongsTo(Metadata::class, 'media_id');
@@ -191,6 +196,9 @@ class PolicyDetail extends Model
                     }else if($quotationProduct->product == 'Tools Equipment'){
                         $toolsEquipment = ToolsEquipmentPolicy::where('policy_details_id', $policy->id)->first();
                         $policy->ToolsEquipment = $toolsEquipment;
+                    }else if($quotationProduct->product == 'Commercial Auto'){
+                        $commercialAuto = CommercialAutoPolicy::where('policy_details_id', $policy->id)->first();
+                        $policy->CommercialAuto = $commercialAuto;
                     }
                     $policies[] = $policy;
                 }

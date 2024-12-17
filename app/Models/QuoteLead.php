@@ -40,7 +40,7 @@ class QuoteLead extends Model
         $quoteProducts = []; // Initialize array to store product details
 
         // Your existing query and array building logic
-        $query = self::orderBy('created_at')->get();
+        $query = self::orderBy('created_at', 'desc')->get();
         foreach ($query as $quote) {
             $products = $quote->quoteInformation->quotationProduct()
                 ->whereNull('user_profile_id')
@@ -49,13 +49,23 @@ class QuoteLead extends Model
                 ->get();
 
             foreach ($products as $product) {
+                $isSpanish = $product->quoteInformation->quoteLead->leads->is_spanish ?? 0;
+                $companyName = $product->quoteInformation->quoteLead->leads->company_name ?? 'N/A';
+                if ($isSpanish == 1) {
+                    $companyName .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+                } elseif ($isSpanish == 0) {
+                    $companyName .= ''; // Optionally handle non-Spanish cases
+                } else {
+                    $companyName .= ' (Unknown)';
+                }
                 $quoteProducts[] = [
-                    'company' => $product->quoteInformation->quoteLead->leads->company_name ?? 'N/A',
+                    'company' => $companyName ?? 'N/A',
                     'leadId' => $product->quoteInformation->quoteLead->leads->id ?? 'N/A',
+                    'is_spanish' => $product->quoteInformation->quoteLead->leads->is_spanish ?? 'N/A',
                     'product' => $product,
                     'sent_out_date' => $product->sent_out_date,
                     'status' => $product->status,
-                    'telemarketer' => UserProfile::find($product->quoteInformation->telemarket_id)?->fullAmericanName() ?? 'N/A',
+                    'telemarketer' => UserProfile::find($product->product_appointer_id)?->fullAmericanName() ?? 'N/A',
                 ];
             }
         }
@@ -94,8 +104,13 @@ class QuoteLead extends Model
                 $products = $query->QuoteInformation->QuotationProduct()->where('user_profile_id', null)->where('status', 30)->get();
                 foreach($products as $product)
                 {
+                    $isSpanish = $product->QuoteInformation->QuoteLead->leads->is_spanish;
+                    $companyName = $product->QuoteInformation->QuoteLead->leads->company_name;
+                    if($isSpanish == 1){
+                        $companyName .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+                    }
                     $quoteProducts[] = [
-                        'company' => $product->QuoteInformation->QuoteLead->leads->company_name,
+                        'company' => $companyName,
                         'product' => $product,
                         'sent_out_date' => $product->sent_out_date,
                         'status' => $product->status,

@@ -96,8 +96,14 @@ class QuotationProduct extends Model
         if($query){
             foreach($query as $product)
             {
+                $isSpanish = $product->QuoteInformation->QuoteLead->leads->is_spanish;
+                $companyName = $product->QuoteInformation->QuoteLead->leads->company_name;
+                if($isSpanish == 1){
+                    $companyName .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+                }
+
                 $products[] = [
-                    'company' => $product->QuoteInformation->QuoteLead->leads->company_name,
+                    'company' => $companyName,
                     'product' => $product,
                     'sent_out_date' => $product->sent_out_date,
                     'status' => $product->status,

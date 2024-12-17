@@ -168,6 +168,14 @@
                                     ])
                                 </div>
                             </div>
+
+                            <div class="card">
+                                <div class="card-body">
+                                    @include('leads.appointed_leads.log-activity.task-schedule', [
+                                        'leads' => $leads,
+                                    ])
+                                </div>
+                            </div>
                         </div>
 
                         {{-- financing tab --}}

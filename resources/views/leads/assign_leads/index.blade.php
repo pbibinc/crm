@@ -54,7 +54,7 @@
                                     </div>
 
                                     <div class="row mb-3">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="classCodeLeadDropdown" class="form-label">Class Code</label>
                                                 <select name="classCodeLead" id="classCodeLeadDropdown"
@@ -70,7 +70,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="leadTypeDropdown" class="form-label">Leads Type</label>
                                                 <select name="lead_type" id="leadTypeDropdown" class="form-control select2">
@@ -78,6 +78,19 @@
                                                     <option value="">ALL</option>
                                                     <option value="2">Prime Lead</option>
                                                     <option value="1">Normal Lead</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="spanishLeadDropdown" class="form-label">Spanish Lead</label>
+                                                <select name="spanishLeadDropdown" id="spanishLeadDropdown"
+                                                    class="form-control select2">
+
+                                                    <option value="">ALL</option>
+                                                    <option value="1">Spanish</option>
+                                                    <option value="0">English</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -89,13 +102,15 @@
 
 
                     </div>
+
+                    {{-- assigning random stuff --}}
                     <div class="row">
-                        <div class="col-8">
+                        <div class="col-12">
                             <div class="card"
                                 style=" box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                                 <div class="card-body d-flex flex-column justify-content-between">
                                     <div class="row">
-                                        <div class="col-6">
+                                        <div class="col-4">
                                             <label for="leadsQuantityUser" class="form-label">Assign Lead Quantity</label>
                                             <div class="input-group mb-3">
                                                 <input class="form-control" type="number" value="10"
@@ -108,7 +123,7 @@
                                                     to User</button>
                                             </div>
                                         </div>
-                                        <div class="col-6">
+                                        <div class="col-4">
                                             <label for="leadsQuantityRandom" class="form-label">Assign Random Leads To
                                                 Apptaker
                                                 Quantity </label>
@@ -122,31 +137,28 @@
                                                     title="Assign Random Leads to a random apptaker">Assign Random</button>
                                             </div>
                                         </div>
+                                        <div class="col-4">
+                                            <label for="spanishLeadsQuantityRandom" class="form-label">Assign Random
+                                                Spanish Lead
+                                            </label>
+                                            <div class="input-group">
+                                                <input class="form-control" type="number" value="10"
+                                                    id="spanishLeadsQuantityRandom"
+                                                    onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                                <button type="button" id="assignRandomSpanishLeads"
+                                                    class="btn btn-outline-primary" data-bs-toggle="tooltip"
+                                                    data-bs-placement="top"
+                                                    title="Assign Random Spanish Lead To Spanish Appointer">Assign
+                                                    Spanish Lead</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="card"
-                                style=" box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <button type="button" id="assignLead" class="btn btn-primary btn-lg mb-2"
-                                                data-bs-toggle="tooltip" data-bs-placement="top"
-                                                title="Assign checked Leads to a selected user">Assign Lead</button>
-                                        </div>
-                                        <div class="col-6">
-                                            <button type="button" id="assignPremiumLead" class="btn btn-primary btn-lg"
-                                                data-bs-toggle="tooltip" data-bs-placement="top"
-                                                title="Assign premium leads">Assign Premium</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
+
                     <div class="row">
                         <div>
                             <div class="card"
@@ -178,9 +190,12 @@
                         </div>
 
                     </div>
+
                 </div>
 
                 <div class="col-4">
+
+                    {{-- dropdown for selecting user --}}
                     <div class="row">
                         <div class="card"
                             style=" box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
@@ -197,8 +212,12 @@
                                                         $numberOfRatings = $ratings->count();
                                                         $sumOfRatings = $ratings->sum('rating');
                                                         $divisorRatings = $numberOfRatings * 5;
-                                                        $overallRating = $numberOfRatings > 0 ? $sumOfRatings / $numberOfRatings : 0;
-                                                        $overallRatingPercentage = $numberOfRatings > 0 ? ($sumOfRatings / $divisorRatings) * 100 : 0;
+                                                        $overallRating =
+                                                            $numberOfRatings > 0 ? $sumOfRatings / $numberOfRatings : 0;
+                                                        $overallRatingPercentage =
+                                                            $numberOfRatings > 0
+                                                                ? ($sumOfRatings / $divisorRatings) * 100
+                                                                : 0;
                                                         $leadsCounter = count(
                                                             $userProfile->leads->filter(function ($lead) {
                                                                 return $lead->pivot->current_user_id !== 0;
@@ -240,6 +259,29 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- button for assinging leads to user --}}
+                    <div class="row">
+                        <div class="card"
+                            style=" box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <button type="button" id="assignLead" class="btn btn-primary btn-lg mb-2"
+                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                            title="Assign checked Leads to a selected user">Assign Lead</button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button type="button" id="assignPremiumLead" class="btn btn-primary btn-lg"
+                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                            title="Assign premium leads">Assign Premium</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- table for displaying leads that user have --}}
                     <div class="row">
                         <div class="card"
                             style=" box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
@@ -437,7 +479,8 @@
                             // d.search = $('input[type="search"]').val(),
                             d.leadType = $('#leadTypeDropdown').val(),
                             d.appTakerId = $('#userProfileDropdown').val(),
-                            d.accountsId = $('#accountsDropdown').val()
+                            d.accountsId = $('#accountsDropdown').val(),
+                            d.isSpanish = $('#spanishLeadDropdown').val()
                     }
                 },
                 columns: [{
@@ -500,8 +543,7 @@
                     }
                 },
                 columns: [
-                    // {data: 'checkbox', name: 'checkbox',  searchable: false},
-                    // {data: 'id', name: 'id'},
+
                     {
                         data: 'company_name',
                         name: 'company_name'
@@ -510,10 +552,7 @@
                         data: 'tel_num',
                         name: 'tel_num'
                     },
-                    // {data: 'state_abbr', name: 'state_abbr'},
-                    // {data: 'website_originated', name: 'website_originated'},
-                    // {data: 'created_at_formatted', name: 'created_at', searchable:false},
-                    // {data: 'updated_at_formatted', name: 'updated_at', searchable:false},
+
                     {
                         data: 'action',
                         name: 'action',
@@ -550,6 +589,11 @@
                 var classCodeLead = $(this).val();
                 $('#dataTable').DataTable().ajax.url("{{ route('assign') }}?classCodeLead=" +
                     classCodeLead).load();
+            });
+
+            $('#spanishLeadDropdown').on('change', function() {
+                var isSpanish = $(this).val();
+                $('#dataTable').DataTable().ajax.reload();
             });
 
 
@@ -692,7 +736,6 @@
 
 
             // ajax script for randomly assign leads to user
-
             $('#assignRandomLeadsUser').on('click', function() {
                 let userProfileId = $('#userProfileDropdown').val();
                 let accountProfileId = $('#accountsDropdown').val()
@@ -705,7 +748,69 @@
                         icon: 'error'
                     });
                 }
+            });
 
+            $('#assignRandomSpanishLeads').on('click', function() {
+                let userProfileId = $('#userProfileDropdown').val() || $('#accountsDropdown').val();
+                if (userProfileId != '' || accountProfileId != '') {
+                    Swal.fire({
+                        title: 'Are You Sure',
+                        text: 'Are you sure you want to assign spanish leads to this user',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes',
+                        cancelButtonText: 'No'
+                    }).then((result) => {
+                        $.ajax({
+                            url: "{{ route('assign-random-spanish-leads') }}",
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            dataType: "json",
+                            method: "POST",
+                            data: {
+                                userProfileId: userProfileId,
+
+                                spanishLeadsQuantityRandom: $('#spanishLeadsQuantityRandom')
+                                    .val()
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    Swal.fire({
+                                        title: 'Success',
+                                        text: response.success,
+                                        icon: 'success'
+                                    }).then(function() {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: 'Error',
+                                        text: response.error,
+                                        icon: 'error'
+                                    });
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                var errorMessage = 'An Error Occured';
+                                if (xhr.responseJSON && xhr.responseJSON.error) {
+                                    errorMessage = xhr.responseJSON.error;
+                                }
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: errorMessage,
+                                    icon: 'error'
+                                });
+                            }
+                        })
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Please Select Agent',
+                        icon: 'error'
+                    });
+                }
             });
 
             //ajax for submitting the button for assigning random leads to user
@@ -756,15 +861,10 @@
                 });
             });
 
-
-
             // ajax script for randomly assign leads to users
             $('#assignRandomLeads').on('click', function() {
                 $('#assignRandomLeadsToRandomUser').modal('show');
             });
-
-
-
 
             // ajax script for assigning checked leads
             $('#assignLead').on('click', function() {
@@ -801,8 +901,13 @@
                                 });
                             },
                             error: function(data) {
-                                var errors = data.responseJSON;
-                                console.log(errors);
+                                console.log(data);
+                                laddaButton.stop();
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: data.responseJSON.error,
+                                    icon: 'error'
+                                })
                             }
 
                         });
@@ -822,8 +927,6 @@
                     });
                 }
             });
-
-
 
             // ajax script for randomly assign leads to a random users
             $('#assign_random_ok_button').on('click', function() {
@@ -890,8 +993,6 @@
             });
 
         });
-
-
 
 
         let voidAllClicked = false;

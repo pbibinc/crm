@@ -36,12 +36,35 @@
                     <ul class="sub-menu" aria-expanded="false">
                     </ul>
                 </li>
+
                 <li>
                     <a href="{{ route('dashboard-report') }}" class="waves-effect">
                         <i class="ri-dashboard-line"></i><span class="badge rounded-pill bg-success float-end"></span>
                         <span>Report</span>
                     </a>
                 </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="ri-tools-fill"></i>
+                        <span>PDF Tools</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="{{ route('pdf-editor.index') }}">PDF Editor</a></li>
+                        <li><a href="{{ route('ocr-pdf.index') }}">OCR PDF</a></li>
+                        <li><a href="{{ route('pdf-workflow.index') }}">PDF Workflow</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="ri-tools-fill"></i>
+                        <span>Email Tools</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="{{ route('single-email-validator.index') }}">Single Email Validator</a></li>
+                        <li><a href="{{ route('batch-email-validator.index') }}">Batch Email Validator</a></li>
+                    </ul>
+                </li>
+
                 @can('view', App\Models\Permission::find(1))
                     <li class="menu-title">Admin</li>
                     <li>
@@ -230,6 +253,18 @@
                     <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
                             <i class="ri-shopping-cart-line"></i>
+                            <span>Online Forms</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="{{ route('quotation-form.index') }}">Quote Form Lists</a></li>
+                            <li><a href="{{ route('insurance-needs-survey-form.index') }}">Insurance Survey Form
+                                    Lists</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="ri-shopping-cart-line"></i>
                             <span>Binding</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
@@ -282,6 +317,15 @@
                             <li><a href="{{ route('for-renewal.index') }}">Renewal Quoting</a></li>
                             <li><a href="{{ route('renewal-policy.index') }}">Policy For Renewal</a></li>
                             <li><a href="{{ route('old-renewal-policy.index') }}">Old Renewal</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-autorenew"></i>
+                            <span>Certificate</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="{{ route('certificate.index') }}">Certificate Request</a></li>
                         </ul>
                     </li>
                 @endcan

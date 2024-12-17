@@ -10,6 +10,7 @@ use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use League\CommonMark\Extension\SmartPunct\EllipsesParser;
+use Yajra\DataTables\Facades\DataTables;
 
 class LeadTaskSchedulerController extends Controller
 {
@@ -163,7 +164,27 @@ class LeadTaskSchedulerController extends Controller
     {
         $leadId = $request->input('leadId');
 
-        $taskScheduler = LeadTaskScheduler::where('leads_id', $leadId)->whereNot('status', 'Remove')->with(['assignedTo.media'])->get();
+        $taskScheduler = LeadTaskScheduler::where('leads_id', $leadId)->whereNot('status', 'Completed')->whereNot('status', 'Remove')->with(['assignedTo.media'])->get();
         return response()->json(['data' => $taskScheduler], 200);
+    }
+
+    public function getTaskSchedulerList(Request $request)
+    {
+        $leadId = $request->input('leadId');
+        $tastSchedulerList = LeadTaskScheduler::where('leads_id', $leadId)->whereNot('status', 'Remove')->with(['assignedTo.media'])->orderBy('date_schedule')->get();
+        return DataTables::of($tastSchedulerList)
+        ->addColumn('assigned_to', function($taskScheduler){
+            $assignedToName = $taskScheduler->assignedTo->firstname . ' ' . $taskScheduler->assignedTo->lastname;
+            return $assignedToName ? $assignedToName : 'N/A';
+        })
+        ->addColumn('assigned_by', function($taskScheduler){
+            $assignedByName = $taskScheduler->assignedTo->firstname . ' ' . $taskScheduler->assignedTo->lastname;
+            return $assignedByName ? $assignedByName : 'N/A';
+        })
+        ->addColumn('date_schedule', function($taskScheduler){
+            $dateschedule = \Carbon\Carbon::parse($taskScheduler->date_schedule)->format('m/d/Y');
+            return $dateschedule ? $dateschedule : 'N/A';
+        })
+        ->make(true);
     }
 }

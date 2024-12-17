@@ -36,16 +36,7 @@
         var notifyId = e.userId;
         enqueueNotification(e, 'New Request For Quotation', 'You have been assigned a new lead',
             `/appointed-list`);
-        // if (userId == notifyId) {
-        //     Push.create('New Request For Quotation', {
-        //         body: `You have been assigned a new lead`,
-        //         onClick: function() {
-        //             window.focus();
-        //             window.open(`/appointed-list`, '_blank');
-        //             this.close();
-        //         }
-        //     });
-        // }
+
     });
 
     Echo.channel('reassign-appointed-lead').listen('ReassignedAppointedLead', (e) => {

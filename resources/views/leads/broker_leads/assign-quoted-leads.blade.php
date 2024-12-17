@@ -41,7 +41,7 @@
                                     @foreach ($groupedProducts as $companyName => $products)
                                         <tr style="background-color: #f0f0f0;">
 
-                                            <td><strong><b>{{ $companyName }}</b></strong></td>
+                                            <td><strong><b>{!! $companyName !!}</b></strong></td>
                                             <td><input type="checkbox" class="companyCheckBox"
                                                     data-company="{{ $companyName }}" name="company[]"></td>
                                             <td><strong><b>Product</b></strong></td>

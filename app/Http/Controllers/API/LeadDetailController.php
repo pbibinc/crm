@@ -81,15 +81,11 @@ class LeadDetailController extends BaseController
     {
         $user = User::find($userId);
         $userLeadIds = $user->userLead->pluck('id');
-        $leads = $user->userLead()->with(['GeneralInformation', 'quoteLead.QuoteInformation.QuotationProducts.PolicyDetail', 'quoteLead.QuoteInformation.QuotationProducts.QouteComparison'])->get();
+        $leads = $user->userLead()->with(['GeneralInformation', 'quoteLead.QuoteInformation.QuotationProducts.PolicyDetail', 'quoteLead.QuoteInformation.QuotationProducts.QouteComparison', 'Certificate', ])->get();
 
         $leads->each(function ($lead) {
             $leadId = $lead->id;
-
-            // Query active policies for this lead
             $policy = PolicyDetail::getPolicyDetailByLeadId($leadId);
-
-            // Attach active policies to the lead object
             $lead->setAttribute('activePolicies', $policy);
         });
 

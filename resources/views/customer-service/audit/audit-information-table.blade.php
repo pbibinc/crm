@@ -4,7 +4,6 @@
         <tr>
             <th style="padding: 7px;">Policy</th>
             <th style="padding: 7px;">Product</th>
-            {{-- <th style="padding: 7px;">Audit Letter</th> --}}
             <th style="padding: 7px;">Status</th>
             <th style="padding: 7px;">Audit By</th>
             <th style="padding: 7px;"></th>

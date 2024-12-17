@@ -12,5 +12,6 @@ class Insurer extends Model
 
     protected $fillable = [
         'name',
+        'naic_number',
     ];
 }

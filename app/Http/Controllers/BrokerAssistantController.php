@@ -108,6 +108,9 @@ class BrokerAssistantController extends Controller
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
             $companyLink = '<a href="" class="companyPendingName" id="'.$data->id.'">'.$companyName.'</a>';
+            if($data->QuoteInformation->QuoteLead->leads->is_spanish == 1){
+                $companyLink .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+            }
             return $companyLink;
         })
         ->addColumn('quotedBy', function($data){
@@ -132,6 +135,9 @@ class BrokerAssistantController extends Controller
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
             $companyLink = '<a href="" class="viewButton" id="'.$data->id.'">'.$companyName.'</a>';
+            if($data->QuoteInformation->QuoteLead->leads->is_spanish == 1){
+                $companyLink .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+            }
             return $companyLink;
         })
         ->addColumn('quotedBy', function($data){
@@ -188,6 +194,9 @@ class BrokerAssistantController extends Controller
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
             $companyLink = '<a href="" class="companyName" id="'.$data->id.'">'.$companyName.'</a>';
+            if($data->QuoteInformation->QuoteLead->leads->is_spanish == 1){
+                $companyLink .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+            }
             return $companyName;
         })
         ->addColumn('quotedBy', function($data){
@@ -222,6 +231,9 @@ class BrokerAssistantController extends Controller
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
             $companyLink = '<a href="" class="viewButton" id="'.$data->id.'">'.$companyName.'</a>';
+            if($data->QuoteInformation->QuoteLead->leads->is_spanish == 1){
+                $companyLink .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+            }
             return $companyLink;
         })
         ->addColumn('status', function($data){
@@ -284,6 +296,9 @@ class BrokerAssistantController extends Controller
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
             $companyLink = '<a href="" class="viewButton" id="'.$data->id.'">'.$companyName.'</a>';
+            if($data->QuoteInformation->QuoteLead->leads->is_spanish == 1){
+                $companyLink .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+            }
             return $companyLink;
         })
         ->addColumn('quotedBy', function($data){
@@ -364,6 +379,9 @@ class BrokerAssistantController extends Controller
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
             $companyLink = '<a href="" class="viewButton" id="'.$data->id.'">'.$companyName.'</a>';
+            if($data->QuoteInformation->QuoteLead->leads->is_spanish == 1){
+                $companyLink .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+            }
             return $companyLink;
         })
         ->addColumn('quotedBy', function($data){
@@ -451,6 +469,9 @@ class BrokerAssistantController extends Controller
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
             $companyLink = '<a href="" class="viewButton" id="'.$data->id.'">'.$companyName.'</a>';
+            if($data->QuoteInformation->QuoteLead->leads->is_spanish == 1){
+                $companyLink .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+            }
             return $companyLink;
         })
         ->addColumn('quotedBy', function($data){

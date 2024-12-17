@@ -1,0 +1,223 @@
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+<style>
+    .container iframe {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        border: 0;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+<div class="container" id="iframe-container"/>
+
+<script src="https://embed.pdffiller.com/app/js/JSFillerSDKClient.js"></script>
+<script>
+
+  let url = 'https://pdf.airslate.io/documents/4da39a18d125bbd258dd77174a251e36/flat';
+  let aJson = {"pages":{"metadata":{"version":"2.14.0","dpi":72},"list":[{"rotation":0,"visible":true,"source":0}]},"fields":{"metadata":{"version":"2.14.0","dpi":72},"list":[[{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":201.36,"height":43.44,"x":53.16,"y":187.56,"order":1,"name":"insured_information","id":"a9fd5225-1b73-4f13-8741-ee1707d40ecb","type":"text","subType":"none","pageId":0},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":166.32,"height":14.28,"x":350.52,"y":166.22,"order":2,"name":"insurer_a","id":"9acfc8c7-4f17-4ac6-bf37-31415a2e62ed","type":"text","subType":"none","pageId":0},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":166.32,"height":14.28,"x":350.52,"y":180.5,"order":3,"name":"insurer_b","id":"1c0aeca0-5a07-4983-8cba-a5ceff41ee60","type":"text","subType":"none","pageId":0},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":166.32,"height":14.28,"x":350.52,"y":194.78,"order":4,"name":"insurer_c","id":"8f26be74-23e7-415d-8765-564413de8be7","type":"text","subType":"none","pageId":0},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":166.32,"height":14.28,"x":350.52,"y":209.06,"order":5,"name":"insurer_d","id":"927b022c-2932-4de3-8d49-fa982c960916","type":"text","subType":"none","pageId":0},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":166.32,"height":14.28,"x":350.52,"y":216.72,"order":6,"name":"insurer_e","id":"5a5c5fb7-7b82-49ac-befd-bd093f811812","type":"text","subType":"none","pageId":0},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":166.31999999999994,"height":14.28,"x":350.52,"y":231,"order":7,"name":"insurer_f","id":"a76ae87a-6cce-484c-8190-8a13ca4a1baa","type":"text","subType":"none","pageId":0},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":51.71,"height":14.28,"x":541.37,"y":166.22,"order":8,"name":"naic_a","id":"e695155f-386a-4637-8bd1-c9ed8b8fd807","type":"text","subType":"none","pageId":0},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":51.71,"height":14.28,"x":541.37,"y":180.5,"order":9,"name":"naic_b","id":"29bd6718-77d9-42d5-bf09-6881c1188b01","type":"text","subType":"none","pageId":0},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":51.71,"height":14.28,"x":541.37,"y":194.78,"order":10,"name":"naic_c","id":"feb1ab44-b0da-46c3-8ae6-d7ababd47e5f","type":"text","subType":"none","pageId":0},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":51.71,"height":14.28,"x":541.37,"y":209.06,"order":11,"name":"naic_d","id":"4c9a5d48-7cf0-4cf5-9bf1-09a85621601d","type":"text","subType":"none","pageId":0},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":51.71,"height":14.28,"x":541.37,"y":216.72,"order":12,"name":"naic_e","id":"ec32a1d4-85b3-4ca1-9e70-301497d1076d","type":"text","subType":"none","pageId":0},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":51.71,"height":14.28,"x":541.6409090909087,"y":229.46000000000006,"order":13,"name":"naic_f","id":"0d9510c7-b1b7-4c0e-9bc1-29fac8136869","type":"text","subType":"none","pageId":0},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":111.8,"height":20.96,"x":215.62,"y":337.71,"order":14,"name":"policy_number_a","id":"c6e5a1f2-607e-43ce-a409-9ab731646b88","type":"text","subType":"none","pageId":0},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":111.8,"height":20.96,"x":215.62,"y":401.69,"order":15,"name":"policy_number_b","id":"b085231e-93e9-47c5-82c0-4e7e56aecaaa","type":"text","subType":"none","pageId":0},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":111.8,"height":20.96,"x":215.62,"y":447.87,"order":16,"name":"policy_number_c","id":"b6e2d002-416a-4f57-a610-15f3d5d04804","type":"text","subType":"none","pageId":0},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":111.8,"height":20.96,"x":215.62,"y":495.67,"order":17,"name":"policy_number_d","id":"4051b45f-c39f-40be-9502-df1f6de20020","type":"text","subType":"none","pageId":0},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":111.8,"height":20.96,"x":215.62,"y":534.51,"order":18,"name":"policy_number_e","id":"1613cf95-2159-4101-b15a-fa6a56273428","type":"text","subType":"none","pageId":0},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":133.5,"height":29.86,"x":39.24363636363636,"y":530.0600000000001,"order":19,"name":"policy_info","id":"606fb76c-96e2-4cf3-a07e-8280fc22c3b9","type":"text","subType":"none","pageId":0},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":383.86,"height":58.79,"x":28.953636363636367,"y":577.8072727272727,"order":20,"name":"description","id":"7e0d1d71-81ec-4ea8-ae18-9d601031b297","type":"text","subType":"none","pageId":0},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":259.24,"height":68.24,"x":24.22,"y":665.1572727272727,"order":21,"name":"cert_holder","id":"621f9efe-4887-46d1-bcfa-96c8ee39bc9c","type":"text","subType":"none","pageId":0}]]},"content":{"metadata":{"version":"2.14.0","dpi":72},"list":[[{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":201.36,"height":43.44,"x":53.16,"y":187.56,"order":1,"name":"insured_information","visible":true,"text":"","owner":"","linkId":"a9fd5225-1b73-4f13-8741-ee1707d40ecb","type":"text","subType":"none"},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":51.71,"height":14.28,"x":541.37,"y":216.72,"order":12,"name":"naic_e","visible":true,"text":"","owner":"","linkId":"ec32a1d4-85b3-4ca1-9e70-301497d1076d","type":"text","subType":"none"},{"toolId":"basic_field_text","fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","required":false,"initial":"","lineHeight":1.21,"maxChars":0,"maxLines":0,"arrangement":"none","viewMode":"stretch","width":259.24,"height":68.24,"x":24.22,"y":665.1572727272727,"order":21,"name":"cert_holder","visible":true,"text":"","owner":"","linkId":"621f9efe-4887-46d1-bcfa-96c8ee39bc9c","type":"text","subType":"none"},{"fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","hyperlink":null,"width":200.8,"height":46.1,"toolId":"simple_text","text":"Pascal Burke Insurance Brokerage Inc.\r\n2102 Business Center Drive., Ste. 280\r\nIrvine, CA 92612\r\n0L98468","x":57.03229813664596,"y":130.0151552795031,"isWidthFixed":true,"owner":"","type":"text","subType":"none"},{"fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","hyperlink":null,"width":54.3,"height":13.7,"toolId":"simple_text","text":"Pascal Burke","x":345.4492546583851,"y":119.08372670807454,"owner":"","type":"text","subType":"none"},{"fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","hyperlink":null,"width":58.8,"height":13.7,"toolId":"simple_text","text":"(877) 893-7629","x":350.66844720496897,"y":131.92155279503106,"owner":"","type":"text","subType":"none"},{"fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","hyperlink":null,"width":58.8,"height":13.7,"toolId":"simple_text","text":"(949) 340-8412","x":521.7281366459626,"y":130.49341614906834,"owner":"","type":"text","subType":"none"},{"fontFamily":"Arial","letterSpacing":0,"fontSize":8,"fontColor":"000000","bold":true,"italic":false,"underline":false,"align":"left","valign":"top","hyperlink":null,"width":80.8,"height":13.7,"toolId":"simple_text","text":"insure@pbibnc.com","x":349.71838509316774,"y":143.80062111801243,"owner":"","type":"text","subType":"none"}]]}};
+  let redirectUri = '';
+  let appearanceConfigJson = {"doneButton":{"visible":true,"label":"Done"},"logo":{"visible":false,"url":"https:\/\/insuraprime_crm.test\/backend\/assets\/images\/logopbibinc.png"},"tools":[{"text":true},{"signature":true,"options":{"type":true,"draw":true,"upload":true,"capture":false}},{"initials":true,"options":{"type":true,"draw":true,"upload":true,"capture":false}},{"date":true},{"x":true},{"v":true},{"o":true},{"image":true},{"erase":true},{"highlight":true},{"blackout":true},{"textbox":true},{"arrow":true},{"line":true},{"pen":true},{"sticky":true},{"rearrange":true},{"fakeEdit":true},{"y":true}],"options":[{"wizard":true},{"help":true},{"search":true},{"pagesPanel":true}],"advancedOptions":[{"addFillableFields":true},{"addWatermark":true}]};
+  let jsfSdkClientId = '376207630';
+  let jsfSdkClientSecret = 'PDFFillerSDKDemoMultiDoc';
+  let isDocumentFilled = false;
+  let documentId = '08b7443e-b1a7-11ef-b5ed-6ec1079997c6';
+
+  /**
+   * Instantiate JSFiller object
+   */
+  const JSFiller = new JSFillerSDKClient.SDK();
+
+  function isValidURL(str) {
+    var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+      '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+    return !!pattern.test(str);
+  }
+
+  /**
+   * Then, initialize it by listeners:
+   *
+   * .on('state', handleState)
+   * - Will be called when the application changes state
+   * - Possible states: `init`, `opening`, `ready`, `destroyed`
+   *
+   * .on('event', handleEvent)
+   * - Will be called when an event occurs in the application
+   * - Possible events: `acted`, `done`
+   *
+   * .on('error', handleError)
+   * - Will be called when an error occurs in the application
+   * - Possible errors: `APP_DOMAIN_ERROR`, `APP_IS_NOT_ACTIVE`, `QUOTA_HAS_ENDED`
+   *
+   * More information in docs: https://... and in the code below
+   */
+  const saveDoc = (data) => fetch(window.location.href,
+    {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ ...data })
+    }).then(response => response.json());
+
+  JSFiller.on('state', function (state) {
+    switch (state.type) {
+      case 'init':
+        // Use it for the first type of application:
+        // JSFiller.loadPreparedDocument(); // Accessible only in 'INIT' state
+        // or
+        // Use for second type of application:
+        //JSFiller.loadNewDocument('https://www.irs.gov/pub/irs-pdf/fw9.pdf');
+
+        JSFiller.fromUrlToFlatDoc(url, null, aJson);
+        JSFiller.setDocumentId(documentId);
+        JSFiller.setImagesList([]);
+        JSFiller.setSignaturesList([]);
+        JSFiller.setInitialsList([]);
+        // These methods accessible only in 'init' state
+        break;
+
+      case 'opening':
+        // Typical use case for this 👇🏻
+        break;
+
+      case 'ready':
+        // Typical use case for this 👇🏻
+        break;
+
+      case 'destroyed':
+        // As example you can unload the editor frame or reload it using:
+        // JSFiller.reload();
+        break;
+    }
+  });
+  JSFiller.on('event', function (event) {
+    switch (event.type) {
+      case "acted":
+        // Fires every time the user changed the document, as example at this point you can get any data from the editor:
+        // JSFiller.getAllContent(); // Return A-JSON (all content data)
+        // and/or
+        // JSFiller.getFieldsContent(); // Return only pairs 'fieldName': 'fieldValue'
+        break;
+      case "done":
+        /**
+         * Fires when the user has finished working on the document
+         * and pressed the "done" button
+         * Here you can:
+         * - Save PDF as File:
+         */
+
+        let updateData = {
+          aJson: JSFiller.getAllContent(),
+          imagesList: JSFiller.getImagesList(),
+          signaturesList: JSFiller.getSignaturesList(),
+          initialsList: JSFiller.getInitialsList(),
+        };
+
+        if (JSFiller.getFlatDocument() !== url && isValidURL(JSFiller.getFlatDocument())) {
+          updateData.flatUrl = JSFiller.getFlatDocument();
+        }
+
+        saveDoc(updateData).then(
+          response => {
+            if (!response.result) {
+              document.location.reload();
+              return;
+            }
+
+            if (redirectUri.length > 0) {
+              document.location = redirectUri;
+            } else {
+              document.location.reload();
+            }
+          }
+        );
+
+        // JSFiller.savePDF({
+        //     filename: 'name.pdf', // Default <application-name>.pdf
+        //     exportFields: true, // If true then content will be exported with the interactive fields (if exist)
+        //     saveToDesktop: true,
+        //     onComplete: function(payload) {
+        //         console.log(payload);
+        //     }
+        // });
+
+        /**
+         * or
+         *
+         * Print PDF via browser print dialog:
+         */
+        // JSFiller.printPDF({
+        //   onComplete: function() {
+        //     console.log('pdf printed');
+        //   }
+        // });
+
+        /**
+         * or
+         *
+         * Get Blob PDF file:
+         */
+        // JSFiller.getPDFBlob({
+        //   onComplete: function(data) {
+        //     console.log('pdf blob: ', data.blob);
+        //   }
+        // });
+        break;
+    }
+  });
+
+
+  /**
+   * But you can add listeners later same way
+   */
+  JSFiller.on('error', function (error) {
+    switch (error.type) {
+      case "APP_DOMAIN_ERROR":
+        // In case of this error you should verify the domain in application setup page
+        break;
+
+      case "APP_IS_NOT_ACTIVE":
+        // In case of this error you should activate you application
+        break;
+
+      case "QUOTA_HAS_ENDED":
+        // The quota has ended, contact support please.
+        break;
+
+      case "APP_ERROR":
+        // Other errors
+        break;
+    }
+  });
+
+  /**
+   * After you can run editors and configure it
+   */
+  JSFiller.runEditor({
+    mode: isDocumentFilled ? 'view' : 'main',
+    containerId: 'iframe-container',
+    clientId: jsfSdkClientId,
+    clientSecret: jsfSdkClientSecret,
+    enforceRequiredFields: false,
+    appearance: appearanceConfigJson
+  });
+
+  /**
+   * Other methods you can use
+   * - JSFiller.hasChanges(); // return true if changes were made by the user in current editor session,
+   * otherwise false will be returned.
+   * - JSFiller.done(); // trigger done (same as done button). Accessible only in 'ready' state
+   * - JSFiller.destroy(); // trigger destroy
+   * - JSFiller.reload(); // reload iframe
+   * - JSFiller.getState(); // return current editor's state
+   **/
+</script>

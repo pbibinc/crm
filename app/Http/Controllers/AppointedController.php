@@ -36,11 +36,20 @@ class AppointedController extends Controller
             ->addColumn('formatted_created_at', function($lead) {
                 return \Carbon\Carbon::parse($lead->general_created_at)->format('m/d/Y');
             })
+            ->addColumn('company_name', function($leads){
+                $profileViewRoute = route('appointed-list-profile-view', ['leadsId' => $leads->id]);
+                $companyName =  '<a href="'.$profileViewRoute.'" id="'.$leads->id.'" name"view">'.$leads->company_name.'</a>';
+                if($leads->is_spanish == 1){
+                    $companyName .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+                }
+                return $companyName;
+            })
             ->addColumn('action', function($leads){
                 $profileViewRoute = route('appointed-list-profile-view', ['leadsId' => $leads->id]);
                 return '<a href="'.$profileViewRoute.'" class="viiew btn btn-success btn-sm" id="'.$leads->id.'" name"view"><i class="ri-eye-line"></i></a>';
             })
-            ->rawColumns(['company_name_action', 'action'])
+
+            ->rawColumns(['company_name', 'action'])
             ->make(true);
         }
         return view('leads.appointed_leads.appointed.index');

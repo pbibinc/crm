@@ -17,6 +17,7 @@ use App\Models\CancelledPolicyForRecall;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BoundController;
 use App\Http\Controllers\EmailController;
+use App\Http\Controllers\MediaController;
 use App\Http\Controllers\NotesController;
 use App\Http\Controllers\IntentController;
 use App\Http\Controllers\QuotedController;
@@ -43,22 +44,26 @@ use App\Http\Controllers\ClasscodesController;
 use App\Http\Controllers\ComplianceController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\MarketListController;
+use App\Http\Controllers\OldRenewalController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ZeroBounceController;
+use App\Http\Controllers\AirSlatePDFController;
 use App\Http\Controllers\BindingDocsController;
 use App\Http\Controllers\DispositionController;
 use App\Http\Controllers\ScrubbedDncController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\BrokerHandleController;
 use App\Http\Controllers\CancellationController;
+use App\Http\Controllers\CustomerUserController;
 use App\Http\Controllers\DashboardControllerNew;
 use App\Http\Controllers\RenewalQuoteController;
 use App\Http\Controllers\AppTakerLeadsController;
+use App\Http\Controllers\QuoteFormInfoController;
 use App\Http\Controllers\RenewalPolicyController;
 use App\Http\Controllers\RewritePolicyController;
 use App\Http\Controllers\SelectedQuoteController;
 use App\Http\Controllers\TecnickcomPdfController;
 use App\Http\Controllers\API\LeadDetailController;
-use App\Http\Controllers\AppointedProductListController;
 use App\Http\Controllers\DepartmentListController;
 use App\Http\Controllers\PaymentChargedController;
 use App\Http\Controllers\RewriteBindingController;
@@ -70,6 +75,7 @@ use App\Http\Controllers\FinanceAgreementPolicyList;
 use App\Http\Controllers\FinancingCompanyController;
 use App\Http\Controllers\PolicyForRenewalController;
 use App\Http\Controllers\PricingBreakdownController;
+use App\Http\Controllers\RegisterCustomerController;
 use App\Http\Controllers\AuditRequiredFileController;
 use App\Http\Controllers\BrokerForFollowUpController;
 use App\Http\Controllers\EmbeddedSignatureController;
@@ -80,7 +86,11 @@ use App\Http\Controllers\CancellationReportController;
 use App\Http\Controllers\GeneralInformationController;
 use App\Http\Controllers\AssignAgentToBrokerController;
 use App\Http\Controllers\AssignAppointedLeadController;
+use App\Http\Controllers\BrokerAssistLeadsLogContoller;
 use App\Http\Controllers\ForRewriteQuotationController;
+use App\Http\Controllers\GeneralNotificationController;
+use App\Http\Controllers\InsuranceSurveyInfoController;
+use App\Http\Controllers\AppointedProductListController;
 use App\Http\Controllers\CommercialAutoPolicyController;
 use App\Http\Controllers\ToolsEquipmentPolicyController;
 use App\Http\Controllers\ForRewriteMakePaymentController;
@@ -91,17 +101,12 @@ use App\Http\Controllers\CancellationEndorsementController;
 use App\Http\Controllers\CancelledPolicyForRecallController;
 use App\Http\Controllers\QuotationProductCallbackController;
 use App\Http\Controllers\AssignQuotedRenewalPolicyController;
-use App\Http\Controllers\BrokerAssistLeadsLogContoller;
 use App\Http\Controllers\BuildersRiskPolicyDetailsController;
 use App\Http\Controllers\PaymentInformationArchivedController;
 use App\Http\Controllers\BussinessOwnersPolicyDetailsController;
 use App\Http\Controllers\ExcessLiabilityInsurancePolicyController;
 use App\Http\Controllers\CancelledPolicyForRecall as ControllersCancelledPolicyForRecall;
-use App\Http\Controllers\CustomerUserController;
-use App\Http\Controllers\GeneralNotificationController;
-use App\Http\Controllers\MediaController;
-use App\Http\Controllers\OldRenewalController;
-use App\Http\Controllers\RegisterCustomerController;
+use App\Http\Controllers\CertificateController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -146,6 +151,32 @@ Route::middleware(['auth'])->group(function (){
 
       //route for dashboard report
       Route::get('/dashboard-report', [DashboardControllerNew::class, 'dashBoardReport'])->name('dashboard-report');
+    });
+
+    // Tools
+    // PDF Tools (AirSlate)
+    Route::prefix('pdf-tools')->group(function () {
+        Route::get('/pdf-editor', [AirSlatePDFController::class, 'pdfEditorIndex'])->name('pdf-editor.index');
+        Route::get('/pdf-fetch-lists', [AirSlatePDFController::class, 'pdfEditorFetch'])->name('pdf-file.fetch');
+        Route::get('/pdf-download', [AirSlatePDFController::class, 'pdfEditorDownload'])->name('pdf-file.download');
+        Route::post('/pdf-store', [AirSlatePDFController::class, 'pdfEditorStore'])->name('pdf-file.store');
+        Route::delete('/pdf-delete', [AirSlatePDFController::class, 'pdfEditorDelete'])->name('pdf-file.delete');
+
+        Route::get('/ocr-pdf', [AirSlatePDFController::class, 'ocrPDFIndex'])->name('ocr-pdf.index');
+        Route::post('/ocr-pdf-store', [AirSlatePDFController::class, 'ocrPdfStore'])->name('ocr-pdf.store');
+
+        Route::post('/upload-document-to-template', [AirSlatePDFController::class, 'pdfUploadDocToTemplate'])->name('pdf-upload.doc-to-template');
+
+        Route::get('/pdf-workflow', [AirslatePDFController::class, 'pdfWorkflowIndex'])->name('pdf-workflow.index');
+    });
+
+    // Email Tools (ZeroBounce)
+    Route::prefix('email-tools')->group(function () {
+        Route::get('/zerobounce-credit-balance', [ZeroBounceController::class, 'countRemainingBalance'])->name('zerobounce-credit-balance');
+        Route::get('/email-validator', [ZeroBounceController::class, 'singleEmailValidatorIndex'])->name('single-email-validator.index');
+        Route::post('/email-validation-process', [ZeroBounceController::class, 'singleEmailValidatorCheck'])->name('single-email-validator.process');
+        Route::get('/batch-email-validator', [ZeroBounceController::class, 'batchEmailValidatorIndex'])->name('batch-email-validator.index');
+        Route::post('/batch-email-validation-process', [ZeroBounceController::class, 'batchEmailValidatorCheck'])->name('batch-email-validator.process');
     });
 
     //accounting module
@@ -305,6 +336,7 @@ Route::middleware(['auth'])->group(function (){
         Route::post('/assign-premium-leads',[AssignLeadController::class, 'assignPremiumLead'])->name('assign-premium-leads');
         Route::post('/delete-selected-leads', [AssignLeadController::class, 'deleteSelectedLeads'])->name('delete-selected-leads');
         Route::get('getStates', [AssignLeadController::class, 'getStates'])->name('get-states');
+        Route::post('/assign-random-spanish-leads', [AssignLeadController::class, 'assignRandomSpanishLeads'])->name('assign-random-spanish-leads');
 
         //routes for apptaker leads
         Route::prefix('list-leads')->group(function  () {
@@ -576,8 +608,6 @@ Route::middleware(['auth'])->group(function (){
                 Route::post('/renewal/get-quoted-renewal', [RenewalQuoteController::class, 'getQuotedRenewal'])->name('renewal.get-quoted-renewal');
                 Route::post('/renewal-handled-policy', [RenewalQuoteController::class, 'renewalHandledPolicy'])->name('renewal-handled-policy');
                 Route::post('/renewal-quote/edit-renewal-quote', [RenewalQuoteController::class, 'editRenewalQuote'])->name('renewal-quote.edit-renewal-quote');
-
-
             });
 
             //route for audit
@@ -596,6 +626,19 @@ Route::middleware(['auth'])->group(function (){
                 Route::post('/get-user-account-setting', [CustomerUserController::class, 'getUserAccountSetting'])->name('get-user-account-setting');
                 Route::post('/account-setting-view', [CustomerUserController::class, 'accountSettingView'])->name('account-setting-view');
             });
+
+            // Online Forms
+            // Quote Form
+            Route::post('/quote-form-list', [QuoteFormInfoController::class, 'quoteFormTable'])->name('quote-form-list');
+            Route::resource('quotation-form', QuoteFormInfoController::class);
+            // Insurance Needs Survey Form
+            Route::post('/insurance-needs-survey-form-list', [InsuranceSurveyInfoController::class, 'insuranceNeedsInfoTable'])->name('insurance-needs-survey-form-list');
+            Route::resource('insurance-needs-survey-form', InsuranceSurveyInfoController::class);
+            Route::get('/download-report/{id}', [InsuranceSurveyInfoController::class, 'downloadReport'])->name('insurance-needs-report');
+
+            Route::resource('certificate', CertificateController::class);
+            Route::post('get-request-for-cert', [CertificateController::class, 'getRequestForCert'])->name('get-request-for-cert');
+            Route::post('approved-cert', [CertificateController::class, 'approvedCert'])->name('approved-cert');
 
         });
 
@@ -655,6 +698,7 @@ Route::middleware(['auth'])->group(function (){
         Route::prefix('scheduler')->group(function(){
             route::resource('/task-scheduler', LeadTaskSchedulerController::class);
             Route::post('/get-task-scheduler', [LeadTaskSchedulerController::class, 'getTaskScheduler'])->name('get-task-scheduler');
+            Route::post('/get-task-scheduler-list', [LeadTaskSchedulerController::class, 'getTaskSchedulerList'])->name('get-task-scheduler-list');
         });
 
 

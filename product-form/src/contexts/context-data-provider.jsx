@@ -30,79 +30,7 @@ const ContextDataProvider = ({ children }) => {
     const { cities } = LeadCity();
     const { zipCity } = LeadZipCodeCities();
     const { classCodeArray } = ClassCodeData();
-    // const [additionalData, setAdditionalData] = useState(null);
 
-    // useEffect(() => {
-    //     if (lead && !loading) {
-    //         const loadAdditionalData = async () => {
-    //             const [
-    //                 zipcodes,
-    //                 cities,
-    //                 zipCity,
-    //                 classCodeArray,
-    //                 generalInformation,
-    //                 generalLiabilitiesData,
-    //                 generalLiabilityPreviousData,
-    //                 workersCompensationData,
-    //                 workersCompensationPreviousData,
-    //                 commercialAutoData,
-    //                 commercialAutoPreviousData,
-    //                 excessLiabilityData,
-    //                 excessLiabilityPreviousData,
-    //                 toolsEquipmentData,
-    //                 toolsEquipmentPreviousData,
-    //                 buildersRiskData,
-    //                 buildersRiskPreviousData,
-    //                 businessOwnersPolicyData,
-    //                 businessOwnersPolicyPreviousData,
-    //             ] = await Promise.all([
-    //                 LeadZipcode(),
-    //                 LeadCity(),
-    //                 LeadZipCodeCities(),
-    //                 ClassCodeData(),
-    //                 GeneralInformationData(),
-    //                 GeneralLiabilitiesData(),
-    //                 GeneralLiabilitiPreviousData(),
-    //                 WorkersCompensationData(),
-    //                 WorkersCompensationPreviousData(),
-    //                 CommercialAutoData(),
-    //                 CommercialAutoPreviousData(),
-    //                 ExcessLiabilityData(),
-    //                 ExcessLiabilityPreviousData(),
-    //                 ToolsEquipmentData(),
-    //                 ToolsEquipmentPreviousData(),
-    //                 BuildersRiskData(),
-    //                 BuildersRiskPreviousData(),
-    //                 BusinessOwnersPolicyData(),
-    //                 BusinessOwnersPolicyPreviousData(),
-    //             ]);
-
-    //             setAdditionalData({
-    //                 zipcodes,
-    //                 cities,
-    //                 zipCity,
-    //                 classCodeArray,
-    //                 generalInformation,
-    //                 generalLiabilitiesData,
-    //                 generalLiabilityPreviousData,
-    //                 workersCompensationData,
-    //                 workersCompensationPreviousData,
-    //                 commercialAutoData,
-    //                 commercialAutoPreviousData,
-    //                 excessLiabilityData,
-    //                 excessLiabilityPreviousData,
-    //                 toolsEquipmentData,
-    //                 toolsEquipmentPreviousData,
-    //                 buildersRiskData,
-    //                 buildersRiskPreviousData,
-    //                 businessOwnersPolicyData,
-    //                 businessOwnersPolicyPreviousData,
-    //             });
-    //         };
-
-    //         loadAdditionalData();
-    //     }
-    // }, [lead, loading]); // Depend on `lead` and `loading`
     return (
         <ContextData.Provider
             value={{ lead, loading, zipcodes, cities, zipCity, classCodeArray }}
