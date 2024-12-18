@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\API\ApiAuthController;
+use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\BuildersRiskController;
 use App\Http\Controllers\API\BusinessOwnersPolicyController;
 use App\Http\Controllers\API\ClassCodeDataController;
 use App\Http\Controllers\API\CommercialAutoController;
+use App\Http\Controllers\API\CreateCertificateController;
 use App\Http\Controllers\API\CustomerServiceController;
 use App\Http\Controllers\API\ExcessLiabilityController;
 use App\Http\Controllers\API\GeneralInformationData;
@@ -46,6 +48,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+
 });
 
 
@@ -65,6 +68,7 @@ Route::post('general-information-data', [GeneralInformationDataController::class
 Route::get('general_information', [GeneralInformationDataController::class, 'generalInformationData'])->withoutMiddleware(['auth:sanctum']);
 Route::put('general-information-data/{id}', [GeneralInformationDataController::class, 'updateGenneralInformationData'])->withoutMiddleware(['auth:sanctum']);
 Route::get('general-information-data/edit/{id}', [GeneralInformationDataController::class, 'edit'])->withoutMiddleware(['auth:sanctum']);
+Route::post('update-contact-information', [GeneralInformationDataController::class, 'updateContactInformation'])->withoutMiddleware(['auth:sanctum']);
 
 //route for general liabilities
 Route::post('general-liabilities-data', [GeneralLiabilitiesDataController::class, 'saveGeneralLiabilities'])->withoutMiddleware(['auth:sanctum']);
@@ -127,6 +131,16 @@ Route::get('get-sample-data', [PoliciesDataController::class, 'getSampleData'])-
 Route::get('get-company', [CustomerServiceController::class, 'getCompany'])->withoutMiddleware(['auth:sanctum']);
 Route::get('get-user-list', [CustomerServiceController::class, 'getUserList'])->withoutMiddleware(['auth:sanctum']);
 Route::post('main-line-customer-service', [CustomerServiceController::class, 'mainLineCustomerService'])->withoutMiddleware(['auth:sanctum']);
+
+Route::post('/signup', [AuthController::class, 'signup']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/lead-data/{userId}', [LeadDetailController::class, 'getLeadDataUserId'])->name('get-lead-data-user-id');
+    Route::post('/get-policy-information/{policyId}', [PoliciesDataController::class, 'getPolicyInformation'])->name('get-policy-information');
+    Route::post('/generate-cert-pdf', [CreateCertificateController::class, 'generateCertPdf'])->name('generate-cert-pdf');
+});
+
 
 // Get a quote form API
 Route::post('store-quoteform-data', [QuoteFormController::class, 'storeData'])->withoutMiddleware(['auth:sanctum']);

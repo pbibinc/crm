@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('insurance_needs_form');
+        Schema::dropIfExists('insurance_needs_form_table');
     }
 };

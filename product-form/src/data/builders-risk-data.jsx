@@ -19,6 +19,7 @@ const BuildersRiskData = () => {
         };
         fetchBuildersRiskData();
     }, [lead?.data?.id]);
+
     return { buildersRiskData };
 };
 

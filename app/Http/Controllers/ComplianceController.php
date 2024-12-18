@@ -86,7 +86,7 @@ class ComplianceController extends Controller
      */
     public function destroy($id)
     {
-        //
+
     }
 
     public function getPendingProduct(Request $request)
@@ -101,6 +101,9 @@ class ComplianceController extends Controller
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
             $companyLink = '<a href="" class="viewButton" id="'.$data->id.'">'.$companyName.'</a>';
+            if($data->QuoteInformation->QuoteLead->leads->is_spanish == 1){
+                $companyLink .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+            }
             return $companyLink;
         })
         ->addColumn('quotedBy', function($data){
@@ -158,12 +161,14 @@ class ComplianceController extends Controller
         $userId = auth()->user()->id;
         $userProfileId = UserProfile::where('user_id' , $userId)->first()->id;
         $data = $brokerQuotation->getAgentProductByBrokerUserprofileId($userProfileId, 4);
-        // $data = QuotationProduct::where('status', 3)->orderBy('updated_at', 'desc')->get();
         return DataTables::of($data)
         ->addIndexColumn()
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
             $companyLink = '<a href="" class="viewButton" id="'.$data->id.'">'.$companyName.'</a>';
+            if($data->QuoteInformation->QuoteLead->leads->is_spanish == 1){
+                $companyLink .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+            }
             return $companyLink;
         })
         ->addColumn('quotedBy', function($data){
@@ -208,6 +213,9 @@ class ComplianceController extends Controller
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
             $companyLink = '<a href="" class="viewButton" id="'.$data->id.'">'.$companyName.'</a>';
+            if($data->QuoteInformation->QuoteLead->leads->is_spanish == 1){
+                $companyLink .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+            }
             return $companyLink;
         })
         ->addColumn('quotedBy', function($data){
@@ -270,6 +278,9 @@ class ComplianceController extends Controller
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
             $companyLink = '<a href="" class="viewButton" id="'.$data->id.'">'.$companyName.'</a>';
+            if($data->QuoteInformation->QuoteLead->leads->is_spanish == 1){
+                $companyLink .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+            }
             return $companyLink;
         })
         ->addColumn('quotedBy', function($data){
@@ -340,6 +351,9 @@ class ComplianceController extends Controller
         ->addColumn('companyName', function($data){
             $companyName = $data->QuoteInformation->QuoteLead->leads->company_name;
             $companyLink = '<a href="" class="viewButton" id="'.$data->id.'">'.$companyName.'</a>';
+            if($data->QuoteInformation->QuoteLead->leads->is_spanish == 1){
+                $companyLink .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+            }
             return $companyLink;
         })
         ->addColumn('quotedBy', function($data){

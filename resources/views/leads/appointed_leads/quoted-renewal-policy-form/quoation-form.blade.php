@@ -6,6 +6,11 @@
     $selectedQuote = $selectedQuoteData ? $selectedQuoteData : null;
     $selectedQuoteId = $selectedQuote ? $selectedQuote->id : null;
     $paymentInformation = PaymentInformation::where('selected_quote_id', $selectedQuoteId)->latest()->first();
+    $productIds = [];
+    foreach ($products as $product) {
+        $productIds[] = $product->id;
+    }
+
 @endphp
 
 <style>
@@ -15,25 +20,36 @@
     }
 </style>
 
-<div class="row mb-2">
-    <div class="col-6 title-card">
-        <h4 class="card-title mb-0" style="color: #ffffff">Quoations</h4>
+<div class="card-header d-flex justify-content-between align-items-center mb-2">
+    <div>
+        <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addQuoteModal" id="create_record">
+            ADD QUOTE
+        </a>
+        @if ($policyDetail->status == 'Renewal Quote')
+            <button href="#" class="btn btn-primary" id="sendQuoteButton">SEND QUOTE</button>
+        @endif
     </div>
-    <div class="d-flex justify-content-between">
-        <div>
 
+    <div class="row">
+        <div class="col-6">
+            <label for="product" class="form-label">Product</label>
+            <select name="product" id="tableProductDropdown" class="form-select form-select-sm">
+                <option value="">Select Product</option>
+                @foreach ($productsDropdown as $product)
+                    <option value="{{ $product }}">{{ $product }}</option>
+                @endforeach
+            </select>
         </div>
-        <div>
-            <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addQuoteModal"
-                id="create_record">
-                ADD QUOTE
-            </a>
-
-            @if ($policyDetail->status == 'Renewal Quote')
-                <button href="#" class="btn btn-primary" id="sendQuoteButton">SEND QUOTE</button>
-            @endif
+        <div class="col-6">
+            <label for="Status" class="form-label">Filter By Status</label>
+            <select name="status" id="tableStatusDropdown" class="form-select form-select-sm">
+                <option value="">Select Type Of Quote</option>
+                <option value="New Quote">New Quote</option>
+                <option value="Old Quote">Old Quote</option>
+            </select>
         </div>
     </div>
+
 </div>
 
 <div class="row">
@@ -75,7 +91,7 @@
                         MAKE PAYMENT
                     </button>
                 @endif --}}
-                @if ($paymentInformation && ($paymentInformation->status == 'Pending' || $paymentInformation->status == 'declined'))
+                {{-- @if ($paymentInformation && ($paymentInformation->status == 'Pending' || $paymentInformation->status == 'declined'))
                     <button class="btn btn-primary editMakePayment" id="makePaymentButton">
                         EDIT MAKE PAYMENT
                     </button>
@@ -83,7 +99,7 @@
                     <button class="btn btn-success makePaymentButton" id="makePaymentButton">
                         MAKE PAYMENT
                     </button>
-                @endif
+                @endif --}}
             </div>
 
         </div>
@@ -288,14 +304,14 @@
 @include(
     'leads.appointed_leads.broker-quotation-forms.selected-quote-edit-form',
     compact('selectedQuoteId'))
-@include('leads.appointed_leads.broker-forms.make-payment-form', compact('complianceOfficer'))
+{{-- @include('leads.appointed_leads.broker-forms.make-payment-form', compact('complianceOfficer')) --}}
 
 <script>
     Dropzone.autoDiscover = false;
     var quoteRenewalDropzone;
     $(document).ready(function() {
         var id = {{ $quoteProduct->id }};
-
+        var ids = @json($productIds);
         $('.qoutation-table').DataTable({
             processing: true,
             serverSide: true,
@@ -304,11 +320,15 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
                         'content')
                 },
-                url: "{{ route('get-general-liabilities-quotation-table') }}",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    id: id
-                }
+                url: "{{ route('get-quote-list-table') }}",
+                data: function(d) {
+                    d._token = "{{ csrf_token() }}";
+                    d.ids = ids;
+                    d.product = $('#tableProductDropdown').val();
+                    d.status = $('#tableStatusDropdown').val();
+
+                },
+                method: 'POST'
             },
             columns: [{
                     data: 'market_name',
@@ -340,6 +360,20 @@
                     orderable: false
                 }
             ]
+        });
+
+        $('#tableProductDropdown, #tableStatusDropdown').off('change');
+        // Set default values after DOM is fully loaded
+        $('#tableProductDropdown')
+            .val('{{ $quoteProduct->product }}');
+
+        $('#tableStatusDropdown')
+            .val('New Quote');
+
+        $('#tableProductDropdown, #tableStatusDropdown').on('change', function() {
+            $('#qoutation-table').DataTable()
+                .ajax
+                .reload();
         });
 
         //submition of form
@@ -527,7 +561,6 @@
         };
 
 
-
         //upload file button functionalities
         $(document).on('click', '.uploadFileButton', function(e) {
             e.preventDefault();
@@ -681,108 +714,14 @@
         });
 
 
+        $('.qoutation-table').DataTable().ajax.reload();
+
+
     });
 
-
-
-
-
-
-    //function for parsing
-    function parseCurrency(num) {
-        if (num === undefined || num === null || num.trim() === "") {
-            return 0;
-        }
-        return parseFloat(num.replace(/[^0-9-.]/g, ''));
-    }
-
-    //calculate total premium
-    function calculateFullPayment() {
-        let premium = parseCurrency($('#premium').val()) || 0;
-        let endorsements = parseCurrency($('#endorsements').val()) || 0;
-        let policyFee = parseCurrency($('#policyFee').val()) || 0;
-        let inspectionFee = parseCurrency($('#inspectionFee').val()) || 0;
-        let stampingFee = parseCurrency($('#stampingFee').val()) || 0;
-        let suplusLinesTax = parseCurrency($('#suplusLinesTax').val()) || 0;
-        let placementFee = parseCurrency($('#placementFee').val()) || 0;
-        let brokerFee = parseCurrency($('#brokerFee').val()) || 0;
-        let miscellaneousFee = parseCurrency($('#miscellaneousFee').val()) || 0;
-
-        let fullPayment = premium + endorsements + policyFee + inspectionFee + stampingFee + suplusLinesTax +
-            placementFee + brokerFee + miscellaneousFee;
-        $('#fullPayment').val('$ ' + fullPayment.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
-    }
 
     $('.calculateInput').on('input', function() {
         calculateFullPayment();
-    });
-
-    //broker side make payment button
-    $(document).on('click', '.makePaymentButton', function() {
-        var id = "{{ $selectedQuoteId }}";
-        var policyId = "{{ $policyDetail->id }}";
-        $.ajax({
-            url: "{{ route('edit-selected-quote') }}",
-            method: "POST",
-            data: {
-                id: id,
-                _token: "{{ csrf_token() }}"
-            },
-            dataType: "json",
-            success: function(response) {
-                $('#paymentType').val('Direct Renewals').trigger('change');
-                $('#quoteNumber').val(response.data.quote_no);
-                $('#market').val(response.market.name);
-                $('#companyName').val(response.leads.company_name);
-                $('#firstName').val(response.generalInformation.firstname);
-                $('#lastName').val(response.generalInformation.lastname);
-                $('#emailAddress').val(response.generalInformation.email_address);
-                $('#totalPremium').val(response.data.full_payment);
-                $('#brokerFeeAmount').val(response.data.broker_fee);
-                $('#generalInformationId').val(response.generalInformation.id);
-                $('#leadsId').val(response.leads.id);
-                $('#quoteComparisonId').val(id);
-                $('#selectedQuoteId').val(id);
-                $('#makePaymentEffectiveDate').val(response.data.effective_date);
-                $('#policyDetailId').val(policyId);
-                $('#makePaymentModal').modal('show');
-
-            }
-        });
-        var paymentInformation = $(this).attr('data-payment-information') ? JSON.parse($(this).attr(
-            'data-payment-information')) : {};
-
-        if (Object.keys(paymentInformation).length !== 0) {
-            $('#paymentTerm').val(paymentInformation.payment_term);
-            if (paymentInformation.payment_method == 'Visa' || paymentInformation.payment_method ==
-                'Master Card' || paymentInformation.payment_method == 'American Express' ||
-                paymentInformation
-                .payment_method == 'Discover') {
-                $('#paymentMethodMakePayment').val('Credit Card');
-                $('#cardType').attr('hidden', false);
-                $('#cardTypeLabel').attr('hidden', false);
-                $('#cardType').val(paymentInformation.payment_method);
-            } else if (paymentInformation.method == 'Checking') {
-                $('#paymentMethodMakePayment').val('Checking');
-
-            } else {
-                $('#paymentMethodMakePayment').val('Credit Card');
-                $('#cardType').attr('hidden', false);
-                $('#cardType').val('Other');
-                $('#cardTypeLabel').attr('hidden', false);
-                $('#otherCardLabel').attr('hidden', false);
-                $('#otherCard').attr('hidden', false);
-                $('#otherCard').val(paymentInformation.payment_method);
-            }
-        }
-        $('#paymentType').val(paymentInformation.payment_type);
-        $('#insuranceCompliance').val(paymentInformation.compliance_by);
-        $('#paymentMethod').val(paymentInformation.payment_method);
-        $('#statusInput').val($(this).attr('data-status'));
-        $('#quotationProductId').val($(this).attr('data-productId'));
-        $('#chargedAmount').val(paymentInformation.amount_to_charged);
-        $('#note').val(paymentInformation.note);
-        $('#paymentInformationId').val(paymentInformation.id);
     });
 
     //renewal quote button
@@ -835,56 +774,7 @@
         });
     });
 
-    //edit make payment
-    $(document).on('click', '.editMakePayment', function() {
-        $.ajax({
-            url: "{{ route('get-payment-information') }}",
-            method: "GET",
-            data: {
-                id: "{{ $paymentInformation ? $paymentInformation->id : '' }}",
-                _token: "{{ csrf_token() }}"
-            },
-            dataType: "json",
-            success: function(response) {
-                console.log(response);
-                var paymentMethod = response.paymentInformation.payment_method;
-                $('#paymentType').val(response.paymentInformation.payment_type);
-                $('#insuranceCompliance').val(response.paymentInformation.compliance_by);
-                $('#market').val(response.market.name);
-                $('#firstName').val(response.generalInformation.firstname);
-                $('#companyName').val(response.lead.company_name);
-                $('#makePaymentEffectiveDate').val(response.quoteComparison.effective_date);
-                $('#quoteNumber').val(response.quoteComparison.quote_no);
-                $('#paymentTerm').val(response.paymentInformation.payment_term);
-                $('#lastName').val(response.generalInformation.lastname);
-                $('#emailAddress').val(response.generalInformation.email_address);
-                // Set the payment method dropdown based on the fetched payment method
-                if (paymentMethod.toLowerCase() == 'checking') {
-                    $('#paymentMethodMakePayment').val('Checking').trigger('change');
-                } else {
-                    $('#paymentMethodMakePayment').val("Credit Card").trigger('change');
-                    // Handling other card types
-                    if (['Visa', 'Master Card', 'American Express'].includes(paymentMethod)) {
-                        $('#cardType').val(paymentMethod).trigger('change');
-                    } else {
-                        $('#cardType').val('Other').trigger('change');
-                        $('#otherCard').val(paymentMethod);
-                    }
-                }
-                $('#totalPremium').val(response.quoteComparison.full_payment);
-                $('#brokerFeeAmount').val(response.quoteComparison.broker_fee);
-                $('#chargedAmount').val(response.paymentInformation.amount_to_charged);
-                $('#note').val(response.paymentInformation.note);
-                $('#generalInformationId').val(response.generalInformation.id);
-                $('#leadsId').val(response.lead.id);
-                $('#quoteComparisonId').val(response.quoteComparison.id);
-                $('#paymentInformationId').val(response.paymentInformation.id);
-                $('#policyDetailId').val({{ $policyDetail->id }});
-                $('#selectedQuoteId').val({{ $selectedQuoteId }});
-                $('#makePaymentModal').modal('show');
-            }
-        })
-    });
+
 
     $(document).on('click', '.editSelectedQuote', function(e) {
         e.preventDefault();
@@ -948,8 +838,6 @@
         });
     });
 
-
-
     //edit button functionalities
     $(document).on('click', '.editButton', function(e) {
         e.preventDefault();
@@ -1007,7 +895,6 @@
         });
 
     });
-
 
     // renew the quotation
     $(document).on('click', '.renewQuotation', function() {

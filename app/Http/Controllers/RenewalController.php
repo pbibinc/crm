@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\AssignPolicyForRenewalEvent;
 use App\Http\Controllers\Controller;
+use App\Models\FinancingCompany;
 use App\Models\GeneralInformation;
 use App\Models\Insurer;
 use App\Models\Lead;
@@ -192,20 +193,23 @@ class RenewalController extends Controller
 
             $policyDetail = PolicyDetail::find($policyDetailsId);
             $product = QuotationProduct::find($policyDetail->quotation_product_id);
+            $quotationProduct = $product;
             if (!$product) {
                 Log::warning('Product not found', ['Product ID' => $product->id]);
                 return redirect()->route('leads.appointed-leads')->withErrors('Product not found');
             }
+            $quotationProduct = QuotationProduct::find($product->id);
+            $products = QuotationProduct::where('quote_information_id', $quotationProduct->quote_information_id)->get();
+            $leads = Lead::find($product->QuoteInformation->QuoteLead->leads->id);
 
-            $lead = Lead::find($product->QuoteInformation->QuoteLead->leads->id);
-            if (!$lead) {
+            if (!$leads) {
                 Log::warning('Lead not found', ['Product ID' => $product->id]);
                 return redirect()->route('leads.appointed-leads')->withErrors('Lead not found');
             }
 
-            $generalInformation = GeneralInformation::find($lead->generalInformation->id);
+            $generalInformation = GeneralInformation::find($leads->generalInformation->id);
             if (!$generalInformation) {
-                Log::warning('General Information not found', ['Lead ID' => $lead->id]);
+                Log::warning('General Information not found', ['Lead ID' => $leads->id]);
                 return redirect()->route('leads.appointed-leads')->withErrors('General Information not found');
             }
 
@@ -231,7 +235,7 @@ class RenewalController extends Controller
             $usAddress = UnitedState::getUsAddress($generalInformation->zipcode);
             $timezoneForState = null;
             foreach ($timezones as $timezone => $states) {
-                if (in_array($lead->state_abbr, $states)) {
+                if (in_array($leads->state_abbr, $states)) {
                     $timezoneForState = $timezoneStrings[$timezone];
                     break;
                 }
@@ -244,8 +248,14 @@ class RenewalController extends Controller
             $userProfile = new UserProfile();
             $complianceOfficer = $userProfile->complianceOfficer();
             $products = $product->getQuotedProductByQuotedInformationId($product->quote_information_id);
-
-            return view('leads.appointed_leads.renewal-lead-profile-view.index', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer', 'carriers', 'markets', 'policyDetail', 'products'));
+            $activePolicies = $policyDetail->getActivePolicyDetailByLeadId($leads->id);
+            $userProfiles = UserProfile::get()->sortBy('first_name');
+            $productIds = $leads->getQuotationProducts()->pluck('id')->toArray();
+            $selectedQuotes = SelectedQuote::whereIn('quotation_product_id', $productIds)->get() ?? [];
+            $financeCompany = FinancingCompany::all();
+            $templates = Templates::all();
+            $customerUsers = User::where('role_id', 12)->orderBy('email')->get();
+            return view('leads.appointed_leads.renewal-lead-profile-view.index', compact('leads', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer', 'carriers', 'markets', 'policyDetail', 'products', 'activePolicies', 'userProfiles', 'quotationProduct', 'selectedQuotes', 'productIds', 'financeCompany', 'templates', 'customerUsers'));
     }
 
     public function getRenewalReminder(Request $request)
@@ -257,7 +267,8 @@ class RenewalController extends Controller
             ->addIndexColumn()
             ->addColumn('policy_no', function($policiesData){
                 $policyNumber = $policiesData->policy_number;
-                return $policyNumber;
+                $policynumberViewLink = '<a href="/customer-service/renewal/get-renewal-lead-view/'.$policiesData->id.'"  id="'.$policiesData->policy_details_id.'">'.$policyNumber.'</a>';
+                return $policynumberViewLink;
             })
             ->addColumn('company_name', function($policiesData){
                 $lead = $policiesData->QuotationProduct->QuoteInformation->QuoteLead->leads;

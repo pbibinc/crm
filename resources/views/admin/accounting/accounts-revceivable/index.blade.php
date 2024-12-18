@@ -267,7 +267,6 @@
             </div>
         </div>
 
-
     </div>
 
     <script>
@@ -527,6 +526,13 @@
                             if (result.isConfirmed) {
                                 $('#account-payable-table').DataTable().ajax.reload();
                             }
+                        });
+                    },
+                    error: function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Something went wrong',
                         });
                     }
                 })

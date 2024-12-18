@@ -29,23 +29,14 @@
 
     Echo.channel('assign-appointed-lead-notification').listen('.AssignAppointedLead', (notification) => {
         alert('test this notification');
-        console.log('test this notification');
+
     });
 
     Echo.channel('assign-appointed-lead').listen('AssignAppointedLeadEvent', (e) => {
         var notifyId = e.userId;
         enqueueNotification(e, 'New Request For Quotation', 'You have been assigned a new lead',
             `/appointed-list`);
-        // if (userId == notifyId) {
-        //     Push.create('New Request For Quotation', {
-        //         body: `You have been assigned a new lead`,
-        //         onClick: function() {
-        //             window.focus();
-        //             window.open(`/appointed-list`, '_blank');
-        //             this.close();
-        //         }
-        //     });
-        // }
+
     });
 
     Echo.channel('reassign-appointed-lead').listen('ReassignedAppointedLead', (e) => {
@@ -100,10 +91,33 @@
             });
             if (!processingQueue) {
                 processNotificationQueue();
+                $.ajax({
+                    url: "{{ route('get-notification') }}",
+                    type: 'POST',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+                        appendNotifications(response.data);
+                        fetchAndDisplayNotifications();
+                    }
+                });
             }
         }
     }
 
+    function fetchAndDisplayNotifications() {
+        $.ajax({
+            url: "{{ route('get-notification') }}",
+            type: 'POST',
+            data: {
+                _token: "{{ csrf_token() }}",
+            },
+            success: function(response) {
+                appendNotifications(response.data);
+            }
+        });
+    }
 
     function processNotificationQueue() {
         if (notificationQueue.length > 0 && !processingQueue) {
@@ -130,7 +144,6 @@
 
         }
     }
-
 
     function displayToast(message, title, icon) {
         return new Promise((resolve) => {

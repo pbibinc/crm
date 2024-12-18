@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Insurer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
 class InsurerController extends Controller
@@ -20,18 +22,27 @@ class InsurerController extends Controller
                 return $editButton . ' ' . $deleteButton;
             })
             ->rawColumns(['action_button'])
-            ->toJson();;
+            ->toJson();
         }
         return view('insurer.index');
     }
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        $insurer = new Insurer();
-        $insurer->name = $data['name'];
-        $insurer->save();
-        return response()->json(['success' => 'insurer has been saved'], 200);
+        try{
+            DB::beginTransaction();
+            $data = $request->all();
+            $insurer = new Insurer();
+            $insurer->name = $data['name'];
+            $insurer->naic_number = $data['naicNumber'];
+            $insurer->save();
+            DB::commit();
+            return response()->json(['success' => 'insurer has been saved'], 200);
+        }catch(\Exception $e){
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+
     }
 
     public function edit($id)
@@ -42,11 +53,20 @@ class InsurerController extends Controller
 
     public function update(Request $request, $id)
     {
-        $data = $request->all();
-        $insurer = Insurer::find($id);
-        $insurer->name = $data['name'];
-        $insurer->save();
-        return response()->json(['success' => 'insurer has been updated'], 200);
+        try{
+            DB::beginTransaction();
+            $data = $request->all();
+            $insurer = Insurer::find($id);
+            $insurer->name = $data['name'];
+            $insurer->naic_number = $data['naicNumber'];
+            $insurer->save();
+
+            DB::commit();
+            return response()->json(['success' => 'insurer has been updated'], 200);
+        }catch(\Exception $e){
+            Log::error($e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function destroy($id)

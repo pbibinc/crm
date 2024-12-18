@@ -34,6 +34,7 @@
                             'content')
                     },
                     url: "{{ route('policy-list') }}",
+                    async: false,
                     data: {
                         _token: "{{ csrf_token() }}",
                     }

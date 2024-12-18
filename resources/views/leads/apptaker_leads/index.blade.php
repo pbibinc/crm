@@ -103,6 +103,7 @@
                                 style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                 <div class="row">
 
+                                    {{-- timezone dropdown --}}
                                     <div class="col-3">
                                         <div class="mb-3">
                                             <div class="form-group">
@@ -118,6 +119,7 @@
                                         </div>
                                     </div>
 
+                                    {{-- states dropdown --}}
                                     <div class="col-3">
                                         <div class="mb-3">
                                             <div class="form-group">
@@ -180,7 +182,8 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-3">
+                                    {{-- classcode dropdown --}}
+                                    <div class="col-2">
                                         <div class="mb-3">
                                             <div class="form-group">
                                                 <label class="form-label">Class Code</label>
@@ -197,7 +200,8 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-3">
+                                    {{-- lead type dropdown --}}
+                                    <div class="col-2">
                                         <div class="mb-3">
                                             <div class="form-group">
                                                 <label for="leadTypeDropdown" class="form-label">Leads Type</label>
@@ -207,6 +211,21 @@
                                                     <option value="">ALL</option>
                                                     <option value="2">Prime Lead</option>
                                                     <option value="1">Normal Lead</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- spanish dropdown --}}
+                                    <div class="col-2">
+                                        <div class="mb-3">
+                                            <div class="form-group">
+                                                <label for="spanishLeadDropdown" class="form-label">Leads Type</label>
+                                                <select name="spanish_dropdown" id="spanishLeadDropdown"
+                                                    class="form-control select2">
+                                                    <option value="">ALL</option>
+                                                    <option value="1">Spanish Lead</option>
+                                                    <option value="0">English Lead</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -268,6 +287,7 @@
                     </div>
 
                     <div class="modal-footer">
+                        <input type="hidden" id='dispoId'>
                         <button type="button" class="btn btn-success waves-effect waves-light callbackDispoSubmitButton"
                             id="callbackDispoSubmitButton">Submit</button>
                         <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
@@ -365,12 +385,10 @@
         <script src="{{ asset('backend/assets/libs/inputmask/jquery.inputmask.min.js') }}"></script>
         <script>
             $(document).ready(function() {
-                $('#leadsApptakerDataTable').DataTable({
+                var leadAppTakerTable = $('#leadsApptakerDataTable').DataTable({
                     processing: true,
                     serverSide: true,
                     searching: true,
-                    // scrollY: 500,
-                    // scrollX: true,
                     ajax: {
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -380,10 +398,11 @@
                             d.website_originated = $('#websiteOriginatedDropdown').val(),
                                 d.classCodeLead = $('#classCodeLeadDropdown').val(),
                                 d.states = $('#statesDropdown').val(),
-                                d.leadType = $('#leadTypeDropdown').val()
+                                d.leadType = $('#leadTypeDropdown').val(),
+                                d.spanishLead = $('#spanishLeadDropdown').val()
                         },
                         dataSrc: function(json) {
-                            $('#dataCount').html(json.totalDataCount ? json.totalDataCount : 0);
+                            $('#dataCount').html(json.recordsTotal ? json.recordsTotal : 0);
                             return json.data;
                         }
                     },
@@ -417,10 +436,11 @@
                     ]
                 });
 
-                // $('#openFormLinkButton').on('click', function(e) {
-                //     window.open("http://localhost:3000/appointed-lead-questionare", "_blank",
-                //         "width=400,height=800");
-                // });
+
+                $('#spanishLeadDropdown').on('change', function() {
+                    $('#leadsApptakerDataTable').DataTable().ajax.reload();
+                });
+
 
                 // scripts for reloading and configuring the dropdowns filters
                 $('#websiteOriginatedDropdown').on('change', function() {
@@ -454,7 +474,8 @@
                 });
 
                 $(document).on('change', '#dispositionDropDown', function(e) {
-                    var dropdownId = $(this).attr('id')
+                    var dropdownId = $(this).attr('id');
+
                     var rowId = dropdownId.replace('dispositionDropDown', '');
                     var selectedDisposition = $(this).val();
                     var url = "{{ env('APP_FORM_URL') }}";
@@ -479,21 +500,25 @@
                     }
                     if (selectedDisposition == '2') {
                         $('#callbackModal').modal('show');
+                        $('#dispoId').val(selectedDisposition);
                         $('#transactionLogModal').modal('hide');
                     }
 
                     if (selectedDisposition == '6') {
                         $('#callbackModal').modal('show');
+                        $('#dispoId').val(selectedDisposition);
                         $('#transactionLogModal').modal('hide');
                     }
 
                     if (selectedDisposition == '11') {
                         $('#callbackModal').modal('show');
+                        $('#dispoId').val(selectedDisposition);
                         $('#transactionLogModal').modal('hide');
                     }
 
                     if (selectedDisposition == '12') {
                         $('#callbackModal').modal('show');
+                        $('#dispoId').val(selectedDisposition);
                         $('#transactionLogModal').modal('hide');
                     }
 
@@ -521,7 +546,8 @@
                     e.preventDefault();
                     var dateTime = $('#callBackDateTime').val();
                     var callBackRemarks = $('#callBackRemarks').val();
-                    var dispositionId = $('#dispositionDropDown').val();
+                    var dispositionId = $('#dispoId').val();
+
                     var leadId = $('#leadId').val();
                     $.ajax({
                         url: "{{ route('call-back.store') }}",

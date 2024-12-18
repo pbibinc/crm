@@ -5,7 +5,10 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Lead;
+use App\Models\PolicyDetail;
+use App\Models\QuotationProduct;
 use App\Models\UnitedState;
+use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Support\Facades\Cache;
 use SebastianBergmann\CodeCoverage\Report\Xml\Unit;
@@ -72,6 +75,25 @@ class LeadDetailController extends BaseController
         }
 
         return $this->sendResponse($appointedSalesPerPerson, 'Appointed Sales Per Person retrieved successfully.');
+    }
+
+    public function getLeadDataUserId($userId)
+    {
+        $user = User::find($userId);
+        $userLeadIds = $user->userLead->pluck('id');
+        $leads = $user->userLead()->with(['GeneralInformation', 'quoteLead.QuoteInformation.QuotationProducts.PolicyDetail', 'quoteLead.QuoteInformation.QuotationProducts.QouteComparison', 'Certificate', ])->get();
+
+        $leads->each(function ($lead) {
+            $leadId = $lead->id;
+            $policy = PolicyDetail::getPolicyDetailByLeadId($leadId);
+            $lead->setAttribute('activePolicies', $policy);
+        });
+
+
+        if (is_null($leads)) {
+            return $this->sendError('Leads not found.');
+        }
+        return $this->sendResponse($leads->toArray(), 'Leads retrieved successfully.');
     }
 }
 

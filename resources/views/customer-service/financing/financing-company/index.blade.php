@@ -69,7 +69,10 @@
             $('#dataTable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('financing-company.index') }}",
+                ajax: {
+                    url: "{{ route('financing-company.index') }}",
+                    async: false,
+                },
                 columns: [{
                         data: 'id',
                         name: 'id'

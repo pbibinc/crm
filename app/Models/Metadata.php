@@ -11,6 +11,11 @@ class Metadata extends Model
 
     protected $table = 'metadata';
 
+    public function Certificate()
+    {
+        return $this->hasMany(Certificate::class, 'media_id');
+    }
+
     public function QuoteComparison()
     {
         return $this->belongsToMany(QuoteComparison::class, 'quoatation_comparison_media_table', 'metadata_id', 'quote_comparison_id');
@@ -44,6 +49,11 @@ class Metadata extends Model
     public function auditRequiredFile()
     {
         return $this->belongsToMany(AuditInformation::class, 'audit_required_file', 'media_id', 'audit_information_id');
+    }
+
+    public function reaccuringMedia()
+    {
+        return $this->belongsToMany(FinancingAgreement::class, 'recurring_ach_media', 'media_id', 'financing_aggreement_id');
     }
 
     // PDF User Files

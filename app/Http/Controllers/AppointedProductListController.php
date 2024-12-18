@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\HistoryLogsEvent;
 use App\Models\Lead;
 use App\Models\QuoteLead;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use App\Models\QuotationProduct;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AppointedProductListController extends Controller
 {
@@ -16,9 +20,8 @@ class AppointedProductListController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
         $userProfile = new UserProfile();
         $apptaker = $userProfile->apptaker();
         $quoters = $userProfile->qouter();
@@ -28,64 +31,20 @@ class AppointedProductListController extends Controller
         $lead = new Lead();
         $quoteLead = new QuoteLead();
         $appointedLeads = $lead->getAppointedLeads();
-        $appointedProducts =  $quoteLead->getAppointedProductByLeads($appointedLeads);
         $appointedLeadCount = $appointedLeads->count();
-        $quotationProduct = new QuotationProduct();
-        // $appointedProducts = $quotationProduct->appointedProduct();
-        $groupedProducts = collect($appointedProducts)->groupBy('company')->toArray();
 
-        // if($request->ajax())
-        // {
-        //     $leads = new Lead();
-        //     $appointedLeads = $leads->getAppointedLeads();
-        //     $appointedLeadsIds = $appointedLeads->pluck('id');
-        //     $generalInformationIds = [];
-        //     $products = [];
-        //     foreach($appointedLeadsIds as $appointedLeadsId)
-        //     {
-        //         $generalInformationId = GeneralInformation::getIdByLeadId($appointedLeadsId);
-        //         if($generalInformationId !== null){
-        //             array_push($generalInformationIds, $generalInformationId);
-        //         }
-        //     }
-        //     if($generalInformationIds !== null){
-        //         foreach($generalInformationIds as $generalInformationId){
-        //             $product = GeneralInformation::getProductByGeneralInformationId($generalInformationId);
-        //             array_push($products, $product);
-        //         }
-        //     }
-        //     $index = 0;
-        //     return DataTables::of($appointedLeads)
-        //            ->addIndexColumn()
-        //            ->addColumn('products', function($row) use (&$products, &$index){
-        //             $productGroups = array_chunk($products[$index++], 3);
-        //             $containers = [];
+        // Now this is a paginated collection
+        $appointedProducts = $quoteLead->getAppointedProductByLeads();
+        $groupedProducts = $appointedProducts->groupBy('company');
 
-        //             foreach ($productGroups as $group) {
-        //                 $spans = array_map(function($product) {
-        //                     return "<span class='badge bg-info permission-badge'><h6>{$product}</h6></span>";
-        //                 }, $group);
-        //                 $containers[] = '<div>' . implode(' ', $spans) . '</div>';
-        //             }
-        //             return '<div class="product-column">'. implode('', $containers) . '</div>';
-        //            })
-        //            ->addColumn('current_user', function($appointedLeads){
-        //                   $userProfile = $appointedLeads->userProfile->first();
-        //                   $currentUserName = $userProfile ? $userProfile->fullAmericanName(): 'N/A';
-        //                   return $currentUserName;
-        //              })
-        //            ->addColumn('checkbox', function($appointedLeads) {
-        //                 $userProfile = $appointedLeads->userProfile->first();
-        //                 $currentUserId = $userProfile ? $userProfile->id : null;
-        //                 $value = $appointedLeads->id . '_' . $currentUserId ;
-        //                 return '<input type="checkbox" name="users_checkbox[]" class="users_checkbox" value="' . $value . '" />';
-        //             })
-        //            ->rawColumns(['products', 'checkbox'])
-        //            ->make(true);
-        // }
+        if ($request->ajax()) {
+            return view('leads.appointed-products.pagination', compact('groupedProducts', 'appointedProducts'))->render();
+        }
+
         return view('leads.appointed-products.index', compact('quoters', 'userProfiles', 'appointedLeadCount', 'qoutingCount', 'groupedProducts', 'appointedProducts'));
-
     }
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -151,5 +110,27 @@ class AppointedProductListController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function changeProductStatus(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+
+            $quotationProduct = QuotationProduct::find($request->id);
+            $quotationProduct->status = $request->status;
+            $quotationProduct->save();
+
+            $leadId = $quotationProduct->QuoteInformation->QuoteLead->leads->id;
+            $userProfileId = Auth::user()->userProfile->id;
+            event(new HistoryLogsEvent($leadId, $userProfileId, 'Send For Quotation', $quotationProduct
+            ->product . ' ' . 'has been sent for quotation'));
+
+            DB::commit();
+        }catch(\Exception $e){
+            Log::error($e->getMessage());
+            DB::rollback();
+            return response()->json(['error' => 'An error occurred'], 500);
+        }
     }
 }

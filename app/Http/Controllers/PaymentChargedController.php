@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\HistoryLogsEvent;
+use App\Events\LeadNotesNotificationEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Metadata;
 use App\Models\PaymentCharged;
@@ -10,10 +12,13 @@ use App\Models\PolicyDetail;
 use App\Models\QuotationProduct;
 use App\Models\QuoteComparison;
 use App\Models\SelectedQuote;
+use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Spatie\SimpleExcel\SimpleExcelWriter;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -24,52 +29,63 @@ class PaymentChargedController extends Controller
     {
         if($request->ajax())
         {
-            $paymentChargedData = PaymentCharged::orderBy('charged_date', 'desc')->get();
-            return DataTables::of($paymentChargedData)
-            ->addIndexColumn()
-            ->addColumn('product_name', function($paymentChargedData){
-                $product = $paymentChargedData->paymentInformation->QuoteComparison->QuotationProduct->product;
-                return $product;
-            })
-            ->addColumn('company_name', function($paymentChargedData){
-                $lead = $paymentChargedData->paymentInformation->QuoteComparison->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name;
-                return $lead;
-            })
-            ->addColumn('payment_method', function($paymentChargedData){
-                $paymentMethod = $paymentChargedData->paymentInformation->payment_method;
-                return $paymentMethod;
-            })
-            ->addColumn('amount_to_charged', function($paymentChargedData){
-                $amountToCharged = $paymentChargedData->paymentInformation->amount_to_charged;
-                return $amountToCharged;
-            })
-            ->addColumn('compliance', function($paymentChargedData){
-                $compliance = $paymentChargedData->paymentInformation->compliance_by;
-                return $compliance;
-            })
-            ->addColumn('payment_type', function($paymentChargedData){
-                $type = $paymentChargedData->paymentInformation->payment_type;
-                return $type;
-            })
-            ->addColumn('charged_by', function($paymentChargedData){
-                $chargedBy = $paymentChargedData->userProfile->fullName();
-                return $chargedBy ? $chargedBy : 'N/A';
-            })
-            ->addColumn('action', function($paymentChargedData){
-                $editButton = '<a href="#" class="btn btn-sm btn-primary editPaymentButton" data-id="'.$paymentChargedData->id.'"><i class="ri-pencil-line"></i></a>';
-                $editFileButton = '<a href="#" class="btn btn-sm btn-outline-info waves-effect waves-light editFilePaymentButton" data-id="'.$paymentChargedData->id.'"><i class="ri-file-edit-line"></i></a>';
-                return $editButton . ' '. $editFileButton;
-            })
-            ->make(true);
+            try{
+                $paymentChargedData = PaymentCharged::orderBy('charged_date', 'desc')->get();
+                return DataTables::of($paymentChargedData)
+                ->addIndexColumn()
+                ->addColumn('product_name', function($paymentChargedData){
+                    $product = $paymentChargedData->paymentInformation->QuoteComparison->QuotationProduct->product ?? 'N/A';
+                    return $product;
+                })
+                ->addColumn('company_name', function($paymentChargedData){
+                    $lead = $paymentChargedData->paymentInformation->QuoteComparison->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name ?? 'N/A';
+                    return $lead;
+                })
+                ->addColumn('payment_method', function($paymentChargedData){
+                    $paymentMethod = $paymentChargedData->paymentInformation->payment_method ?? 'N/A';
+                    return $paymentMethod;
+                })
+                ->addColumn('amount_to_charged', function($paymentChargedData){
+                    $amountToCharged = $paymentChargedData->paymentInformation->amount_to_charged ?? 'N/A';
+                    return $amountToCharged;
+                })
+                ->addColumn('compliance', function($paymentChargedData){
+                    $compliance = $paymentChargedData->paymentInformation->compliance_by ?? 'N/A';
+                    return $compliance;
+                })
+                ->addColumn('payment_type', function($paymentChargedData){
+                    $type = $paymentChargedData->paymentInformation->payment_type ?? 'N/A';
+                    return $type;
+                })
+                ->addColumn('charged_by', function($paymentChargedData){
+                    $chargedBy = $paymentChargedData->userProfile->fullName() ?? 'N/A';
+                    return $chargedBy ? $chargedBy : 'N/A';
+                })
+                ->addColumn('action', function($paymentChargedData){
+                    $editButton = '<a href="#" class="btn btn-sm btn-primary editPaymentButton" data-id="'.$paymentChargedData->id.'"><i class="ri-pencil-line"></i></a>';
+                    $editFileButton = '<a href="#" class="btn btn-sm btn-outline-info waves-effect waves-light editFilePaymentButton" data-id="'.$paymentChargedData->id.'"><i class="ri-file-edit-line"></i></a>';
+                    return $editButton . ' '. $editFileButton;
+                })
+                ->make(true);
+
+
+            }catch(\Exception $e){
+
+                Log::info($e);
+                return response()->json(['error' => $e], 500);
+            }
         }
         return view('admin.accounting.accounts-for-charged.index');
+
     }
+
     //
     public function store(Request $request)
     {
         try{
             DB::beginTransaction();
-            $userProfileId = auth()->user()->userProfile->id;
+            $user = Auth::user();
+            $userProfile = auth()->user()->userProfile;
             $file = $request->file('invoiceFile');
             $basename = $file->getClientOriginalName();
             $directoryPath = public_path('backend/assets/invoice');
@@ -101,7 +117,7 @@ class PaymentChargedController extends Controller
 
             $paymentCharged = new PaymentCharged();
             $paymentCharged->payment_information_id = $request->paymentInformationId;
-            $paymentCharged->user_profile_id = $userProfileId;
+            $paymentCharged->user_profile_id = $userProfile->id;
             $paymentCharged->invoice_number = $request->invoiceNumber;
             $paymentCharged->charged_date = now();
             $paymentCharged->save();
@@ -119,17 +135,29 @@ class PaymentChargedController extends Controller
             $selectedQuote->recommended = 3;
             $selectedQuote->save();
 
+            $notifiableUserProfile = UserProfile::find($paymentInformation->requested_by);
+            $notifiableUser = User::find($notifiableUserProfile->user_id);
+            if($notifiableUser){
+                event(new HistoryLogsEvent($quoteProduct->QuoteInformation->QuoteLead->leads->id, $userProfile->id, 'Payment Charged', 'Payment charged successfully'));
+
+                $notifiableUser->sendNoteNotification($notifiableUser, 'Payment Charged', $userProfile->id, 'Payment Charged Completed', $quoteProduct->QuoteInformation->QuoteLead->leads->id);
+
+                broadcast(new LeadNotesNotificationEvent('Payment Charged', 'Payment Charged Completed For' . ' ' . $quoteProduct->QuoteInformation->QuoteLead->leads->company_name, $paymentInformation->requested_by, $quoteProduct->QuoteInformation->QuoteLead->leads->id, $userProfile->id, 'info'));
+            }
+
             DB::commit();
             return response()->json([
                 'status' => 'success',
                 'message' => 'Payment charged successfully',
-            ]);
+            ], 200);
+
         }catch(\Exception $e){
             DB::rollback();
+            Log::info($e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage(),
-            ]);
+            ], 500);
         }
     }
 

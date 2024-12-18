@@ -46,23 +46,32 @@ class FinancingAgreement extends Model
 
     public function getCustomersPfa($leadId)
     {
-        foreach($this->get() as $data)
-        {
-            $financingAgreement = [];
-            $selectedQuote = SelectedQuote::find($data->selected_quote_id);
-            if(!$selectedQuote){
-                continue;
-            };
-            $leadId = QuotationProduct::find($selectedQuote->quotation_product_id)->QuoteInformation->QuoteLead->leads->id;
-            $financingAgreement[] = [
-                'lead_id' => $leadId,
-                'data' => $data,
-            ];
-        }
-        $data = array_filter($financingAgreement, function($item) use($leadId){
-            return $item['lead_id'] == $leadId;
+        $financingAgreements = $this->whereHas('QuoteComparison.QuotationProduct.QuoteInformation.QuoteLead.leads', function ($query) use ($leadId) {
+            $query->where('id', $leadId);
+        })
+        ->with([
+            'QuoteComparison.QuotationProduct.QuoteInformation.QuoteLead.leads',
+        ])
+        ->get();
+
+        // Format the result
+        $result = $financingAgreements->map(function ($data) {
+          return [
+            'lead_id' => $data->QuoteComparison->QuotationProduct->QuoteInformation->QuoteLead->leads->id ?? null,
+            'data' => $data
+          ];
+        })->filter(function ($item) {
+          return $item['lead_id'] !== null;
         });
-        return $data ? $data : [];
+
+        return $result->isNotEmpty() ? $result->all() : [];
+    }
+
+
+
+    public function recuuringAchMedia()
+    {
+        return $this->belongsToMany(Metadata::class, 'recurring_ach_media', 'financing_aggreement_id', 'media_id');
     }
 
     // public function getCustomersPfa($leadId)

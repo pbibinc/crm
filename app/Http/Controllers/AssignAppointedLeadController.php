@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Events\AssignAppointedLeadEvent;
+use App\Events\HistoryLogsEvent;
+use App\Events\LeadNotesNotificationEvent;
 use App\Events\ReassignedAppointedLead;
 use App\Http\Controllers\Controller;
 use App\Models\GeneralInformation;
 use App\Models\Lead;
+use App\Models\LeadNotes;
 use App\Models\QuotationProduct;
 use App\Models\QuoteInformation;
 use App\Models\QuoteLead;
@@ -14,6 +17,7 @@ use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
@@ -32,62 +36,14 @@ class AssignAppointedLeadController extends Controller
         $lead = new Lead();
         $quoteLead = new QuoteLead();
         $appointedLeads = $lead->getAppointedLeads();
-        $requestForQuoteProduct = QuotationProduct::where('status', 29)->count( );
+        $requestForQuoteProduct = QuotationProduct::where('status', 30)->count();
         $appointedProducts =  $quoteLead->requestForQuoteAppointedProductByLeads($appointedLeads);
         $appointedLeadCount = $appointedLeads->count();
         $quotationProduct = new QuotationProduct();
         // $appointedProducts = $quotationProduct->appointedProduct();
         $groupedProducts = collect($appointedProducts)->groupBy('company')->toArray();
 
-        // if($request->ajax())
-        // {
-        //     $leads = new Lead();
-        //     $appointedLeads = $leads->getAppointedLeads();
-        //     $appointedLeadsIds = $appointedLeads->pluck('id');
-        //     $generalInformationIds = [];
-        //     $products = [];
-        //     foreach($appointedLeadsIds as $appointedLeadsId)
-        //     {
-        //         $generalInformationId = GeneralInformation::getIdByLeadId($appointedLeadsId);
-        //         if($generalInformationId !== null){
-        //             array_push($generalInformationIds, $generalInformationId);
-        //         }
-        //     }
-        //     if($generalInformationIds !== null){
-        //         foreach($generalInformationIds as $generalInformationId){
-        //             $product = GeneralInformation::getProductByGeneralInformationId($generalInformationId);
-        //             array_push($products, $product);
-        //         }
-        //     }
-        //     $index = 0;
-        //     return DataTables::of($appointedLeads)
-        //            ->addIndexColumn()
-        //            ->addColumn('products', function($row) use (&$products, &$index){
-        //             $productGroups = array_chunk($products[$index++], 3);
-        //             $containers = [];
 
-        //             foreach ($productGroups as $group) {
-        //                 $spans = array_map(function($product) {
-        //                     return "<span class='badge bg-info permission-badge'><h6>{$product}</h6></span>";
-        //                 }, $group);
-        //                 $containers[] = '<div>' . implode(' ', $spans) . '</div>';
-        //             }
-        //             return '<div class="product-column">'. implode('', $containers) . '</div>';
-        //            })
-        //            ->addColumn('current_user', function($appointedLeads){
-        //                   $userProfile = $appointedLeads->userProfile->first();
-        //                   $currentUserName = $userProfile ? $userProfile->fullAmericanName(): 'N/A';
-        //                   return $currentUserName;
-        //              })
-        //            ->addColumn('checkbox', function($appointedLeads) {
-        //                 $userProfile = $appointedLeads->userProfile->first();
-        //                 $currentUserId = $userProfile ? $userProfile->id : null;
-        //                 $value = $appointedLeads->id . '_' . $currentUserId ;
-        //                 return '<input type="checkbox" name="users_checkbox[]" class="users_checkbox" value="' . $value . '" />';
-        //             })
-        //            ->rawColumns(['products', 'checkbox'])
-        //            ->make(true);
-        // }
         return view('leads.quotation_leads.assign-appointed-leads', compact('quoters', 'userProfiles', 'appointedLeadCount', 'qoutingCount', 'groupedProducts', 'appointedProducts', 'requestForQuoteProduct'));
     }
 
@@ -215,28 +171,40 @@ class AssignAppointedLeadController extends Controller
             DB::beginTransaction();
             $data = $request->all();
             $products = $data['productId'];
-
+            $userProfileId = Auth::user()->userProfile->id;
             if (is_array($products)) {
                 foreach ($products as $product) {
                     $QuotationProduct = QuotationProduct::find($product);
                     if ($QuotationProduct) {
-                        $QuotationProduct->status = 29;
+                        $QuotationProduct->status = 30;
                         $QuotationProduct->save();
                     } else {
                         Log::info("QuotationProduct not found for product ID: " . $product);
                         return response()->json(['error' => 'QuotationProduct not found for product ID: ' . $product], 404);
                     }
+                    $leadId = $QuotationProduct->quoteInformation->quoteLead->leads->id;
+                    $user = User::find(UserProfile::find($QuotationProduct->product_appointer_id)->user_id);
+                    $user->sendNoteNotification($user, 'Approved' . ' ' . $QuotationProduct->product, $userProfileId, 'Approved for quotation', $leadId);
+                    broadcast(new LeadNotesNotificationEvent('Approved' . ' ' . $QuotationProduct->product, 'Approved for quotation', $user->id, $leadId, $userProfileId, 'info'));
+                    event(new HistoryLogsEvent($leadId, $userProfileId, 'Appoint Approved', $QuotationProduct->product . ' ' . 'Product has been approved for quotation'));
                 }
             } else {
                 $QuotationProduct = QuotationProduct::find($products);
                 if ($QuotationProduct) {
-                    $QuotationProduct->status = 29;
+                    $QuotationProduct->status = 30;
                     $QuotationProduct->save();
                 } else {
                     Log::info("QuotationProduct not found for product ID: " . $products);
                     return response()->json(['error' => 'QuotationProduct not found for product ID: ' . $products], 404);
                 }
+                $leadId = $QuotationProduct->quoteInformation->quoteLead->leads->id;
+                $user = User::find(UserProfile::find($QuotationProduct->product_appointer_id)->user_id);
+                $user->sendNoteNotification($user, 'Approved' . ' ' . $QuotationProduct->product, $userProfileId, 'Approved for quotation', $leadId);
+                broadcast(new LeadNotesNotificationEvent('Approved' . ' ' . $QuotationProduct->product, 'Approved for quotation', $user->id, $leadId, $userProfileId, 'info'));
+                event(new HistoryLogsEvent($leadId, $userProfileId, 'Appoint Approved', $QuotationProduct->product . ' ' . 'Product has been approved for quotation'));
             }
+
+
 
             DB::commit();
             return response()->json(['success' => 'Quote request processed successfully']);
@@ -249,5 +217,43 @@ class AssignAppointedLeadController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function declineAppointedProduct(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+            $productId = $request->input('productId');
+            $userProfileId = Auth::user()->userProfile->id;
+            $noteDescription = $request->input('remarks');
+
+            $quotationProduct = QuotationProduct::find($productId);
+            $quotationProduct->status = 5;
+            $quotationProduct->save();
+
+            $appointerId = $quotationProduct->product_appointer_id;
+            $user = User::find(UserProfile::find($appointerId)->user_id);
+            $leadId = $quotationProduct->quoteInformation->quoteLead->leads->id;
+
+            $user->sendNoteNotification($user, 'Declined' . ' ' . $quotationProduct->product, $userProfileId, $noteDescription, $leadId);
+
+            $leadNotes = new LeadNotes();
+            $leadNotes->lead_id = $leadId;
+            $leadNotes->user_profile_id = $userProfileId;
+            $leadNotes->title = 'Declined' . ' ' . $quotationProduct->product;
+            $leadNotes->description = $noteDescription;
+            $leadNotes->status = 'Declined Product';
+            $leadNotes->save();
+
+            event(new HistoryLogsEvent($leadId, $userProfileId, 'Declined', $quotationProduct->product . ' ' . 'Product has been declined'));
+            broadcast(new LeadNotesNotificationEvent('Declined' . ' ' . $quotationProduct->product, $noteDescription, $user->id, $leadId, $userProfileId, 'danger'));
+            DB::commit();
+            return response()->json(['success' => 'Product has been declined successfully'], 200);
+        }catch(\Exception $e){
+            DB::rollBack();
+            Log::info("Error for Declining", [$e->getMessage()]);
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+
     }
 }

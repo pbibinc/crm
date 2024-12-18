@@ -4,16 +4,15 @@
         <tr>
             <th style="padding: 7px;">Policy</th>
             <th style="padding: 7px;">Product</th>
-            <th style="padding: 7px;">Audit Letter</th>
             <th style="padding: 7px;">Status</th>
             <th style="padding: 7px;">Audit By</th>
             <th style="padding: 7px;"></th>
         </tr>
     </thead>
-
 </table>
 
 @include('customer-service.audit.upload-required-file-modal')
+@include('customer-service.audit.upload-audit-letter-file-modal')
 
 <script>
     $(document).ready(function() {
@@ -23,6 +22,7 @@
             ajax: {
                 url: "{{ route('get-audit-information-table') }}",
                 type: "POST",
+                async: false,
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
@@ -38,10 +38,10 @@
                     data: 'product',
                     name: 'product'
                 },
-                {
-                    data: 'audit_letter_file',
-                    name: 'audit_letter_file'
-                },
+                // {
+                //     data: 'audit_letter_file',
+                //     name: 'audit_letter_file'
+                // },
                 {
                     data: 'status',
                     name: 'status'
@@ -138,6 +138,20 @@
         });
     };
 
+    function addExistingAuditLetterFile(file) {
+        var mockFile = {
+            id: file.id,
+            name: file.basename,
+            size: parseInt(file.size),
+            type: file.type,
+            status: Dropzone.ADDED,
+            url: file.filepath // URL to the file's location
+        };
+        uploaddAuditLetterFileDropzone.emit("addedfile", mockFile);
+        // myDropzone.emit("thumbnail", mockFile, file.filepath); // If you have thumbnails
+        uploaddAuditLetterFileDropzone.emit("complete", mockFile);
+    };
+
     $(document).on('click', '.uploadAuditInformationFile', function() {
         var id = $(this).attr('id');
         $('#hidden_id').val(id);
@@ -160,5 +174,22 @@
             }
         });
 
+    });
+
+    $(document).on('click', '.uploadAuditLetter', function() {
+        var id = $(this).attr('id');
+        var url = `{{ route('audit.edit', ':id') }}`.replace(':id', id);
+        $.ajax({
+            url: url,
+            method: 'GET',
+            success: function(response) {
+                addExistingAuditLetterFile(response.media);
+                $('#hidden_id').val(response.data.id);
+                $('#uploaddAuditLetterFileModal').modal('show');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
     });
 </script>

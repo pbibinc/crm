@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('quote_form');
+        Schema::dropIfExists('quote_form_table');
     }
 };

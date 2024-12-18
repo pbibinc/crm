@@ -132,9 +132,6 @@
                                 style="background-color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                                 <div class="card-body">
                                     @include('leads.appointed_leads.qoutation-forms.quoation-form', [
-                                        // 'product' => $product,
-                                        // 'generalInformation' => $generalInformation,
-                                        // 'quationMarket' => $quationMarket,
                                         'generalInformation' => $generalInformation,
                                         'quationMarket' => $quationMarket->getMarketByProduct(
                                             $quotationProduct->product),
@@ -210,6 +207,7 @@
                                         'customer-service.financing.finance-agreement.financing-table',
                                         [
                                             'leadId' => $leads->id,
+                                            'financeCompany' => $financeCompany,
                                         ]
                                     )
                                 </div>
@@ -229,13 +227,9 @@
 
                         {{-- emails tab --}}
                         <div class="tab-pane" id="emails" role="tabpanel">
-                            <div class="card shadow-lg p-3 mb-5 bg-white rounded">
-                                <div class="card-body">
-                                    @include('email.client-emails-table', [
-                                        'leadId' => $leads->id,
-                                    ])
-                                </div>
-                            </div>
+                            @include('email.client-emails-table', [
+                                'leadId' => $leads->id,
+                            ])
                         </div>
 
                         {{-- policy list tab --}}
@@ -257,4 +251,5 @@
             </div>
         </div>
     </div>
+    @include('customer-service.audit.audit-information-modal')
 @endsection

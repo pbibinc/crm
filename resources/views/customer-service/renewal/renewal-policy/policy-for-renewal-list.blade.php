@@ -7,7 +7,9 @@
                     <select name="userProfileDropdown" id="userProfileDropdown" class="form-select">
                         <option value="">Select User</option>
                         @foreach ($userProfiles as $userProfile)
-                            <option value="{{ $userProfile->id }}">{{ $userProfile->fullAmericanName() }}
+                            <option value="{{ $userProfile->id }}"
+                                {{ $userProfile->id == $userProfileId ? 'selected' : '' }}>
+                                {{ $userProfile->fullAmericanName() }}
                             </option>
                         @endforeach
                     </select>
@@ -30,6 +32,7 @@
                 <th>Previous Policy Cost</th>
                 <th>Assigned To:</th>
                 <th>Renewal Date</th>
+                <th>Action</th>
             </tr>
         </thead>
     </table>
@@ -47,6 +50,7 @@
                 },
                 data: function(d) {
                     d.userProfileDropdown = $('#userProfileDropdown').val();
+                    d._token = "{{ csrf_token() }}";
                 },
                 method: "POST"
             },
@@ -74,11 +78,18 @@
                     data: 'expiration_date',
                     name: 'expiration_date'
                 },
+                {
+                    data: 'action',
+                    name: 'action'
+                }
             ]
         })
+
         $('#userProfileDropdown').on('change', function() {
             $('#policyForRenewalTable').DataTable().draw();
         })
+
+
         $(document).on('click', '.renewalPolicyButton', function(e) {
             e.preventDefault();
             var id = $(this).attr('id');

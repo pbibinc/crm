@@ -33,7 +33,8 @@
                         <i class="ri-dashboard-line"></i><span class="badge rounded-pill bg-success float-end">3</span>
                         <span>Dashboard</span>
                     </a>
-
+                    <ul class="sub-menu" aria-expanded="false">
+                    </ul>
                 </li>
 
                 <li>
@@ -64,8 +65,41 @@
                     </ul>
                 </li>
 
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="ri-profile-line"></i>
+                        <span>HR</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li class=""><a href="javascript: void(0);" class="has-arrow" aria-expanded="true">Leave
+                                Forms</a>
+                            <ul class="sub-menu mm-collapse mm-show" aria-expanded="true" style="">
+                                <li><a href="javascript: void(0);">Vacation Leave</a></li>
+                                <li><a href="javascript: void(0);">Sick Leave</a></li>
+                                <li><a href="javascript: void(0);">Emergency Leave</a></li>
+                                <li><a href="javascript: void(0);">Birthday Leave</a></li>
+                            </ul>
+                        </li>
+                        {{-- <li><a href="{{ route('hrforms.') }}">Memos</a></li> --}}
+                        <li><a href="{{ route('hrforms.attendance-records-index') }}">Attendance Records</a></li>
+                        <li><a href="javascript: void(0);">Online Monitoring</a></li>
+                        <li><a href="{{ route('hrforms.birthday-calendar-index') }}">Birthday Calendar</a></li>
+                        <li><a href="{{ route('hrforms.company-handbook') }}">Company Handbook</a></li>
+                        <li class=""><a href="javascript: void(0);" class="has-arrow" aria-expanded="true">Other
+                                Forms</a>
+                            <ul class="sub-menu mm-collapse mm-show" aria-expanded="true" style="">
+                                <li><a href="{{ route('hrforms.accountability-form') }}">Accountability Form</a></li>
+                                <li><a href="{{ route('hrforms.incident-report-form') }}">Incident Report</a></li>
+                                <li><a href="javascript: void(0);">Proposal Form</a></li>
+                                <li><a href="javascript: void(0);">Disposal Form</a></li>
+                                <li><a href="javascript: void(0);">MoM (Minutes of Meeting) Form</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
 
 
+                {{-- admin module --}}
                 @can('view', App\Models\Permission::find(1))
                     <li class="menu-title">Admin</li>
                     <li>
@@ -84,8 +118,8 @@
                             <span>Security</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
-                            <li><a href="{{ route('admin.users.index') }}">Accounts</a></li>
-                            <li><a href="{{ route('admin.roles.index') }}">Role</a></li>
+                            <li><a href="{{ route('admin.users.index') }}">User Accounts</a></li>
+                            <li><a href="{{ route('admin.roles.index') }}">User Role</a></li>
                             <li><a href="{{ route('admin.permissions.index') }}">Permission</a></li>
                         </ul>
                     </li>
@@ -93,12 +127,12 @@
                         @can('viewAny', App\Models\UserProfile::find(1))
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
                                 <i class="ri-user-2-line"></i>
-                                <span>Administrator</span>
+                                <span>Administrators</span>
                             </a>
                         @endcan
                         <ul class="sub-menu" aria-expanded="false">
                             @can('view', App\Models\Position::find(1))
-                                <li><a href="{{ route('admin.positions.index') }}">Position</a></li>
+                                <li><a href="{{ route('admin.positions.index') }}">User Position</a></li>
                             @endcan
 
                             @can('view', App\Models\Department::find(1))
@@ -113,15 +147,15 @@
                     <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
                             <i class="ri-spy-line"></i>
-                            <span>LEADS FUNNEL</span>
+                            <span>Leads Funnel</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
                             @can('viewImport', App\Models\Lead::find(1))
-                                <li><a href="{{ route('leads') }}">Import Leads</a></li>
+                                <li><a href="{{ route('leads') }}">Import Lead Records</a></li>
                             @endcan
-                            <li><a href="{{ route('leads-dnc-view') }}">DNC Number</a></li>
+                            <li><a href="{{ route('leads-dnc-view') }}">DNC Database</a></li>
                             @can('viewLeadsFunnel', App\Models\Lead::find(1))
-                                <li><a href="{{ route('assign') }}">Assign Leads</a></li>
+                                <li><a href="{{ route('assign') }}">Lead Distribution</a></li>
                             @endcan
                             <li><a href="{{ route('website.index') }}">Website List</a></li>
                             {{-- <li><a href="pages-directory.html">Leads Profile</a></li> --}}
@@ -134,6 +168,9 @@
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
                             <li><a href="{{ route('admin.marketingtemplate.index') }}">Templates</a></li>
+                            <li><a href="#">Campagains</a></li>
+                            <li><a href="#">Market List</a></li>
+                            <li><a href="#">Report</a></li>
                         </ul>
                     </li>
 
@@ -143,33 +180,39 @@
                             <span>Departments</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
-                            <li><a href="{{ route('it-department') }}">IT DEPARTMENT</a></li>
-                            <li><a href="{{ route('csr-department') }}">CSR DEPARTMENT</a></li>
+                            <li><a href="{{ route('admin-department') }}">Admin Department</a></li>
+                            <li><a href="{{ route('csr-department') }}">CSR Department</a></li>
+                            <li><a href="{{ route('sales-department') }}">Sales Department</a></li>
+                            <li><a href="{{ route('quotation-department') }}">Quotation Department</a></li>
                         </ul>
                     </li>
 
                 @endcan
+
+
+
                 @can('viewAnySales', App\Models\Lead::find(1))
                     <li class="menu-title">Sales</li>
                     <li>
                         @can('viewAnyApptaker', App\Models\Lead::find(1))
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
                                 <i class="ri-headphone-line"></i>
-                                <span>App Taker</span>
+                                <span>App Takers</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
                                 @can('viewApptakerLeadList', App\Models\Lead::find(1))
-                                    <li><a href="{{ route('apptaker-leads') }}">Lead List</a></li>
+                                    <li><a href="{{ route('apptaker-leads') }}">Lead Dashboard</a></li>
                                 @endcan
-                                <li><a href="{{ route('appointed-product-list.index') }}">Appointed Product List</a></li>
-
                                 @can('viewApptakerLeadListAppointed', App\Models\Lead::find(1))
-                                    <li><a href="{{ route('appointed-list') }}">Appointed List</a></li>
+                                    <li><a href="{{ route('appointed-list') }}">Appointed Lead List</a></li>
                                 @endcan
+                                <li><a href="{{ route('appointed-product-list.index') }}">Leads per Product</a></li>
+
                                 @can('viewCallBackLeadList', App\Models\Lead::find(1))
-                                    <li><a href="{{ route('callback-lead') }}">Call Back</a></li>
+                                    <li><a href="{{ route('callback-lead') }}">Call-Back Queue</a></li>
                                 @endcan
-                                <li><a href="{{ route('non-callback-disposition') }}">Non CallBack Disposition</a></li>
+                                <li><a href="{{ route('non-callback-disposition') }}">Dispositioned Leads</a></li>
+                                <li><a href="#">Insurance Need Survey</a></li>
                             </ul>
                         @endcan
                     </li>
@@ -177,20 +220,18 @@
                         @can('viewAnyQuotation', App\Models\Lead::find(1))
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
                                 <i class="ri-clipboard-line"></i>
-                                <span>Quotation</span>
+                                <span>Quote Specialist</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
-                                @can('viewForQouteLeads', App\Models\Lead::find(1))
-                                    <li><a href="{{ route('appointed-leads') }}">Request For Quote</a></li>
-                                @endcan
                                 @can('viewAssignApppointedLeads', App\Models\Lead::find(1))
-                                    <li><a href="{{ route('assign-appointed-lead') }}">Assign Appointed Leads</a></li>
+                                    <li><a href="{{ route('assign-appointed-lead') }}">Assign Qualified Leads</a></li>
                                 @endcan
-                                @can('viewAssignQuotedLeads', App\Models\Lead::find(1))
-                                    <li><a href="{{ route('get-quoted-product') }}">Assign Quoted Leads</a></li>
+                                @can('viewForQouteLeads', App\Models\Lead::find(1))
+                                    <li><a href="{{ route('appointed-leads') }}">Leads for Quoting</a></li>
                                 @endcan
+
                                 <li><a href="{{ route('market-list.index') }}">Market List</a></li>
-                                <li><a href="{{ route('insurer') }}">Insurer List</a></li>
+                                <li><a href="{{ route('insurer') }}">Carrier List</a></li>
                             </ul>
                         @endcan
                     </li>
@@ -201,45 +242,50 @@
                                 <span>Broker Assist</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
+                                @can('viewAssignQuotedLeads', App\Models\Lead::find(1))
+                                    <li><a href="{{ route('get-quoted-product') }}">Assign Quoted Leads</a></li>
+                                @endcan
                                 @can('viewBrokerAssistantLeadList', App\Models\Lead::find(1))
-                                    <li><a href="{{ route('broker-assistant.index') }}">Quoted Products</a></li>
-                                    <li><a href="{{ route('leads-for-follow-up.index') }}">For Follow Up</a></li>
+                                    <li><a href="{{ route('broker-assistant.index') }}">Quoted Leads Distribution</a></li>
+                                    <li><a href="{{ route('leads-for-follow-up.index') }}">Follow-Up Calls</a></li>
+                                    <li><a href="{{ route('broker-assist-leads-log.index') }}">Leads Logs</a></li>
                                 @endcan
                                 {{-- <li><a href="{{route('get-confirmed-product')}}">Confirmed Product</a></li> --}}
                             </ul>
                         @endcan
                     </li>
                 @endcan
-                <li class="menu-title">Broker</li>
-                <li>
-                    @can('viewAnyBrokerAssistant', App\Models\Lead::find(1))
+
+                @can('viewBrokerAssisantCompliance', App\Models\Lead::find(1))
+                    <li class="menu-title">Broker</li>
+                    <li>
+                        @can('viewAnyBrokerAssistant', App\Models\Lead::find(1))
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="ri-briefcase-line"></i>
+                                <span>Primary Leads</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                @can('viewBrokerAssistantLeadList', App\Models\Lead::find(1))
+                                    <li><a href="{{ route('product.index') }}">Direct New Leads</a></li>
+                                @endcan
+                                @can('viewBrokerAssistantLeadList', App\Models\Lead::find(1))
+                                    <li><a href="{{ route('product.index') }}">Direct Renewal Leads</a></li>
+                                @endcan
+                                {{-- <li><a href="{{route('get-confirmed-product')}}">Confirmed Product</a></li> --}}
+                            </ul>
+                        @endcan
+                    </li>
+                    <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="ri-briefcase-line"></i>
-                            <span>Product</span>
+                            <i class="ri-settings-2-line"></i>
+                            <span>Settings</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
-                            @can('viewBrokerAssistantLeadList', App\Models\Lead::find(1))
-                                <li><a href="{{ route('product.index') }}">Direct New</a></li>
-                            @endcan
-                            @can('viewBrokerAssistantLeadList', App\Models\Lead::find(1))
-                                <li><a href="{{ route('product.index') }}">Direct Renewals</a></li>
-                            @endcan
-                            {{-- <li><a href="{{route('get-confirmed-product')}}">Confirmed Product</a></li> --}}
+                            <li><a href="{{ route('assign-agent-to-broker.index') }}">Assigning Agent</a></li>
                         </ul>
-                    @endcan
-                </li>
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="ri-settings-2-line"></i>
-                        <span>Settings</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ route('assign-agent-to-broker.index') }}">Assigning Agent</a></li>
-                    </ul>
-                </li>
-                {{-- @can('view', App\Models\Lead::find(1))
-                    <li class="menu-title">Leads</li>
-                @endcan --}}
+                    </li>
+                @endcan
+
 
                 @can('viewAnyCustomerService', App\Models\Lead::find(1))
                     <li class="menu-title">Customer Service</li>
@@ -261,8 +307,9 @@
                             <span>Binding</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
-                            <li><a href="{{ route('binding') }}">Products</a></li>
+                            <li><a href="{{ route('binding') }}">Bind Queue</a></li>
                             <li><a href="{{ route('policy-list') }}">Policy List</a></li>
+                            <li><a href="{{ route('customer-account-setting.index') }}">Customer Account Setting</a></li>
                         </ul>
                     </li>
                     <li>
@@ -272,21 +319,9 @@
                             <span>Financing</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="{{ route('financing-agreement.index') }}">Fiancing Agreement</a></li>
+                            <li><a href="{{ route('finance-agreement-list.index') }}">PFA Records</a></li>
                             <li><a href="{{ route('financing-company.index') }}">Financing Companies</a></li>
-                            <li><a href="{{ route('financing-agreement.index') }}">Financing Agreement</a></li>
-                            <li><a href="{{ route('finance-agreement-list.index') }}">Finance Agreement List</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="mdi mdi-autorenew"></i>
-                            <span>Renewal</span>
-                        </a>
-                        <ul class="sub-menu" aria-expanded="false">
-                            {{-- <li><a href="{{ route('renewal.index') }}">Assign For Quote Renewal</a></li> --}}
-                            <li><a href="{{ route('for-renewal.index') }}">Policy For Quote Renewal</a></li>
-                            <li><a href="{{ route('assign-quoted-policy.index') }}">Assign Renewal Policy</a></li>
-                            <li><a href="{{ route('renewal-policy.index') }}">Policy For Renewal</a></li>
                         </ul>
                     </li>
                     <li>
@@ -296,9 +331,40 @@
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
                             <li><a href="{{ route('primary-cancellation.index') }}">Primary CCN</a></li>
-                            <li><a href="{{ route('request-cancellation.index') }}">Request Cancellation</a></li>
-                            <li><a href="{{ route('rewrite-policy.index') }}">Rewrite Policy</a></li>
-                            <li><a href="{{ route('cancelled-policy.index') }}">Cancelled Policy</a></li>
+                            <li><a href="{{ route('request-cancellation.index') }}">Cancellation Request</a></li>
+                            <li><a href="{{ route('cancelled-policy.index') }}">Cancelled Policy List</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-recycle-variant"></i>
+                            <span>Recovery</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+
+                            <li><a href="{{ route('rewrite-policy.index') }}">Recovery/Rewrite</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-autorenew"></i>
+                            <span>Renewal Department</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            {{-- <li><a href="{{ route('renewal.index') }}">Assign For Quote Renewal</a></li> --}}
+                            <li><a href="{{ route('assign-quoted-policy.index') }}">Assign Renewal Policies</a></li>
+                            <li><a href="{{ route('for-renewal.index') }}">Renewal Quoting</a></li>
+                            <li><a href="{{ route('renewal-policy.index') }}">Policy For Renewal</a></li>
+                            <li><a href="{{ route('old-renewal-policy.index') }}">Old Renewal</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-autorenew"></i>
+                            <span>Certificate</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="{{ route('certificate.index') }}">Certificate Request</a></li>
                         </ul>
                     </li>
                 @endcan

@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Events\AppointmentTaken;
 use App\Events\AssignAppointedLeadEvent;
 use App\Events\AssignPolicyForRenewalEvent;
+use App\Events\HistoryLogsEvent;
 use App\Events\LeadAssignEvent;
 use App\Events\LeadImportEvent;
 use App\Events\LeadReassignEvent;
@@ -14,6 +15,7 @@ use App\Events\UpdateGeneralInformationEvent;
 use App\Listeners\AssignPolicyForRenewalListener;
 use App\Listeners\BroadcastUserLoginNotification;
 use App\Listeners\BroadcastUserLogoutNotification;
+use App\Listeners\HistoryLogListener;
 use App\Listeners\LogAppointmentTaken;
 use App\Listeners\LogAssignAppointedLeadListener;
 use App\Listeners\LogLeadAssignListener;
@@ -136,6 +138,11 @@ class EventServiceProvider extends ServiceProvider
         Event::listen(
             UpdateGeneralInformationEvent::class,
             [UpdateGeneralInformationListener::class, 'handle']
+        );
+
+        Event::listen(
+            HistoryLogsEvent::class,
+            [HistoryLogListener::class, 'handle']
         );
 
     }

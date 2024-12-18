@@ -20,6 +20,11 @@ class UserProfile extends Model
         'is_compliance_officer'
     ];
 
+    public function Certificate()
+    {
+        return $this->hasMany(Certificate::class, 'approved_by');
+    }
+
     public function userProfiles()
     {
         return self::all();
@@ -176,6 +181,11 @@ class UserProfile extends Model
     public function assignedByTasks()
     {
         return $this->hasMany(LeadTaskScheduler::class, 'assigned_by');
+    }
+
+    public function paymentInformation()
+    {
+        return $this->hasMany(PaymentInformation::class, 'requested_by');
     }
 
 }

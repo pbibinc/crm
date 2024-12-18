@@ -981,7 +981,7 @@ const GeneralLiabilitiesPreviousForm = () => {
                             classValue="col-4"
                             colContent={
                                 <>
-                                    <Label labelContent="Are you working on multiple state?" />
+                                    <Label labelContent="Conducts business in multiple states?" />
                                     <Form.Check
                                         type="switch"
                                         id="multipleStateCheckSwitch"
@@ -998,7 +998,7 @@ const GeneralLiabilitiesPreviousForm = () => {
                                 classValue="col-4"
                                 colContent={
                                     <>
-                                        <Label labelContent="Self Performing Roofing" />
+                                        <Label labelContent="Self Performs Roofing Jobs" />
                                         <Form.Check
                                             type="switch"
                                             id="selfPerformingCheckSwitch"
@@ -1020,7 +1020,7 @@ const GeneralLiabilitiesPreviousForm = () => {
                                 classValue="col-3"
                                 colContent={
                                     <>
-                                        <Label labelContent="Concrete Foundation Work" />
+                                        <Label labelContent="Does Concrete foundation work" />
                                         <Form.Check
                                             type="switch"
                                             id="concreteFoundationWorkCheckSwitch"
@@ -1127,7 +1127,7 @@ const GeneralLiabilitiesPreviousForm = () => {
                             classValue="col-4"
                             colContent={
                                 <>
-                                    <Label labelContent="Self Performing Roofing" />
+                                    <Label labelContent="Self Performs Roofing Jobs" />
                                     <Form.Check
                                         type="switch"
                                         id="selfPerformingCheckSwitch"
@@ -1147,7 +1147,7 @@ const GeneralLiabilitiesPreviousForm = () => {
                             classValue="col-3"
                             colContent={
                                 <>
-                                    <Label labelContent="Concrete Foundation Work" />
+                                    <Label labelContent="Does Concrete foundation work" />
                                     <Form.Check
                                         type="switch"
                                         id="concreteFoundationWorkCheckSwitch"
@@ -1260,7 +1260,7 @@ const GeneralLiabilitiesPreviousForm = () => {
                 rowContent={
                     <label>
                         <h6>
-                            Would you perform or subcontract work involving:
+                            Do you perform or subcontract any work involving:
                         </h6>
                     </label>
                 }
@@ -1350,7 +1350,7 @@ const GeneralLiabilitiesPreviousForm = () => {
                         classValue="col-6"
                         colContent={
                             <>
-                                <Label labelContent="Any Recreational Facilities" />
+                                <Label labelContent="Do you perform work on any recreational facilities" />
                                 <Select
                                     closeMenuOnSelect={false}
                                     className="basic=single"

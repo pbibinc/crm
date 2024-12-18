@@ -446,18 +446,21 @@
             selected: true,
             disabled: true
         }));
+
         $('#position_id').prepend($('<option>', {
             value: '',
             text: 'Select position',
             selected: true,
             disabled: true
         }));
+
         $('#department_id').prepend($('<option>', {
             value: '',
             text: 'Select department',
             selected: true,
             disabled: true
         }));
+
         $('#is_active').prepend($('<option>', {
             value: '',
             text: 'Select status',

@@ -92,23 +92,16 @@ class ForRewriteMakePaymentController extends Controller
         $data = $policyDetail->getForRewritePolicyByStatusAndUserProfileId('For Rewrite Make A Payment', $userProfileId);
         return DataTables($data)
             ->addIndexColumn()
+            ->addColumn('policy_link', function($data){
+                $policyNumber = $data->policy_number;
+                return "<a href='/cancellation/get-for-rewrite-product-lead-view/$data->id'>$policyNumber</a>";
+            })
             ->addColumn('product', function($data){
                 return $data->QuotationProduct->product;
             })
             ->addColumn('company_name', function($data){
                 $company_name = $data->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name;
                 return $company_name;
-            })
-            ->addColumn('cancelled_date', function($data){
-                return Carbon::parse($data->cancellationEndorsement->cancellation_date)->format('M-d-Y');
-            })
-            ->addColumn('cancelled_by', function($data){
-                $userProfile = $data->cancellationEndorsement->UserProfile;
-                return $userProfile ? $userProfile->fullAmericanName() : '';
-            })
-            ->addColumn('cancellation_type', function($data){
-                $cancellationEndorsement = $data->cancellationEndorsement;
-                return $cancellationEndorsement  ? $cancellationEndorsement->type_of_cancellation : '';
             })
             ->addColumn('policy_status', function($data){
                 $status = $data->QuotationProduct->QouteComparison()->latest()->first()->PaymentInformation->status;
@@ -146,7 +139,7 @@ class ForRewriteMakePaymentController extends Controller
                     return $viewButton . ' ' . $viewNotedButton;
                 }
             })
-            ->rawColumns(['action', 'policy_status'])
+            ->rawColumns(['action', 'policy_status', 'policy_link'])
             ->make(true);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Events\HistoryLogsEvent;
 use App\Mail\sendTemplatedEmail;
 use App\Models\Messages;
 use App\Models\Templates;
@@ -39,16 +40,19 @@ class SendRenewalReminder extends Command
             if($message->status == 'pending')
             {
                 $emailTemplate = Templates::find($message->template_id)->html;
+                $name = Templates::find($message->template_id)->name;
                 logger($emailTemplate);
                 if($emailTemplate == null)
                 {
                     $emailTemplate = 'This is a renewal reminder email';
                 }else{
                     $emailTemplate = $emailTemplate;
+                    Mail::to($message->receiver_email)->send(new sendTemplatedEmail($name, $emailTemplate));
+                    $message->status = 'sent';
+                    $message->save();
+
+                    event(new HistoryLogsEvent($message->lead_id, $message->sender_id, 'Schedule Email', $name . ' ' . 'Email Sent'));
                 }
-                Mail::to($message->receiver_email)->send(new sendTemplatedEmail('Renewal Reminder', $emailTemplate));
-                $message->status = 'sent';
-                $message->save();
             }
         }
         // Mail::to('maechael108@gmail.com')->send(new sendTemplatedEmail('Renewal Reminder', 'This is a renewal reminder email'));

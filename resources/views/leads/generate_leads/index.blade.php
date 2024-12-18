@@ -73,15 +73,11 @@
                                 <br>
                                 <div class="row">
                                     <div class="col-7">
-                                        <button id="import-button" class="btn btn-primary"><i class="ri-upload-fill"></i>
+                                        <button id="import-button" class="btn btn-primary ladda-button "
+                                            data-style="expand-right"><i class="ri-upload-fill"></i>
                                             Import Leads Data</button>
                                     </div>
-                                    <div class="col-5">
-                                        {{-- <a href="" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addLeadsModal" id="create_record">
-                                            <i class="mdi mdi-domain-plus"></i>
-                                            ADD LEADS
-                                        </a> --}}
-                                    </div>
+
                                 </div>
                             </form>
                         </div>
@@ -615,14 +611,24 @@
 
             $('#import-button').click(function(event) {
                 var fileInput = $('input[type="file"]');
+                // Initialize Ladda button
+                var button = $('#import-button');
+                var laddaButton = Ladda.create(button[0]);
+                laddaButton.start();
+
+                // Check if a file is selected
                 if (fileInput.get(0).files.length === 0) {
-                    event.preventDefault();
+                    event.preventDefault(); // Prevent form submission
+                    laddaButton.stop(); // Stop the loader
                     Swal.fire({
                         icon: 'error',
-                        title: 'Oppss',
-                        text: 'please selecta a file to import!!',
+                        title: 'Oops',
+                        text: 'Please select a file to import!',
                     });
+                    return;
                 }
+
+                $('#import-form').submit();
             });
 
             $('#check_all').on('click', function(e) {

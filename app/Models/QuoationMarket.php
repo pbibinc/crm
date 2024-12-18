@@ -21,6 +21,9 @@ class QuoationMarket extends Model
 
     public static function getMarketByProduct($product)
     {
+        if($product == 'Business Owners'){
+            $product = 'Business Owners Policy';
+        }
         $marketIds = MarketProduct::where('name', $product)->pluck('market_id')->toArray();
 
         return self::whereIn('id', $marketIds)->get();

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\API\RecreationalController;
 use App\Http\Controllers\Controller;
 use App\Models\ClassCodeLead;
+use App\Models\FinancingCompany;
 use App\Models\Insurer;
 use App\Models\Lead;
 use App\Models\PolicyDetail;
@@ -15,6 +16,7 @@ use App\Models\RecreationalFacilities;
 use App\Models\SelectedQuote;
 use App\Models\Templates;
 use App\Models\UnitedState;
+use App\Models\User;
 use App\Models\UserProfile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -29,17 +31,25 @@ class AppointedController extends Controller
     {
         $user = Auth::user();
         $leads = Lead::getAppointedLeadsByUserProfileId($user->id);
-        if($request->ajax())
-        {
+        if($request->ajax()){
             return DataTables::of($leads)
             ->addColumn('formatted_created_at', function($lead) {
                 return \Carbon\Carbon::parse($lead->general_created_at)->format('m/d/Y');
+            })
+            ->addColumn('company_name', function($leads){
+                $profileViewRoute = route('appointed-list-profile-view', ['leadsId' => $leads->id]);
+                $companyName =  '<a href="'.$profileViewRoute.'" id="'.$leads->id.'" name"view">'.$leads->company_name.'</a>';
+                if($leads->is_spanish == 1){
+                    $companyName .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+                }
+                return $companyName;
             })
             ->addColumn('action', function($leads){
                 $profileViewRoute = route('appointed-list-profile-view', ['leadsId' => $leads->id]);
                 return '<a href="'.$profileViewRoute.'" class="viiew btn btn-success btn-sm" id="'.$leads->id.'" name"view"><i class="ri-eye-line"></i></a>';
             })
-            ->rawColumns(['company_name_action', 'action'])
+
+            ->rawColumns(['company_name', 'action'])
             ->make(true);
         }
         return view('leads.appointed_leads.appointed.index');
@@ -99,8 +109,10 @@ class AppointedController extends Controller
             $productIds = $leads->getQuotationProducts()->pluck('id')->toArray();
             $selectedQuotes = SelectedQuote::whereIn('quotation_product_id', $productIds)->get() ?? [];
             $userProfiles = UserProfile::get()->sortBy('first_name');
+            $financeCompany = FinancingCompany::all();
+            $customerUsers = User::where('role_id', 12)->orderBy('email')->get();
 
-            return view('leads.appointed_leads.apptaker-leads-view.index', compact('leads', 'localTime', 'usAddress', 'products', 'sortedClassCodeLeads', 'classCodeLeads', 'recreationalFacilities', 'states', 'quationMarket', 'carriers', 'markets', 'templates', 'complianceOfficer', 'selectedQuotes', 'activePolicies', 'userProfiles'));
+            return view('leads.appointed_leads.apptaker-leads-view.index', compact('leads', 'localTime', 'usAddress', 'products', 'sortedClassCodeLeads', 'classCodeLeads', 'recreationalFacilities', 'states', 'quationMarket', 'carriers', 'markets', 'templates', 'complianceOfficer', 'selectedQuotes', 'activePolicies', 'userProfiles', 'financeCompany', 'customerUsers'));
         } catch (\Exception $e) {
             Log::error('Error in leadsProfileView method', [
                 'message' => $e->getMessage(),
@@ -113,5 +125,7 @@ class AppointedController extends Controller
             return redirect()->back()->with('error', 'Something went wrong while processing the leads profile.');
         }
     }
+
+
 
 }

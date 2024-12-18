@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\FinancingCompany;
 use App\Models\GeneralInformation;
 use App\Models\Insurer;
 use App\Models\Lead;
 use App\Models\PolicyDetail;
 use App\Models\QuoationMarket;
 use App\Models\QuotationProduct;
+use App\Models\SelectedQuote;
 use App\Models\Templates;
 use App\Models\UnitedState;
+use App\Models\User;
 use App\Models\UserProfile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -101,23 +104,16 @@ class ForRewriteQuotationController extends Controller
         $data = $policyDetail->getForRewritePolicyByStatusAndUserProfileId(['For Rewrite Quotation', 'For Rewrite Quoted'], $userProfileId);
         return DataTables($data)
             ->addIndexColumn()
+            ->addColumn('policy_link', function($data){
+                $policyNumber = $data->policy_number;
+                return "<a href='/cancellation/get-for-rewrite-product-lead-view/{$data->id}'>$policyNumber</a>";
+            })
             ->addColumn('product', function($data){
                 return $data->QuotationProduct->product;
             })
             ->addColumn('company_name', function($data){
                 $company_name = $data->QuotationProduct->QuoteInformation->QuoteLead->leads->company_name;
                 return $company_name;
-            })
-            ->addColumn('cancelled_date', function($data){
-                return Carbon::parse($data->cancellationEndorsement->cancellation_date)->format('M-d-Y');
-            })
-            ->addColumn('cancelled_by', function($data){
-                $userProfile = $data->cancellationEndorsement->UserProfile;
-                return $userProfile ? $userProfile->fullAmericanName() : '';
-            })
-            ->addColumn('cancellation_type', function($data){
-                $cancellationEndorsement = $data->cancellationEndorsement;
-                return $cancellationEndorsement  ? $cancellationEndorsement->type_of_cancellation : '';
             })
             ->addColumn('policy_status', function($data){
                 $policyStatus = $data->status;
@@ -143,20 +139,24 @@ class ForRewriteQuotationController extends Controller
                 $sendForQuotationButton = '<button class="btn btn-outline-success btn-sm waves-effect waves-light sendForQuotationButton" id="'.$data->id.'"><i class=" ri-clipboard-line"></i></button>';
                 return $viewButton . ' ' . $viewNotedButton;
             })
-            ->rawColumns(['action', 'policy_status'])
+            ->rawColumns(['action', 'policy_status', 'policy_link'])
             ->make(true);
     }
 
     public function rewriteProfileView($policyDetailsId)
     {
+        $policyDetailModal = new PolicyDetail();
         $policyDetail = PolicyDetail::find($policyDetailsId);
         $product = QuotationProduct::find($policyDetail->quotation_product_id);
+        $quotationProduct = $product;
         if (!$product) {
             Log::warning('Product not found', ['Product ID' => $product->id]);
             return redirect()->route('leads.appointed-leads')->withErrors('Product not found');
         }
 
         $lead = Lead::find($product->QuoteInformation->QuoteLead->leads->id);
+        $leads = $lead;
+        $activePolicies = $policyDetailModal->getActivePolicyDetailByLeadId($leads->id);
         if (!$lead) {
             Log::warning('Lead not found', ['Product ID' => $product->id]);
             return redirect()->route('leads.appointed-leads')->withErrors('Lead not found');
@@ -203,8 +203,14 @@ class ForRewriteQuotationController extends Controller
         $userProfile = new UserProfile();
         $complianceOfficer = $userProfile->complianceOfficer();
         $products = $product->getQuotedProductByQuotedInformationId($product->quote_information_id);
-
-        return view('leads.appointed_leads.for-rewrite-lead-profile-view.index', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer', 'carriers', 'markets', 'policyDetail', 'products'));
+        $productIds = $leads->getQuotationProducts()->pluck('id')->toArray();
+        $selectedQuoteIds =  $leads->getQuotationProducts()->pluck('selected_quote_id')->toArray();
+        $selectedQuotes = SelectedQuote::whereIn('id', $selectedQuoteIds)->get() ?? [];
+        $userProfile = new UserProfile();
+        $userProfiles = UserProfile::get()->sortBy('first_name');
+        $financeCompany = FinancingCompany::all()->sortBy('name');
+        $customerUsers = User::where('role_id', 12)->orderBy('email')->get();
+        return view('leads.appointed_leads.for-rewrite-lead-profile-view.index', compact('lead', 'generalInformation', 'usAddress', 'localTime', 'generalLiabilities', 'quationMarket', 'product', 'templates', 'complianceOfficer', 'carriers', 'markets', 'policyDetail', 'products', 'leads', 'activePolicies', 'selectedQuotes', 'userProfiles', 'quotationProduct', 'financeCompany', 'customerUsers'));
     }
 
 }

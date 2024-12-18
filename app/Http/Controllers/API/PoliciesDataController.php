@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\GeneralLiabilities;
 use App\Models\PolicyDetail;
+use App\Models\QuotationProduct;
+use PhpParser\Node\Stmt\Switch_;
 
 class PoliciesDataController extends BaseController
 {
@@ -29,6 +32,19 @@ class PoliciesDataController extends BaseController
             'renewalSales' => $renewalSales,
             'directRewrite' => $directRewrite
         ]);
+    }
+
+    public function getPolicyInformation($policyId)
+    {
+        $policyDetail = PolicyDetail::find($policyId);
+        $quotationProduct = QuotationProduct::find($policyDetail->quotation_product_id);
+        if($quotationProduct->product == 'General Liability'){
+            $generalLiabilty = GeneralLiabilities::find($policyDetail->id);
+            return response()->json([
+                'policyDetail' => $policyDetail,
+                'generalLiabilty' => $generalLiabilty
+            ]);
+        }
     }
 
 }

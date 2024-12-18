@@ -1,28 +1,27 @@
-<div class="row mb-2">
-    <div class="d-flex justify-content-between">
-        <div>
-
-        </div>
-        <div>
-            <button class="btn btn-success" id="addScheduleButton">
-                ADD SCHEDULED EMAIL
-            </button>
-        </div>
+<div class="card shadow-lg p-3 mb-5 bg-white rounded">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h4 class="card-title">Send Email</h4>
+        <button class="btn btn-success" id="addScheduleButton">
+            ADD SCHEDULED EMAIL
+        </button>
     </div>
-</div>
 
-<table id="emailDataTable" class="table table-bordered dt-responsive nowrap emailDataTable"
-    style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-    <thead>
-        <tr style="background-color: #f0f0f0;">
-            <th>Product</th>
-            <th>Receiver Email</th>
-            <th>Status</th>
-            <th>Type</th>
-            <th>Sent Out Date</th>
-        </tr>
-    </thead>
-</table>
+    <div class="card-body">
+        <table id="emailDataTable" class="table table-bordered dt-responsive nowrap emailDataTable"
+            style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+            <thead>
+                <tr style="background-color: #f0f0f0;">
+                    <th>Product</th>
+                    <th>Receiver Email</th>
+                    <th>Status</th>
+                    <th>Type</th>
+                    <th>Sent Out Date</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+</div>
 
 <div class="modal fade" id="addScheduleModal" tabindex="-1" aria-labelledby="addScheduleModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -54,7 +53,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="submitSchedule">Submit</button>
+                <button type="button" class="btn btn-primary" id="submitEmailSchedule">Submit</button>
             </div>
         </div>
     </div>
@@ -69,9 +68,10 @@
             "ajax": {
                 url: "{{ route('get-messages') }}",
                 type: 'POST',
+                async: false,
                 data: {
                     _token: "{{ csrf_token() }}",
-                    productId: "{{ $productId }}"
+                    leadId: "{{ $leadId }}"
                 }
             },
             "columns": [{
@@ -100,12 +100,14 @@
         $('#addScheduleButton').on('click', function() {
             $('#addScheduleModal').modal('show');
         });
+
         var selectedTemplateName = '';
+
         $('#templateDropdown').change(function() {
             selectedTemplateName = $(this).find(":selected").text();
         });
 
-        $('#submitSchedule').on('click', function() {
+        $('#submitEmailSchedule').on('click', function() {
             var dataTime = $('#dateTime').val();
             var templateId = $('#templateDropdown').val();
             var type = $('#template option:selected').text();
@@ -116,6 +118,7 @@
                 data: {
                     _token: "{{ csrf_token() }}",
                     productId: "{{ $productId }}",
+                    leadId: "{{ $leadId }}",
                     dateTime: dataTime,
                     templateId: templateId,
                     type: selectedTemplateName

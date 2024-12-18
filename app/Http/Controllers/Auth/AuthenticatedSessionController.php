@@ -7,6 +7,9 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
+use function Psy\debug;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -28,16 +31,24 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
-        $request->authenticate();
+        try{
+            $request->authenticate();
+            $request->session()->regenerate();
 
-        $request->session()->regenerate();
+            $notification = array(
+                'message' => 'User Login Successfully',
+                'alert-type' => 'success'
+            );
+            return redirect()->intended(RouteServiceProvider::HOME)->with($notification);
+        }catch(\Exception $e){
+            Log::info($e->getMessage());
+            $notification = array(
+                'message' => 'Invalid Credentials',
+                'alert-type' => 'error'
+            );
+            return back()->with($notification);
+        }
 
-        $notification = array(
-            'message' => 'User Login Successfully', 
-            'alert-type' => 'success'
-        );
-
-        return redirect()->intended(RouteServiceProvider::HOME)->with($notification);
     }
 
     /**

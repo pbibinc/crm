@@ -164,4 +164,11 @@ class LeadPolicy
         return $user->role->hasPermission('view_call_back_lead_list');
     }
 
+    public function viewBrokerAssisantCompliance(User $user, Lead $lead)
+    {
+        return $user->role->hasPermission('view_any_broker_assistant_compliance');
+    }
+
+
+
 }

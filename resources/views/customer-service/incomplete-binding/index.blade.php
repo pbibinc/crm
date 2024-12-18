@@ -9,6 +9,7 @@
             <th>Requested_by</th>
             <th>Total Cost</th>
             <th>Effective Date</th>
+            <th>Action</th>
         </thead>
     </table>
 </div>
@@ -51,6 +52,12 @@
                 {
                     data: 'effective_date',
                     name: 'effective_date'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
                 }
             ],
             language: {

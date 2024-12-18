@@ -28,13 +28,16 @@
                     // Get the value from the hidden input
                     var hiddenId = $('#hidden_id').val();
                     // Append it to the FormData object
+                    formData.append("_token", "{{ csrf_token() }}");
                     formData.append("hidden_id", hiddenId);
                 });
                 this.on("removedfile", function(file, formData) {
-                    var id = file.id;
-                    var url = "{{ route('delete-invoice') }}"
-                    // Get the value from the hidden input
+
+                    var fileId = file.id;
+                    console.log(fileId);
                     var hiddenId = $('#hidden_id').val();
+                    var url = "{{ route('delete-required-file') }}";
+                    // Get the value from the hidden input
                     Swal.fire({
                         title: 'Confirm File Removal',
                         text: 'Are you sure you want to remove this file?',
@@ -49,7 +52,7 @@
                                 url: url, // Replace with your delete file route
                                 method: "POST",
                                 data: {
-                                    id: id,
+                                    fileId: fileId,
                                     hiddenId: hiddenId,
                                     _token: "{{ csrf_token() }}"
                                 },

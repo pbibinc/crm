@@ -50,21 +50,29 @@ class AppTakerLeadsController extends Controller
         $dataCount = Lead::getLeadsAppointed($user->id);
         $userProfiles = UserProfile::get()->sortBy('first_name');
         if($request->ajax()){
-            $query = Lead::select('id', 'company_name', 'tel_num', 'class_code', 'state_abbr')
+            $query = Lead::select('id', 'company_name', 'tel_num', 'class_code', 'state_abbr', 'is_spanish')
             ->where('status', 2)
             ->whereNull('disposition_id')
             ->whereHas('userProfile', function ($q) use ($user) {
                 $q->where('user_id', $user->id);
             });
+            if ($request->input('spanishLead') == 1) {
+                $query->where('is_spanish', 1);
+            }
             return DataTables::of($query)
             ->addColumn('company_name_action', function ($query){
-                           return '<a href="#" data-toggle="modal" id="companyLink" name="companyLinkButtonData" data-target="#leadsDataModal" data-id="'.$query->id.'" data-name="'.$query->company_name.'">'.$query->company_name.'</a>';
+                          $companyName =  '<a href="#" data-toggle="modal" id="companyLink" name="companyLinkButtonData" data-target="#leadsDataModal" data-id="'.$query->id.'" data-name="'.$query->company_name.'">'.$query->company_name.'</a>' ;
+                          if($query->is_spanish == 1){
+                            $companyName .= ' <span style="color: red; font-weight: bold;">(ES)</span>';
+                          }
+                            return $companyName;
                         })
             ->rawColumns(['company_name_action'])
             ->make(true);
         }
         return view('leads.apptaker_leads.index', compact('timezones', 'sites', 'states', 'sortedClassCodeLeads', 'classCodeLeads', 'dispositions', 'recreationalFacilities', 'dataCount', 'userProfiles'));
     }
+
     public function multiStateWork(Request $request)
     {
         $formData = $request->all();
@@ -132,11 +140,18 @@ class AppTakerLeadsController extends Controller
 
         if($leadId == $cachedLeadId){
             Cache::get('lead_id');
-            Cache::get('user_id');
+
         }else{
             Cache::put('lead_id', $leadId, 60 * 60);
             Cache::put('user_id', $user->id, 60 * 360);
         }
+
+        if($user->id == $cachedUser ){
+            Cache::get('user_id');
+        }else{
+            Cache::put('user_id', $user->id, 60 * 360);
+        }
+
         return response()->json(['success' => 'Lead id added to cache']);
     }
 

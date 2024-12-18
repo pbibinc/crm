@@ -108,9 +108,6 @@ class BrokerQuotation extends Model
       return $quotationProducts->isEmpty() ? [] : $quotationProducts;
     }
 
-
-
-
     public function getProductToBind($userProfileId)
     {
         $brokerQuotations = self::where('user_profile_id', $userProfileId)->with(['quotationProduct' => function($query){
@@ -129,6 +126,21 @@ class BrokerQuotation extends Model
         $agentIds = BrokerHandle::where('broker_userprofile_id', $userProfileId)->pluck('agent_userprofile_id');
         $agentIds = $agentIds;
         $quotationProductsQuery = BrokerQuotation::whereIn('user_profile_id', $agentIds)
+        ->whereHas('quotationProduct', function ($query) use ($status) {
+            if (is_array($status)) {
+                $query->whereIn('status', $status);
+            } else {
+                $query->where('status', $status);
+            }
+        })
+        ->with('quotationProduct');
+        $quotationProducts = $quotationProductsQuery->get()->pluck('quotationProduct')->unique('id')->flatten();
+        return $quotationProducts->isEmpty() ? [] : $quotationProducts;
+    }
+
+    public function getBrokerProductByUserProfileId($userProfileId, $status)
+    {
+        $quotationProductsQuery = BrokerQuotation::where('user_profile_id', $userProfileId)
         ->whereHas('quotationProduct', function ($query) use ($status) {
             if (is_array($status)) {
                 $query->whereIn('status', $status);

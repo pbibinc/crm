@@ -113,9 +113,11 @@ class AuditInformationController extends Controller
         //
         try{
             $auditInformation = AuditInformation::find($id);
+            $media = $auditInformation->media;
             return response()->json([
                 'message' => 'Audit information retrieved successfully',
-                'data' => $auditInformation
+                'data' => $auditInformation,
+                'media' => $media
             ], 200);
         }catch(\Exception $e){
             return response()->json([
@@ -215,8 +217,9 @@ class AuditInformationController extends Controller
                         &#x2022;&#x2022;&#x2022;
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="actionMenu' . $data->id . '" style="min-width: 100px;">
-                        <li><a class="dropdown-item uploadAuditInformationFile text-success" href="#" id="' . $data->id . '"><i class="ri-upload-2-line"></i> Upload Required File</a></li>
-                        <li><a class="dropdown-item deleteAuditInformation text-warning" href="#" id="' . $data->id . '"><i class="ri-delete-bin-line"></i> Delete</a></li>
+                        <li><a class="dropdown-item uploadAuditInformationFile text-success" href="#" id="' . $data->id . '"><i class="ri-upload-2-line"></i> View/Upload Required File</a></li>
+                        <li><a class="dropdown-item uploadAuditLetter text-info" href="#" id="' . $data->id . '"><i class="ri-upload-2-line"></i>View/Upload Audit Letter</a></li>
+                        <li><a class="dropdown-item deleteAuditInformation text-danger" href="#" id="' . $data->id . '"><i class="ri-delete-bin-line"></i> Delete</a></li>
                     </ul>
                 </div>';
                 $editButton = '<button class="btn btn-info btn-sm editAuditInformation" id="'.$data->id.'" style="width: 30px; height: 30px; border-radius: 50%; padding: 0; display: inline-flex; align-items: center; justify-content: center;"><i class="ri-pencil-line"></i></button>';
@@ -226,6 +229,67 @@ class AuditInformationController extends Controller
             })
             ->rawColumns(['audit_letter_file', 'action'])
             ->make(true);
+    }
+
+    public function deleteAuditLetter(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+            $auditInformation = AuditInformation::find($request->hidden_id);
+            $auditInformation->audit_letter_id = null;
+            $auditInformation->save();
+            DB::commit();
+            return response()->json([
+                'message' => 'Audit letter deleted successfully'
+            ], 200);
+        }catch(\Exception $e){
+            DB::rollBack();
+            Log::error($e->getMessage());
+            return response()->json([
+                'message' => 'An error occurred while deleting the audit letter',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function uploadAuditLetter(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+            $data = $request->all();
+
+            $file = $data['file'];
+            $basename = $file->getClientOriginalName();
+            $directoryPath = public_path('backend/assets/attacedFiles/policy');
+            $type = $file->getClientMimeType();
+            $size = $file->getSize();
+            if(!File::isDirectory($directoryPath)){
+                File::makeDirectory($directoryPath, 0777, true, true);
+            }
+            $file->move($directoryPath, $basename);
+            $filepath =  'backend/assets/attacedFiles/policy' . '/' . $basename;
+
+            $metadata = new Metadata();
+            $metadata->basename = $basename;
+            $metadata->filename = $basename;
+            $metadata->filepath = $filepath;
+            $metadata->type = $type;
+            $metadata->size = $size;
+            $metadata->save();
+            $mediaId = $metadata->id;
+
+            $auditInformation = AuditInformation::find($data['hidden_id']);
+            $auditInformation->audit_letter_id = $mediaId;
+            $auditInformation->save();
+
+            DB::commit();
+        }catch(\Exception $e){
+            Log::error($e->getMessage());
+            return response()->json([
+                'message' => 'An error occurred while uploading the audit letter',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
 }

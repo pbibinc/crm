@@ -13,13 +13,13 @@
                                     <a class="nav-link active" data-bs-toggle="tab" href="#subjectForRewrite"
                                         role="tab">
                                         <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
-                                        <span class="d-none d-sm-block">Subject For Rewrite</span>
+                                        <span class="d-none d-sm-block">Subject For Rewrite/Recovery</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-bs-toggle="tab" href="#forRewrite" role="tab">
                                         <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
-                                        <span class="d-none d-sm-block">For Rewrite</span>
+                                        <span class="d-none d-sm-block">For Rewrite/Recovery</span>
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -355,6 +355,7 @@
                         $('#leadsId').val(response.lead.id);
                         $('#quoteComparisonId').val(response.quoteComparison.id);
                         $('#paymentInformationId').val(response.paymentInformation.id);
+                        $('#paymentInformationAction').val('Request A Payment');
                         $('#policyDetailId').val(policyId);
                         $('#selectedQuoteId').val(response.paymentInformation
                             .selected_quote_id);

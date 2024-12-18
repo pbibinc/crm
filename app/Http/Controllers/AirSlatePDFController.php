@@ -7,6 +7,7 @@ use App\Models\UserProfile;
 use Illuminate\Http\Request;
 use App\Services\AirslateService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Models\PdfFillerTemplateFiles;
@@ -22,13 +23,15 @@ class AirSlatePDFController extends Controller
     public function pdfEditorIndex() {
         $user_id = Auth::id();
         $userProfile = UserProfile::where('user_id', $user_id)->first();
-        $user_files = $userProfile->pdfUserFiles()->get();
-        $user_files->sortBy('id');
+        // $user_files = $userProfile->pdfUserFiles()->get();
+        // $user_files->sortBy('id');
         $template_files = PdfFillerTemplateFiles::get()->sortBy('id');
-        return view('pdf-tools.pdf-edit.index', compact('user_files', 'template_files'));
+        // return view('pdf-tools.pdf-edit.index', compact('user_files', 'template_files'));
+        return view('pdf-tools.pdf-edit.index', compact( 'template_files'));
     }
 
     public function pdfEditorStore(Request $request) {
+        Log::info('request', $request->all());
         try {
             if ($request->isMethod('post')) {
                 if ($request->hasFile('file')) {
@@ -64,8 +67,11 @@ class AirSlatePDFController extends Controller
     public function pdfEditorFetch(Request $request) {
         try {
             if ($request->isMethod('get')) {
+
                 // Fetch document lists from Airslate API
                 $documentListsRes = $this->airslateService->getDocumentLists();
+
+                Log::info('documentListsRes', $documentListsRes);
 
                 if ($documentListsRes['status'] === 'success') {
                     $documents = $documentListsRes['data']['data']; // Get the list of documents
@@ -104,6 +110,8 @@ class AirSlatePDFController extends Controller
                         'status' => 'error',
                         'message' => 'Failed to fetch documents from Airslate'
                     ], 500);
+
+                    // return $documentListsRes;
                 }
             } else {
                 throw new Exception('Method not allowed');
@@ -148,6 +156,40 @@ class AirSlatePDFController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function pdfGetFillableFields(Request $request) {
+        try {
+            if ($request->isMethod('get')) {
+                $validatedData = $request->validate([
+                    'documentId' => 'required|string'
+                ]);
+
+                return $this->airslateService->getDocumentFields($validatedData['documentId']);
+
+            } else {
+                throw new Exception('Method not allowed');
+            }
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function pdfPrefillFillableFields(Request $request) {
+        try {
+            if ($request->isMethod('patch')) {
+                $validatedData = $request->validate([
+                    'documentId' => 'required|string',
+                    'fields' => 'required|array'
+                ]);
+                return $this->airslateService->prefillFields($validatedData['documentId'], $validatedData['fields']);
+            } else {
+                throw new Exception('Method not allowed');
+            }
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
 
     public function ocrPdfIndex() {
         return view('pdf-tools.ocr-pdf.index');
@@ -230,58 +272,58 @@ class AirSlatePDFController extends Controller
 
     public function getInfoAboutDocumentWithinTemplateVersion() {}
 
-    public function listOfOrganizations(Request $request) {
-        try {
-            if ($request->isMethod('get')) {
-                return $this->airslateService->fetchOrgList();
-            } else {
-                throw new Exception('Method not allowed');
-            }
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    }
+    // public function listOfOrganizations(Request $request) {
+    //     try {
+    //         if ($request->isMethod('get')) {
+    //             return $this->airslateService->fetchOrgList();
+    //         } else {
+    //             throw new Exception('Method not allowed');
+    //         }
+    //     } catch (Exception $e) {
+    //         return response()->json(['error' => $e->getMessage()], 500);
+    //     }
+    // }
 
-    public function pdfUploadDocToTemplate(Request $request) {
-        try {
-            if ($request->isMethod('post')) {
-                if ($request->hasFile('file')) {
-                    $documentFile = $request->file('file');
-                    $documentName = $documentFile->getClientOriginalName();
-                    $filePath = $documentFile->getRealPath();
-                    $fileContent = file_get_contents($filePath);
-                    $base64String = base64_encode($fileContent);
-                    $mimeType = $documentFile->getMimeType();
-                    $base64File = "data:{$mimeType};base64,{$base64String}";
-                    $orgId = "";
-                    $templateId = "";
-                    $dataArr = [];
-                    $dataArr[] = [
-                        "fileName" => $documentName,
-                        "content" => $base64File,
-                    ];
-                    // Get the org and template id first
-                    $fetchOrgRes = $this->airslateService->fetchOrgList();
-                    if ($fetchOrgRes['status'] === 'success') {
-                        $orgId = $fetchOrgRes['data'][0]['id'];
-                        $fetchTemplatesRes = $this->airslateService->fetchTemplates($orgId);
-                        if ($fetchTemplatesRes['status'] === 'success') {
-                            $templateId = $fetchTemplatesRes['data'][0]['id'];
-                        } else {
-                            return $fetchTemplatesRes;
-                        }
-                    } else {
-                        return $fetchOrgRes;
-                    }
-                    $this->airslateService->uploadDocToTemplate($orgId, $templateId, $dataArr);
-                } else {
-                    throw new Exception('No file uploaded');
-                }
-            } else {
-                throw new Exception('Method not allowed');
-            }
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
-    }
+    // public function pdfUploadDocToTemplate(Request $request) {
+    //     try {
+    //         if ($request->isMethod('post')) {
+    //             if ($request->hasFile('file')) {
+    //                 $documentFile = $request->file('file');
+    //                 $documentName = $documentFile->getClientOriginalName();
+    //                 $filePath = $documentFile->getRealPath();
+    //                 $fileContent = file_get_contents($filePath);
+    //                 $base64String = base64_encode($fileContent);
+    //                 $mimeType = $documentFile->getMimeType();
+    //                 $base64File = "data:{$mimeType};base64,{$base64String}";
+    //                 $orgId = "";
+    //                 $templateId = "";
+    //                 $dataArr = [];
+    //                 $dataArr[] = [
+    //                     "fileName" => $documentName,
+    //                     "content" => $base64File,
+    //                 ];
+    //                 // Get the org and template id first
+    //                 $fetchOrgRes = $this->airslateService->fetchOrgList();
+    //                 if ($fetchOrgRes['status'] === 'success') {
+    //                     $orgId = $fetchOrgRes['data'][0]['id'];
+    //                     $fetchTemplatesRes = $this->airslateService->fetchTemplates($orgId);
+    //                     if ($fetchTemplatesRes['status'] === 'success') {
+    //                         $templateId = $fetchTemplatesRes['data'][0]['id'];
+    //                     } else {
+    //                         return $fetchTemplatesRes;
+    //                     }
+    //                 } else {
+    //                     return $fetchOrgRes;
+    //                 }
+    //                 $this->airslateService->uploadDocToTemplate($orgId, $templateId, $dataArr);
+    //             } else {
+    //                 throw new Exception('No file uploaded');
+    //             }
+    //         } else {
+    //             throw new Exception('Method not allowed');
+    //         }
+    //     } catch (Exception $e) {
+    //         return response()->json(['error' => $e->getMessage()], 500);
+    //     }
+    // }
 }

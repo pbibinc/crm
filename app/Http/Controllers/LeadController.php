@@ -41,7 +41,7 @@ class LeadController extends Controller
         $classCodeLeads = ClassCodeLead::all();
         $websiteOriginated = Website::distinct()->orderBy('name')->pluck('name');;
         if ($request->ajax()) {
-        $query = Lead::select('id', 'company_name', 'website_originated','tel_num', 'state_abbr', 'created_at')->orderBy('id');
+        $query = Lead::whereNot('status', 7)->select('id', 'company_name', 'website_originated','tel_num', 'state_abbr', 'created_at')->orderBy('id');
         return DataTables::of($query)
         ->addColumn('action_button', function ($query){
             $editButton =  '<button class="btn btn-outline-primary waves-effect waves-light btn-sm btnEdit" data-id="'.$query->id.'" name="edit"  type="button " ><i class="mdi mdi-pencil-outline"></i></button>';
@@ -61,91 +61,190 @@ class LeadController extends Controller
     /**
      * @return \Illuminate\Support\Collection
      */
+    // public function import(Request $request)
+    // {
+
+    //     // Validate the uploaded file
+    //     $request->validate([
+    //        'file' => 'required|mimes:xlsx,xls,csv'
+    //     ]);
+
+    //     // Store the uploaded file temporarily
+    //     $path = $request->file('file')->storeAs('temp', 'temp_file.xlsx' . $request->file('file')->getClientOriginalExtension());
+
+
+    //     // Get the full path of the stored file
+    //     $fullpath = str_replace('\\', '/', storage_path("app/{$path}"));
+
+    //     //getting the all the data store into array
+    //     try {
+    //         $fileData = Excel::toArray([], $fullpath);
+
+    //     } catch (\Exception $e) {
+    //         Log::error('Error reading Excel file: ' . $e->getMessage());
+    //         return back()->with('error', 'Error reading Excel file.');
+    //     }
+    //     $fileData = $fileData[0];
+
+    //     $columns = [
+    //         'company_name',
+    //         'tel_num',
+    //         'state_abbr',
+    //         'class_code',
+    //         'website_originated',
+    //         'is_spanish',
+    //      ];
+
+    //     // Get the existing phone numbers from the leads table
+    //     $existingNumbers = Lead::pluck('tel_num')->toArray();
+
+    //    // Filter out the rows with existing phone numbers
+    //    $filteredNumbers = [];
+    //    $newLeads = array_filter($fileData, function ($row) use ($existingNumbers, &$filteredNumbers, $columns) {
+    //        // Ensure the row has the correct number of elements
+    //        if (count($row) !== count($columns)) {
+    //            Log::warning("Row does not match expected column count: " . json_encode($row));
+    //            return false;
+    //        }
+
+    //        $lead = array_combine($columns, $row);
+
+    //        Log::info('Original company name: ' . $lead['company_name']);
+    //        $lead['company_name'] = trim(str_replace('"', '', $lead['company_name']));
+    //        Log::info('Cleaned company name: ' . $lead['company_name']);
+    //        if (in_array($lead['tel_num'], $existingNumbers) || in_array($lead['tel_num'], $filteredNumbers)) {
+    //            return false;
+    //        }
+
+    //        $filteredNumbers[] = $lead['tel_num'];
+    //        return true;
+    //    });
+
+    //    // Write the filtered data back to a temporary CSV file
+    //    $filteredPath = str_replace('temp_file.xlsx', 'filtered_temp_file.csv', $fullpath);
+    //    $filteredFile = fopen($filteredPath, 'w');
+    //    Log::info('new lead', $newLeads);
+
+    //    foreach ($newLeads as $lead) {
+    //     //  Log::info('lead', $lead);
+    //     //  fputcsv($filteredFile, $lead);
+    //     $leadModel = new Lead();
+    //     $leadModel->company_name = $lead[0];
+    //     $leadModel->tel_num = $lead[1];
+    //     $leadModel->state_abbr = $lead[2];
+    //     $leadModel->class_code = $lead[3];
+    //     $leadModel->website_originated = $lead[4];
+    //     $leadModel->is_spanish = $lead[5];
+    //     $leadModel->save();
+
+    //     }
+
+    //    try {
+    //     // LoadFile::file($filteredPath, $local = true)
+    //     //     ->into('leads')
+    //     //     ->columns($columns)
+    //     //     ->fieldsTerminatedBy(',')
+    //     //     ->load();
+    //    } catch (\Exception $e) {
+    //      Log::error('Error loading data into the database: ' . $e->getMessage());
+    //      return back()->with('error', 'Error loading data into the database.');
+    //    }
+
+
+    //   // Update the created_at field for the newly inserted leads
+    //   DB::table('leads')->whereNull('created_at')->update(['created_at' => now()]);
+
+    //   // Delete the temporary files
+    //   unlink($fullpath);
+    //   unlink($filteredPath);
+
+    //   // Clear the cache
+    //   Cache::forget('apptaker_leads');
+
+    //   return back()->with('success', 'Leads imported successfully.');
+    // }
+
     public function import(Request $request)
     {
+      // Validate the uploaded file
+      $request->validate([
+         'file' => 'required|mimes:xlsx,xls,csv'
+      ]);
 
-        // Validate the uploaded file
-        $request->validate([
-           'file' => 'required|mimes:xlsx,xls,csv'
-        ]);
+      // Store the uploaded file temporarily
+      $path = $request->file('file')->storeAs('temp', 'temp_file.' . $request->file('file')->getClientOriginalExtension());
+      $fullpath = storage_path("app/{$path}");
 
-        // Store the uploaded file temporarily
-        $path = $request->file('file')->storeAs('temp', 'temp_file.xlsx' . $request->file('file')->getClientOriginalExtension());
+      $columns = [
+         'company_name',
+         'tel_num',
+         'state_abbr',
+         'class_code',
+         'website_originated',
+         'is_spanish',
+       ];
 
+     try {
+        // Read file data in chunks to reduce memory usage
+        $fileData = Excel::toArray([], $fullpath)[0]; // Use only the first sheet
+     } catch (\Exception $e) {
+        Log::error('Error reading Excel file: ' . $e->getMessage());
+        return back()->with('error', 'Error reading Excel file.');
+     }
 
-        // Get the full path of the stored file
-        $fullpath = str_replace('\\', '/', storage_path("app/{$path}"));
+     $existingNumbers = Lead::pluck('tel_num')->toArray(); // Cache existing numbers
+     $newLeads = [];
+     $batchSize = 1000; // Number of rows to process per batch
 
-        //getting the all the data store into array
-        try {
-            $fileData = Excel::toArray([], $fullpath);
+     foreach ($fileData as $index => $row) {
+        // Skip header row (optional)
+        if ($index === 0) continue;
 
-        } catch (\Exception $e) {
-            Log::error('Error reading Excel file: ' . $e->getMessage());
-            return back()->with('error', 'Error reading Excel file.');
+        // Ensure the row has the correct number of elements
+        if (count($row) !== count($columns)) {
+            Log::warning("Row does not match expected column count: " . json_encode($row));
+            continue;
         }
-        $fileData = $fileData[0];
 
-        $columns = [
-            'company_name',
-            'tel_num',
-            'state_abbr',
-            'class_code',
-            'website_originated',
-         ];
+        $lead = array_combine($columns, $row);
 
-        // Get the existing phone numbers from the leads table
-        $existingNumbers = Lead::pluck('tel_num')->toArray();
+        // Clean up company_name and other fields
+        $lead['company_name'] = trim(str_replace('"', '', $lead['company_name']));
 
-       // Filter out the rows with existing phone numbers
-       $filteredNumbers = [];
-       $newLeads = array_filter($fileData, function ($row) use ($existingNumbers, &$filteredNumbers, $columns) {
-           // Ensure the row has the correct number of elements
-           if (count($row) !== count($columns)) {
-               Log::warning("Row does not match expected column count: " . json_encode($row));
-               return false;
-           }
-
-           $lead = array_combine($columns, $row);
-           if (in_array($lead['tel_num'], $existingNumbers) || in_array($lead['tel_num'], $filteredNumbers)) {
-               return false;
-           }
-
-           $filteredNumbers[] = $lead['tel_num'];
-           return true;
-       });
-
-       // Write the filtered data back to a temporary CSV file
-       $filteredPath = str_replace('temp_file.xlsx', 'filtered_temp_file.csv', $fullpath);
-       $filteredFile = fopen($filteredPath, 'w');
-       foreach ($newLeads as $lead) {
-         fputcsv($filteredFile, $lead);
+        // Skip rows with existing phone numbers
+        if (in_array($lead['tel_num'], $existingNumbers)) {
+            continue;
         }
-         fclose($filteredFile);
 
-       try {
-        LoadFile::file($filteredPath, $local = true)
-            ->into('leads')
-            ->columns($columns)
-            ->fieldsTerminatedBy(',')
-            ->load();
-       } catch (\Exception $e) {
-         Log::error('Error loading data into the database: ' . $e->getMessage());
-         return back()->with('error', 'Error loading data into the database.');
-       }
+        $newLeads[] = $lead;
 
+        // Perform batch insert when the batch size is reached
+        if (count($newLeads) >= $batchSize) {
+            $this->insertLeads($newLeads);
+            $newLeads = []; // Reset the batch
+        }
+     }
 
-      // Update the created_at field for the newly inserted leads
-      DB::table('leads')->whereNull('created_at')->update(['created_at' => now()]);
+     // Insert any remaining rows
+     if (!empty($newLeads)) {
+        $this->insertLeads($newLeads);
+     }
 
-      // Delete the temporary files
-      unlink($fullpath);
-      unlink($filteredPath);
+     // Cleanup
+     unlink($fullpath);
+     Cache::forget('apptaker_leads');
 
-      // Clear the cache
-      Cache::forget('apptaker_leads');
+     return back()->with('success', 'Leads imported successfully.');
+    }
 
-      return back()->with('success', 'Leads imported successfully.');
+    private function insertLeads(array $leads)
+    {
+     try {
+         // Use DB bulk insert for better performance
+         DB::table('leads')->insert($leads);
+     } catch (\Exception $e) {
+        Log::error('Error inserting leads into the database: ' . $e->getMessage());
+     }
     }
 
     public function importDnc(Request $request)
@@ -583,15 +682,22 @@ class LeadController extends Controller
             foreach($ids as $id) {
                 $tempDnc = new TempDnc();
                 $lead = Lead::find($id);
+
+
                 $tempDnc->company_name = $lead->company_name;
                 $tempDnc->tel_num = $lead->tel_num;
                 $tempDnc->save();
-                $lead->update(['status' => 7]);
-                $lead->delete();
+
+                $lead->status = 7;
+                $lead->disposition_id = 18;
+                $lead->save();
+
+
             }
             DB::commit();
             return response()->json(['message' => 'The leads are successfully added to DNC Queue']);
         }catch(\Exception $e) {
+            DB::rollBack();
             Log::error($e->getMessage());
             return response()->json(['message' => $e->getMessage()]);
         }
