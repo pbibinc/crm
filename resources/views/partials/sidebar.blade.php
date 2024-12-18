@@ -37,23 +37,33 @@
                     </ul>
                 </li>
 
-                <li>
-                    <a href="{{ route('dashboard-report') }}" class="waves-effect">
-                        <i class="ri-dashboard-line"></i><span class="badge rounded-pill bg-success float-end"></span>
-                        <span>Report</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="ri-tools-fill"></i>
-                        <span>PDF Tools</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li><a href="{{ route('pdf-editor.index') }}">PDF Editor</a></li>
-                        <li><a href="{{ route('ocr-pdf.index') }}">OCR PDF</a></li>
-                        <li><a href="{{ route('pdf-workflow.index') }}">PDF Workflow</a></li>
-                    </ul>
-                </li>
+                @can('viewAnyReport', App\Models\Permission::find(1))
+                    {{-- report menu --}}
+                    <li>
+                        <a href="{{ route('dashboard-report') }}" class="waves-effect">
+                            <i class="ri-dashboard-line"></i><span class="badge rounded-pill bg-success float-end"></span>
+                            <span>Report</span>
+                        </a>
+                    </li>
+                @endcan
+
+
+                @can('viewAnyPdfTools', App\Models\Permission::find(1))
+                    {{-- pdf tools menu --}}
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="ri-tools-fill"></i>
+                            <span>PDF Tools</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="{{ route('pdf-editor.index') }}">PDF Editor</a></li>
+                            <li><a href="{{ route('ocr-pdf.index') }}">OCR PDF</a></li>
+                            <li><a href="{{ route('pdf-workflow.index') }}">PDF Workflow</a></li>
+                        </ul>
+                    </li>
+                @endcan
+
+                {{-- emails tools menu --}}
                 <li>
                     <a href="javascript: void(0);" class="has-arrow waves-effect">
                         <i class="ri-tools-fill"></i>
@@ -65,39 +75,41 @@
                     </ul>
                 </li>
 
-                <li>
-                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                        <i class="ri-profile-line"></i>
-                        <span>HR</span>
-                    </a>
-                    <ul class="sub-menu" aria-expanded="false">
-                        <li class=""><a href="javascript: void(0);" class="has-arrow" aria-expanded="true">Leave
-                                Forms</a>
-                            <ul class="sub-menu mm-collapse mm-show" aria-expanded="true" style="">
-                                <li><a href="javascript: void(0);">Vacation Leave</a></li>
-                                <li><a href="javascript: void(0);">Sick Leave</a></li>
-                                <li><a href="javascript: void(0);">Emergency Leave</a></li>
-                                <li><a href="javascript: void(0);">Birthday Leave</a></li>
-                            </ul>
-                        </li>
-                        {{-- <li><a href="{{ route('hrforms.') }}">Memos</a></li> --}}
-                        <li><a href="{{ route('hrforms.attendance-records-index') }}">Attendance Records</a></li>
-                        <li><a href="javascript: void(0);">Online Monitoring</a></li>
-                        <li><a href="{{ route('hrforms.birthday-calendar-index') }}">Birthday Calendar</a></li>
-                        <li><a href="{{ route('hrforms.company-handbook') }}">Company Handbook</a></li>
-                        <li class=""><a href="javascript: void(0);" class="has-arrow" aria-expanded="true">Other
-                                Forms</a>
-                            <ul class="sub-menu mm-collapse mm-show" aria-expanded="true" style="">
-                                <li><a href="{{ route('hrforms.accountability-form') }}">Accountability Form</a></li>
-                                <li><a href="{{ route('hrforms.incident-report-form') }}">Incident Report</a></li>
-                                <li><a href="javascript: void(0);">Proposal Form</a></li>
-                                <li><a href="javascript: void(0);">Disposal Form</a></li>
-                                <li><a href="javascript: void(0);">MoM (Minutes of Meeting) Form</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-
+                @can('viewAnyHr', App\Models\Permission::find(1))
+                    {{-- hr module sidebar menu --}}
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="ri-profile-line"></i>
+                            <span>HR</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li class=""><a href="javascript: void(0);" class="has-arrow" aria-expanded="true">Leave
+                                    Forms</a>
+                                <ul class="sub-menu mm-collapse mm-show" aria-expanded="true" style="">
+                                    <li><a href="javascript: void(0);">Vacation Leave</a></li>
+                                    <li><a href="javascript: void(0);">Sick Leave</a></li>
+                                    <li><a href="javascript: void(0);">Emergency Leave</a></li>
+                                    <li><a href="javascript: void(0);">Birthday Leave</a></li>
+                                </ul>
+                            </li>
+                            {{-- <li><a href="{{ route('hrforms.') }}">Memos</a></li> --}}
+                            <li><a href="{{ route('hrforms.attendance-records-index') }}">Attendance Records</a></li>
+                            <li><a href="javascript: void(0);">Online Monitoring</a></li>
+                            <li><a href="{{ route('hrforms.birthday-calendar-index') }}">Birthday Calendar</a></li>
+                            <li><a href="{{ route('hrforms.company-handbook') }}">Company Handbook</a></li>
+                            <li class=""><a href="javascript: void(0);" class="has-arrow" aria-expanded="true">Other
+                                    Forms</a>
+                                <ul class="sub-menu mm-collapse mm-show" aria-expanded="true" style="">
+                                    <li><a href="{{ route('hrforms.accountability-form') }}">Accountability Form</a></li>
+                                    <li><a href="{{ route('hrforms.incident-report-form') }}">Incident Report</a></li>
+                                    <li><a href="javascript: void(0);">Proposal Form</a></li>
+                                    <li><a href="javascript: void(0);">Disposal Form</a></li>
+                                    <li><a href="javascript: void(0);">MoM (Minutes of Meeting) Form</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                @endcan
 
                 {{-- admin module --}}
                 @can('view', App\Models\Permission::find(1))
@@ -190,11 +202,12 @@
                 @endcan
 
 
-
+                {{-- sales module menu --}}
                 @can('viewAnySales', App\Models\Lead::find(1))
                     <li class="menu-title">Sales</li>
-                    <li>
-                        @can('viewAnyApptaker', App\Models\Lead::find(1))
+                    @can('viewAnyApptaker', App\Models\Lead::find(1))
+                        <li>
+
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
                                 <i class="ri-headphone-line"></i>
                                 <span>App Takers</span>
@@ -214,8 +227,9 @@
                                 <li><a href="{{ route('non-callback-disposition') }}">Dispositioned Leads</a></li>
                                 <li><a href="#">Insurance Need Survey</a></li>
                             </ul>
-                        @endcan
-                    </li>
+
+                        </li>
+                    @endcan
                     <li>
                         @can('viewAnyQuotation', App\Models\Lead::find(1))
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
@@ -285,7 +299,6 @@
                         </ul>
                     </li>
                 @endcan
-
 
                 @can('viewAnyCustomerService', App\Models\Lead::find(1))
                     <li class="menu-title">Customer Service</li>
@@ -368,6 +381,7 @@
                         </ul>
                     </li>
                 @endcan
+
             </ul>
         </div>
         <!-- Sidebar -->

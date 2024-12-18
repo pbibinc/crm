@@ -94,4 +94,19 @@ class PermissionPolicy
     {
         //
     }
+
+    public function viewAnyHr(User $user, Permission $permission)
+    {
+        return $user->role->hasPermission('view_any_hr');
+    }
+
+    public function viewAnyPdfTools(User $user, Permission $permission)
+    {
+        return $user->role->hasPermission('view_any_pdf_tools');
+    }
+
+    public function viewAnyReport(User $user, Permission $permission)
+    {
+        return $user->role->hasPermission('view_any_report');
+    }
 }
