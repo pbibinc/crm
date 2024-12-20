@@ -40,14 +40,25 @@ class AirSlatePDFController extends Controller
                     $filePath = $documentFile->getRealPath();
                     // $fileSize = $documentFile->getSize();
                     $tags = json_decode($request->input('tags'), true);
+                    $accessType = $request->input('accessType');
+
+                    if (!is_array($tags)) {
+                        $tags = [];
+                    }
+
+                    if (!empty($accessType)) {
+                        $mergedTags = array_merge($tags, [$accessType]);
+                    } else {
+                        $mergedTags = $tags;
+                    }
 
                     // Upload the document first
                     $uploadResponse = $this->airslateService->uploadDocumentToStorage($filePath, $documentName);
 
                     // Check if the document upload was successful and tags exist
-                    if ($uploadResponse['status'] === 'success' && count($tags) > 0) {
+                    if ($uploadResponse['status'] === 'success' && count($mergedTags) > 0) {
                         // Add tags to the uploaded document
-                        $processAddingTags = $this->airslateService->addTagsToDocument($uploadResponse['data']['data']['id'], $tags);
+                        $processAddingTags = $this->airslateService->addTagsToDocument($uploadResponse['data']['data']['id'], $mergedTags);
                         if ($processAddingTags['status'] === 'success') {
                             return $processAddingTags;
                         }
@@ -67,51 +78,40 @@ class AirSlatePDFController extends Controller
     public function pdfEditorFetch(Request $request) {
         try {
             if ($request->isMethod('get')) {
-
-                // Fetch document lists from Airslate API
+                $filters = [];
+                if ($request->has('filters')) {
+                    $filters = $request->input('filters');
+                }
                 $documentListsRes = $this->airslateService->getDocumentLists();
-
-                Log::info('documentListsRes', $documentListsRes);
-
                 if ($documentListsRes['status'] === 'success') {
-                    $documents = $documentListsRes['data']['data']; // Get the list of documents
-
-                    $documentLinks = []; // To store document links
-
-                    // Loop through each document
+                    $documents = $documentListsRes['data']['data'];
+                    $documentLink = [];
+                    $documentLinks = [];
                     foreach ($documents as $document) {
-                        // Create a document link using the document ID
-                        $createDocLink = $this->airslateService->createDocumentLink($document['id']);
-
-                        // Check if link creation was successful
-                        if ($createDocLink['status'] === 'success') {
-                            // Add the document link to the array with other document details
-                            $documentLinks[] = [
-                                'document' => $document,
-                                'link' => $createDocLink['data'] // Store the generated link
-                            ];
+                        if ($filters && in_array($filters[0], $document['tagNames'])) {
+                            $documentRes = $this->airslateService->getDocument($document['id']);
+                            if ($documentRes["status"] === "success") {
+                                $doc = $documentRes['data']['data'];
+                                $createDocLink = $this->airslateService->createDocumentLink($doc['id']);
+                                $createDocLink['status'] === 'success' ? $documentLink[] = ['document' => $doc, 'link' => $createDocLink['data']] : $documentLink[] = ['document' => $doc, 'link' => 'Failed to create link'];
+                            } else {
+                                return $documentRes;
+                            }
+                            return response()->json([
+                                'status' => 'success',
+                                'documentLinks' => $documentLink
+                            ], 200);                                 
                         } else {
-                            // Handle any error during link creation
-                            $documentLinks[] = [
-                                'document' => $document,
-                                'link' => 'Failed to create link'
-                            ];
+                            $createDocsLink = $this->airslateService->createDocumentLink($document['id']);
+                            $createDocsLink['status'] === 'success' ? $documentLinks[] = ['document' => $document, 'link' => $createDocsLink['data']] : $documentLinks[] = ['document' => $document, 'link' => 'Failed to create link'];
                         }
                     }
-
-                    // Return the document details along with the generated links
                     return response()->json([
                         'status' => 'success',
                         'documentLinks' => $documentLinks
                     ], 200);
                 } else {
-                    // Return error if fetching documents failed
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'Failed to fetch documents from Airslate'
-                    ], 500);
-
-                    // return $documentListsRes;
+                    return $documentListsRes;
                 }
             } else {
                 throw new Exception('Method not allowed');

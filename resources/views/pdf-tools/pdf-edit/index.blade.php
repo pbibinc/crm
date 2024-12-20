@@ -104,7 +104,6 @@
                                 </div>
                                 <h4>Drop your file here or click to upload.</h4>
                             </div>
-
                             <div class="dz-preview dz-file-preview" style="display:none;">
                                 <div class="dz-details">
                                     <div class="dz-filename"><span data-dz-name></span></div>
@@ -115,29 +114,55 @@
                                 </div>
                                 <div class="dz-error-message"><span data-dz-errormessage></span></div>
                             </div>
-
-                            <div class="d-flex align-items-center justify-content-center gap-2 mb-4">
-                                <label class="m-0">Tags:</label>
-                                <select class="form-control select2" name="tags[]" id="tags" multiple="multiple"
-                                    style="width: 50%"></select>
-                                <i class="ri ri-information-fill" style="font-size: 1.5em;" data-bs-toggle="tooltip"
-                                    data-bs-placement="top"
-                                    data-bs-original-title="Please put meaningful tags as it will be used to identify the file."></i>
-                            </div>
                         </form>
-                        <div class="d-flex align-items-center justify-content-center">
+                        <div class="d-flex flex-row align-items-center justify-content-center gap-4 mt-4 mb-4">
+                            <label class="form-label">Select Type: </label>
+                            <select class="form-control select2 type" name="type" id="type" style="width: 50%">
+                                <option></option>
+                                <option value="General">General File Only</option>
+                                <option value="Personal">Personal File Only</option>
+                                <option value="Admin Only">Admin File Only</option>
+                            </select>
+                            <i class="ri ri-information-fill" style="font-size: 1.5em;" data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                data-bs-original-title="Choose the file type for identification."></i>
+                        </div>
+                        <div class="d-flex flex-row align-items-center justify-content-center gap-4 mt-4 mb-4">
+                            <label class="m-0">Tags:</label>
+                            <select class="form-control select2 tags" name="tags[]" id="tags" multiple="multiple"
+                                style="width: 50%">
+                                <option></option>
+                            </select>
+                            <i class="ri ri-information-fill" style="font-size: 1.5em;" data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                data-bs-original-title="Please put meaningful tags as it will be used to identify the file."></i>
+                        </div>
+                        <div class="d-flex flex-column align-items-center justify-content-center gap-2 mb-4">
                             <button type="button" id="uploadBtn" class="btn btn-primary ladda-button mt-4"
                                 data-style="expand-right">Upload
                                 Files</button>
                         </div>
-
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-body" id="fileContainer" style="overflow-y: auto;">
-                        <h4 class="card-title">Browse Files</h4>
-                        <p class="card-title-desc">Browse files below to edit.</p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex flex-column align-items-start">
+                                <h4 class="card-title">Browse Files</h4>
+                                <p class="card-title-desc">Browse files below to edit.</p>
+                            </div>
+                            <div class="d-flex gap-2 align-items-center">
+                                <label for="filters" class="form-label m-0">Filters:</label>
+                                <select class="form-control select2 filters" name="filters[]" id="filters"
+                                    multiple="multiple" style="width: 100%;">
+                                    <option></option>
+                                    <option value="General">General File Only</option>
+                                    <option value="Personal">Personal File Only</option>
+                                    <option value="Admin Only">Admin File Only</option>
+                                </select>
+                            </div>
+                        </div>
                         <!-- Message Status for displaying alerts -->
                         <!-- File Lists Grid -->
                     </div>
@@ -192,15 +217,27 @@
     <script>
         Dropzone.autoDiscover = false;
         $(document).ready(function() {
-            var laddaButton = Ladda.create(document.querySelector('#uploadBtn'));
             // Initialize Select2
-            $('#tags').select2({
-                placeholder: "Type your tags here...",
+            $('#type').select2({
                 allowClear: true,
-                tags: true
+                placeholder: "Select a tag",
             });
+            $('#tags').select2({
+                tags: true,
+                allowClear: true,
+                placeholder: "Type your tags here..",
+            });
+            $('#filters').select2({
+                tags: true,
+                width: 'element',
+                allowClear: true,
+                dropdownAutoWidth: true,
+                placeholder: "Type here..",
+            });
+            var laddaButton = Ladda.create(document.querySelector('#uploadBtn'));
+
             // PDF User Files Uploader
-            var fileUploaderDz = new Dropzone("#fileUploader", {
+            var fileUploaderDz = new Dropzone("#fileUploaderForm", {
                 url: "{{ route('pdf-file.store') }}",
                 clickable: true,
                 autoProcessQueue: false,
@@ -216,16 +253,14 @@
                 },
                 init: function() {
                     var myDropzone = this;
-                    // Hide .dz-message when a file is added
                     this.on("addedfile", function() {
-                        $('.dz-message').hide(); // Hide the message
-                        $('.dz-preview').show(); // Hide the message
+                        $('.dz-message').hide();
+                        $('.dz-preview').show();
                     });
-                    // Show .dz-message again if no files are left
                     this.on("removedfile", function() {
                         if (myDropzone.files.length === 0) {
-                            $('.dz-message').show(); // Show the message again
-                            $('.dz-preview').hide(); // Show the message again
+                            $('.dz-message').show();
+                            $('.dz-preview').hide();
                         }
                     });
                     this.on("uploadprogress", function(file, progress, bytesSent) {
@@ -233,24 +268,15 @@
                         var progressElement = file.previewElement.querySelector(".dz-upload");
                         if (progressElement) {
                             progressElement.style.width = progress +
-                                "%"; // Update the width of the progress bar
+                                "%";
                         }
                     });
-                    // Trigger file upload manually when the button is clicked
-                    $('#uploadBtn').on('click', function(e) {
-                        e.preventDefault();
-                        // Ensure files have been added to the queue
-                        if (myDropzone.getQueuedFiles().length > 0) {
-                            laddaButton.start();
-                            var selectedTags = $("#tags").val();
-                            var tagValues = selectedTags.map(tag => tag);
-                            myDropzone.on("sending", function(file, xhr, formData) {
-                                formData.append('tags', JSON.stringify(tagValues));
-                            });
-                            myDropzone.processQueue(); // Manually trigger the file upload
-                        } else {
-                            alert('Please select a file to upload.');
-                        }
+                    this.on("sending", function(file, xhr, formData) {
+                        var selectedTags = $("#tags").val() || [];
+                        var selectedAccessType = $("#type").val() || '';
+
+                        formData.append('tags', JSON.stringify(selectedTags));
+                        formData.append('accessType', selectedAccessType);
                     });
                     this.on("success", function(file, response) {
                         $('#fileSpinner').hide();
@@ -268,8 +294,18 @@
                         alert("Error uploading file: " + (errorMessage.message || JSON
                             .stringify(errorMessage)));
                     });
-                },
 
+                    $('#uploadBtn').on('click', function(e) {
+                        e.preventDefault();
+                        // Ensure files have been added to the queue
+                        if (myDropzone.getQueuedFiles().length > 0) {
+                            laddaButton.start();
+                            myDropzone.processQueue();
+                        } else {
+                            alert('Please select a file to upload.');
+                        }
+                    });
+                },
             });
             // Initial fetch of documents
             fetchDocuments();
@@ -359,8 +395,14 @@
             });
         });
 
+        // Filter files
+        $("#filters").on("change", async function() {
+            var filter = $(this).val() || [];
+            await fetchDocuments(filter);
+        });
+
         // Fetch list of documents
-        async function fetchDocuments() {
+        async function fetchDocuments(filters = []) {
             var fileContainer = $("#fileContainer");
             fileContainer.find('.spinner').remove();
             fileContainer.append(`
@@ -372,6 +414,9 @@
                 const response = await $.ajax({
                     url: "{{ route('pdf-file.fetch') }}",
                     type: 'GET',
+                    data: {
+                        filters: filters,
+                    },
                 });
                 fileContainer.find(".file-lists").remove(); // Remove old file list
                 if (response.status === 'success') {
@@ -401,8 +446,6 @@
                             } else {
                                 iframeUrl = ``;
                             }
-
-                            console.log(urlLink);
 
                             const fileHtml = `
                                 <div class="card file-card" id="file-card-${file.document.id}">
