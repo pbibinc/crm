@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class AttendancePolicy
 {
-    
+
     use HandlesAuthorization;
 
     /**
@@ -23,7 +23,7 @@ class AttendancePolicy
     public function viewAny(User $user)
     {
         //
-      
+
     }
 
     /**
