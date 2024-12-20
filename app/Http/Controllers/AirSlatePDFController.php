@@ -100,7 +100,7 @@ class AirSlatePDFController extends Controller
                             return response()->json([
                                 'status' => 'success',
                                 'documentLinks' => $documentLink
-                            ], 200);                                 
+                            ], 200);
                         } else {
                             $createDocsLink = $this->airslateService->createDocumentLink($document['id']);
                             $createDocsLink['status'] === 'success' ? $documentLinks[] = ['document' => $document, 'link' => $createDocsLink['data']] : $documentLinks[] = ['document' => $document, 'link' => 'Failed to create link'];
