@@ -18,16 +18,29 @@ class AirslateService
         $this->accessToken = app('airslate_token');
     }
 
+    public function getDocument($documentId) {
+        try {
+            $response = Http::withHeaders([
+                'Accept-Encoding' => "application/json",
+                'Authorization' => "Bearer {$this->accessToken}"
+            ])->get("https://pdf.airslate.io/v1/documents/{$documentId}");
+
+            if ($response->successful()) {
+                return ['status' => 'success', 'data' => $response->json()];
+            } else {
+                return ['status' => 'error', 'message' => 'Failed to fetch document to Airslate'];
+            }            
+        } catch (Exception $e) {
+            return ['status' => 'error', 'message' => $e->getMessage()];
+        }
+    }
+
     public function getDocumentLists() {
         try {
             $response = Http::withHeaders([
                 'Accept-Encoding' => "application/json",
                 'Authorization' => "Bearer {$this->accessToken}"
-            ])->get("https://pdf.airslate.io/v1/documents", [
-                'storageId' => $this->storageId,
-                'page' => 1,
-                'perPage' => 10,
-            ]);
+            ])->get("https://pdf.airslate.io/v1/documents");
 
             if ($response->successful()) {
                 return ['status' => 'success', 'data' => $response->json()];
@@ -61,24 +74,24 @@ class AirslateService
         }
     }
 
-
     public function addTagsToDocument($documentId, $tags){
         try {
             $response = Http::withHeaders([
                 'Accept-Encoding' => "application/json",
                 'Authorization' => "Bearer {$this->accessToken}",
                 'Content-Type' => "application/json"
-            ])->post("https://pdf.airslate.io/v1/documents/{$documentId}/tags", [
-                ['name' => 'storageId', 'contents' => $this->storageId],
-                ['name' => 'data', 'contents' => $tags],
+            ])->post("https://pdf.airslate.io/v1/documents/{$documentId}/tags", [            
+                'data' => $tags
             ]);
 
             if ($response->successful()) {
                 return ['status' => 'success', 'data' => $response->json()];
             } else {
+                Log::error('Failed to add tags to document:', ['response' => $response->body()]);
                 return ['status' => 'error', 'message' => 'Failed to add tags to document'];
             }
         } catch (Exception $exception) {
+            Log::error('Exception while adding tags to document:', ['error' => $exception->getMessage()]);
             return ['status' => 'error', 'message' => $exception->getMessage()];
         }
     }
@@ -272,7 +285,6 @@ class AirslateService
         }
     }
 
-
     public function extractDataFromPdf($filePath, $documentName, $fields) {
         try {
             // Prepare multipart data
@@ -419,7 +431,6 @@ class AirslateService
             return ['status' => 'error', 'message' => $e->getMessage()];
         }
     }
-
     public function getTemplateInfoById($orgId, $templateId) {
         try {
             $response = Http::withHeaders([
