@@ -25,3 +25,4 @@ Homestead.json
 /.vagrant
 .phpunit.result.cache
 
+public/backend/assets/libs/ladda-bootstrap
