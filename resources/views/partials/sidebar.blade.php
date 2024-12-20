@@ -146,14 +146,12 @@
                             @can('view', App\Models\Position::find(1))
                                 <li><a href="{{ route('admin.positions.index') }}">User Position</a></li>
                             @endcan
-
                             @can('view', App\Models\Department::find(1))
                                 <li><a href="{{ route('admin.departments.index') }}">Departments</a></li>
                             @endcan
                             @can('view', App\Models\UserProfile::find(1))
                                 <li><a href="{{ route('admin.user-profiles.index') }}">User Profile</a></li>
                             @endcan
-
                         </ul>
                     </li>
                     <li>

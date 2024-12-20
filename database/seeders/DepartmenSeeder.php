@@ -25,7 +25,6 @@ class DepartmenSeeder extends Seeder
             ['id' => 6, 'name' => 'Wholesale Department'],
             ['id' => 7, 'name' => 'IT Department'],
             ['id' => 8, 'name' => 'Quotation Department'],
-
         ];
         Department::insert($data);
     }

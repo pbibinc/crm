@@ -13,6 +13,7 @@ public/hot
 public/backend/attachedFiles
 public/backend/images
 public/backend/invoice
+public/backend/assets
 
 # Laravel 5 & Lumen specific with changed public path
 public_html/storage
