@@ -169,6 +169,4 @@ class LeadPolicy
         return $user->role->hasPermission('view_any_broker_assistant_compliance');
     }
 
-
-
 }

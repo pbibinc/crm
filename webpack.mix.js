@@ -16,6 +16,14 @@ mix
   .js("resources/js/bootstrap.js", "public/js")
   .sourceMaps(false)
   .copy("node_modules/push.js/bin/push.min.js", "public/js/push.min.js")
+  .copy(
+    "vendor/istvan-ujjmeszaros/bootstrap-duallistbox/dist/jquery.bootstrap-duallistbox.min.js",
+    "public/js"
+  )
+  .copy(
+    "vendor/istvan-ujjmeszaros/bootstrap-duallistbox/dist/bootstrap-duallistbox.min.css",
+    "public/css"
+  )
   .postCss("resources/css/app.css", "public/css", [
     require("postcss-import"),
     require("tailwindcss"),

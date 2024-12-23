@@ -22,6 +22,7 @@
         "ilovepdf/ilovepdf-php": "*",
         "inspector-apm/inspector-laravel": "^4.7",
         "intervention/image": "^2.7",
+        "istvan-ujjmeszaros/bootstrap-duallistbox": "^4.0",
         "laravel/framework": "^9.2",
         "laravel/sanctum": "^2.14.1",
         "laravel/tinker": "^2.7",
