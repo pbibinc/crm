@@ -2,7 +2,9 @@
 
 namespace App\Listeners;
 
+use App\Events\MarkAsReadNotificationEvent;
 use App\Models\LeadHistory;
+use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 

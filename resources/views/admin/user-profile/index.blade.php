@@ -196,7 +196,7 @@
 
                             </div>
 
-                            {{-- <input type="text" class="form-control" id="name" name="name" required> --}}
+
                         </div>
                         <input type="hidden" name="action" id="action" value="add">
                         <input type="hidden" name="hidden_id" id="hidden_id" />

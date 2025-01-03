@@ -1,6 +1,5 @@
 @extends('admin.admin_master')
 @section('admin')
-
     <div class="page-content pt-6">
         <div class="container-fluid">
             <div class="row">

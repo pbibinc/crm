@@ -21,7 +21,7 @@ class BirthdayController extends Controller
         $birthdays = UserProfile::select('firstname', 'lastname', 'birthday', 'id_num')->get();
         $events = [];
 
-        
+
         foreach ($birthdays as $birthday) {
             if (!empty($birthday->birthday)) {
                 $events[] = [

@@ -52,6 +52,15 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
+    .custom-notification-dropdown .notification-item.typeUnread {
+        background-color: #fafbff !important;
+        color: #6c757d !important;
+    }
+
+    .custom-notification-dropdown .notification-item.typeRead {
+        background-color: #ffffff !important;
+    }
 </style>
 <div class="dropdown d-inline-block custom-notification-dropdown">
     <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-notifications-dropdown"
@@ -77,7 +86,7 @@
         <div class="p-2 border-top">
 
             <div class="d-grid">
-                <a class="btn btn-sm btn-link font-size-14 text-center" href="javascript:void(0)">
+                <a class="btn btn-sm btn-link font-size-14 text-center viewMoreButton" href="javascript:void(0)">
                     <i class="mdi mdi-arrow-right-circle me-1"></i> View More..
                 </a>
             </div>
@@ -97,6 +106,10 @@
         }
     })
 
+    $('.viewMoreButton').on('click', function() {
+        window.location.href = "{{ route('notification.index') }}"
+    })
+
     function appendNotifications(notifications) {
         const notificationContainer = $('.custom-notification-dropdown [data-simplebar]');
         notificationContainer.empty(); // Clear existing notifications
@@ -107,8 +120,7 @@
             let link = '#';
             let title = ' ';
             let description = ' '
-
-
+            const isUnread = notification.read_at === null ? 'typeUnread' : 'typeRead';
             // Determine the avatar content based on notification type and image availability
             if (notification['type'] === 'App\\Notifications\\LeadNotesNotification' || notification['type'] ===
                 'App\\Notifications\\GeneralNotification') {
@@ -141,7 +153,7 @@
 
             // Construct the notification item based on type
             notificationItem = `
-            <a href="${link}" class="text-reset notification-item">
+            <a href="${link}" class="text-reset notification-item ${isUnread}">
                 <div class="d-flex">
                     <div class="avatar-xs me-3">
                         ${avatarContent}

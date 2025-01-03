@@ -2,9 +2,12 @@
 @section('admin')
     <div class="page-content pt-6">
         <div class="container-fluid">
+
             <div class="row">
+
                 <div class="col-6">
                     <div class="row">
+                        {{-- total sales column --}}
                         <div class="col-6">
                             <div class="card">
                                 <div class="card-body">
@@ -13,7 +16,6 @@
                                             <p class="text-truncate font-size-14 mb-2">Total Sales</p>
                                             <h4 class="mb-2">{{ $totalSales }}</h4>
                                             <p class="text-muted mb-0"><span class="text-success fw-bold font-size-12 me-2">
-
                                                     <i
                                                         class="ri-arrow-right-up-line me-1 align-middle"></i>{{ $salesPercentage }}%</span>from
                                                 previous month</p>
@@ -27,6 +29,8 @@
                                 </div><!-- end cardbody -->
                             </div>
                         </div>
+
+                        {{-- total appointed product  column --}}
                         <div class="col-6">
                             <div class="card">
                                 <div class="card-body">
@@ -49,8 +53,8 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
+
                 <div class="col-6">
                     <div class="row">
                         <div class="col-6">
@@ -59,6 +63,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="row">
                 <div class="col-6">
                     <div class="card">
@@ -77,6 +82,7 @@
                                 </div>
                             </div>
                             <h4 class="card-title mb-4">Sales Report</h4>
+
                             <div class="text-center pt-3">
                                 <div class="row">
                                     <div class="col-sm-4 mb-3 mb-sm-0">
@@ -173,6 +179,22 @@
     </div>
     <script>
         $(document).ready(function() {
+            console.log(@json($totalSalesPerType));
+
+            function getLastMonths(count) {
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov',
+                    'Dec'
+                ];
+                const currentMonth = new Date().getMonth();
+                const result = [];
+                for (let i = count - 1; i >= 0; i--) {
+                    result.push(months[currentMonth - i]);
+                }
+
+                return result;
+            };
+            const lastMonths = getLastMonths(7);
+
 
             var options = {
                 chart: {
@@ -188,7 +210,7 @@
                     }
                 ],
                 xaxis: {
-                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July']
+                    categories: lastMonths
                 },
                 plotOptions: {
                     bar: {
@@ -208,8 +230,8 @@
                     height: '543'
                 },
                 // series: {!! json_encode($totalSalesPerType) !!},
-                series: [25, 15, 44, 55, 41],
-                labels: ['Direct New', 'Direct Renewals', 'Recover', 'Audit', 'Endorsements'],
+                series: @json($totalSalesPerType),
+                labels: ['Direct New', 'Direct Renewals', 'Recover', 'Audit'],
                 plotOptions: {
                     pie: {
                         size: '20%',
@@ -220,7 +242,6 @@
             var salesChart = new ApexCharts(document.querySelector("#salesType"), salesOption);
             chart.render();
             salesChart.render();
-
         });
     </script>
 @endsection

@@ -288,47 +288,11 @@
 
                     <div class="modal-footer">
                         <input type="hidden" id='dispoId'>
-                        <button type="button" class="btn btn-success waves-effect waves-light callbackDispoSubmitButton"
-                            id="callbackDispoSubmitButton">Submit</button>
+                        <button type="button" class="btn btn-success callbackDispoSubmitButton ladda-button"
+                            id="callbackDispoSubmitButton" data-style="expand-right">Submit</button>
                         <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
                     </div>
 
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
-
-
-        <!--Modal for GateKeeper Disposition-->
-        <div class="modal fade bs-example-modal-center" id="gateKeeperModal" tabindex="-1" role="dialog"
-            aria-labelledby="mySmallModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="mySmallModalLabel">Call Back Schedule</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-3">
-                                <label for="example-datetime-local-input" class="col-form-label">Date and time</label>
-                            </div>
-                            <div class="col-9">
-                                <input class="form-control" type="datetime-local" id="callBackDateTime">
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <label>Remarks</label>
-                            <div>
-                                <textarea required class="form-control" id="callBackRemarks" rows="5"></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-success waves-effect waves-light callbackDispoSubmitButton"
-                            id="callbackDispoSubmitButton">Submit</button>
-                        <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
-                    </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
@@ -368,21 +332,20 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success waves-effect waves-light "
-                            id="submitRemarks">Submit</button>
+                        <button type="button" class="btn btn-success waves-effect waves-light ladda-button"
+                            id="submitRemarks" data-style="expand-right">Submit</button>
                         <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
 
-
-
         <script src="{{ asset('backend/assets/libs/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js') }}"></script>
         <script src="{{ asset('backend/assets/libs/twitter-bootstrap-wizard/prettify.js') }}"></script>
         <script src="{{ asset('backend/assets/js/pages/form-wizard.init.js') }}"></script>
         <script src="{{ asset('backend/assets/js/pages/form-mask.init.js') }}"></script>
         <script src="{{ asset('backend/assets/libs/inputmask/jquery.inputmask.min.js') }}"></script>
+
         <script>
             $(document).ready(function() {
                 var leadAppTakerTable = $('#leadsApptakerDataTable').DataTable({
@@ -547,8 +510,9 @@
                     var dateTime = $('#callBackDateTime').val();
                     var callBackRemarks = $('#callBackRemarks').val();
                     var dispositionId = $('#dispoId').val();
-
+                    var callBackDispoLaddaButton = Ladda.create(this);
                     var leadId = $('#leadId').val();
+                    callBackDispoLaddaButton.start();
                     $.ajax({
                         url: "{{ route('call-back.store') }}",
                         headers: {
@@ -564,11 +528,13 @@
                             status: 1
                         },
                         success: function(response) {
-                            location.reload();
-                            console.log('test this code')
+                            callBackDispoLaddaButton.stop();
                             $('#transactionLogModal').modal('hide');
+                            $('#callbackModal').modal('hide');
+                            $('#leadsApptakerDataTable').DataTable().ajax.reload();
                         },
                         error: function(xhr, status, error) {
+                            callBackDispoLaddaButton.stop();
                             alert("please call your it for better assistance");
                         }
                     });
@@ -581,14 +547,14 @@
 
             });
 
-
-
             $('#submitRemarks').on('click', function(e) {
                 e.preventDefault();
                 var remarks = $('#remarksDescription').val();
                 var dispositionId = $('#dispositionDropDown').val();
                 var url = "{{ env('APP_FORM_URL') }}";
                 var leadId = $('#leadId').val();
+                var submitReamrksLaddaButton = Ladda.create(this);
+                submitReamrksLaddaButton.start();
                 if (leadId == 1) {
                     window.open(`${url}appoinnted-lead-questionare`,
                         "s_blank",
@@ -608,8 +574,9 @@
                             leadId: leadsId
                         },
                         success: function(response) {
+                            submitReamrksLaddaButton.stop();
                             $('#transactionLogModal').modal('hide');
-                            location.reload();
+                            $('#leadsApptakerDataTable').DataTable().ajax.reload();
                         },
                         error: function(xhr, status, error) {
                             alert(xhr.responseText);

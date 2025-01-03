@@ -43,11 +43,12 @@
                         </div>
                     </div>
                 </div>
-                <input type="hidden" value={{ $leadId }} name="leadId">
+                <input type="hidden" name="leadId" id="leadId">
                 <input type="hidden" name="taskScheduleId" id="taskScheduleId">
                 <div class="modal-footer">
                     <input type="hidden" name="taskScheduleAction" id="taskScheduleAction">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-info profileLinkButton">Profile link</button>
                     <button type="submit" class="btn btn-primary ladda-button" id="taskScheduleSubmit"
                         data-style="expand-right">Submit</button>
                 </div>
@@ -57,6 +58,10 @@
 </div>
 <script>
     $(document).ready(function() {
-
+        $('.profileLinkButton').on('click', function() {
+            var leadId = $('#leadId').val();
+            var url = "{{ url('/appointed-list') }}/" + leadId;
+            window.open(url, '_blank'); // Open in a new tab
+        })
     });
 </script>

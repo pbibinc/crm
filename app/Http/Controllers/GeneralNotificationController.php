@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Events\LeadNotesNotificationEvent;
+use App\Events\MarkAsReadNotificationEvent;
 use App\Models\User;
 use App\Models\UserProfile;
 
@@ -114,7 +115,8 @@ class GeneralNotificationController extends Controller
     {
         try{
             $user = User::find(auth()->user()->id);
-            $notifications = $user->notifications;
+            $page = $request->input('page', 1);
+            $notifications = $user->notifications()->paginate(10, ['*'], 'page', $page);
             $notificationData = $notifications->map(function($notification){
                 $data = $notification->data;
                 $senderImage = null;
@@ -138,9 +140,43 @@ class GeneralNotificationController extends Controller
                     'updated_at' => $notification->updated_at,
                     'sender_image' => $senderImage ?? null,
                 ]);
+
             });
-            return response()->json(['data' => $notificationData], 200);
+            return response()->json([
+            'data' => $notificationData,'current_page' => $notifications->currentPage(),
+            'last_page' => $notifications->lastPage(),
+            'per_page' => $notifications->perPage(),
+            'total' => $notifications->total(),
+            'next_page_url' => $notifications->nextPageUrl(),
+            'prev_page_url' => $notifications->previousPageUrl(),
+        ], 200);
         }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function markAsRead(Request $request)
+    {
+        try{
+            $user = User::find(auth()->user()->id);
+            $user->notifications()->find($request->id)->markAsRead();
+            $count = $user->unreadNotifications->count();
+            broadcast(new MarkAsReadNotificationEvent($count));
+            return response()->json(['success' => 'Notification marked as read.'], 200);
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getNotificationCount(Request $request)
+    {
+        try{
+
+            $user = User::find(auth()->user()->id);
+            $count = $user->unreadNotifications->count();
+            return response()->json(['data' => $count], 200);
+        }catch(\Exception $e){
+            DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }

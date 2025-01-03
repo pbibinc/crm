@@ -188,4 +188,6 @@ class UserProfile extends Model
         return $this->hasMany(PaymentInformation::class, 'requested_by');
     }
 
+
+
 }

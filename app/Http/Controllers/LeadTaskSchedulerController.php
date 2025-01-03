@@ -92,6 +92,7 @@ class LeadTaskSchedulerController extends Controller
     {
         //
         try{
+            $userProfileId = auth()->user()->userProfile->id;
             $leadTaskScheduler = LeadTaskScheduler::find($id);
             return response()->json([
                 'message' => 'Task information retrieved successfully',
@@ -163,8 +164,12 @@ class LeadTaskSchedulerController extends Controller
     public function getTaskScheduler(Request $request)
     {
         $leadId = $request->input('leadId');
-
-        $taskScheduler = LeadTaskScheduler::where('leads_id', $leadId)->whereNot('status', 'Completed')->whereNot('status', 'Remove')->with(['assignedTo.media'])->get();
+        $userProfileId = auth()->user()->userProfile->id;
+        $taskScheduler = LeadTaskScheduler::where('leads_id', $leadId)
+        ->where(function($query) use ($userProfileId){
+            $query->where('assigned_to', $userProfileId);
+        })
+        ->whereNotIn('status', ['Completed', 'Remove'])->with(['assignedTo.media', 'assignedBy.media'])->get();
         return response()->json(['data' => $taskScheduler], 200);
     }
 
@@ -187,4 +192,32 @@ class LeadTaskSchedulerController extends Controller
         })
         ->make(true);
     }
+
+    public function getTaskDetails(Request $request)
+    {
+        $taskScheduler = LeadTaskScheduler::with(['assignedTo', 'assignedBy'])
+            ->find($request->input('taskId'));
+
+        if (!$taskScheduler) {
+            return response()->json(['message' => 'Task not found'], 404);
+        }
+
+        return response()->json(['data' => $taskScheduler], 200);
+    }
+
+    public function getTaskByStatus(Request $request)
+    {
+        $status = $request->input('status');
+        $userProfileId = auth()->user()->userProfile->id;
+
+        $tastSchedulerList = LeadTaskScheduler::with(['assignedTo.media', 'assignedBy.media'])
+            ->where('status', $status)
+            ->where(function($query) use ($userProfileId) {
+                $query->where('assigned_to', $userProfileId);
+            })
+            ->orderBy('date_schedule', 'desc')
+            ->paginate(10);
+        return response()->json(['data' => $tastSchedulerList], 200);
+    }
+
 }
