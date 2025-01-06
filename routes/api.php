@@ -70,6 +70,7 @@ Route::get('general_information', [GeneralInformationDataController::class, 'gen
 Route::put('general-information-data/{id}', [GeneralInformationDataController::class, 'updateGenneralInformationData'])->withoutMiddleware(['auth:sanctum']);
 Route::get('general-information-data/edit/{id}', [GeneralInformationDataController::class, 'edit'])->withoutMiddleware(['auth:sanctum']);
 Route::post('update-contact-information', [GeneralInformationDataController::class, 'updateContactInformation'])->withoutMiddleware(['auth:sanctum']);
+Route::post('/store-general-information-data', [GeneralInformationDataController::class, 'storeGeneralInformationData'])->withoutMiddleware(['auth:sanctum']);
 
 //route for general liabilities
 Route::post('general-liabilities-data', [GeneralLiabilitiesDataController::class, 'saveGeneralLiabilities'])->withoutMiddleware(['auth:sanctum']);

@@ -43,10 +43,7 @@
                     </div>
 
                     <h4 class="text-muted text-center font-size-18"><b>Sign In</b></h4>
-
                     <div class="p-3">
-
-
                         <form class="form-horizontal mt-3" method="POST" action="{{ route('login') }}">
                             @csrf
 
@@ -85,10 +82,10 @@
                                     <a href="{{ route('password.request') }}" class="text-muted"><i
                                             class="mdi mdi-lock"></i> Forgot your password?</a>
                                 </div>
-                                <div class="col-sm-5 mt-3">
+                                {{-- <div class="col-sm-5 mt-3">
                                     <a href="{{ route('register') }}" class="text-muted"><i
                                             class="mdi mdi-account-circle"></i> Create an account</a>
-                                </div>
+                                </div> --}}
                             </div>
                         </form>
                     </div>
