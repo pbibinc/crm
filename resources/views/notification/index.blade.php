@@ -142,7 +142,6 @@
                 });
             }
 
-
             function initializeCalendar(calendarEvents) {
                 $("#sampleCalendar").evoCalendar({
                     language: 'en',
