@@ -11,6 +11,7 @@ use App\Models\UnitedState;
 use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use SebastianBergmann\CodeCoverage\Report\Xml\Unit;
 
 class LeadDetailController extends BaseController
@@ -94,6 +95,22 @@ class LeadDetailController extends BaseController
             return $this->sendError('Leads not found.');
         }
         return $this->sendResponse($leads->toArray(), 'Leads retrieved successfully.');
+    }
+
+    public function storeLeadData(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+            $data = $request->all();
+            $lead = new Lead();
+            $lead->fill($data);
+            $lead->save();
+            DB::commit();
+            return $this->sendResponse([$lead->toArray(), 'Lead created successfully.'], 200);
+        }catch(\Exception $e){
+            DB::rollBack();
+            return $this->sendError([$e->getMessage()], 500);
+        }
     }
 }
 

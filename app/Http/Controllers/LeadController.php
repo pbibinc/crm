@@ -39,7 +39,7 @@ class LeadController extends Controller
         $assignLeadsCount = Lead::where('status', 2)->count();
         $stateAbbr = UnitedState::distinct()->pluck('state_abbr');
         $classCodeLeads = ClassCodeLead::all();
-        $websiteOriginated = Website::distinct()->orderBy('name')->pluck('name');;
+        $websiteOriginated = Website::distinct()->orderBy('name')->pluck('name');
         if ($request->ajax()) {
         $query = Lead::whereNot('status', 7)->select('id', 'company_name', 'website_originated','tel_num', 'state_abbr', 'created_at')->orderBy('id');
         return DataTables::of($query)
