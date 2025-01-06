@@ -20,7 +20,7 @@ class Lead extends Model
         'state_abbr',
         'class_code',
         'website_originated',
-        'disposition_name',
+        'disposition_id',
         'status',
         'is_spanish',
     ];

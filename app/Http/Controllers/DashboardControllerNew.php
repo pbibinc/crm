@@ -772,7 +772,6 @@ class DashboardControllerNew extends Controller
         $totalAppointedProduct = $quotationProduct->getAppointedProduct();
         $appointedProductPercentage = $quotationProduct->appointedProductPercentageFromPreviousMonth();
         $totalSalesPerType = $boundInformation->getTotalSalesPartionByType();
-        $totalSalesPerType = $boundInformation->getTotalSalesPartionByType();
         return view('admin.dashboard.daily-reports', compact('totalSales', 'salesPercentage', 'totalAppointedProduct', 'appointedProductPercentage', 'totalSalesPerType'));
     }
 

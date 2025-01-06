@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use Illuminate\Http\Request;
 use App\Models\PricingBreakdown;
 use Faker\Provider\ar_EG\Payment;
@@ -107,6 +108,7 @@ use App\Http\Controllers\BussinessOwnersPolicyDetailsController;
 use App\Http\Controllers\ExcessLiabilityInsurancePolicyController;
 use App\Http\Controllers\CancelledPolicyForRecall as ControllersCancelledPolicyForRecall;
 use App\Http\Controllers\CertificateController;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -427,10 +429,13 @@ Route::middleware(['auth'])->group(function (){
         Route::prefix('notification')->group(function(){
             Route::resource('/general-notification', GeneralNotificationController::class);
             Route::post('/get-notification', [GeneralNotificationController::class, 'getNotification'])->name('get-notification');
+            Route::post('/mark-as-read', [GeneralNotificationController::class, 'markAsRead'])->name('mark-as-read');
+            Route::get('/get-notification-count', [GeneralNotificationController::class, 'getNotificationCount'])->name('get-notification-count');
+            Route::resource('/notification', NotificationController::class);
+
         });
 
         Route::prefix('broker-assistant')->group(function(){
-            //
             Route::resource('/broker-assistant', BrokerAssistantController::class);
             Route::post('/get-pending-product', [BrokerAssistantController::class, 'getPendingProduct'])->name('get-broker-pending-product');
             Route::post('/get-compliance-product', [BrokerAssistantController::class, 'getComplianceProduct'])->name('get-broker-compliance-product');
@@ -565,7 +570,6 @@ Route::middleware(['auth'])->group(function (){
             //routes for bound
             Route::post('/save-bound-information', [BoundController::class, 'saveBoundInformation'])->name('save-bound-information');
 
-
             //routes for binding docs
             Route::get('/binding-docs', [BindingDocsController::class, 'index'])->name('binding-docs');
             Route::post('/upload-file-binding-docs', [BindingDocsController::class, 'uploadFile'])->name('upload-file-binding-docs');
@@ -699,6 +703,13 @@ Route::middleware(['auth'])->group(function (){
             route::resource('/task-scheduler', LeadTaskSchedulerController::class);
             Route::post('/get-task-scheduler', [LeadTaskSchedulerController::class, 'getTaskScheduler'])->name('get-task-scheduler');
             Route::post('/get-task-scheduler-list', [LeadTaskSchedulerController::class, 'getTaskSchedulerList'])->name('get-task-scheduler-list');
+            Route::post('/get-task-details', [LeadTaskSchedulerController::class, 'getTaskDetails'])->name('get-task-details');
+            Route::post('/get-task-by-status', [LeadTaskSchedulerController::class, 'getTaskByStatus'])->name('get-task-by-status');
+        });
+
+        Route::prefix('activity-log')->group(function(){
+          Route::resource('/activity-log', ActivityLogController::class);
+          Route::get('/get-activity-log', [ActivityLogController::class, 'getActivityLog'])->name('get-activity-log');
         });
 
 

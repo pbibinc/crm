@@ -2,5 +2,7 @@
     "/js/app.js": "/js/app.js",
     "/js/bootstrap.js": "/js/bootstrap.js",
     "/css/app.css": "/css/app.css",
-    "/js/push.min.js": "/js/push.min.js"
+    "/js/push.min.js": "/js/push.min.js",
+    "/js/jquery.bootstrap-duallistbox.min.js": "/js/jquery.bootstrap-duallistbox.min.js",
+    "/css/bootstrap-duallistbox.min.css": "/css/bootstrap-duallistbox.min.css"
 }

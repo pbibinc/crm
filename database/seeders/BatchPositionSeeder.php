@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class RoleSeeder extends Seeder
+class BatchPositionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,9 +15,6 @@ class RoleSeeder extends Seeder
     public function run()
     {
         //
-        Role::create([
-            'id' => 5,
-            'name' => 'admin'
-        ]);
+        
     }
 }

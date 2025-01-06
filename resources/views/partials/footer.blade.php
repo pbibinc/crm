@@ -41,23 +41,14 @@
 
     Echo.channel('reassign-appointed-lead').listen('ReassignedAppointedLead', (e) => {
         if (e.oldUserId = userId) {
-            Push.create(`Product Reassign to ${e.receivableName}`, {
-                body: `Your Product Has been reassigned to ${e.receivableName}`,
-                onClick: function() {
-                    window.focus();
-                    window.open(`/appointed-list`, '_blank');
-                    this.close();
-                }
-            });
+            enqueueNotification(e, `Product Reassign to ${e.receivableName}`,
+                `Your Product Has been reassigned to ${e.receivableName}`,
+                `/appointed-list/${leadId}`, e.icon);
+
         } else if (e.newUserId = userId) {
-            Push.create('New Request For Quotation', {
-                body: `New Product Request For Quotation`,
-                onClick: function() {
-                    window.focus();
-                    window.open(`/appointed-list`, '_blank');
-                    this.close();
-                }
-            });
+            enqueueNotification(e, 'New Request For Quotation', `New Product Request For Quotation`,
+                `/appointed-list/${leadId}`, e.icon);
+
         }
     });
 
@@ -132,16 +123,16 @@
                 processNotificationQueue(); // Attempt to process the next notification
             });
 
-            Push.create(title, {
-                body: message,
-                onClick: function() {
-                    window.focus();
-                    window.open(notification.link, notification.link);
-                    this.close();
-                }
-            });
+            // Push.create(title, {
+            //     body: message,
+            //     onClick: function() {
+            //         window.focus();
+            //         window.open(notification.link, notification.link);
+            //         this.close();
+            //     }
+            // });
 
-
+            // fetchNotificationCount();
         }
     }
 

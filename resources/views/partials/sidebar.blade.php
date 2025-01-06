@@ -37,6 +37,15 @@
                     </ul>
                 </li>
 
+                <li>
+                    <a href="{{ route('notification.index') }}" class="waves-effect">
+                        <i class="ri-notification-4-line"></i><span
+                            class="badge notificationCountSpan rounded-pill bg-success float-end"></span>
+                        <span>Notification</span>
+                    </a>
+                </li>
+
+                {{-- reports menu --}}
                 @can('viewAnyReport', App\Models\Permission::find(1))
                     {{-- report menu --}}
                     <li>
@@ -47,7 +56,7 @@
                     </li>
                 @endcan
 
-
+                {{-- pdf tools menu --}}
                 @can('viewAnyPdfTools', App\Models\Permission::find(1))
                     {{-- pdf tools menu --}}
                     <li>
@@ -146,14 +155,12 @@
                             @can('view', App\Models\Position::find(1))
                                 <li><a href="{{ route('admin.positions.index') }}">User Position</a></li>
                             @endcan
-
                             @can('view', App\Models\Department::find(1))
                                 <li><a href="{{ route('admin.departments.index') }}">Departments</a></li>
                             @endcan
                             @can('view', App\Models\UserProfile::find(1))
                                 <li><a href="{{ route('admin.user-profiles.index') }}">User Profile</a></li>
                             @endcan
-
                         </ul>
                     </li>
                     <li>
@@ -200,7 +207,6 @@
                     </li>
 
                 @endcan
-
 
                 {{-- sales module menu --}}
                 @can('viewAnySales', App\Models\Lead::find(1))
@@ -388,3 +394,45 @@
     </div>
 </div>
 <!-- Left Sidebar End -->
+
+<script>
+    $(document).ready(function() {
+
+        fetchNotificationCount();
+
+        function fetchNotificationCount() {
+            $.ajax({
+                url: "{{ route('get-notification-count') }}",
+                type: 'GET',
+                success: function(response) {
+                    $('.notificationCountSpan').text(response.data);
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        };
+
+        Echo.channel('mark-as-read-notification').listen('MarkAsReadNotificationEvent', (e) => {
+            fetchNotificationCount();
+        });
+
+        Echo.channel('assign-policy-for-renewal').listen('AssignPolicyForRenewalEvent', (e) => {
+            fetchNotificationCount();
+        });
+
+        Echo.channel('lead-notes-notification').listen('LeadNotesNotificationEvent', (e) => {
+            fetchNotificationCount();
+        });
+
+        Echo.channel('assign-appointed-lead').listen('AssignAppointedLeadEvent', (e) => {
+            fetchNotificationCount();
+        });
+
+        Echo.channel('reassign-appointed-lead').listen('ReassignedAppointedLead', (e) => {
+            fetchNotificationCount();
+        });
+
+
+    });
+</script>

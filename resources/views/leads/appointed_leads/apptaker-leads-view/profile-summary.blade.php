@@ -35,8 +35,28 @@
         color: #888;
     }
 </style>
+
+<div class="modal fade" id="taskDetailModal" tabindex="-1" aria-labelledby="taskDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskDetailModalLabel">Task Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Task details will be dynamically loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-4">
+
+        {{-- recent activity row --}}
         <div class="row">
             <div class="card shadow-lg  bg-white rounded">
                 <div class="card-body">
@@ -225,6 +245,8 @@
                 </div>
             </div>
         </div>
+
+        {{-- recent note row --}}
         <div class="row">
             <div class="card shadow-lg mb-5 bg-white rounded">
                 <div class="card-body">
@@ -256,10 +278,14 @@
                 </div>
             </div>
         </div>
+
+
     </div>
 
     <div class="col-8">
 
+
+        {{-- Recent Task Schedule Row --}}
         <div class="row">
             <div class="col-12">
                 {{-- @include('leads.task-scheduler.taskscheduler-list') --}}
@@ -276,6 +302,8 @@
             </div>
         </div>
 
+
+        {{-- Active Policies Row --}}
         <div class="row">
             <div class="col-12">
                 <div class="card shadow-lg mb-5 bg-white rounded"
@@ -328,6 +356,7 @@
         </div>
 
     </div>
+
 
 
 </div>
@@ -1096,6 +1125,10 @@
                 "{{ route('task-scheduler.store') }}";
             e.preventDefault();
             var taskScheduleMethod = taskScheduleAction == 'update' ? 'PUT' : 'POST';
+
+            var taskScheduleSubmit = $('#taskScheduleSubmit');
+            var laddaButton = Ladda.create(taskScheduleSubmit[0]);
+            laddaButton.start();
             $.ajax({
                 url: taskSchedulerUrl,
                 method: taskScheduleMethod,
@@ -1110,10 +1143,12 @@
                         if (result.isConfirmed) {
                             $('#taskSchedulerModal').modal('hide');
                             getTaskList();
+                            laddaButton.stop();
                         }
                     });
                 },
                 error: function(xhr, status, error) {
+                    laddaButton.stop();
                     Swal.fire({
                         title: 'Error!',
                         text: 'Task has not been scheduled',
@@ -1184,12 +1219,8 @@
                     // Assuming 'tasks' is the array of task objects returned in the response
                     var tasks = response.data;
 
-                    console.log(tasks);
-
                     // Clear the existing task list
                     $('#task-list').empty();
-
-
 
                     tasks.forEach(function(task) {
                         // Create the main task item div
@@ -1207,6 +1238,7 @@
                                 .attr('type', 'checkbox')
                                 .attr('value', task.id)
                             )
+
                             // Assignee circle (representing user with initials or placeholder)
                             .append(
                                 $('<img>')
@@ -1217,8 +1249,8 @@
                                     marginRight: '10px',
                                     objectFit: 'cover' // Ensures the image fits properly inside the circle
                                 })
-                                .attr('src', task.assigned_to.media ?
-                                    assetUrl + task.assigned_to.media.filepath :
+                                .attr('src', task.assigned_by.media ?
+                                    assetUrl + task.assigned_by.media.filepath :
                                     assetUrl +
                                     'path/to/default-avatar.jpg' // Fallback to default avatar
                                 )
@@ -1245,8 +1277,19 @@
                                 .status
                             ); // Display task status (Pending, Ongoing, Completed)
 
+
+                        var taskAction = $('<button></button>')
+                            .addClass('btn btn-primary btn-sm')
+                            .text('...')
+                            .attr('id', task.id)
+                            .attr('type', 'button')
+                            .addClass('viewTaskDetailButton')
+                            .on('click', function() {
+                                viewTaskDetails(task.id);
+                            });
+
                         // Append task content and due date badge to the task item
-                        taskItem.append(taskContent, taskStatus, taskDueDate);
+                        taskItem.append(taskContent, taskStatus, taskDueDate, taskAction);
 
                         // Append the task item to the task list
                         $('#task-list').append(taskItem);
@@ -1254,6 +1297,35 @@
                 },
                 error: function(xhr, status, error) {
                     console.error("An error occurred while fetching the task list: ", error);
+                }
+            });
+        }
+
+        function viewTaskDetails(taskId) {
+            console.log("Viewing task details for task ID: ", taskId);
+            // Example action: Show a modal with task details
+            $.ajax({
+                url: "{{ route('get-task-details') }}", // Replace with your route for task details
+                type: "POST",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "taskId": taskId
+                },
+                success: function(response) {
+                    console.log("Task details: ", response);
+                    var dueDateFormatted = formatDate(response.data.date_schedule);
+                    // Assuming the response contains task details
+                    $('#taskDetailModal .modal-body').html(`
+                <p><strong>Description:</strong> ${response.data.description}</p>
+                <p><strong>Assigned To:</strong> ${response.data.assigned_to.american_name}</p>
+                <p><strong>Assigned By:</strong> ${response.data.assigned_by.american_name}</p>
+                <p><strong>Status:</strong> ${response.data.status}</p>
+                <p><strong>Due Date:</strong> ${dueDateFormatted}</p>`);
+
+                    $('#taskDetailModal').modal('show'); // Show the modal
+                },
+                error: function(xhr, status, error) {
+                    console.error("An error occurred while fetching task details: ", error);
                 }
             });
         }

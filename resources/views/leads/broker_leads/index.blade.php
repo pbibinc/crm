@@ -8,12 +8,6 @@
                         <div class="card"
                             style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05); border-radius: 10px; overflow: hidden;">
                             <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
-                                {{-- <li class="nav-item">
-                                    <a class="nav-link active" data-bs-toggle="tab" href="#products" role="tab">
-                                        <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
-                                        <span class="d-none d-sm-block">Products</span>
-                                    </a>
-                                </li> --}}
                                 <li class="nav-item">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#requestForApproval"
                                         role="tab">
@@ -104,6 +98,7 @@
             Dropzone.autoDiscover = false;
             var myBrokerDropzone;
             var dropzoneElement = document.querySelector("#resendRTBDropzoneBroker");
+
             if (dropzoneElement) {
                 myBrokerDropzone = new Dropzone("#resendRTBDropzoneBroker", {
                     url: "{{ route('upload-file-binding-docs') }}",
@@ -397,7 +392,6 @@
                 $('#brokerProductId').val(id);
                 $('#changeStatusModal').modal('show');
             });
-
 
         });
     </script>

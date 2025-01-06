@@ -63,14 +63,15 @@ class BoundInformation extends Model
         })->count();
 
         $audit = $policies->filter(function ($policy) {
-            return strtolower($policy->status) === 'audit';
+            return strtolower($policy->status) === 'recover';
         })->count();
 
         $endorsement = $policies->filter(function ($policy) {
-            return strtolower($policy->status) === 'endorsement';
+            return strtolower($policy->status) === 'audit';
         })->count();
 
         $typeArr = [$directNew, $directRenewals, $audit, $endorsement];
         return $typeArr;
     }
+
 }
