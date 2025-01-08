@@ -113,12 +113,16 @@ class GeneralLiabilitiesDataController extends BaseController
                $subcontractor->save();
 
             //saving general liabilities recreational facilities
-            foreach($data['recreational_facilities'] as $recreationalFacility){
-                $recreationalFacilitiesGeneralLiabilities = new GeneralLiabilitiesRecreationalFacilities();
-                $recreationalFacilitiesGeneralLiabilities->general_liabilities_id = $generalLiabilitiId;
-                $recreationalFacilitiesGeneralLiabilities->recreational_facilities_id = $recreationalFacility;
-                $recreationalFacilitiesGeneralLiabilities->save();
+            if (!empty($data['recreational_facilities']) && is_array($data['recreational_facilities'])) {
+                foreach ($data['recreational_facilities'] as $recreationalFacility) {
+                    $recreationalFacilitiesGeneralLiabilities = new GeneralLiabilitiesRecreationalFacilities();
+                    $recreationalFacilitiesGeneralLiabilities->general_liabilities_id = $generalLiabilitiId;
+                    $recreationalFacilitiesGeneralLiabilities->recreational_facilities_id = $recreationalFacility;
+                    $recreationalFacilitiesGeneralLiabilities->save();
+                }
             }
+            
+
             //saving multiple ClassCode
             $mergedMultipleClassCode = array_map(function ($classCode, $percentage) {
                 return['classCode' => $classCode, 'percentage' => $percentage];
