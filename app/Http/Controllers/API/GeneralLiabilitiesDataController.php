@@ -90,7 +90,7 @@ class GeneralLiabilitiesDataController extends BaseController
                $generalLiabilities->cross_sell = $data['cross_sell'];
                $generalLiabilities->save();
 
-               $generalLiabilitiId = $'generalLiabilities'->id;
+               $generalLiabilitiId = $generalLiabilities->id;
 
                $quoteProduct = new QuotationProduct();
                $leadId = $data['leadId'];
