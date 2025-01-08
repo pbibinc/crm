@@ -58,6 +58,7 @@ Route::get('leads/lead-details/lead-address', [LeadDetailController::class, 'lea
 Route::get('get/lead-instance-by-id/{id}', [LeadDetailController::class, 'getLeadInstanceById'])->withoutMiddleware(['auth:sanctum']);
 Route::get('get-appointed-sales-per-person', [LeadDetailController::class, 'getAppointedSalesPerPerson'])->withoutMiddleware(['auth:sanctum']);
 Route::post('/store-lead-data', [LeadDetailController::class, 'storeLeadData'])->withoutMiddleware(['auth:sanctum']);
+Route::post('/lead-db-rolback', [LeadDetailController::class, 'rollback'])->withoutMiddleware(['auth:sanctum']);
 
 
 Route::get('classcode/data', [ClassCodeDataController::class, 'index'])->withoutMiddleware(['auth:sanctum']);
