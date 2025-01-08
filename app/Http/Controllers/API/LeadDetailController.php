@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
+use App\Models\GeneralInformation;
 use App\Models\Lead;
 use App\Models\PolicyDetail;
 use App\Models\QuotationProduct;
@@ -12,6 +13,7 @@ use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Calculation\Database\DVar;
 use SebastianBergmann\CodeCoverage\Report\Xml\Unit;
 
 class LeadDetailController extends BaseController
@@ -107,6 +109,23 @@ class LeadDetailController extends BaseController
             $lead->save();
             DB::commit();
             return $this->sendResponse([$lead->toArray(), 'Lead created successfully.'], 200);
+        }catch(\Exception $e){
+            DB::rollBack();
+            return $this->sendError([$e->getMessage()], 500);
+        }
+    }
+
+    public function rollback(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+            $data = $request->all();
+            $lead = Lead::find($data['lead_id']);
+            $generalInformation = GeneralInformation::find($data['general_information_id']);
+            $lead->delete();
+            $generalInformation->delete();
+            DB::commit();
+            return $this->sendResponse(['Database Commit Successfully'], 200);
         }catch(\Exception $e){
             DB::rollBack();
             return $this->sendError([$e->getMessage()], 500);

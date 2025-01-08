@@ -273,7 +273,7 @@ class GeneralInformationDataController extends BaseController
 
                DB::commit();
 
-               return response()->json(['message' => 'General Information Data saved successfully'], 200);
+               return response()->json(['message' => 'General Information Data saved successfully', 'data' => $generalInformation], 200);
            }
            catch(\Exception $e){
                DB::rollback();
