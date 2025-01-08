@@ -121,7 +121,7 @@ class GeneralLiabilitiesDataController extends BaseController
                     $recreationalFacilitiesGeneralLiabilities->save();
                 }
             }
-            
+
 
             //saving multiple ClassCode
             $mergedMultipleClassCode = array_map(function ($classCode, $percentage) {

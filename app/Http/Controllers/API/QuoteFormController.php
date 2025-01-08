@@ -3,16 +3,17 @@
 namespace App\Http\Controllers\API;
 
 use Carbon\Carbon;
+use App\Models\Metadata;
 use App\Models\QuoteForm;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use App\Models\PricingBreakdown;
-use App\Models\QuoteComparison;
-use App\Models\SelectedPricingBreakDown;
 use App\Models\SelectedQuote;
+use App\Models\QuoteComparison;
+use App\Models\PricingBreakdown;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
+use App\Http\Controllers\Controller;
+use App\Models\SelectedPricingBreakDown;
+use Illuminate\Support\Facades\File;
 class QuoteFormController extends Controller
 {
     public function storeData(Request $request) {
@@ -53,6 +54,40 @@ class QuoteFormController extends Controller
             DB::beginTransaction();
             $data = $request->all();
 
+            $request->validate([
+                'file_name' => 'required|string',
+                'file_type' => 'required|string',
+                'file_content' => 'required|string',
+            ]);
+
+            $fileContent = base64_decode($request->input('file_content')); // Decode the Base64 string
+            $fileName = $request->input('file_name');
+            $directoryPath = public_path('backend/assets/attacedFiles/binding/general-liability-insurance');
+
+            // Create the directory if it doesn't exist
+            if (!File::isDirectory($directoryPath)) {
+                File::makeDirectory($directoryPath, 0777, true, true);
+            }
+
+            // Create the full path where the file will be saved
+            $filePath = $directoryPath . '/' . $fileName;
+
+            // Save the decoded file content to the specified path
+            File::put($filePath, $fileContent);
+
+            // Get the metadata
+            $type = mime_content_type($filePath); // Get the MIME type of the file
+            $size = filesize($filePath); // Get the file size
+
+            // Save metadata to the database
+            $metadata = new Metadata();
+            $metadata->basename = $fileName;
+            $metadata->filename = $fileName;
+            $metadata->filepath = 'backend/assets/attacedFiles/binding/general-liability-insurance/' . $fileName;
+            $metadata->type = $type;
+            $metadata->size = $size;
+            $metadata->save();
+
             $pricingBreakDown = PricingBreakdown::create([
                 'premium' => $data['premium'],
                 'endorsements' => $data['endorsements'],
@@ -71,6 +106,7 @@ class QuoteFormController extends Controller
             $quoteComparison = new QuoteComparison();
             $quoteComparison->fill($data);
             $quoteComparison->save();
+            $quoteComparison->media()->sync($metadata->id);
 
             $seletedPricingBreakDown = new SelectedPricingBreakDown();
             $seletedPricingBreakDown->fill($data);
@@ -81,6 +117,7 @@ class QuoteFormController extends Controller
             $selectedQuote = new SelectedQuote();
             $selectedQuote->fill($data);
             $selectedQuote->save();
+            $selectedQuote->media()->sync($metadata->id);
 
             DB::commit();
             return response()->json([
