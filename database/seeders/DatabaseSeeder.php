@@ -33,8 +33,5 @@ class DatabaseSeeder extends Seeder
         // $this->call(FinanceCompanySeeder::class);
         // $this->call(LeadUserProfileSeeder::class);
         // $this->call(CalculatorTradesSeeder::class);
-        $this->call(BatchRoleSeeder::class);
-        $this->call(BatchUserSeeder::class);
-        $this->call(UserProfilerSeeder::class);
     }
 }
