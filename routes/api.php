@@ -64,7 +64,6 @@ Route::get('classcode/data', [ClassCodeDataController::class, 'index'])->without
 Route::get('states', [StateAddressController::class, 'states'])->withoutMiddleware(['auth:sanctum']);
 Route::get('recreational', [RecreationalController::class, 'recreationalFactilies'])->withoutMiddleware(['auth:sanctum']);
 
-
 Route::post('general-information-data', [GeneralInformationDataController::class, 'getGeneralInformationData'])->withoutMiddleware(['auth:sanctum']);
 Route::get('general_information', [GeneralInformationDataController::class, 'generalInformationData'])->withoutMiddleware(['auth:sanctum']);
 Route::put('general-information-data/{id}', [GeneralInformationDataController::class, 'updateGenneralInformationData'])->withoutMiddleware(['auth:sanctum']);
@@ -146,6 +145,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Get a quote form API
 Route::post('store-quoteform-data', [QuoteFormController::class, 'storeData'])->withoutMiddleware(['auth:sanctum']);
+Route::post('/store-quote-info', [QuoteFormController::class, 'storeQuoteInfo'])->withoutMiddleware(['auth:sanctum']);
 
 // Insurance needs survey form API
 Route::post('store-insurance-needs-survey-form-data', [InsuranceSurveyInfoController::class, 'store'])->withoutMiddleware(['auth:sanctum']);

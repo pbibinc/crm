@@ -15,7 +15,7 @@ class QuoteComparison extends Model
         'quotation_product_id',
         'quotation_market_id',
         'pricing_breakdown_id',
-        'qoute_no',
+        'quote_no',
         'full_payment',
         'down_payment',
         'monthly_payment',

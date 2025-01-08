@@ -24,7 +24,6 @@
                 </div>
             </div>
 
-
             <!--Modal for No Answer Disposition-->
             <div class="modal fade bs-example-modal-center" id="transactionModal" tabindex="-1" role="dialog"
                 aria-labelledby="mySmallModalLabel" aria-hidden="true">
@@ -126,6 +125,7 @@
                     [5, 'desc']
                 ],
             });
+
             $(document).on('click', '#companyLink', function(e) {
                 var leadsId = $(this).data('id');
                 var date = $(this).data('date');
