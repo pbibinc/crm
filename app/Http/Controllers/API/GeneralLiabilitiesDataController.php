@@ -62,6 +62,9 @@ class GeneralLiabilitiesDataController extends BaseController
 
                $generalInformationId = GeneralInformation::where('leads_id', $data['leadId'])->value('id');
                $expirationOfGeneralLiabilitiesRaw = $data['expiration_general_liability'] == null ? null :  Carbon::parse($data['expiration_general_liability'])->toDateString();
+               $expirationOfGeneralLiabilitiesRaw = $expirationOfGeneralLiabilitiesRaw !== null && $expirationOfGeneralLiabilitiesRaw <= '2000-01-01'
+               ? null
+               : $expirationOfGeneralLiabilitiesRaw;
 
               //saving general liabilities common data
                $generalLiabilities = new GeneralLiabilities();
