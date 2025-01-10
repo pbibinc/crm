@@ -273,12 +273,12 @@ class GeneralInformationDataController extends BaseController
 
                DB::commit();
 
-               return response()->json(['message' => 'General Information Data saved successfully', 'data' => $generalInformation], 200);
+               return response()->json(['message' => 'General Information Data saved successfully', 'data' => $generalInformation, 'status' => 200], 200);
            }
            catch(\Exception $e){
                DB::rollback();
                Log::error("Error for General Information".$e->getMessage());
-               return response()->json(['message' => $e->getMessage()], 500);
+               return response()->json(['message' => $e->getMessage(), 'status' => 500], 500);
            }
 
            // return $this->sendResponse($generalInformation,'General Information Data retrieved successfully.');
