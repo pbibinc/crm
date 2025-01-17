@@ -251,7 +251,6 @@
     var myDropzone;
     $(document).ready(function() {
         var ids = @json($productIds) || [];
-
         $('#qoutation-table').DataTable({
             processing: true,
             serverSide: true,

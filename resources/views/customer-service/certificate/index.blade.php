@@ -57,6 +57,9 @@
                         data: 'action',
                         name: 'action'
                     }
+                ],
+                "order": [
+                    [2, "desc"]
                 ]
             });
 

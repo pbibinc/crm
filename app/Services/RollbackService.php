@@ -8,19 +8,17 @@ use App\Models\QuotationProduct;
 use App\Models\QuoteComparison;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class RollbackService
 {
     public function rollback($data)
     {
         try {
-            DB::beginTransaction();
-
             switch ($data['rollback-api']) {
                 case 'general-information':
                     $this->rollbackGeneralInformation($data['lead_id']);
                     break;
-
                 case 'general-liabilities':
                     $this->rollbackGeneralLiabilities($data['lead_id']);
                     break;
@@ -30,11 +28,10 @@ class RollbackService
                 default:
                     throw new Exception('Unknown rollback API type');
             }
-
-            DB::commit();
-            return ['success' => true, 'message' => 'Database commit successfully'];
+            return ['success' => true, 'message' => 'Database commit successfully',
+                ];
         } catch (Exception $e) {
-            DB::rollBack();
+
             return ['success' => false, 'error' => $e->getMessage()];
         }
     }
@@ -78,6 +75,7 @@ class RollbackService
                     $quoteComparisons = QuoteComparison::where('quotation_product_id', $product->id)->get();
                     if($quoteComparisons){
                         foreach($quoteComparisons as $comparison){
+                            $comparison->media()->detach();
                             $comparison->delete();
                         }
                     }

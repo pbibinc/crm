@@ -122,13 +122,16 @@ class LeadDetailController extends BaseController
 
     public function rollback(Request $request, RollbackService $rollbackService)
     {
+        Log::info("Rollback function called", ['request_data' => $request->all()]);
         $result = $rollbackService->rollback($request->all());
-        if ($result['success']) {
+
+        if ($result['success'] == true) {
             return response()->json([
                 'success' => true,
                 'data' => $result,
                 'message' => 'Database commit successfully.',
-                'status' => 200
+                'status' => 200,
+                'request_data' => $request->all()
             ], 200);
         } else {
             Log::info("message: " . $result['error']);

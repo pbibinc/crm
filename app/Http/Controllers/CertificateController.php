@@ -146,6 +146,7 @@ class CertificateController extends Controller
             $data = $request->all();
             $certificate = Certificate::find($data['id']);
             $certificate->status = 'approved';
+
             $certificate->save();
 
             $metadata = Metadata::find($certificate->media_id);

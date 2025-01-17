@@ -454,6 +454,7 @@ class CreateCertificateController extends BaseController
                $certificate->requested_date = now();
                $certificate->phone_number = $data['contactNumber'];
                $certificate->email = $data['emailAddress'];
+               $certificate->cert_holder = $data['companyName'];
                $certificate->save();
 
             }

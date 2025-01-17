@@ -18,7 +18,8 @@ class Certificate extends Model
         'approved_by',
         'email',
         'phone_number',
-        'requested_date'
+        'requested_date',
+        'cert_holder'
     ];
 
     public function PolicyDetail()

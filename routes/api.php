@@ -15,6 +15,7 @@ use App\Http\Controllers\API\LeadDetailController;
 use App\Http\Controllers\API\RecreationalController;
 use App\Http\Controllers\API\StateAddressController;
 use App\Http\Controllers\API\GeneralLiabilitiesDataController;
+use App\Http\Controllers\API\NotesApiController;
 use App\Http\Controllers\API\PdfController;
 use App\Http\Controllers\API\PoliciesController as APIPoliciesController;
 use App\Http\Controllers\API\PoliciesDataController;
@@ -162,3 +163,6 @@ Route::post('pdf-create-document-link', [PdfController::class, 'createDocumentLi
 Route::post('pdf-webhook-callback-uri', [PdfController::class, 'handleWebhook'])->withoutMiddleware(['auth:sanctum']);
 Route::get('pdf-document-redirection-uri', [PdfController::class, 'handleRedirect'])->withoutMiddleware(['auth:sanctum']);
 Route::post('ocr-pdf', [PdfController::class, 'extractDataFromPdf'])->withoutMiddleware(['auth:sanctum']);
+
+
+Route::post('store-note', [NotesApiController::class, 'store'])->withoutMiddleware(['auth:sanctum']);
