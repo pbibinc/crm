@@ -111,6 +111,8 @@ class LeadDetailController extends BaseController
             $lead->save();
             DB::commit();
             return $this->sendResponse([$lead->toArray(), 'Lead created successfully.'], 200);
+
+
         }catch(\Exception $e){
             DB::rollBack();
             return $this->sendError([$e->getMessage(), 'status' => 500], 500);
@@ -121,9 +123,18 @@ class LeadDetailController extends BaseController
     {
         $result = $rollbackService->rollback($request->all());
         if ($result['success']) {
-            return $this->sendResponse($result, 'Database commit successfully.', 200);
+            return response()->json([
+                'success' => true,
+                'data' => $result,
+                'message' => 'Database commit successfully.',
+                'status' => 200
+            ], 200);
         } else {
-            return $this->sendError($result['error'], 500);
+            return response()->json([
+                'success' => false,
+                'message' => $result['error'],
+                'status' => 500
+            ], 500);
         }
     }
 
