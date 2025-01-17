@@ -12,6 +12,7 @@ use App\Models\PricingBreakdown;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\RenewalQuote;
 use App\Models\SelectedPricingBreakDown;
 use Illuminate\Support\Facades\File;
 class QuoteFormController extends Controller
@@ -108,6 +109,11 @@ class QuoteFormController extends Controller
             $quoteComparison->save();
             $quoteComparison->media()->sync($metadata->id);
 
+            $renewalQuote = new RenewalQuote();
+            $renewalQuote->quote_comparison_id = $quoteComparison->id;
+            $renewalQuote->status = 'Pending';
+            $renewalQuote->save();
+
             $seletedPricingBreakDown = new SelectedPricingBreakDown();
             $seletedPricingBreakDown->fill($data);
             $seletedPricingBreakDown->save();
@@ -118,6 +124,11 @@ class QuoteFormController extends Controller
             $selectedQuote->fill($data);
             $selectedQuote->save();
             $selectedQuote->media()->sync($metadata->id);
+
+            $renewalQuote = new RenewalQuote();
+            $renewalQuote->quote_comparison_id = $quoteComparison->id;
+            $renewalQuote->status = "Pending";
+            $renewalQuote->save();
 
             DB::commit();
             return response()->json([
