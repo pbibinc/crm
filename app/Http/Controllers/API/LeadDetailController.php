@@ -15,6 +15,7 @@ use App\Models\UserProfile;
 use App\Services\RollbackService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\Calculation\Database\DVar;
 use SebastianBergmann\CodeCoverage\Report\Xml\Unit;
 
@@ -130,6 +131,7 @@ class LeadDetailController extends BaseController
                 'status' => 200
             ], 200);
         } else {
+            Log::info("message: " . $result['error']);
             return response()->json([
                 'success' => false,
                 'message' => $result['error'],
