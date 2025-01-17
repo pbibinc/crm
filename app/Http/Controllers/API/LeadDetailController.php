@@ -121,9 +121,9 @@ class LeadDetailController extends BaseController
     {
         $result = $rollbackService->rollback($request->all());
         if ($result['success']) {
-            return $this->sendResponse($result, 'Database commit successfully.');
+            return $this->sendResponse($result, 'Database commit successfully.', 200);
         } else {
-            return $this->sendError($result['error']);
+            return $this->sendError($result['error'], 500);
         }
     }
 
