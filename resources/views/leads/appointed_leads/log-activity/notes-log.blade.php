@@ -139,7 +139,7 @@
                 @endif
                 <div class="media-body">
                     <h5>{{ $note->title }}</h5>
-                    <p>{{ $note->description }}</p>
+                    <p>{!! $note->description !!}</p>
                     <small>
                         <i class="fa fa-clock-o"></i> {{ date('M d, Y H:i', strtotime($note->created_at)) }}
                     </small>

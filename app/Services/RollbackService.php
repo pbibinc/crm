@@ -72,7 +72,7 @@ class RollbackService
             if($quotationProducts){
                 foreach($quotationProducts as $product){
                     $product->QuoteComparison()->delete();
-                    $quoteComparisons = QuoteComparison::where('quotation_product_id', $product->id)->get();
+                    $quoteComparisons = QuoteComparison::whecre('quotation_product_id', $product->id)->get();
                     if($quoteComparisons){
                         foreach($quoteComparisons as $comparison){
                             $comparison->media()->detach();
