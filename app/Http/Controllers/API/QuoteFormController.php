@@ -21,14 +21,14 @@ class QuoteFormController extends Controller
         try {
             if ($request->isMethod('post')) {
                 $encodedData = json_encode($request->all());
-                // DB::beginTransaction();
+
                 $quoteForm = QuoteForm::create([
                     'data' => $encodedData,
                     'status' => 'Pending',
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ]);
-                // DB::commit();
+
                 if ($quoteForm) {
                     return response()->json([
                         'success' => true,

@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Models\Lead;
 use App\Models\GeneralInformation;
 use App\Models\GeneralLiabilities;
+use App\Models\LeadNotes;
 use App\Models\QuotationProduct;
 use App\Models\QuoteComparison;
 use Exception;
@@ -23,6 +24,9 @@ class RollbackService
                     $this->rollbackGeneralLiabilities($data['lead_id']);
                     break;
                 case 'quote-comparison':
+                    $this->rollbackQuote($data['lead_id']);
+                    break;
+                case 'note-log':
                     $this->rollbackQuote($data['lead_id']);
                     break;
                 default:
@@ -79,6 +83,12 @@ class RollbackService
                             $comparison->delete();
                         }
                     }
+                    if($product->product == 'General Liability'){
+                        $generalLiab = GeneralLiabilities::where('general_information_id', $lead->GeneralInformation->id)->first();
+                        if($generalLiab){
+                            $generalLiab->delete();
+                        }
+                    }
                 }
                 $lead->quoteLead->QuoteInformation->QuotationProduct()->delete();
             }
@@ -89,9 +99,53 @@ class RollbackService
                 $lead->quoteLead->delete();
             }
 
+            $lead->GeneralInformation->delete();
             $lead->delete();
         }
     }
+
+    protected function rollbackPolicyLog($leadId)
+    {
+        $lead = Lead::find($leadId);
+        if ($lead) {
+            $quotationProducts = QuotationProduct::where('quote_information_id', $lead->quoteLead->QuoteInformation->id)->get();
+            if($quotationProducts){
+                foreach($quotationProducts as $product){
+                    $product->QuoteComparison()->delete();
+                    $quoteComparisons = QuoteComparison::whecre('quotation_product_id', $product->id)->get();
+                    if($quoteComparisons){
+                        foreach($quoteComparisons as $comparison){
+                            $comparison->media()->detach();
+                            $comparison->delete();
+                        }
+                    }
+                    if($product->product == 'General Liability'){
+                        $generalLiab = GeneralLiabilities::where('general_information_id', $lead->GeneralInformation->id)->first();
+                        if($generalLiab){
+                            $generalLiab->delete();
+                        }
+                    }
+                }
+                $lead->quoteLead->QuoteInformation->QuotationProduct()->delete();
+            }
+            if ($lead->quoteLead && $lead->quoteLead->QuoteInformation) {
+                $lead->quoteLead->QuoteInformation->delete();
+            }
+            if ($lead->quoteLead) {
+                $lead->quoteLead->delete();
+            }
+            $leadNotes = LeadNotes::where('lead_id', $lead->id)->get();
+            if($leadNotes){
+                foreach($leadNotes as $note){
+                    $note->delete();
+                }
+            }
+            $lead->GeneralInformation->delete();
+            $lead->delete();
+        }
+
+    }
+
 
 }
 ?>

@@ -142,6 +142,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/lead-data/{userId}', [LeadDetailController::class, 'getLeadDataUserId'])->name('get-lead-data-user-id');
     Route::post('/get-policy-information/{policyId}', [PoliciesDataController::class, 'getPolicyInformation'])->name('get-policy-information');
     Route::post('/generate-cert-pdf', [CreateCertificateController::class, 'generateCertPdf'])->name('generate-cert-pdf');
+
 });
 
 
@@ -166,3 +167,4 @@ Route::post('ocr-pdf', [PdfController::class, 'extractDataFromPdf'])->withoutMid
 
 
 Route::post('store-note', [NotesApiController::class, 'store'])->withoutMiddleware(['auth:sanctum']);
+Route::post('/store-policy', [PoliciesDataController::class, 'storePolicy'])->withoutMiddleware(['auth:sanctum']);

@@ -229,4 +229,9 @@ class Lead extends Model
         return $this->belongsToMany(User::class, 'customer_user_lead', 'lead_id', 'user_id')->withTimestamps();
     }
 
+    public function oldCrmLink()
+    {
+        return $this->hasOne(OldCrmLink::class, 'lead_id');
+    }
+
 }

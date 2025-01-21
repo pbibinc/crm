@@ -163,7 +163,8 @@
 
     <div class="publisher">
         <input class="publisher-input" type="text" placeholder="Title" id="noteTitle">
-        <input class="publisher-input" type="text" placeholder="Write something" id="noteDescription">
+        <textarea class="publisher-input" placeholder="Write something" id="noteDescription"
+            style="height: 80px; resize: vertical;"></textarea>
         <button class="publisher-btn" id="logNote"><i class="fa fa-paper-plane"></i></button>
     </div>
 </div>
@@ -182,7 +183,7 @@
 
         $('#logNote').on('click', function() {
             var noteTitle = $('#noteTitle').val();
-            var noteDescription = $('#noteDescription').val();
+            var noteDescription = $('#noteDescription').val().replace(/\n/g, '<br>');
             var leadId = {!! json_encode($generalInformation->lead->id) !!};
             var userToNotify = $('#userToNotifyDropdown').val();
             $.ajax({
@@ -227,5 +228,6 @@
                 },
             });
         });
+
     });
 </script>

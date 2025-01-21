@@ -14,12 +14,19 @@
 
          <!-- Right side: Social Media Icons -->
          <div class="d-flex align-items-center">
+
              <a href="#" class="text-decoration-none text-primary me-3">
                  <i class="fas fa-phone"></i> {{ $leads->tel_num }} <!-- Twitter Icon -->
              </a>
              <a href="#" class="text-decoration-none text-primary me-3">
                  <i class="fas fa-envelope"></i> {{ $leads->GeneralInformation->email_address }}
              </a>
+             @if ($leads->oldCrmLink)
+                 <a href={{ $leads->oldCrmLink->hyperlink }} target="_blank"
+                     class="text-decoration-none text-primary me-3">
+                     <i class="fas fa-arrow-right"></i> Link to old CRM <!-- Twitter Icon -->
+                 </a>
+             @endif
              {{-- <a href="{{ route('customer-account-setting.show', ['customer_account_setting' => $leads->id]) }}"
                  class="text-decoration-none text-primary me-3">
                  <i class="ri-user-settings-line"></i> Account Setting <!-- Website Icon -->

@@ -13,9 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('certificate', function (Blueprint $table) {
-            //
-            $table->string('cert_holder')->nullable()->after('status');
+        Schema::create('old_crm_link_table', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('lead_id')->constrained('leads');
+            $table->string('hyperlink');
+            $table->timestamps();
         });
     }
 
@@ -26,9 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('certificate', function (Blueprint $table) {
-            //
-            $table->dropColumn('cert_holder');
-        });
+        Schema::dropIfExists('old_crm_link_table');
     }
 };
