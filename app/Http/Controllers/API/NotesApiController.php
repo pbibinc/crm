@@ -25,11 +25,11 @@ class NotesApiController extends BaseController
             $note->save();
             DB::commit();
             Log::info('Note created successfully');
-            return $this->sendResponse(['data' => $note->toArray(), 'status' => 200, 'message' => 'Note Created Successfully'], 'Note created successfully.', 200);
+            return $this->sendResponse(['data' => $note->toArray(), 'status' => 200, 'message' => 'Note Created Successfully',  'success' => true,], 'Note created successfully.', 200);
         } catch (\Exception $e) {
             Log::info($e->getMessage());
             DB::rollBack();
-            return $this->sendError(['message' => $e->getMessage(), 'status' => 500], 500);
+            return $this->sendError(['message' => $e->getMessage(), 'status' => 500,  'success' => false,], 500);
         }
     }
 }
