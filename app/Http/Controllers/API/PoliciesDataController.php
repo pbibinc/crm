@@ -77,7 +77,6 @@ class PoliciesDataController extends BaseController
                 $validator = Validator::make($value, [
                     'file_name' => 'required|string',
                     'file_type' => 'required|string',
-                    'file_content' => 'required|string',
                     'policy_file_content' => 'required|string',
                     'quotation_product_id' => 'required|integer',
                     'selected_quote_id' => 'required|integer',
@@ -164,7 +163,6 @@ class PoliciesDataController extends BaseController
             ], 500);
         }
     }
-
 
     private function storeGeneralLiability($policyDetailsId, $data)
     {
