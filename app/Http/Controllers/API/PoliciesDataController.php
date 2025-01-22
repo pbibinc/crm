@@ -11,6 +11,7 @@ use App\Models\QuotationProduct;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Stmt\Switch_;
 
@@ -60,7 +61,7 @@ class PoliciesDataController extends BaseController
             DB::beginTransaction();
 
             $data = $request->all();
-
+            Log::info("policy" . json_encode($data));
             // Ensure that the incoming request is an array of policies
             if (!is_array($data)) {
                 return response()->json([
@@ -156,6 +157,7 @@ class PoliciesDataController extends BaseController
 
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::info($e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Policy Detail Creation Failed: ' . $e->getMessage(),
