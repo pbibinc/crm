@@ -11,6 +11,7 @@ use App\Models\QuotationProduct;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Stmt\Switch_;
 
 class PoliciesDataController extends BaseController
@@ -55,81 +56,115 @@ class PoliciesDataController extends BaseController
 
     public function storePolicy(Request $request)
     {
-        try{
+        try {
             DB::beginTransaction();
 
             $data = $request->all();
 
-            $request->validate([
-                'file_name' => 'required|string',
-                'file_type' => 'required|string',
-                'file_content' => 'required|string',
-            ]);
-
-            $fileContent = base64_decode($data['policy_file_content']);
-            $fileName = $request->input('file_name');
-            $directoryPath = public_path('backend/assets/attacedFiles/binding/general-liability-insurance');
-
-            // Create the directory if it doesn't exist
-            if (!File::isDirectory($directoryPath)) {
-                File::makeDirectory($directoryPath, 0777, true, true);
+            // Ensure that the incoming request is an array of policies
+            if (!is_array($data)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid request format. Expected an array of policies.',
+                    'status' => 400
+                ], 400);
             }
 
+            $createdPolicies = [];
 
-            // Create the full path where the file will be saved
-            $filePath = $directoryPath . '/' . $fileName;
+            foreach ($data as $value) {
+                // Validate each policy object inside the array
+                $validator = Validator::make($value, [
+                    'file_name' => 'required|string',
+                    'file_type' => 'required|string',
+                    'file_content' => 'required|string',
+                    'policy_file_content' => 'required|string',
+                    'quotation_product_id' => 'required|integer',
+                    'selected_quote_id' => 'required|integer',
+                    'policy_number' => 'required|string',
+                    'carrier' => 'required|string',
+                    'market' => 'required|string',
+                    'payment_mode' => 'required|string',
+                    'effective_date' => 'required|date',
+                    'expiration_date' => 'required|date',
+                ]);
 
-            // Save the decoded file content to the specified path
-            File::put($filePath, $fileContent);
+                if ($validator->fails()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Validation failed',
+                        'errors' => $validator->errors(),
+                        'status' => 422
+                    ], 422);
+                }
 
-            // Get the metadata
-            $type = mime_content_type($filePath); // Get the MIME type of the file
-            $size = filesize($filePath); // Get the file size
+                // Decode the base64 file content and save the file
+                $fileContent = base64_decode($value['policy_file_content']);
+                $fileName = $value['file_name'];
+                $directoryPath = public_path('backend/assets/attachedFiles/binding/general-liability-insurance');
 
-            $metadata = new Metadata();
-            $metadata->basename = $fileName;
-            $metadata->filename = $fileName;
-            $metadata->filepath = 'backend/assets/attacedFiles/binding/general-liability-insurance/' . $fileName;
-            $metadata->type = $type;
-            $metadata->size = $size;
-            $metadata->save();
+                if (!File::isDirectory($directoryPath)) {
+                    File::makeDirectory($directoryPath, 0777, true, true);
+                }
 
-            $policyDetail = new PolicyDetail();
-            $policyDetail->quotation_product_id = $data['quotation_product_id'];
-            $policyDetail->selected_quote_id = $data['selected_quote_id'];
-            $policyDetail->policy_number = $data['policy_number'];
-            $policyDetail->carrier = $data['carrier'];
-            $policyDetail->market = $data['market'];
-            $policyDetail->payment_mode = $data['payment_mode'];
-            $policyDetail->effective_date = $data['effective_date'];
-            $policyDetail->expiration_date = $data['expiration_date'];
-            $policyDetail->status = "issued";
-            $policyDetail->media_id = $metadata->id;
-            $policyDetail->save();
+                $filePath = $directoryPath . '/' . $fileName;
+                File::put($filePath, $fileContent);
 
-            $product = QuotationProduct::find($policyDetail->quotation_product_id);
-            if($product->product == 'General Liability'){
-                $this->storeGeneralLiability($policyDetail->id, $data);
+                // Create metadata
+                $type = mime_content_type($filePath);
+                $size = filesize($filePath);
+
+                $metadata = new Metadata();
+                $metadata->basename = $fileName;
+                $metadata->filename = $fileName;
+                $metadata->filepath = 'backend/assets/attachedFiles/binding/general-liability-insurance/' . $fileName;
+                $metadata->type = $type;
+                $metadata->size = $size;
+                $metadata->save();
+
+                // Create Policy Detail
+                $policyDetail = new PolicyDetail();
+                $policyDetail->quotation_product_id = $value['quotation_product_id'];
+                $policyDetail->selected_quote_id = $value['selected_quote_id'];
+                $policyDetail->policy_number = $value['policy_number'];
+                $policyDetail->carrier = $value['carrier'];
+                $policyDetail->market = $value['market'];
+                $policyDetail->payment_mode = $value['payment_mode'];
+                $policyDetail->effective_date = $value['effective_date'];
+                $policyDetail->expiration_date = $value['expiration_date'];
+                $policyDetail->status = $value['status'];
+                $policyDetail->media_id = $metadata->id;
+                $policyDetail->save();
+
+                // Check if the product is General Liability
+                $product = QuotationProduct::find($policyDetail->quotation_product_id);
+                if ($product && $product->product == 'General Liability') {
+                    $this->storeGeneralLiability($policyDetail->id, $value);
+                }
+
+                // Store created policy in array
+                $createdPolicies[] = $policyDetail;
             }
 
             DB::commit();
+
             return response()->json([
                 'success' => true,
-                'message' => 'Policy Detail Created Successfully',
-                'data' => $policyDetail,
-                'status' => 200
-            ], 200);
+                'message' => 'Policy Details Created Successfully',
+                'data' => $createdPolicies,
+                'status' => 201
+            ], 201);
 
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
                 'success' => false,
-                'message' => 'Policy Detail Creation Failed',
-                'data' => $policyDetail,
+                'message' => 'Policy Detail Creation Failed: ' . $e->getMessage(),
                 'status' => 500
             ], 500);
         }
     }
+
 
     private function storeGeneralLiability($policyDetailsId, $data)
     {
@@ -151,7 +186,6 @@ class PoliciesDataController extends BaseController
         $generalLiability->product_comp = $data['product_comp'];
         $generalLiability->save();
     }
-
 
 }
 

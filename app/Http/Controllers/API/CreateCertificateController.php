@@ -446,7 +446,7 @@ class CreateCertificateController extends BaseController
                if($data['projectDescription'] == 'Default'){
                 $template = Templates::find(15);
                 $subject = 'Cert Request';
-                $sendingMail = Mail::to('maechael108@gmail.com')->send(new sendTemplatedEmail($subject, $template->html,  $metadata->filepath));
+                $sendingMail = Mail::to('maechael.insuraprime@gmail.com')->send(new sendTemplatedEmail($subject, $template->html,  $metadata->filepath));
                 $certificate->status = 'approved';
                }else{
                 $certificate->status = 'pending';

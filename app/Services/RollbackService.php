@@ -40,7 +40,6 @@ class RollbackService
         }
     }
 
-
     protected function rollbackGeneralInformation($leadId)
     {
 
@@ -103,49 +102,6 @@ class RollbackService
             $lead->delete();
         }
     }
-
-    protected function rollbackPolicyLog($leadId)
-    {
-        $lead = Lead::find($leadId);
-        if ($lead) {
-            $quotationProducts = QuotationProduct::where('quote_information_id', $lead->quoteLead->QuoteInformation->id)->get();
-            if($quotationProducts){
-                foreach($quotationProducts as $product){
-                    $product->QuoteComparison()->delete();
-                    $quoteComparisons = QuoteComparison::whecre('quotation_product_id', $product->id)->get();
-                    if($quoteComparisons){
-                        foreach($quoteComparisons as $comparison){
-                            $comparison->media()->detach();
-                            $comparison->delete();
-                        }
-                    }
-                    if($product->product == 'General Liability'){
-                        $generalLiab = GeneralLiabilities::where('general_information_id', $lead->GeneralInformation->id)->first();
-                        if($generalLiab){
-                            $generalLiab->delete();
-                        }
-                    }
-                }
-                $lead->quoteLead->QuoteInformation->QuotationProduct()->delete();
-            }
-            if ($lead->quoteLead && $lead->quoteLead->QuoteInformation) {
-                $lead->quoteLead->QuoteInformation->delete();
-            }
-            if ($lead->quoteLead) {
-                $lead->quoteLead->delete();
-            }
-            $leadNotes = LeadNotes::where('lead_id', $lead->id)->get();
-            if($leadNotes){
-                foreach($leadNotes as $note){
-                    $note->delete();
-                }
-            }
-            $lead->GeneralInformation->delete();
-            $lead->delete();
-        }
-
-    }
-
 
 }
 ?>
