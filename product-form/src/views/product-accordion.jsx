@@ -8,7 +8,7 @@ import ExcessLiabilitiesForm from "../product-form/excess_liability_form";
 import ToolsEquipmentForm from "../product-form/tools-equipment-form";
 import BuilderRiskForm from "../product-form/builder-risk_form";
 import BusinessOwnersPolicyForm from "../product-form/business-owners-policy_form";
-
+import BondForm from "../product-form/bond-form.jsx";
 import Card from "react-bootstrap/Card";
 import CardElement from "../element/card-element";
 // import Button from "react-bootstrap/Button";
@@ -73,13 +73,24 @@ function ProductAccordion() {
                                 Builders Risk
                             </button>
                         </div>
-                        <button
-                            size="md"
-                            className="form-button"
-                            onClick={() => setActiveTab("businessOwnersPolicy")}
-                        >
-                            Business Owners Policy
-                        </button>
+                        <div className="button-row">
+                            <button
+                                size="md"
+                                className="form-button"
+                                onClick={() =>
+                                    setActiveTab("businessOwnersPolicy")
+                                }
+                            >
+                                Business Owners Policy
+                            </button>
+                            <button
+                                size="md"
+                                className="form-button"
+                                onClick={() => setActiveTab("bond")}
+                            >
+                                Bond
+                            </button>
+                        </div>
                     </div>
                 </Card.Body>
             </Card>
@@ -150,6 +161,16 @@ function ProductAccordion() {
                     bodyContent={
                         <ContextDataProvider>
                             <BusinessOwnersPolicyForm />
+                        </ContextDataProvider>
+                    }
+                />
+            )}
+            {activeTab === "bond" && (
+                <CardElement
+                    headerContent="Bond"
+                    bodyContent={
+                        <ContextDataProvider>
+                            <BondForm />
                         </ContextDataProvider>
                     }
                 />

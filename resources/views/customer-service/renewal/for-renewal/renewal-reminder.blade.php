@@ -6,7 +6,7 @@
             <th>Product</th>
             <th>Previous Policy Price</th>
             <th>Renewal Date</th>
-            <th>Sent Email Reminder</th>
+            {{-- <th>Sent Email Reminder</th> --}}
             <th>Action</th>
         </tr>
     </thead>
@@ -77,10 +77,10 @@
                     data: 'expiration_date',
                     name: 'expiration_date'
                 },
-                {
-                    data: 'emailSentCount',
-                    name: 'emailSentCount'
-                },
+                // {
+                //     data: 'emailSentCount',
+                //     name: 'emailSentCount'
+                // },
                 {
                     data: 'action',
                     name: 'action',

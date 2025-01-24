@@ -140,7 +140,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/lead-data/{userId}', [LeadDetailController::class, 'getLeadDataUserId'])->name('get-lead-data-user-id');
-    Route::post('/get-policy-information/{policyId}', [PoliciesDataController::class, 'getPolicyInformation'])->name('get-policy-information');
+    Route::post('/get-policy-information/{policyId}', [PoliciesDataController::class, 'getPolicyInformation'])->name('get-policy-information-api');
     Route::post('/generate-cert-pdf', [CreateCertificateController::class, 'generateCertPdf'])->name('generate-cert-pdf');
 
 });
@@ -164,6 +164,9 @@ Route::post('pdf-create-document-link', [PdfController::class, 'createDocumentLi
 Route::post('pdf-webhook-callback-uri', [PdfController::class, 'handleWebhook'])->withoutMiddleware(['auth:sanctum']);
 Route::get('pdf-document-redirection-uri', [PdfController::class, 'handleRedirect'])->withoutMiddleware(['auth:sanctum']);
 Route::post('ocr-pdf', [PdfController::class, 'extractDataFromPdf'])->withoutMiddleware(['auth:sanctum']);
+
+
+
 
 
 Route::post('store-note', [NotesApiController::class, 'store'])->withoutMiddleware(['auth:sanctum']);

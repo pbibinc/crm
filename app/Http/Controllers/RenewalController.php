@@ -287,10 +287,10 @@ class RenewalController extends Controller
                 return $sentCount . '/'. $pendingCount;
             })
             ->addColumn('action', function($policiesData){
-                $setEmailSendingButton = '<button type="button" class="btn btn-outline-primary btn-sm waves-effect waves-light sentEmailButton" id="'.$policiesData->id.'" data-product-id="'.$policiesData->QuotationProduct->id.'"><i class="ri-mail-send-line"></i></button>';
+                // $setEmailSendingButton = '<button type="button" class="btn btn-outline-primary btn-sm waves-effect waves-light sentEmailButton" id="'.$policiesData->id.'" data-product-id="'.$policiesData->QuotationProduct->id.'"><i class="ri-mail-send-line"></i></button>';
                 $viewButton = '<a href="/customer-service/renewal/get-renewal-lead-view/'.$policiesData->id.'"  id="'.$policiesData->policy_details_id.'" class="btn btn-sm btn-outline-info"><i class="ri-eye-line"></i></a>';
                 $renewalQuoteButton = '<button type="button" class="btn btn-outline-success btn-sm waves-effect waves-light renewalReminder" id="'.$policiesData->id.'"><i class=" ri-task-line"></i></button>';
-                return $setEmailSendingButton . ' ' . $viewButton . ' ' . $renewalQuoteButton;
+                return $viewButton . ' ' . $renewalQuoteButton;
             })
             ->rawColumns(['company_name', 'policy_no', 'action'])
             ->make(true);

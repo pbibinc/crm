@@ -902,7 +902,7 @@ const CommercialAutoForm = () => {
                                 classValue="col-6"
                                 colContent={
                                     <>
-                                        <Label labelContent="Cost New" />
+                                        <Label labelContent="Cost New" />R{" "}
                                         <NumericFormat
                                             className="form-control"
                                             thousandSeparator={true}

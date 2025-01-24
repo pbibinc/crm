@@ -88,6 +88,11 @@ class GeneralInformation extends Model
         return $this->hasOne(BusinessOwnersPolicy::class, 'general_information_id', 'id');
     }
 
+    public function bond()
+    {
+        return $this->hasOne(Bond::class, 'general_information_id', 'id');
+    }
+
     public static function getProductByGeneralInformationId($generalInformationId)
     {
         $generalInfo = self::find($generalInformationId);

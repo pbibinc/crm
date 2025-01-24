@@ -11,6 +11,8 @@
         $productIds[] = $product->id;
     }
 
+    echo $productIds;
+
 @endphp
 
 <div class="card shadow-lg p-3 mb-5 bg-white rounded">
