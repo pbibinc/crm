@@ -32,6 +32,7 @@ use App\Notifications\LeadNotesNotification;
 use Carbon\Carbon;
 use Demo\Product;
 use Dflydev\DotAccessData\Data;
+use Hamcrest\Arrays\IsArray;
 use HelloSign\Template;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
@@ -1130,7 +1131,11 @@ class QuotationController extends Controller
 
         // Only build the query if 'ids' is provided and not empty
         if ($request->has('ids') && !empty($request->input('ids'))) {
-            $query = QuoteComparison::whereIn('quotation_product_id', $request->input('ids'))->orderBy('created_at', 'desc');
+            if(is_array($request->input('ids'))){
+                $query = QuoteComparison::whereIn('quotation_product_id', $request->input('ids'))->orderBy('created_at', 'desc');
+            }else{
+                $query = QuoteComparison::where('quotation_product_id', $request->input('ids'))->orderBy('created_at', 'desc');
+            }
         }
 
         if ($query && $request->has('product') && !empty($request->input('product'))) {
