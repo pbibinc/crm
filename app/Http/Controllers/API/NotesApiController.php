@@ -29,7 +29,7 @@ class NotesApiController extends BaseController
 
             $oldCrmLink = new OldCrmLink();
             $oldCrmLink->lead_id = $data['lead_id'];
-            $oldCrmLink->crm_link = $data['crm_link'];
+            $oldCrmLink->hyperlink = $data['crm_link'];
             $oldCrmLink->save();
 
             DB::commit();
