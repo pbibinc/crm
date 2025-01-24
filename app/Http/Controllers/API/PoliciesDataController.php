@@ -126,10 +126,10 @@ class PoliciesDataController extends BaseController
                 $policyDetail = new PolicyDetail();
                 $policyDetail->quotation_product_id = $value['quotation_product_id'];
                 $policyDetail->selected_quote_id = $value['selected_quote_id'];
-                $policyDetail->policy_number = $value['policy_number'] == 'Installment' ? 'Split low down' : 'PIF';
+                $policyDetail->policy_number = $value['policy_number'] ;
                 $policyDetail->carrier = $value['carrier'];
                 $policyDetail->market = $value['market'];
-                $policyDetail->payment_mode = $value['payment_mode'] ;
+                $policyDetail->payment_mode = $value['payment_mode'] == 'Installment' ? 'Split low down' : 'PIF';
                 $policyDetail->effective_date = $value['effective_date'];
                 $policyDetail->expiration_date = $value['expiration_date'];
                 $policyDetail->status = $value['status'];

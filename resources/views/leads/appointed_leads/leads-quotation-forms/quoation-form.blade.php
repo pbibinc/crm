@@ -11,8 +11,6 @@
         $productIds[] = $product->id;
     }
 
-    echo $productIds;
-
 @endphp
 
 <div class="card shadow-lg p-3 mb-5 bg-white rounded">
@@ -253,6 +251,7 @@
     var myDropzone;
     $(document).ready(function() {
         var ids = @json($productIds) || [];
+
         $('#qoutation-table').DataTable({
             processing: true,
             serverSide: true,
