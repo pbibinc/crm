@@ -168,7 +168,7 @@ class PoliciesDataController extends BaseController
 
     private function storeGeneralLiability($policyDetailsId, $data)
     {
-        $generalLiability = new GeneralLiabilities();
+        $generalLiability = new GeneralLiabilitiesPolicyDetails();
         $generalLiability->policy_details_id = $policyDetailsId;
         $generalLiability->is_commercial_gl = $data['is_commercial_gl'];
         $generalLiability->is_occur = $data['is_occur'];
